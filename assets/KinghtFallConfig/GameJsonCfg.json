@@ -18638,7 +18638,7 @@
               "id": "legacy-1-0",
               "spawnId": 1,
               "unitId": 91037,
-              "count": 5,
+              "count": 8,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
             }
@@ -18716,21 +18716,42 @@
           "SpawnTimeline": [
             {
               "id": "legacy-1-0",
-              "spawnId": 1,
+              "spawnId": 2,
               "unitId": 101661,
               "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "startSeconds": 1,
+              "intervalSeconds": 3.5
             },
             {
               "id": "legacy-2-0",
-              "spawnId": 2,
+              "spawnId": 3,
               "unitId": 101667,
               "count": 5,
+              "startSeconds": 4,
+              "intervalSeconds": 2
+            },
+            {
+              "count": 10,
               "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "intervalSeconds": 1,
+              "spawnId": 1,
+              "unitId": 91037,
+              "id": "entry-1"
             }
-          ]
+          ],
+          "editorUnitOrder": [
+            "entry-1",
+            "legacy-1-0",
+            "legacy-2-0"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 14,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null
+            ]
+          }
         },
         {
           "id": 2,
@@ -18760,34 +18781,44 @@
               "spawnId": 1,
               "unitId": 100245,
               "count": 7,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "startSeconds": 4,
+              "intervalSeconds": 1,
+              "editorManualTiming": true
             },
             {
               "id": "legacy-2-0",
               "spawnId": 2,
               "unitId": 101663,
               "count": 3,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "startSeconds": 7.5,
+              "intervalSeconds": 2.5
             },
             {
               "id": "legacy-3-0",
               "spawnId": 3,
               "unitId": 101667,
               "count": 3,
-              "startSeconds": 0.5,
+              "startSeconds": 9,
               "intervalSeconds": 0.5
             },
             {
               "count": 5,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5,
-              "spawnId": 4,
+              "spawnId": 1,
               "unitId": 91037,
-              "id": "entry-1"
+              "id": "entry-1",
+              "editorManualTiming": true
             }
-          ]
+          ],
+          "editorTimingBalance": {
+            "peakCap": 18,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null
+            ]
+          }
         },
         {
           "id": 2,
@@ -18816,16 +18847,16 @@
               "id": "legacy-1-0",
               "spawnId": 1,
               "unitId": 101674,
-              "count": 4,
+              "count": 6,
               "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "intervalSeconds": 1
             },
             {
               "id": "legacy-2-0",
               "spawnId": 2,
               "unitId": 91037,
               "count": 12,
-              "startSeconds": 0.5,
+              "startSeconds": 2.5,
               "intervalSeconds": 0.5
             },
             {
@@ -18833,18 +18864,26 @@
               "spawnId": 3,
               "unitId": 100248,
               "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "startSeconds": 3,
+              "intervalSeconds": 1
             },
             {
               "count": 1,
-              "startSeconds": 0.5,
+              "startSeconds": 1,
               "intervalSeconds": 0.5,
               "spawnId": 4,
               "unitId": 91157,
               "id": "entry-1"
             }
-          ]
+          ],
+          "editorTimingBalance": {
+            "peakCap": 22,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null
+            ]
+          }
         },
         {
           "id": 2,
@@ -18873,43 +18912,51 @@
               "id": "legacy-1-0",
               "spawnId": 1,
               "unitId": 101661,
-              "count": 3,
+              "count": 6,
               "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "intervalSeconds": 1.5
             },
             {
               "id": "legacy-2-0",
               "spawnId": 2,
               "unitId": 101668,
-              "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "count": 8,
+              "startSeconds": 7,
+              "intervalSeconds": 1
             },
             {
               "id": "legacy-3-0",
               "spawnId": 3,
               "unitId": 100247,
               "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "startSeconds": 1,
+              "intervalSeconds": 4
             },
             {
               "count": 8,
-              "startSeconds": 0.5,
+              "startSeconds": 11,
               "intervalSeconds": 0.5,
               "spawnId": 4,
               "unitId": 91037,
               "id": "entry-1"
             },
             {
-              "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "count": 7,
+              "startSeconds": 2.5,
+              "intervalSeconds": 2,
               "spawnId": 5,
               "unitId": 91151,
               "id": "entry-2"
             }
-          ]
+          ],
+          "editorTimingBalance": {
+            "peakCap": 27,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null
+            ]
+          }
         },
         {
           "id": 2,
@@ -18940,49 +18987,60 @@
               "unitId": 101663,
               "count": 4,
               "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "intervalSeconds": 1,
+              "editorManualTiming": true
             },
             {
               "id": "legacy-2-0",
               "spawnId": 2,
               "unitId": 101667,
               "count": 5,
-              "startSeconds": 0.5,
+              "startSeconds": 4,
               "intervalSeconds": 0.5
             },
             {
               "id": "legacy-3-0",
               "spawnId": 3,
               "unitId": 100248,
-              "count": 3,
-              "startSeconds": 0.5,
+              "count": 8,
+              "startSeconds": 6.5,
               "intervalSeconds": 0.5
             },
             {
               "count": 10,
-              "startSeconds": 0.5,
+              "startSeconds": 1.5,
               "intervalSeconds": 0.5,
               "spawnId": 4,
               "unitId": 91037,
-              "id": "entry-1"
+              "id": "entry-1",
+              "editorManualTiming": true
             },
             {
-              "count": 3,
-              "startSeconds": 0.5,
+              "count": 6,
+              "startSeconds": 2.5,
               "intervalSeconds": 0.5,
               "spawnId": 6,
               "unitId": 101671,
               "id": "entry-3"
             },
             {
-              "count": 3,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "count": 5,
+              "startSeconds": 5.5,
+              "intervalSeconds": 3,
               "spawnId": 5,
               "unitId": 101679,
-              "id": "entry-4"
+              "id": "entry-4",
+              "editorManualTiming": true
             }
-          ]
+          ],
+          "editorTimingBalance": {
+            "peakCap": 33,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null
+            ]
+          }
         },
         {
           "id": 2,
@@ -19012,36 +19070,36 @@
               "spawnId": 1,
               "unitId": 101661,
               "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "startSeconds": 0,
+              "intervalSeconds": 6
             },
             {
               "id": "legacy-2-0",
               "spawnId": 2,
               "unitId": 101668,
-              "count": 4,
-              "startSeconds": 0.5,
+              "count": 6,
+              "startSeconds": 8.5,
               "intervalSeconds": 0.5
             },
             {
               "id": "legacy-3-0",
               "spawnId": 3,
               "unitId": 100247,
-              "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "count": 10,
+              "startSeconds": 5,
+              "intervalSeconds": 1
             },
             {
               "count": 10,
-              "startSeconds": 0.5,
+              "startSeconds": 16.5,
               "intervalSeconds": 0.5,
               "spawnId": 4,
               "unitId": 91037,
               "id": "entry-1"
             },
             {
-              "count": 5,
-              "startSeconds": 0.5,
+              "count": 7,
+              "startSeconds": 13.5,
               "intervalSeconds": 0.5,
               "spawnId": 7,
               "unitId": 101656,
@@ -19049,21 +19107,29 @@
             },
             {
               "count": 3,
-              "startSeconds": 0.5,
+              "startSeconds": 3.5,
               "intervalSeconds": 0.5,
               "spawnId": 5,
               "unitId": 101679,
               "id": "entry-3"
             },
             {
-              "count": 4,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "count": 6,
+              "startSeconds": 2.5,
+              "intervalSeconds": 4,
               "spawnId": 6,
               "unitId": 101671,
               "id": "entry-4"
             }
-          ]
+          ],
+          "editorTimingBalance": {
+            "peakCap": 39,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              21
+            ]
+          }
         },
         {
           "id": 2,
@@ -19102,7 +19168,7 @@
               "spawnId": 2,
               "unitId": 101668,
               "count": 3,
-              "startSeconds": 0.5,
+              "startSeconds": 7,
               "intervalSeconds": 0.5,
               "unitGroupId": "unit-group-2"
             },
@@ -19111,36 +19177,36 @@
               "spawnId": 3,
               "unitId": 100247,
               "count": 10,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "startSeconds": 6,
+              "intervalSeconds": 2
             },
             {
               "count": 10,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "startSeconds": 2.5,
+              "intervalSeconds": 1.5,
               "spawnId": 4,
               "unitId": 91037,
               "id": "entry-1"
             },
             {
-              "count": 5,
-              "startSeconds": 0.5,
+              "count": 7,
+              "startSeconds": 9,
               "intervalSeconds": 2.5,
               "spawnId": 7,
               "unitId": 101656,
               "id": "entry-2"
             },
             {
-              "count": 3,
-              "startSeconds": 0.5,
+              "count": 4,
+              "startSeconds": 3.5,
               "intervalSeconds": 0.5,
               "spawnId": 5,
               "unitId": 101679,
               "id": "entry-3"
             },
             {
-              "count": 5,
-              "startSeconds": 0.5,
+              "count": 10,
+              "startSeconds": 17,
               "intervalSeconds": 0.5,
               "spawnId": 6,
               "unitId": 101671,
@@ -19148,7 +19214,7 @@
             },
             {
               "count": 4,
-              "startSeconds": 2.5,
+              "startSeconds": 19.5,
               "intervalSeconds": 2.5,
               "unitId": 101661,
               "spawnId": 8,
@@ -19157,14 +19223,31 @@
             },
             {
               "count": 3,
-              "startSeconds": 0.5,
+              "startSeconds": 23.5,
               "intervalSeconds": 0.5,
               "unitId": 101668,
               "spawnId": 8,
               "unitGroupId": "unit-group-2",
               "id": "entry-6"
             }
-          ]
+          ],
+          "editorUnitOrder": [
+            "entry-1",
+            "legacy-3-0",
+            "legacy-1-0",
+            "legacy-2-0",
+            "entry-2",
+            "entry-3",
+            "entry-4"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 45,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              24
+            ]
+          }
         },
         {
           "id": 2,
@@ -19195,11 +19278,12 @@
               "intervalSeconds": 0.5,
               "spawnId": 1,
               "unitId": 91037,
-              "id": "entry-1"
+              "id": "entry-1",
+              "editorManualTiming": true
             },
             {
               "count": 10,
-              "startSeconds": 0.5,
+              "startSeconds": 17,
               "intervalSeconds": 0.5,
               "spawnId": 2,
               "unitId": 100248,
@@ -19207,23 +19291,23 @@
             },
             {
               "count": 5,
-              "startSeconds": 0.5,
+              "startSeconds": 9,
               "intervalSeconds": 0.5,
               "spawnId": 3,
               "unitId": 101656,
               "id": "entry-3"
             },
             {
-              "count": 2,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "count": 5,
+              "startSeconds": 14,
+              "intervalSeconds": 2.5,
               "spawnId": 7,
               "unitId": 101663,
               "id": "entry-4"
             },
             {
               "count": 8,
-              "startSeconds": 0.5,
+              "startSeconds": 12,
               "intervalSeconds": 0.5,
               "spawnId": 8,
               "unitId": 101666,
@@ -19231,15 +19315,15 @@
             },
             {
               "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "startSeconds": 2.5,
+              "intervalSeconds": 3.5,
               "spawnId": 4,
               "unitId": 101671,
               "id": "entry-6"
             },
             {
               "count": 3,
-              "startSeconds": 0.5,
+              "startSeconds": 3.5,
               "intervalSeconds": 0.5,
               "spawnId": 5,
               "unitId": 101679,
@@ -19247,7 +19331,7 @@
             },
             {
               "count": 1,
-              "startSeconds": 0.5,
+              "startSeconds": 23.5,
               "intervalSeconds": 0.5,
               "spawnId": 6,
               "unitId": 91157,
@@ -19255,13 +19339,21 @@
             },
             {
               "count": 3,
-              "startSeconds": 0.5,
-              "intervalSeconds": 1.5,
+              "startSeconds": 12,
+              "intervalSeconds": 4.5,
               "spawnId": 13,
               "unitId": 101767,
               "id": "entry-9"
             }
-          ]
+          ],
+          "editorTimingBalance": {
+            "peakCap": 50,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              21
+            ]
+          }
         },
         {
           "id": 2,
@@ -19289,23 +19381,24 @@
             {
               "count": 10,
               "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "intervalSeconds": 1.5,
               "spawnId": 1,
               "unitId": 91037,
               "id": "entry-1"
             },
             {
               "count": 7,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "startSeconds": 10,
+              "intervalSeconds": 3.5,
               "spawnId": 2,
               "unitId": 100248,
               "id": "entry-2",
-              "unitGroupId": "unit-group-2"
+              "unitGroupId": "unit-group-2",
+              "editorManualTiming": true
             },
             {
-              "count": 7,
-              "startSeconds": 0.5,
+              "count": 10,
+              "startSeconds": 23,
               "intervalSeconds": 0.5,
               "spawnId": 3,
               "unitId": 101656,
@@ -19313,7 +19406,7 @@
             },
             {
               "count": 6,
-              "startSeconds": 0.5,
+              "startSeconds": 3.5,
               "intervalSeconds": 0.5,
               "spawnId": 7,
               "unitId": 101663,
@@ -19321,8 +19414,8 @@
             },
             {
               "count": 8,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "startSeconds": 1,
+              "intervalSeconds": 1.5,
               "spawnId": 8,
               "unitId": 101666,
               "id": "entry-5",
@@ -19330,32 +19423,32 @@
             },
             {
               "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "startSeconds": 9,
+              "intervalSeconds": 1.5,
               "spawnId": 4,
               "unitId": 101671,
               "id": "entry-6"
             },
             {
               "count": 6,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "startSeconds": 1,
+              "intervalSeconds": 9,
               "spawnId": 5,
               "unitId": 101679,
               "id": "entry-7"
             },
             {
               "count": 6,
-              "startSeconds": 0.5,
-              "intervalSeconds": 1.5,
+              "startSeconds": 41,
+              "intervalSeconds": 1,
               "spawnId": 13,
               "unitId": 101767,
               "id": "entry-9"
             },
             {
               "count": 8,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "startSeconds": 7,
+              "intervalSeconds": 1,
               "unitId": 101666,
               "spawnId": 1,
               "unitGroupId": "unit-group-1",
@@ -19363,20 +19456,29 @@
             },
             {
               "count": 7,
-              "startSeconds": 0.5,
+              "startSeconds": 26.5,
               "intervalSeconds": 0.5,
               "unitId": 100248,
               "spawnId": 6,
               "unitGroupId": "unit-group-2",
               "id": "entry-10"
             }
-          ]
+          ],
+          "editorTimingBalance": {
+            "peakCap": 50,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              15,
+              30
+            ]
+          }
         },
         {
           "id": 2,
           "Wave": 12,
-          "HealthCoefficient": 1.8,
-          "AttackCoefficient": 1.6,
+          "HealthCoefficient": 2,
+          "AttackCoefficient": 1.8,
           "StartSliver": 10,
           "CommerceSliver": 16,
           "RefreshSoldierKind": [
@@ -19405,7 +19507,7 @@
             },
             {
               "count": 10,
-              "startSeconds": 0.5,
+              "startSeconds": 3,
               "intervalSeconds": 0.5,
               "spawnId": 2,
               "unitId": 100248,
@@ -19413,16 +19515,16 @@
               "unitGroupId": "unit-group-2"
             },
             {
-              "count": 12,
-              "startSeconds": 0.5,
+              "count": 8,
+              "startSeconds": 96,
               "intervalSeconds": 0.5,
               "spawnId": 3,
               "unitId": 101656,
               "id": "entry-3"
             },
             {
-              "count": 8,
-              "startSeconds": 0.5,
+              "count": 6,
+              "startSeconds": 112,
               "intervalSeconds": 0.5,
               "spawnId": 7,
               "unitId": 101663,
@@ -19431,24 +19533,24 @@
             },
             {
               "count": 10,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "startSeconds": 107.5,
+              "intervalSeconds": 2.5,
               "spawnId": 8,
               "unitId": 101666,
               "id": "entry-5",
               "unitGroupId": "unit-group-1"
             },
             {
-              "count": 8,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "count": 10,
+              "startSeconds": 4,
+              "intervalSeconds": 14,
               "spawnId": 4,
               "unitId": 101671,
               "id": "entry-6"
             },
             {
               "count": 10,
-              "startSeconds": 4.5,
+              "startSeconds": 89.5,
               "intervalSeconds": 4.5,
               "spawnId": 5,
               "unitId": 101679,
@@ -19457,7 +19559,7 @@
             },
             {
               "count": 8,
-              "startSeconds": 0.5,
+              "startSeconds": 119,
               "intervalSeconds": 1.5,
               "spawnId": 13,
               "unitId": 101767,
@@ -19465,8 +19567,8 @@
             },
             {
               "count": 10,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5,
+              "startSeconds": 11,
+              "intervalSeconds": 1,
               "unitId": 101666,
               "spawnId": 1,
               "unitGroupId": "unit-group-1",
@@ -19474,7 +19576,7 @@
             },
             {
               "count": 10,
-              "startSeconds": 0.5,
+              "startSeconds": 96,
               "intervalSeconds": 0.5,
               "unitId": 100248,
               "spawnId": 6,
@@ -19483,7 +19585,7 @@
             },
             {
               "count": 10,
-              "startSeconds": 0.5,
+              "startSeconds": 30.5,
               "intervalSeconds": 0.5,
               "unitId": 101679,
               "spawnId": 1,
@@ -19491,9 +19593,9 @@
               "id": "entry-11"
             },
             {
-              "count": 8,
-              "startSeconds": 3.5,
-              "intervalSeconds": 2.5,
+              "count": 6,
+              "startSeconds": 12.5,
+              "intervalSeconds": 1.5,
               "unitId": 101663,
               "spawnId": 1,
               "unitGroupId": "unit-group-4",
@@ -19501,7 +19603,7 @@
             },
             {
               "count": 1,
-              "startSeconds": 6.5,
+              "startSeconds": 37,
               "intervalSeconds": 0.5,
               "spawnId": 2,
               "unitId": 101680,
@@ -19509,13 +19611,22 @@
             },
             {
               "count": 1,
-              "startSeconds": 5.5,
+              "startSeconds": 129,
               "intervalSeconds": 0.5,
               "spawnId": 6,
               "unitId": 91157,
               "id": "entry-14"
             }
-          ]
+          ],
+          "editorTimingBalance": {
+            "peakCap": 50,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              20,
+              40
+            ]
+          }
         }
       ],
       "EnvironmentMapId": "map-concept-01-switchback-pass",
@@ -19668,9 +19779,1174 @@
           "AttackCoefficient": 1,
           "StartSliver": 6,
           "CommerceSliver": 4,
-          "RefreshSoldierKind": [
-            "1#101710,10"
+          "WaveReward": [
+            [
+              2001,
+              3790
+            ],
+            [
+              2004,
+              5
+            ]
           ],
+          "RefreshSoldierKind": [],
+          "SpawnTimeline": [
+            {
+              "count": 2,
+              "startSeconds": 3,
+              "intervalSeconds": 0.5,
+              "spawnId": 3,
+              "unitId": 100807,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5",
+              "editorManualTiming": true
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 1,
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3",
+              "editorManualTiming": true
+            }
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2"
+          ]
+        },
+        {
+          "id": 3,
+          "Wave": 2,
+          "HealthCoefficient": 1.2,
+          "AttackCoefficient": 1,
+          "StartSliver": 3,
+          "CommerceSliver": 4,
+          "WaveReward": [
+            [
+              2001,
+              4160
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "RefreshSoldierKind": [],
+          "SpawnTimeline": [
+            {
+              "count": 5,
+              "startSeconds": 3,
+              "intervalSeconds": 0.5,
+              "spawnId": 3,
+              "unitId": 100807,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5",
+              "editorManualTiming": true
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 1,
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3",
+              "editorManualTiming": true
+            }
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 9,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "Wave": 3,
+          "HealthCoefficient": 1.5,
+          "AttackCoefficient": 1.3,
+          "StartSliver": 4,
+          "CommerceSliver": 4,
+          "WaveReward": [
+            [
+              2001,
+              4560
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "RefreshSoldierKind": [],
+          "SpawnTimeline": [
+            {
+              "count": 4,
+              "startSeconds": 5,
+              "intervalSeconds": 6,
+              "spawnId": 2,
+              "unitId": 91162,
+              "id": "entry-1",
+              "unitGroupId": "unit-group-4",
+              "editorManualTiming": true
+            },
+            {
+              "count": 5,
+              "startSeconds": 4,
+              "intervalSeconds": 1,
+              "spawnId": 3,
+              "unitId": 91150,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5"
+            },
+            {
+              "count": 7,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 1,
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3",
+              "editorManualTiming": true
+            }
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2",
+            "entry-1"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 14,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "Wave": 4,
+          "HealthCoefficient": 1.5,
+          "AttackCoefficient": 1.3,
+          "StartSliver": 5,
+          "CommerceSliver": 4,
+          "WaveReward": [
+            [
+              2001,
+              4970
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "RefreshSoldierKind": [],
+          "SpawnTimeline": [
+            {
+              "count": 4,
+              "startSeconds": 10,
+              "intervalSeconds": 6,
+              "spawnId": 2,
+              "unitId": 91162,
+              "id": "entry-1",
+              "unitGroupId": "unit-group-4"
+            },
+            {
+              "count": 5,
+              "startSeconds": 12,
+              "intervalSeconds": 1,
+              "spawnId": 3,
+              "unitId": 91150,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5"
+            },
+            {
+              "count": 3,
+              "startSeconds": 31.5,
+              "intervalSeconds": 2.5,
+              "spawnId": 3,
+              "unitId": 91180,
+              "id": "entry-4",
+              "unitGroupId": "unit-group-1",
+              "editorManualTiming": true
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 1,
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3",
+              "editorManualTiming": true
+            },
+            {
+              "count": 5,
+              "startSeconds": 2.5,
+              "intervalSeconds": 2,
+              "unitId": 91182,
+              "spawnId": 6,
+              "unitGroupId": "unit-group-3",
+              "id": "entry-12"
+            },
+            {
+              "count": 4,
+              "startSeconds": 8,
+              "intervalSeconds": 2,
+              "spawnId": 2,
+              "unitId": 91123,
+              "id": "entry-15",
+              "unitGroupId": "unit-group-6"
+            }
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2",
+            "entry-15",
+            "entry-1",
+            "entry-4"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 18,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "Wave": 5,
+          "HealthCoefficient": 1.6,
+          "AttackCoefficient": 1.4,
+          "StartSliver": 6,
+          "CommerceSliver": 8,
+          "WaveReward": [
+            [
+              2001,
+              5410
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "RefreshSoldierKind": [],
+          "SpawnTimeline": [
+            {
+              "count": 4,
+              "startSeconds": 0.5,
+              "intervalSeconds": 5.5,
+              "spawnId": 2,
+              "unitId": 91162,
+              "id": "entry-1",
+              "unitGroupId": "unit-group-4"
+            },
+            {
+              "count": 5,
+              "startSeconds": 3,
+              "intervalSeconds": 3.5,
+              "spawnId": 3,
+              "unitId": 91150,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5"
+            },
+            {
+              "count": 3,
+              "startSeconds": 25.5,
+              "intervalSeconds": 2.5,
+              "spawnId": 3,
+              "unitId": 91180,
+              "id": "entry-4",
+              "unitGroupId": "unit-group-1",
+              "editorManualTiming": true
+            },
+            {
+              "count": 5,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 1,
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3",
+              "editorManualTiming": true
+            },
+            {
+              "count": 5,
+              "startSeconds": 7,
+              "intervalSeconds": 2,
+              "unitId": 91182,
+              "spawnId": 6,
+              "unitGroupId": "unit-group-3",
+              "id": "entry-12"
+            },
+            {
+              "count": 4,
+              "startSeconds": 8,
+              "intervalSeconds": 1.5,
+              "spawnId": 2,
+              "unitId": 91123,
+              "id": "entry-15",
+              "unitGroupId": "unit-group-6"
+            },
+            {
+              "count": 1,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 5,
+              "inheritSpawnTiming": [
+                "startSeconds",
+                "intervalSeconds"
+              ],
+              "unitId": 101719,
+              "id": "entry-3"
+            }
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2",
+            "entry-15",
+            "entry-1",
+            "entry-4"
+          ]
+        },
+        {
+          "id": 3,
+          "Wave": 6,
+          "HealthCoefficient": 1.6,
+          "AttackCoefficient": 1.4,
+          "StartSliver": 7,
+          "CommerceSliver": 8,
+          "WaveReward": [
+            [
+              2001,
+              5860
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "RefreshSoldierKind": [],
+          "SpawnTimeline": [
+            {
+              "count": 4,
+              "startSeconds": 0.5,
+              "intervalSeconds": 5.5,
+              "spawnId": 2,
+              "unitId": 91162,
+              "id": "entry-1",
+              "unitGroupId": "unit-group-4"
+            },
+            {
+              "count": 5,
+              "startSeconds": 3,
+              "intervalSeconds": 3.5,
+              "spawnId": 3,
+              "unitId": 91150,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5"
+            },
+            {
+              "count": 3,
+              "startSeconds": 14.5,
+              "intervalSeconds": 2.5,
+              "spawnId": 8,
+              "unitId": 100801,
+              "id": "entry-3"
+            },
+            {
+              "count": 6,
+              "startSeconds": 31.5,
+              "intervalSeconds": 2.5,
+              "spawnId": 3,
+              "unitId": 91180,
+              "id": "entry-4",
+              "unitGroupId": "unit-group-1",
+              "editorManualTiming": true
+            },
+            {
+              "count": 5,
+              "startSeconds": 0,
+              "intervalSeconds": 1,
+              "spawnId": 1,
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3"
+            },
+            {
+              "count": 5,
+              "startSeconds": 7,
+              "intervalSeconds": 2,
+              "unitId": 91182,
+              "spawnId": 6,
+              "unitGroupId": "unit-group-3",
+              "id": "entry-12"
+            },
+            {
+              "count": 4,
+              "startSeconds": 8,
+              "intervalSeconds": 1.5,
+              "spawnId": 2,
+              "unitId": 91123,
+              "id": "entry-15",
+              "unitGroupId": "unit-group-6"
+            },
+            {
+              "count": 4,
+              "startSeconds": 2.5,
+              "intervalSeconds": 25.5,
+              "unitId": 91123,
+              "spawnId": 4,
+              "unitGroupId": "unit-group-6",
+              "id": "entry-16"
+            }
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2",
+            "entry-15",
+            "entry-1",
+            "entry-3",
+            "entry-4"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 27,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              14
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "Wave": 7,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 8,
+          "CommerceSliver": 8,
+          "WaveReward": [
+            [
+              2001,
+              6320
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "RefreshSoldierKind": [],
+          "SpawnTimeline": [
+            {
+              "count": 4,
+              "startSeconds": 13.5,
+              "intervalSeconds": 5,
+              "spawnId": 2,
+              "unitId": 91162,
+              "id": "entry-1",
+              "unitGroupId": "unit-group-4"
+            },
+            {
+              "count": 5,
+              "startSeconds": 80,
+              "intervalSeconds": 3.5,
+              "spawnId": 3,
+              "unitId": 91150,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5"
+            },
+            {
+              "count": 4,
+              "startSeconds": 3.5,
+              "intervalSeconds": 2.5,
+              "spawnId": 8,
+              "unitId": 100801,
+              "id": "entry-3"
+            },
+            {
+              "count": 6,
+              "startSeconds": 24,
+              "intervalSeconds": 2.5,
+              "spawnId": 3,
+              "unitId": 91180,
+              "id": "entry-4",
+              "unitGroupId": "unit-group-1"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0,
+              "intervalSeconds": 1.5,
+              "spawnId": 1,
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3"
+            },
+            {
+              "count": 5,
+              "startSeconds": 14,
+              "intervalSeconds": 2,
+              "unitId": 91182,
+              "spawnId": 6,
+              "unitGroupId": "unit-group-3",
+              "id": "entry-12"
+            },
+            {
+              "count": 5,
+              "startSeconds": 20.5,
+              "intervalSeconds": 2,
+              "unitId": 91150,
+              "spawnId": 5,
+              "unitGroupId": "unit-group-5",
+              "id": "entry-14"
+            },
+            {
+              "count": 4,
+              "startSeconds": 16,
+              "intervalSeconds": 1.5,
+              "spawnId": 2,
+              "unitId": 91123,
+              "id": "entry-15",
+              "unitGroupId": "unit-group-6"
+            },
+            {
+              "count": 4,
+              "startSeconds": 2.5,
+              "intervalSeconds": 24.5,
+              "unitId": 91123,
+              "spawnId": 4,
+              "unitGroupId": "unit-group-6",
+              "id": "entry-16"
+            }
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2",
+            "entry-15",
+            "entry-1",
+            "entry-3",
+            "entry-4"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 33,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "Wave": 8,
+          "HealthCoefficient": 1.8,
+          "AttackCoefficient": 1.6,
+          "StartSliver": 9,
+          "CommerceSliver": 16,
+          "WaveReward": [
+            [
+              2001,
+              6810
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "RefreshSoldierKind": [],
+          "SpawnTimeline": [
+            {
+              "count": 4,
+              "startSeconds": 14.5,
+              "intervalSeconds": 5,
+              "spawnId": 2,
+              "unitId": 91162,
+              "id": "entry-1",
+              "unitGroupId": "unit-group-4"
+            },
+            {
+              "count": 5,
+              "startSeconds": 80,
+              "intervalSeconds": 6,
+              "spawnId": 3,
+              "unitId": 91150,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5"
+            },
+            {
+              "count": 4,
+              "startSeconds": 11.5,
+              "intervalSeconds": 2.5,
+              "spawnId": 8,
+              "unitId": 100801,
+              "id": "entry-3"
+            },
+            {
+              "count": 6,
+              "startSeconds": 24,
+              "intervalSeconds": 2,
+              "spawnId": 3,
+              "unitId": 91180,
+              "id": "entry-4",
+              "unitGroupId": "unit-group-1"
+            },
+            {
+              "count": 3,
+              "startSeconds": 5,
+              "intervalSeconds": 3.5,
+              "spawnId": 7,
+              "unitId": 91010,
+              "id": "entry-5"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0,
+              "intervalSeconds": 1,
+              "spawnId": 1,
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3"
+            },
+            {
+              "count": 5,
+              "startSeconds": 14,
+              "intervalSeconds": 2,
+              "unitId": 91182,
+              "spawnId": 6,
+              "unitGroupId": "unit-group-3",
+              "id": "entry-12"
+            },
+            {
+              "count": 4,
+              "startSeconds": 95,
+              "intervalSeconds": 3,
+              "unitId": 91162,
+              "spawnId": 9,
+              "unitGroupId": "unit-group-4",
+              "id": "entry-13"
+            },
+            {
+              "count": 5,
+              "startSeconds": 24,
+              "intervalSeconds": 1.5,
+              "unitId": 91150,
+              "spawnId": 5,
+              "unitGroupId": "unit-group-5",
+              "id": "entry-14"
+            },
+            {
+              "count": 4,
+              "startSeconds": 14,
+              "intervalSeconds": 4.5,
+              "spawnId": 2,
+              "unitId": 91123,
+              "id": "entry-15",
+              "unitGroupId": "unit-group-6"
+            },
+            {
+              "count": 4,
+              "startSeconds": 2.5,
+              "intervalSeconds": 24,
+              "unitId": 91123,
+              "spawnId": 4,
+              "unitGroupId": "unit-group-6",
+              "id": "entry-16"
+            }
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2",
+            "entry-15",
+            "entry-1",
+            "entry-3",
+            "entry-4",
+            "entry-5"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 39,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "Wave": 9,
+          "HealthCoefficient": 1.9,
+          "AttackCoefficient": 1.7,
+          "StartSliver": 10,
+          "CommerceSliver": 16,
+          "WaveReward": [
+            [
+              2001,
+              7310
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "RefreshSoldierKind": [],
+          "SpawnTimeline": [
+            {
+              "count": 4,
+              "startSeconds": 14.5,
+              "intervalSeconds": 1.5,
+              "spawnId": 2,
+              "unitId": 91162,
+              "id": "entry-1",
+              "unitGroupId": "unit-group-4"
+            },
+            {
+              "count": 10,
+              "startSeconds": 50,
+              "intervalSeconds": 6,
+              "spawnId": 3,
+              "unitId": 91150,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5"
+            },
+            {
+              "count": 4,
+              "startSeconds": 20.5,
+              "intervalSeconds": 2.5,
+              "spawnId": 8,
+              "unitId": 100801,
+              "id": "entry-3"
+            },
+            {
+              "count": 6,
+              "startSeconds": 1,
+              "intervalSeconds": 2,
+              "spawnId": 3,
+              "unitId": 91180,
+              "id": "entry-4",
+              "unitGroupId": "unit-group-1"
+            },
+            {
+              "count": 3,
+              "startSeconds": 6,
+              "intervalSeconds": 3.5,
+              "spawnId": 7,
+              "unitId": 91010,
+              "id": "entry-5"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0,
+              "intervalSeconds": 3,
+              "spawnId": 1,
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3"
+            },
+            {
+              "count": 5,
+              "startSeconds": 12,
+              "intervalSeconds": 2,
+              "unitId": 91182,
+              "spawnId": 6,
+              "unitGroupId": "unit-group-3",
+              "id": "entry-12"
+            },
+            {
+              "count": 4,
+              "startSeconds": 101,
+              "intervalSeconds": 1,
+              "unitId": 91162,
+              "spawnId": 9,
+              "unitGroupId": "unit-group-4",
+              "id": "entry-13"
+            },
+            {
+              "count": 5,
+              "startSeconds": 22,
+              "intervalSeconds": 1.5,
+              "unitId": 91150,
+              "spawnId": 5,
+              "unitGroupId": "unit-group-5",
+              "id": "entry-14"
+            },
+            {
+              "count": 4,
+              "startSeconds": 14,
+              "intervalSeconds": 3,
+              "spawnId": 2,
+              "unitId": 91123,
+              "id": "entry-15",
+              "unitGroupId": "unit-group-6"
+            },
+            {
+              "count": 4,
+              "startSeconds": 2.5,
+              "intervalSeconds": 23.5,
+              "unitId": 91123,
+              "spawnId": 4,
+              "unitGroupId": "unit-group-6",
+              "id": "entry-16"
+            }
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2",
+            "entry-15",
+            "entry-1",
+            "entry-3",
+            "entry-4",
+            "entry-5"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 45,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "Wave": 10,
+          "HealthCoefficient": 1.9,
+          "AttackCoefficient": 1.7,
+          "StartSliver": 11,
+          "CommerceSliver": 16,
+          "WaveReward": [
+            [
+              2001,
+              7840
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "RefreshSoldierKind": [],
+          "SpawnTimeline": [
+            {
+              "count": 4,
+              "startSeconds": 99.5,
+              "intervalSeconds": 1.5,
+              "spawnId": 2,
+              "unitId": 91162,
+              "id": "entry-1",
+              "unitGroupId": "unit-group-4"
+            },
+            {
+              "count": 10,
+              "startSeconds": 50,
+              "intervalSeconds": 6,
+              "spawnId": 3,
+              "unitId": 91150,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5"
+            },
+            {
+              "count": 4,
+              "startSeconds": 87.5,
+              "intervalSeconds": 2.5,
+              "spawnId": 8,
+              "unitId": 100801,
+              "id": "entry-3"
+            },
+            {
+              "count": 6,
+              "startSeconds": 62.5,
+              "intervalSeconds": 2,
+              "spawnId": 3,
+              "unitId": 91180,
+              "id": "entry-4",
+              "unitGroupId": "unit-group-1"
+            },
+            {
+              "count": 3,
+              "startSeconds": 4.5,
+              "intervalSeconds": 1.5,
+              "spawnId": 7,
+              "unitId": 91010,
+              "id": "entry-5"
+            },
+            {
+              "count": 1,
+              "startSeconds": 101.5,
+              "intervalSeconds": 2,
+              "spawnId": 13,
+              "unitId": 91071,
+              "id": "entry-8"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0,
+              "intervalSeconds": 11.5,
+              "spawnId": 1,
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3"
+            },
+            {
+              "count": 10,
+              "startSeconds": 35.5,
+              "intervalSeconds": 0.5,
+              "unitId": 91182,
+              "spawnId": 6,
+              "unitGroupId": "unit-group-3",
+              "id": "entry-12"
+            },
+            {
+              "count": 4,
+              "startSeconds": 8,
+              "intervalSeconds": 0.5,
+              "unitId": 91162,
+              "spawnId": 9,
+              "unitGroupId": "unit-group-4",
+              "id": "entry-13"
+            },
+            {
+              "count": 10,
+              "startSeconds": 9.5,
+              "intervalSeconds": 0.5,
+              "unitId": 91150,
+              "spawnId": 5,
+              "unitGroupId": "unit-group-5",
+              "id": "entry-14"
+            },
+            {
+              "count": 4,
+              "startSeconds": 2.5,
+              "intervalSeconds": 1,
+              "spawnId": 2,
+              "unitId": 91123,
+              "id": "entry-15",
+              "unitGroupId": "unit-group-6"
+            },
+            {
+              "count": 4,
+              "startSeconds": 2.5,
+              "intervalSeconds": 15,
+              "unitId": 91123,
+              "spawnId": 4,
+              "unitGroupId": "unit-group-6",
+              "id": "entry-16"
+            },
+            {
+              "count": 1,
+              "startSeconds": 10.5,
+              "intervalSeconds": 35,
+              "spawnId": 5,
+              "unitId": 101719,
+              "id": "entry-6",
+              "unitGroupId": "unit-group-2",
+              "editorManualTiming": true
+            },
+            {
+              "count": 1,
+              "startSeconds": 0.5,
+              "intervalSeconds": 0.5,
+              "unitId": 101719,
+              "spawnId": 1,
+              "unitGroupId": "unit-group-2",
+              "inheritSpawnTiming": [
+                "startSeconds",
+                "intervalSeconds"
+              ],
+              "id": "entry-7"
+            }
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2",
+            "entry-15",
+            "entry-1",
+            "entry-3",
+            "entry-4",
+            "entry-5",
+            "entry-8"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 50,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              14,
+              40
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "Wave": 11,
+          "HealthCoefficient": 2.1,
+          "AttackCoefficient": 1.9,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "WaveReward": [
+            [
+              2001,
+              3790
+            ],
+            [
+              2004,
+              5
+            ]
+          ],
+          "RefreshSoldierKind": [],
+          "SpawnTimeline": [
+            {
+              "count": 6,
+              "startSeconds": 69.5,
+              "intervalSeconds": 1.5,
+              "spawnId": 2,
+              "unitId": 91162,
+              "id": "entry-1",
+              "unitGroupId": "unit-group-4"
+            },
+            {
+              "count": 10,
+              "startSeconds": 0.5,
+              "intervalSeconds": 1.5,
+              "spawnId": 1,
+              "unitId": 91150,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5"
+            },
+            {
+              "count": 8,
+              "startSeconds": 59.5,
+              "intervalSeconds": 2.5,
+              "spawnId": 8,
+              "unitId": 100801,
+              "id": "entry-3"
+            },
+            {
+              "count": 6,
+              "startSeconds": 97.5,
+              "intervalSeconds": 1.5,
+              "spawnId": 3,
+              "unitId": 91180,
+              "id": "entry-4",
+              "unitGroupId": "unit-group-1"
+            },
+            {
+              "count": 4,
+              "startSeconds": 13.5,
+              "intervalSeconds": 21.5,
+              "spawnId": 7,
+              "unitId": 91010,
+              "id": "entry-5"
+            },
+            {
+              "count": 1,
+              "startSeconds": 104.5,
+              "intervalSeconds": 2,
+              "spawnId": 13,
+              "unitId": 91071,
+              "id": "entry-8"
+            },
+            {
+              "count": 10,
+              "startSeconds": 41,
+              "intervalSeconds": 7,
+              "spawnId": 3,
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3"
+            },
+            {
+              "count": 6,
+              "startSeconds": 4,
+              "intervalSeconds": 2,
+              "unitId": 91180,
+              "spawnId": 4,
+              "unitGroupId": "unit-group-1",
+              "id": "entry-10"
+            },
+            {
+              "count": 10,
+              "startSeconds": 68,
+              "intervalSeconds": 1,
+              "unitId": 91182,
+              "spawnId": 5,
+              "unitGroupId": "unit-group-3",
+              "id": "entry-12"
+            },
+            {
+              "count": 6,
+              "startSeconds": 52,
+              "intervalSeconds": 0.5,
+              "unitId": 91162,
+              "spawnId": 9,
+              "unitGroupId": "unit-group-4",
+              "id": "entry-13"
+            },
+            {
+              "count": 10,
+              "startSeconds": 16,
+              "intervalSeconds": 0.5,
+              "unitId": 91150,
+              "spawnId": 6,
+              "unitGroupId": "unit-group-5",
+              "id": "entry-14"
+            },
+            {
+              "count": 6,
+              "startSeconds": 65,
+              "intervalSeconds": 0.5,
+              "spawnId": 2,
+              "unitId": 91123,
+              "id": "entry-15",
+              "unitGroupId": "unit-group-6"
+            },
+            {
+              "count": 4,
+              "startSeconds": 1.5,
+              "intervalSeconds": 6.5,
+              "unitId": 91123,
+              "spawnId": 4,
+              "unitGroupId": "unit-group-6",
+              "id": "entry-16"
+            }
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2",
+            "entry-15",
+            "entry-1",
+            "entry-3",
+            "entry-4",
+            "entry-5",
+            "entry-8"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 50,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              21,
+              77
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "Wave": 12,
+          "HealthCoefficient": 2.1,
+          "AttackCoefficient": 1.9,
+          "StartSliver": 6,
+          "CommerceSliver": 4,
+          "RefreshSoldierKind": [],
           "WaveReward": [
             [
               2001,
@@ -19683,455 +20959,168 @@
           ],
           "SpawnTimeline": [
             {
-              "id": "legacy-1-0",
-              "spawnId": 1,
-              "unitId": 101710,
-              "count": 10,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "Wave": 2,
-          "HealthCoefficient": 1.2,
-          "AttackCoefficient": 1,
-          "StartSliver": 3,
-          "CommerceSliver": 4,
-          "RefreshSoldierKind": [
-            "1#101710,5",
-            "2#101712,3",
-            "3#101710,5"
-          ],
-          "WaveReward": [
-            [
-              2001,
-              4160
-            ],
-            [
-              2004,
-              5
-            ]
-          ],
-          "SpawnTimeline": [
-            {
-              "id": "legacy-1-0",
-              "spawnId": 1,
-              "unitId": 101710,
-              "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-2-0",
-              "spawnId": 2,
-              "unitId": 101712,
-              "count": 3,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-3-0",
-              "spawnId": 3,
-              "unitId": 101710,
-              "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "Wave": 3,
-          "HealthCoefficient": 1.5,
-          "AttackCoefficient": 1.3,
-          "StartSliver": 4,
-          "CommerceSliver": 4,
-          "RefreshSoldierKind": [
-            "1#101710,7",
-            "2#101717,4",
-            "3#101710,5"
-          ],
-          "WaveReward": [
-            [
-              2001,
-              4560
-            ],
-            [
-              2004,
-              5
-            ]
-          ],
-          "SpawnTimeline": [
-            {
-              "id": "legacy-1-0",
-              "spawnId": 1,
-              "unitId": 101710,
-              "count": 7,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-2-0",
-              "spawnId": 2,
-              "unitId": 101717,
-              "count": 4,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-3-0",
-              "spawnId": 3,
-              "unitId": 101710,
-              "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "Wave": 4,
-          "HealthCoefficient": 1.5,
-          "AttackCoefficient": 1.3,
-          "StartSliver": 5,
-          "CommerceSliver": 4,
-          "RefreshSoldierKind": [
-            "1#101710,5",
-            "2#101718,3",
-            "3#101711,3"
-          ],
-          "WaveReward": [
-            [
-              2001,
-              4970
-            ],
-            [
-              2004,
-              5
-            ]
-          ],
-          "SpawnTimeline": [
-            {
-              "id": "legacy-1-0",
-              "spawnId": 1,
-              "unitId": 101710,
-              "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-2-0",
-              "spawnId": 2,
-              "unitId": 101718,
-              "count": 3,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-3-0",
-              "spawnId": 3,
-              "unitId": 101711,
-              "count": 3,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "Wave": 5,
-          "HealthCoefficient": 1.6,
-          "AttackCoefficient": 1.4,
-          "StartSliver": 6,
-          "CommerceSliver": 8,
-          "RefreshSoldierKind": [
-            "1#101719,1",
-            "2#101710,7",
-            "3#91162,6"
-          ],
-          "WaveReward": [
-            [
-              2001,
-              5410
-            ],
-            [
-              2004,
-              5
-            ]
-          ],
-          "SpawnTimeline": [
-            {
-              "id": "legacy-1-0",
-              "spawnId": 1,
-              "unitId": 101719,
-              "count": 1,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-2-0",
-              "spawnId": 2,
-              "unitId": 101710,
-              "count": 7,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-3-0",
-              "spawnId": 3,
-              "unitId": 91162,
               "count": 6,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "Wave": 6,
-          "HealthCoefficient": 1.6,
-          "AttackCoefficient": 1.4,
-          "StartSliver": 7,
-          "CommerceSliver": 8,
-          "RefreshSoldierKind": [
-            "1#91162,10",
-            "2#101718,4",
-            "3#101711,3"
-          ],
-          "WaveReward": [
-            [
-              2001,
-              5860
-            ],
-            [
-              2004,
-              5
-            ]
-          ],
-          "SpawnTimeline": [
-            {
-              "id": "legacy-1-0",
-              "spawnId": 1,
+              "startSeconds": 87.5,
+              "intervalSeconds": 1.5,
+              "spawnId": 2,
               "unitId": 91162,
+              "id": "entry-1",
+              "unitGroupId": "unit-group-4"
+            },
+            {
               "count": 10,
               "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-2-0",
-              "spawnId": 2,
-              "unitId": 101718,
-              "count": 4,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-3-0",
-              "spawnId": 3,
-              "unitId": 101711,
-              "count": 3,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "Wave": 7,
-          "HealthCoefficient": 1.8,
-          "AttackCoefficient": 1.6,
-          "StartSliver": 8,
-          "CommerceSliver": 8,
-          "RefreshSoldierKind": [
-            "1#101712,5",
-            "2#101717,8",
-            "3#101718,3"
-          ],
-          "WaveReward": [
-            [
-              2001,
-              6320
-            ],
-            [
-              2004,
-              5
-            ]
-          ],
-          "SpawnTimeline": [
-            {
-              "id": "legacy-1-0",
+              "intervalSeconds": 1,
               "spawnId": 1,
-              "unitId": 101712,
-              "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "unitId": 91150,
+              "id": "entry-2",
+              "unitGroupId": "unit-group-5"
             },
             {
-              "id": "legacy-2-0",
-              "spawnId": 2,
-              "unitId": 101717,
               "count": 8,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "startSeconds": 50,
+              "intervalSeconds": 0.5,
+              "spawnId": 8,
+              "unitId": 100801,
+              "id": "entry-3"
             },
             {
-              "id": "legacy-3-0",
-              "spawnId": 3,
-              "unitId": 101718,
-              "count": 3,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "Wave": 8,
-          "HealthCoefficient": 1.8,
-          "AttackCoefficient": 1.6,
-          "StartSliver": 9,
-          "CommerceSliver": 16,
-          "RefreshSoldierKind": [
-            "1#91162,10",
-            "2#101712,5",
-            "3#101717,5"
-          ],
-          "WaveReward": [
-            [
-              2001,
-              6810
-            ],
-            [
-              2004,
-              5
-            ]
-          ],
-          "SpawnTimeline": [
-            {
-              "id": "legacy-1-0",
-              "spawnId": 1,
-              "unitId": 91162,
-              "count": 10,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-2-0",
-              "spawnId": 2,
-              "unitId": 101712,
-              "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-3-0",
-              "spawnId": 3,
-              "unitId": 101717,
-              "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "Wave": 9,
-          "HealthCoefficient": 1.9,
-          "AttackCoefficient": 1.7,
-          "StartSliver": 10,
-          "CommerceSliver": 16,
-          "RefreshSoldierKind": [
-            "1#91162,8",
-            "2#101711,7",
-            "3#101718,5"
-          ],
-          "WaveReward": [
-            [
-              2001,
-              7310
-            ],
-            [
-              2004,
-              5
-            ]
-          ],
-          "SpawnTimeline": [
-            {
-              "id": "legacy-1-0",
-              "spawnId": 1,
-              "unitId": 91162,
               "count": 8,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-2-0",
-              "spawnId": 2,
-              "unitId": 101711,
-              "count": 7,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-3-0",
+              "startSeconds": 36.5,
+              "intervalSeconds": 1.5,
               "spawnId": 3,
-              "unitId": 101718,
-              "count": 5,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            }
-          ]
-        },
-        {
-          "id": 3,
-          "Wave": 10,
-          "HealthCoefficient": 1.9,
-          "AttackCoefficient": 1.7,
-          "StartSliver": 11,
-          "CommerceSliver": 16,
-          "RefreshSoldierKind": [
-            "1#101713,1",
-            "2#101716,9",
-            "3#101718,2"
-          ],
-          "WaveReward": [
-            [
-              2001,
-              7840
-            ],
-            [
-              2004,
-              5
-            ]
-          ],
-          "SpawnTimeline": [
+              "unitId": 91180,
+              "id": "entry-4",
+              "unitGroupId": "unit-group-1"
+            },
             {
-              "id": "legacy-1-0",
-              "spawnId": 1,
-              "unitId": 101713,
+              "count": 8,
+              "startSeconds": 82.5,
+              "intervalSeconds": 2.5,
+              "spawnId": 7,
+              "unitId": 91010,
+              "id": "entry-5"
+            },
+            {
               "count": 1,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
-            },
-            {
-              "id": "legacy-2-0",
+              "startSeconds": 36,
+              "intervalSeconds": 0.5,
               "spawnId": 2,
-              "unitId": 101716,
-              "count": 9,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "unitId": 101719,
+              "id": "entry-6",
+              "unitGroupId": "unit-group-2"
             },
             {
-              "id": "legacy-3-0",
+              "count": 1,
+              "startSeconds": 40.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 1,
+              "unitId": 91164,
+              "id": "entry-7"
+            },
+            {
+              "count": 3,
+              "startSeconds": 10.5,
+              "intervalSeconds": 2,
+              "spawnId": 13,
+              "unitId": 91071,
+              "id": "entry-8"
+            },
+            {
+              "count": 10,
+              "startSeconds": 1.5,
+              "intervalSeconds": 11.5,
               "spawnId": 3,
-              "unitId": 101718,
-              "count": 2,
-              "startSeconds": 0.5,
-              "intervalSeconds": 0.5
+              "unitId": 91182,
+              "id": "entry-9",
+              "unitGroupId": "unit-group-3"
+            },
+            {
+              "count": 8,
+              "startSeconds": 86,
+              "intervalSeconds": 2,
+              "unitId": 91180,
+              "spawnId": 4,
+              "unitGroupId": "unit-group-1",
+              "id": "entry-10"
+            },
+            {
+              "count": 1,
+              "startSeconds": 105,
+              "intervalSeconds": 0.5,
+              "unitId": 101719,
+              "spawnId": 5,
+              "unitGroupId": "unit-group-2",
+              "id": "entry-11"
+            },
+            {
+              "count": 10,
+              "startSeconds": 48,
+              "intervalSeconds": 1,
+              "unitId": 91182,
+              "spawnId": 5,
+              "unitGroupId": "unit-group-3",
+              "id": "entry-12"
+            },
+            {
+              "count": 6,
+              "startSeconds": 12,
+              "intervalSeconds": 0.5,
+              "unitId": 91162,
+              "spawnId": 9,
+              "unitGroupId": "unit-group-4",
+              "id": "entry-13"
+            },
+            {
+              "count": 10,
+              "startSeconds": 52.5,
+              "intervalSeconds": 0.5,
+              "unitId": 91150,
+              "spawnId": 6,
+              "unitGroupId": "unit-group-5",
+              "id": "entry-14"
+            },
+            {
+              "count": 6,
+              "startSeconds": 54.5,
+              "intervalSeconds": 0.5,
+              "spawnId": 2,
+              "unitId": 91123,
+              "id": "entry-15",
+              "unitGroupId": "unit-group-6"
+            },
+            {
+              "count": 4,
+              "startSeconds": 2.5,
+              "intervalSeconds": 0.5,
+              "unitId": 91123,
+              "spawnId": 4,
+              "unitGroupId": "unit-group-6",
+              "id": "entry-16"
             }
-          ]
+          ],
+          "editorUnitOrder": [
+            "entry-9",
+            "entry-2",
+            "entry-15",
+            "entry-1",
+            "entry-3",
+            "entry-4",
+            "entry-5",
+            "entry-8",
+            "entry-6",
+            "entry-7"
+          ],
+          "editorTimingBalance": {
+            "peakCap": 50,
+            "lastSpawnLimit": null,
+            "defeatSeconds": 2,
+            "pushPeaks": [
+              null,
+              null,
+              null
+            ]
+          }
         }
       ],
       "EnvironmentBiome": "desert",
@@ -26028,74 +27017,92 @@
       ],
       "HomeLevel1Unlock": [
         [
-          2,
-          3
+          6,
+          22
+        ],
+        [
+          6,
+          23
         ],
         [
           2,
-          6
+          24
         ],
         [
           2,
-          7
+          25
+        ],
+        [
+          2,
+          26
+        ],
+        [
+          2,
+          27
+        ],
+        [
+          2,
+          28
         ],
         [
           3,
-          10
-        ],
-        [
-          4,
-          13
-        ],
-        [
-          4,
-          14
-        ]
-      ],
-      "HomeLevel2Unlock": [
-        [
-          2,
-          8
+          29
         ],
         [
           3,
-          9
+          30
+        ],
+        [
+          3,
+          31
         ],
         [
           4,
-          12
+          32
+        ],
+        [
+          4,
+          33
+        ],
+        [
+          4,
+          34
+        ],
+        [
+          4,
+          35
+        ],
+        [
+          4,
+          36
+        ],
+        [
+          4,
+          37
+        ],
+        [
+          4,
+          38
+        ],
+        [
+          4,
+          39
+        ],
+        [
+          2,
+          40
         ],
         [
           5,
-          16
+          41
         ],
         [
-          6,
-          19
+          5,
+          42
         ]
       ],
-      "HomeLevel3Unlock": [
-        [
-          2,
-          4
-        ],
-        [
-          2,
-          5
-        ],
-        [
-          3,
-          11
-        ],
-        [
-          4,
-          15
-        ],
-        [
-          6,
-          20
-        ]
-      ],
+      "HomeLevel2Unlock": [],
+      "HomeLevel3Unlock": [],
       "ChallengeReward": [
         [
           [
@@ -26916,73 +27923,111 @@
       "HomeLevel1Unlock": [
         [
           2,
-          2
+          24
         ],
         [
           2,
-          6
+          25
         ],
-        [
-          3,
-          9
-        ],
-        [
-          4,
-          13
-        ],
-        [
-          4,
-          14
-        ]
-      ],
-      "HomeLevel2Unlock": [
         [
           2,
-          7
+          26
+        ],
+        [
+          2,
+          27
+        ],
+        [
+          2,
+          28
         ],
         [
           3,
-          8
+          29
+        ],
+        [
+          3,
+          30
+        ],
+        [
+          3,
+          31
         ],
         [
           4,
-          11
+          32
         ],
         [
           4,
-          12
+          33
+        ],
+        [
+          4,
+          34
+        ],
+        [
+          4,
+          35
+        ],
+        [
+          4,
+          36
+        ],
+        [
+          4,
+          37
+        ],
+        [
+          4,
+          38
+        ],
+        [
+          4,
+          39
+        ],
+        [
+          2,
+          40
         ],
         [
           5,
-          16
+          41
+        ],
+        [
+          5,
+          42
         ],
         [
           6,
-          19
+          43
         ],
         [
           6,
-          20
-        ]
-      ],
-      "HomeLevel3Unlock": [
-        [
-          2,
-          4
+          44
         ],
         [
-          2,
-          5
+          6,
+          45
         ],
         [
-          3,
-          10
+          6,
+          46
         ],
         [
           4,
-          15
+          47
+        ],
+        [
+          2,
+          48
+        ],
+        [
+          2,
+          49
         ]
       ],
+      "HomeLevel2Unlock": [],
+      "HomeLevel3Unlock": [],
       "ChallengeReward": [
         [
           [
@@ -40196,7 +41241,7 @@
       "AttackInterval": 1,
       "AttackRange": 50,
       "SearchRange": 220,
-      "Speed": 102,
+      "Speed": 68,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -41148,7 +42193,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-dust",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
+      "AttackInterval": 0.3346613508483993,
       "SearchRange": 0,
       "Speed": 85,
       "BuildingCross": 0,
@@ -41163,11 +42208,18 @@
       "MonsterSource": "monster2/Fairy_Dust",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
+      "AttackDamage": 5,
       "AttackRange": 200,
       "Guide": {
         "description": "[[loc:data.unitguide.91071.description]]",
         "lore": "[[loc:data.unitguide.91071.lore]]"
+      },
+      "EnemySkills": {
+        "haste": false
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "91072": {
@@ -43582,7 +44634,7 @@
       "AttackInterval": 1.4519573656463354,
       "AttackRange": 50,
       "SearchRange": 220,
-      "Speed": 89.72222222,
+      "Speed": 88,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -43794,7 +44846,25 @@
       "MonsterSource": "monster3/Reaper_SunTombRegent",
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90002,
-      "IsBoss": true
+      "IsBoss": true,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "splash",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.15
+          }
+        }
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 15,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 5
+        }
+      }
     },
     "91165": {
       "ID": 91165,
@@ -44185,8 +45255,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/evilmass-dagger",
       "AttackType": 1,
       "Health": 120,
-      "AttackDamage": 12.5,
-      "AttackInterval": 0.67,
+      "AttackDamage": 9.5,
+      "AttackInterval": 1.3902438380130906,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 85,
@@ -44204,7 +45274,10 @@
       },
       "MonsterSource": "monster3/Evilmass_Dagger",
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90002
+      "BehaviorTemplate": 90002,
+      "EnemyTargeting": {
+        "mode": "hero"
+      }
     },
     "91181": {
       "ID": 91181,
@@ -51037,7 +52110,7 @@
       "AttackInterval": 0.52,
       "AttackRange": 200,
       "SearchRange": 220,
-      "Speed": 103.88888888,
+      "Speed": 65,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -55445,7 +56518,7 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
+      "AttackDamage": 5,
       "AttackRange": 200,
       "Guide": {
         "description": "[[loc:data.unitguide.91071.description]]",
@@ -55473,7 +56546,7 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
+      "AttackDamage": 5,
       "AttackRange": 200,
       "Guide": {
         "description": "[[loc:data.unitguide.91071.description]]",
@@ -55501,7 +56574,7 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
+      "AttackDamage": 5,
       "AttackRange": 200,
       "Guide": {
         "description": "[[loc:data.unitguide.91071.description]]",
@@ -55529,7 +56602,7 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
+      "AttackDamage": 5,
       "AttackRange": 200,
       "Guide": {
         "description": "[[loc:data.unitguide.91071.description]]",
@@ -55557,7 +56630,7 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
+      "AttackDamage": 5,
       "AttackRange": 200,
       "Guide": {
         "description": "[[loc:data.unitguide.91071.description]]",
@@ -62552,9 +63625,9 @@
       "Health": 43.2,
       "AttackDamage": 4.5,
       "AttackInterval": 1.1,
-      "AttackRange": 50,
-      "SearchRange": 220,
-      "Speed": 112.2,
+      "AttackRange": 250,
+      "SearchRange": 0,
+      "Speed": 96,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -62568,7 +63641,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "splash",
+        "onHit": {
+          "slow": {
+            "percent": 0.3,
+            "duration": 3
+          }
+        }
+      }
     },
     "100673": {
       "ID": 100673,
@@ -66035,9 +67118,9 @@
       "Health": 43.2,
       "AttackDamage": 4.75,
       "AttackInterval": 1,
-      "AttackRange": 50,
-      "SearchRange": 220,
-      "Speed": 117.3,
+      "AttackRange": 350,
+      "SearchRange": 0,
+      "Speed": 110,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -66051,7 +67134,11 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "chain"
+      }
     },
     "100802": {
       "ID": 100802,
@@ -66197,8 +67284,8 @@
       "Health": 43.2,
       "AttackDamage": 4.5,
       "AttackInterval": 1.1,
-      "AttackRange": 50,
-      "SearchRange": 220,
+      "AttackRange": 350,
+      "SearchRange": 0,
       "Speed": 112.2,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -66213,7 +67300,11 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
+      }
     },
     "100808": {
       "ID": 100808,
@@ -66306,7 +67397,7 @@
       "AttackInterval": 1,
       "AttackRange": 50,
       "SearchRange": 220,
-      "Speed": 117.3,
+      "Speed": 78,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -66506,7 +67597,7 @@
       "AttackInterval": 0.32,
       "AttackRange": 200,
       "SearchRange": 220,
-      "Speed": 103.88888888,
+      "Speed": 62,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -66596,7 +67687,7 @@
       "AttackInterval": 0.67,
       "AttackRange": 50,
       "SearchRange": 220,
-      "Speed": 85,
+      "Speed": 65,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -66729,7 +67820,7 @@
       "AttackInterval": 2.0172072832218797,
       "AttackRange": 50,
       "SearchRange": 220,
-      "Speed": 117.3,
+      "Speed": 88,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -66949,7 +68040,7 @@
       "AttackInterval": 0.85,
       "AttackRange": 50,
       "SearchRange": 220,
-      "Speed": 86.7,
+      "Speed": 73,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -66985,7 +68076,7 @@
       "AttackInterval": 0.9,
       "AttackRange": 50,
       "SearchRange": 220,
-      "Speed": 91.8,
+      "Speed": 87,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -68014,12 +69105,12 @@
       "prefab": "Monster3_Reaper_RelicCantor",
       "loadIcon": "@icon/icons/monster-roster/monster3/reaper-reliccantor",
       "AttackType": 1,
-      "Health": 98.18181818,
-      "AttackDamage": 13.02083333,
-      "AttackInterval": 0.63277777,
-      "AttackRange": 50,
-      "SearchRange": 220,
-      "Speed": 76.05263158,
+      "Health": 250,
+      "AttackDamage": 25,
+      "AttackInterval": 0.7300000000000001,
+      "AttackRange": 300,
+      "SearchRange": 0,
+      "Speed": 78,
       "BuildingCross": 1,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -68032,7 +69123,21 @@
         "description": "[[loc:data.unitguide.91163.description]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90002
+      "BehaviorTemplate": 90002,
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "piercing",
+        "pierceTargets": 3
+      },
+      "EnemySkills": {
+        "weaken": {
+          "interval": 15,
+          "percent": 20,
+          "radius": 300,
+          "maxTargets": 10,
+          "duration": 5
+        }
+      }
     },
     "101720": {
       "ID": 101720,
@@ -69292,7 +70397,7 @@
       "AttackInterval": 1.1,
       "AttackRange": 50,
       "SearchRange": 220,
-      "Speed": 138.6,
+      "Speed": 82,
       "BuildingCross": 0,
       "DeathAni": 1.5,
       "AttackPriority": [
@@ -70034,7 +71139,10 @@
         "lore": "[[loc:data.unitguide.91180.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90002
+      "BehaviorTemplate": 90002,
+      "EnemyTargeting": {
+        "mode": "hero"
+      }
     },
     "101801": {
       "ID": 101801,
@@ -70061,7 +71169,10 @@
         "lore": "[[loc:data.unitguide.91180.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90002
+      "BehaviorTemplate": 90002,
+      "EnemyTargeting": {
+        "mode": "hero"
+      }
     },
     "101802": {
       "ID": 101802,
@@ -70088,7 +71199,10 @@
         "lore": "[[loc:data.unitguide.91180.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90002
+      "BehaviorTemplate": 90002,
+      "EnemyTargeting": {
+        "mode": "hero"
+      }
     },
     "101803": {
       "ID": 101803,
@@ -70115,7 +71229,10 @@
         "lore": "[[loc:data.unitguide.91180.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90002
+      "BehaviorTemplate": 90002,
+      "EnemyTargeting": {
+        "mode": "hero"
+      }
     },
     "101804": {
       "ID": 101804,
@@ -70142,7 +71259,10 @@
         "lore": "[[loc:data.unitguide.91180.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90002
+      "BehaviorTemplate": 90002,
+      "EnemyTargeting": {
+        "mode": "hero"
+      }
     },
     "101805": {
       "ID": 101805,
@@ -89525,7 +90645,7 @@
             "Health": 54,
             "AttackDamage": 6.5,
             "AttackInterval": 0.52,
-            "Speed": 103.88888888,
+            "Speed": 65,
             "AttackRange": 200
           },
           "visual": {},
@@ -95401,10 +96521,13 @@
             "Health": 43.2,
             "AttackDamage": 4.5,
             "AttackInterval": 1.1,
-            "Speed": 112.2
+            "Speed": 96,
+            "AttackRange": 250,
+            "SearchRange": 0
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "100673": {
           "baseId": 91123,
@@ -97207,10 +98330,13 @@
             "Health": 43.2,
             "AttackDamage": 4.75,
             "AttackInterval": 1,
-            "Speed": 117.3
+            "Speed": 110,
+            "AttackRange": 350,
+            "SearchRange": 0
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "100802": {
           "baseId": 91149,
@@ -97291,10 +98417,13 @@
             "Health": 43.2,
             "AttackDamage": 4.5,
             "AttackInterval": 1.1,
-            "Speed": 112.2
+            "Speed": 112.2,
+            "AttackRange": 350,
+            "SearchRange": 0
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "100808": {
           "baseId": 91150,
@@ -97347,10 +98476,11 @@
             "Health": 43.2,
             "AttackDamage": 4.75,
             "AttackInterval": 1,
-            "Speed": 117.3
+            "Speed": 78
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "101657": {
           "baseId": 91151,
@@ -97445,7 +98575,7 @@
             "Health": 54,
             "AttackDamage": 5.5,
             "AttackInterval": 0.32,
-            "Speed": 103.88888888
+            "Speed": 62
           },
           "visual": {},
           "fightingProfile": true,
@@ -97488,7 +98618,7 @@
             "Health": 72,
             "AttackDamage": 7,
             "AttackInterval": 0.67,
-            "Speed": 85
+            "Speed": 65
           },
           "visual": {},
           "fightingProfile": true,
@@ -97559,7 +98689,7 @@
             "Health": 43.2,
             "AttackDamage": 4.75,
             "AttackInterval": 2.0172072832218797,
-            "Speed": 117.3
+            "Speed": 88
           },
           "visual": {},
           "fightingProfile": true,
@@ -97672,7 +98802,7 @@
             "Health": 43.2,
             "AttackDamage": 5.25,
             "AttackInterval": 0.85,
-            "Speed": 86.7
+            "Speed": 73
           },
           "visual": {},
           "fightingProfile": true,
@@ -97687,7 +98817,7 @@
             "Health": 432,
             "AttackDamage": 21,
             "AttackInterval": 0.9,
-            "Speed": 91.8
+            "Speed": 87
           },
           "visual": {},
           "fightingProfile": true,
@@ -98231,13 +99361,17 @@
           "created": true,
           "role": "mystic",
           "stats": {
-            "Health": 98.18181818,
-            "AttackDamage": 13.02083333,
-            "AttackInterval": 0.63277777,
-            "Speed": 76.05263158
+            "Health": 250,
+            "AttackDamage": 25,
+            "AttackInterval": 0.7300000000000001,
+            "Speed": 78,
+            "AttackRange": 300,
+            "SearchRange": 0
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "enemyClass": "elite",
+          "omitted": []
         },
         "101720": {
           "baseId": 91164,
@@ -98906,10 +100040,11 @@
             "Health": 49.5,
             "AttackDamage": 5.4,
             "AttackInterval": 1.1,
-            "Speed": 138.6
+            "Speed": 82
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "101768": {
           "baseId": 91173,
@@ -102005,7 +103140,8 @@
             "AttackInterval": 1,
             "Speed": 102
           },
-          "referenceId": 91123
+          "referenceId": 91123,
+          "defaultProfileId": 100672
         },
         "91124": {
           "modelKey": "source:monster3/OrcSmasher_Berserker",
@@ -102499,7 +103635,8 @@
             "AttackInterval": 1,
             "Speed": 102
           },
-          "referenceId": 91149
+          "referenceId": 91149,
+          "defaultProfileId": 100801
         },
         "91150": {
           "modelKey": "source:monster3/Worm_Poison",
@@ -102518,7 +103655,8 @@
             "AttackInterval": 1,
             "Speed": 102
           },
-          "referenceId": 91150
+          "referenceId": 91150,
+          "defaultProfileId": 100807
         },
         "91151": {
           "modelKey": "source:monster1/Slime_Magma",
@@ -102771,7 +103909,8 @@
             "AttackInterval": 0.74444444,
             "Speed": 89.47368421
           },
-          "referenceId": 91163
+          "referenceId": 91163,
+          "defaultProfileId": 101719
         },
         "91164": {
           "name": "Sun-Tomb Regent",
@@ -103427,10 +104566,13 @@
       "enemy:101796:default": "elite",
       "enemy:101797:default": "elite",
       "enemy:101798:default": "elite",
-      "enemy:101799:default": "elite"
+      "enemy:101799:default": "elite",
+      "enemy:101719:default": "elite"
     },
     "projectileSpeeds": {
-      "enemy:101679:default": 300
+      "enemy:101679:default": 300,
+      "enemy:100672:default": 400,
+      "enemy:101719:default": 800
     },
     "animationSpeeds": {
       "ally:90001:level:2": 1.1,

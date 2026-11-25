@@ -15446,7 +15446,9 @@
       "impact": "",
       "trail": "trail:90947910-ade2-4c43-9fcb-a3c1d415642b",
       "trailColor": "#67ff3d",
-      "scale": 1.9
+      "scale": 1.9,
+      "launchOffsetX": 24,
+      "launchOffsetY": 11
     },
     "enemy:91172": {
       "set": "toon:projectile-14-ice",
@@ -15461,7 +15463,9 @@
       "launch": "",
       "impact": "",
       "trail": "trail:bb4d9c1e-b926-4023-9f10-a49134339dcd",
-      "trailColor": "#e485ff"
+      "trailColor": "#e485ff",
+      "launchOffsetX": 14,
+      "launchOffsetY": 4
     },
     "enemy:101679": {
       "set": "fantasy:fire-flight",
@@ -15471,6 +15475,50 @@
       "trail": "trail:bb4d9c1e-b926-4023-9f10-a49134339dcd",
       "scale": 0.55,
       "trailColor": "#ffc23d"
+    },
+    "enemy:91071": {
+      "set": "wall:2",
+      "flight": "wall:2",
+      "launch": "",
+      "impact": ""
+    },
+    "enemy:100801": {
+      "set": "spine-projectile:fly_57",
+      "flight": "spine-projectile:fly_57",
+      "launch": "",
+      "impact": "",
+      "trail": "trail:90947910-ade2-4c43-9fcb-a3c1d415642b",
+      "launchOffsetX": 17,
+      "launchOffsetY": 23
+    },
+    "enemy:100807": {
+      "set": "spine-projectile:fly_30",
+      "flight": "spine-projectile:fly_30",
+      "launch": "",
+      "impact": "",
+      "trail": "trail:90947910-ade2-4c43-9fcb-a3c1d415642b",
+      "trailColor": "#00ff2a",
+      "launchOffsetX": 21,
+      "launchOffsetY": 25
+    },
+    "enemy:100672": {
+      "set": "fantasy:earth-flight",
+      "flight": "fantasy:earth-flight",
+      "launch": "fantasy:earth-impact",
+      "impact": "fantasy:earth-impact",
+      "trail": "trail:08d16b37-823a-4fef-ba8d-95eefb2d3b04",
+      "trailColor": "#191f25",
+      "launchOffsetX": 24,
+      "launchOffsetY": 24,
+      "scale": 0.6
+    },
+    "enemy:101663": {
+      "set": "original:stone",
+      "flight": "original:stone",
+      "launch": "",
+      "impact": "",
+      "trail": "trail:08d16b37-823a-4fef-ba8d-95eefb2d3b04",
+      "scale": 0.8
     }
   },
   "heroArrowTiers": [
