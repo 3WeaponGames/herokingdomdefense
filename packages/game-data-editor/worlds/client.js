@@ -340,7 +340,14 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   if(state.tab!=='Buildings')return null;
   for(const marker of barracksSpawnMarkers().reverse())if(Math.hypot(marker.layout.position.x-p.x,marker.layout.position.y-p.y)<=13/state.zoom)return 'barracks-spawn:'+marker.building.id;
   const placements=previewBuildings().map(building=>({building,y:building.y})).concat(stage.specials.filter(offer=>offer.enabled!==false||state.selection.includes('special:'+offer.id)).map(offer=>({offer,y:offer.y}))).sort((a,b)=>BuildingLayers.rank(state.map,b.building&&b.building.renderAfter)-BuildingLayers.rank(state.map,a.building&&a.building.renderAfter)||a.y-b.y);
-  for(const item of placements){if(item.building){const building=item.building,records=artworkRecords(building),record=records[0];if(record&&record.step&&M.pointInPolygon(M.toLocal(building,p),record.step))return 'purchase:'+building.id;if(records.some(model=>buildingRenderer.hit(building,model,p,state.images,buildingRuntime()))||!record&&Math.hypot(building.x-p.x,building.y-p.y)<Math.max(radius,85*(building.scale||1)))return 'building:'+building.id;}else{const offer=item.offer;if(Math.hypot(offer.x-p.x,offer.y-p.y)<Math.max(radius,85*(offer.scale||1)))return 'special:'+offer.id;}}return null;
+  for(const {building,offer} of placements){
+   if(building){
+    const records=artworkRecords(building),record=records[0];
+    if(record&&record.step&&M.pointInPolygon(M.toBuildingLocal(building,p),record.step))return 'purchase:'+building.id;
+    if(records.some(model=>buildingRenderer.hit(building,model,p,state.images,buildingRuntime()))||!record&&Math.hypot(building.x-p.x,building.y-p.y)<Math.max(radius,85*(building.scale||1)))return 'building:'+building.id;
+   }else if(Math.hypot(offer.x-p.x,offer.y-p.y)<Math.max(radius,85*(offer.scale||1)))return 'special:'+offer.id;
+  }
+  return null;
  }
  function stageSelectionPoints(){const stage=values();if(state.tab==='Buildings')return previewBuildings().map(b=>({id:'building:'+b.id,point:b})).concat(stage.specials.filter(o=>o.enabled!==false||state.selection.includes('special:'+o.id)).map(o=>({id:'special:'+o.id,point:o})));if(state.tab==='Spawns')return [{id:'hero',point:stage.hero}].concat(stage.spawns.map(p=>({id:'spawn:'+p.id,point:p})),{id:'tasks-position',point:stageTaskPosition(stage)});if(state.tab==='Paths'){const graph=stage.graphs.find(g=>g.id===state.graph);return graph?graph.nodes.map(n=>({id:'node:'+n.id,point:n})):[];}return [];}
  function editableSelection(ids){

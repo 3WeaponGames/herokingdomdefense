@@ -61,8 +61,8 @@ function create(options){
  }
  function hit(building,record,point,images,runtime){
   if(!record)return false;
-  const origin=record.origin||building.origin||{x:0,y:0},p=M.toLocal(building,point);
-  p.x=origin.x+(building.flipX===true?-p.x:p.x);p.y+=origin.y;
+  const origin=record.origin||building.origin||{x:0,y:0},p=M.toBuildingLocal(building,point);
+  p.x+=origin.x;p.y+=origin.y;
   const local=matrix=>{const det=matrix[0]*matrix[3]-matrix[1]*matrix[2];if(Math.abs(det)<1e-9)return null;const x=p.x-matrix[4],y=p.y-matrix[5];return {x:(matrix[3]*x-matrix[2]*y)/det,y:(matrix[0]*y-matrix[1]*x)/det};};
   for(const s of record.sprites||[]){const q=local(s.matrix),a=s.anchor||{x:.5,y:0};if(q&&q.x>=-a.x*s.width&&q.x<=(1-a.x)*s.width&&q.y>=-a.y*s.height&&q.y<=(1-a.y)*s.height)return true;}
   for(const d of record.skeletons||[]){const e=cache.get(key(d,runtime)),q=local(d.matrix);if(!e||!e.canvas||!q)continue;const a=e.bounds,x=(q.x-a.minX)/a.width*e.canvas.width,y=(a.maxY-q.y)/a.height*e.canvas.height;if(x>=0&&y>=0&&x<e.canvas.width&&y<e.canvas.height){try{if(e.canvas.getContext('2d').getImageData(Math.floor(x),Math.floor(y),1,1).data[3]>10)return true;}catch(_){return true;}}}

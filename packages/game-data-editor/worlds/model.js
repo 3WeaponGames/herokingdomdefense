@@ -36,7 +36,14 @@ function buildingMatrix(building){const result=matrix(building);if(building.flip
 function flipPoint(object,p){return {x:object.flipX?-p.x:p.x,y:object.flipY?-p.y:p.y};}
 function point(m,p){return {x:m[0]*p.x+m[2]*p.y+m[4],y:m[1]*p.x+m[3]*p.y+m[5]};}
 function toWorld(t,p){return point(matrix(t),p);}
-function toLocal(t,p){const m=matrix(t),det=m[0]*m[3]-m[1]*m[2];if(Math.abs(det)<1e-9)throw Error('Layer scale cannot be zero.');return {x:(m[3]*(p.x-m[4])-m[2]*(p.y-m[5]))/det,y:(-m[1]*(p.x-m[4])+m[0]*(p.y-m[5]))/det};}
+function inversePoint(m,p){
+ const det=m[0]*m[3]-m[1]*m[2];
+ if(Math.abs(det)<1e-9)throw Error('Layer scale cannot be zero.');
+ const x=p.x-m[4],y=p.y-m[5];
+ return {x:(m[3]*x-m[2]*y)/det,y:(m[0]*y-m[1]*x)/det};
+}
+function toLocal(t,p){return inversePoint(matrix(t),p);}
+function toBuildingLocal(building,p){return inversePoint(buildingMatrix(building),p);}
 function moveObjectToLayer(map,objectId,targetId){return require('./layer-order').moveObjects(map,{ids:[objectId],ground:false,targetLayerId:targetId,position:'inside'});}
 function removeLayer(map,id){const next=clone(map),layer=layerOf(next,id);if(layer.locked)throw Error('Unlock the layer before deleting it.');next.layers=next.layers.filter(l=>l.id!==id);return next;}
 function removeObjects(map,ids){const selected=new Set(ids),next=clone(map);next.layers.forEach(l=>{l.objects=l.objects.filter(o=>!selected.has(o.id));});return next;}
@@ -245,3 +252,4 @@ function validateStage(stage,map,units){
 }
 module.exports={assetSize,isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,mergeGroundStrokes,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,flipPoint,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,blockerFixtures,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIdentifierIssues,legacyUnavailable,graphIssues,validateMap,stagePlacementIssues,validateStage};
 module.exports.buildingMatrix=buildingMatrix;
+module.exports.toBuildingLocal=toBuildingLocal;
