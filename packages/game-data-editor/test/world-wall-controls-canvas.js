@@ -45,6 +45,21 @@ async function verify(){
   const c2=M.toWorld(value.buildings[1],state.snap.buildingPreview.buildings[2].levels[3].purchaseField.center);canvas.onpointerdown(xy(c2));canvas.onpointerup(xy(c2));await settle();const side=field('Purchase field side');assert(Array.from(side.options).map(o=>o.textContent).join(',')==='Default,Flip','purchase side offers exactly Default and Flip');side.value='flip';side.onchange();await settle();assert(value.buildings[1].purchaseSide==='flip','Flip applies through the draft history');await click('Undo');await click('Reset field position');await settle();assert(value.buildings[1].purchaseOffset.x===0&&value.buildings[1].purchaseOffset.y===0,'field position can be reset without moving the building');
   await select('Gate one');defer=true;const oldWall=value.buildings[1].wallRotation;field('X').value=String(value.buildings[1].x+1);field('X').onchange();await wait(()=>!!release,'queued inspector edit is deferred');field('Wall rotation').value='-8';field('Wall rotation').onchange();button('Gate two',root.querySelector('.world-side')).onclick();release();await settle();assert(value.buildings[1].wallRotation===-8&&value.buildings[2].wallRotation===undefined,'queued wall inspector edits keep their original selection after another building is selected');await click('Undo');await click('Undo');assert(value.buildings[1].wallRotation===oldWall,'queued position and rotation changes remain separately undoable');
   await select('Gate one');const cancelCenter=M.toWorld(value.buildings[1],state.snap.buildingPreview.buildings[2].levels[3].purchaseField.center),cancelValue=JSON.stringify(value);canvas.onpointerdown(xy(cancelCenter));canvas.onpointermove(xy({x:cancelCenter.x+30,y:cancelCenter.y+10}));canvas.onpointercancel(xy(cancelCenter));await settle();assert(JSON.stringify(value)===cancelValue&&!state.drag,'cancelling a field drag restores its position without publishing an edit');
+  await select('Gate one');const flip=field('Flip building X');flip.checked=true;await flip.onchange();await settle();
+  const mirrored=clone(value.buildings[1]),localCenter=seen.get(2).purchaseField.center,mirroredPose=M.buildingMatrix(mirrored);
+  const previousCenter=M.toWorld(mirrored,localCenter),mirroredCenter=M.point(mirroredPose,localCenter);
+  canvas.onpointerdown(xy(previousCenter));
+  assert(state.drag&&!state.drag.purchaseField,'the old side no longer picks the mirrored purchase field');
+  canvas.onpointerup(xy(previousCenter));await settle();
+  const mirroredVersion=version,target={x:mirroredCenter.x+19,y:mirroredCenter.y+11};
+  canvas.onpointerdown(xy(mirroredCenter));
+  assert(state.selection[0]==='purchase:2'&&state.drag.purchaseField===2,'the visible flipped pad is selectable with placement rotation and scale');
+  canvas.onpointermove(xy(target));await raf();await raf();
+  const movingCenter=M.point(mirroredPose,seen.get(2).purchaseField.center);
+  assert(Math.hypot(movingCenter.x-target.x,movingCenter.y-target.y)<1e-7&&version===mirroredVersion,'the mirrored field follows the pointer in the draft');
+  canvas.onpointerup(xy(target));await settle();
+  assert(version===mirroredVersion+1&&value.buildings[1].x===mirrored.x&&value.buildings[1].y===mirrored.y&&value.buildings[1].flipX,'dragging the flipped field edits its offset without moving or unflipping the building');
+  await click('Undo');await click('Undo');
   await select('Gate one');const closedVersion=version;await begin();pointer('pointermove',120);client.destroy();pointer('pointermove',150);pointer('pointerup',150);assert(version===closedVersion&&state.closed,'closing a panel cancels an active scrub and releases its listeners');assert(!calls.includes('world-save')&&!calls.includes('world-preview'),'all controls operate without saving project data or starting gameplay');return {checks,projectWrites:0};
  }finally{if(release)release();client.destroy();host.remove();}
 }
