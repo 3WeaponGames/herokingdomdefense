@@ -287,10 +287,10 @@
         },
         "Golem_bone/Leg2_bone/Leg2_bone2/Leg2": {
           "u_0c6993e975dc17f4c9036ce9bee43827": {
-            "width": 72.0,
-            "height": 74.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 73,
+            "height": 65,
+            "x": 2.5,
+            "y": -9.5,
             "scaleX": 1,
             "scaleY": 1,
             "path": "ElderTreant_Leg2"
@@ -298,10 +298,10 @@
         },
         "Golem_bone/Leg2_bone/Leg2_bone2/Leg2_Hit": {
           "u_c5e9d5f432f248e4ea234a298294ccb2": {
-            "width": 72.0,
-            "height": 74.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 73,
+            "height": 65,
+            "x": 2.5,
+            "y": -9.5,
             "scaleX": 1,
             "scaleY": 1,
             "path": "ElderTreant_Leg2_Hit"
@@ -309,10 +309,10 @@
         },
         "Golem_bone/Leg_bone/Leg_bone2/Leg": {
           "u_86a8b16f3fa4f42439ea8482f803cb47": {
-            "width": 67.0,
-            "height": 73.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 76,
+            "height": 68,
+            "x": -4,
+            "y": -5,
             "scaleX": 1,
             "scaleY": 1,
             "path": "ElderTreant_Leg"
@@ -320,10 +320,10 @@
         },
         "Golem_bone/Leg_bone/Leg_bone2/Leg_Hit": {
           "u_07a80b2c79cd1d64c833cc708b078ba6": {
-            "width": 67.0,
-            "height": 73.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 76,
+            "height": 68,
+            "x": -4,
+            "y": -5,
             "scaleX": 1,
             "scaleY": 1,
             "path": "ElderTreant_Leg_Hit"
@@ -331,10 +331,10 @@
         },
         "Golem_bone/Body_bone/Body": {
           "u_b991d264a57c52c4b96f3b8f7954f035": {
-            "width": 240.0,
-            "height": 223.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 259,
+            "height": 231,
+            "x": -20.5,
+            "y": -1.5,
             "scaleX": 1,
             "scaleY": 1,
             "path": "ElderTreant_Body"
@@ -342,10 +342,10 @@
         },
         "Golem_bone/Body_bone/Eye_bone/Eye": {
           "u_9f78389b28ee5c94cb8b0a3747aafe40": {
-            "width": 86.0,
-            "height": 38.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 78,
+            "height": 30,
+            "x": -11,
+            "y": 2,
             "scaleX": 1,
             "scaleY": 1,
             "path": "ElderTreant_Eye"
@@ -353,10 +353,10 @@
         },
         "Golem_bone/Body_bone/Body_Hit": {
           "u_436c99d4ec8cb294384e666c2b84592f": {
-            "width": 240.0,
-            "height": 223.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 259,
+            "height": 231,
+            "x": -20.5,
+            "y": -1.5,
             "scaleX": 1,
             "scaleY": 1,
             "path": "ElderTreant_Body_Hit"
@@ -364,10 +364,10 @@
         },
         "Golem_bone/Body_bone/Eye_bone/Eye2": {
           "u_58715abd854359b4193a5c48bf329739": {
-            "width": 90.0,
-            "height": 21.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 69,
+            "height": 18,
+            "x": -13.5,
+            "y": 2,
             "scaleX": 1,
             "scaleY": 1,
             "path": "ElderTreant_Eye2"
@@ -375,10 +375,10 @@
         },
         "Golem_bone/Body_bone/Eye_bone/Eye2_Hit": {
           "u_9667c3b9742c59948a55cd98eb9a6abf": {
-            "width": 90.0,
-            "height": 21.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 69,
+            "height": 18,
+            "x": -13.5,
+            "y": 2,
             "scaleX": 1,
             "scaleY": 1,
             "path": "ElderTreant_Eye2_Hit"

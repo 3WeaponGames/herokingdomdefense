@@ -44233,6 +44233,33 @@
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90001
     },
+    "91182": {
+      "ID": 91182,
+      "Name": "[[loc:data.monster-roster.91182.name]]",
+      "prefab": "Monster2_Skeleton_ShroudedRevenant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/skeleton-shroudedrevenant",
+      "AttackType": 1,
+      "Health": 57.6,
+      "AttackDamage": 4.5,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 91.8,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterSource": "monster2/Skeleton_ShroudedRevenant",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91182.description]]"
+      }
+    },
     "100000": {
       "ID": 100000,
       "Name": "[[loc:data.soldiercfg.90001.name]]",
@@ -70246,6 +70273,136 @@
       },
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90001
+    },
+    "101810": {
+      "ID": 101810,
+      "Name": "[[loc:data.monster-roster.91182.name]]",
+      "prefab": "Monster2_Skeleton_ShroudedRevenant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/skeleton-shroudedrevenant",
+      "AttackType": 1,
+      "Health": 48,
+      "AttackDamage": 5,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 102,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91182.description]]"
+      }
+    },
+    "101811": {
+      "ID": 101811,
+      "Name": "[[loc:data.monster-roster.91182.name]]",
+      "prefab": "Monster2_Skeleton_ShroudedRevenant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/skeleton-shroudedrevenant",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.75,
+      "AttackInterval": 1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 117.3,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91182.description]]"
+      }
+    },
+    "101812": {
+      "ID": 101812,
+      "Name": "[[loc:data.monster-roster.91182.name]]",
+      "prefab": "Monster2_Skeleton_ShroudedRevenant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/skeleton-shroudedrevenant",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 4.5,
+      "AttackInterval": 1.1,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 112.2,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91182.description]]"
+      }
+    },
+    "101813": {
+      "ID": 101813,
+      "Name": "[[loc:data.monster-roster.91182.name]]",
+      "prefab": "Monster2_Skeleton_ShroudedRevenant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/skeleton-shroudedrevenant",
+      "AttackType": 1,
+      "Health": 52.8,
+      "AttackDamage": 6,
+      "AttackInterval": 0.9,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 96.9,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91182.description]]"
+      }
+    },
+    "101814": {
+      "ID": 101814,
+      "Name": "[[loc:data.monster-roster.91182.name]]",
+      "prefab": "Monster2_Skeleton_ShroudedRevenant",
+      "loadIcon": "@icon/icons/monster-roster/monster2/skeleton-shroudedrevenant",
+      "AttackType": 1,
+      "Health": 43.2,
+      "AttackDamage": 6.25,
+      "AttackInterval": 0.85,
+      "AttackRange": 50,
+      "SearchRange": 220,
+      "Speed": 86.7,
+      "BuildingCross": 1,
+      "DeathAni": 1.5,
+      "AttackPriority": [
+        2,
+        1,
+        3
+      ],
+      "CounterType": "",
+      "MonsterPack": "monster2",
+      "BehaviorTemplate": 90002,
+      "Guide": {
+        "description": "[[loc:data.unitguide.91182.description]]"
+      }
     }
   },
   "TalentCfg": {
@@ -80923,22 +81080,22 @@
         "attack": 0.45
       },
       "enemy:101720:default": {
-        "attack": 0.45
+        "attack": 0.5
       },
       "enemy:101721:default": {
-        "attack": 0.45
+        "attack": 0.5
       },
       "enemy:101722:default": {
-        "attack": 0.45
+        "attack": 0.5
       },
       "enemy:101723:default": {
-        "attack": 0.45
+        "attack": 0.5
       },
       "enemy:91164:default": {
-        "attack": 0.45
+        "attack": 0.5
       },
       "enemy:101724:default": {
-        "attack": 0.45
+        "attack": 0.5
       },
       "enemy:101725:default": {
         "attack": 0.5
@@ -81227,6 +81384,24 @@
       },
       "enemy:101809:default": {
         "attack": 0.375
+      },
+      "enemy:101810:default": {
+        "attack": 0.5
+      },
+      "enemy:91182:default": {
+        "attack": 0.5
+      },
+      "enemy:101811:default": {
+        "attack": 0.5
+      },
+      "enemy:101812:default": {
+        "attack": 0.5
+      },
+      "enemy:101813:default": {
+        "attack": 0.5
+      },
+      "enemy:101814:default": {
+        "attack": 0.5
       }
     },
     "visuals": {
@@ -84697,6 +84872,24 @@
       },
       "enemy:101809:default": {
         "mirrorX": true
+      },
+      "enemy:101810:default": {
+        "mirrorX": true
+      },
+      "enemy:91182:default": {
+        "mirrorX": true
+      },
+      "enemy:101811:default": {
+        "mirrorX": true
+      },
+      "enemy:101812:default": {
+        "mirrorX": true
+      },
+      "enemy:101813:default": {
+        "mirrorX": true
+      },
+      "enemy:101814:default": {
+        "mirrorX": true
       }
     },
     "unitTypes": {
@@ -85899,7 +86092,13 @@
       "enemy:91181:default": "vanguard",
       "enemy:101807:default": "skirmisher",
       "enemy:101808:default": "bruiser",
-      "enemy:101809:default": "mystic"
+      "enemy:101809:default": "mystic",
+      "enemy:101810:default": "fighter",
+      "enemy:91182:default": "guardian",
+      "enemy:101811:default": "vanguard",
+      "enemy:101812:default": "skirmisher",
+      "enemy:101813:default": "bruiser",
+      "enemy:101814:default": "mystic"
     },
     "unitLevels": {
       "ally:90001:level:2": {
@@ -85998,7 +86197,7 @@
     },
     "unitProfiles": {
       "version": 1,
-      "nextId": 101810,
+      "nextId": 101815,
       "entries": {
         "100000": {
           "baseId": 90001,
@@ -99229,6 +99428,76 @@
           },
           "visual": {},
           "fightingProfile": true
+        },
+        "101810": {
+          "baseId": 91182,
+          "name": "Fighter",
+          "created": true,
+          "role": "fighter",
+          "stats": {
+            "Health": 48,
+            "AttackDamage": 5,
+            "AttackInterval": 1,
+            "Speed": 102
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101811": {
+          "baseId": 91182,
+          "name": "Vanguard",
+          "created": true,
+          "role": "vanguard",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 4.75,
+            "AttackInterval": 1,
+            "Speed": 117.3
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101812": {
+          "baseId": 91182,
+          "name": "Skirmisher",
+          "created": true,
+          "role": "skirmisher",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 4.5,
+            "AttackInterval": 1.1,
+            "Speed": 112.2
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101813": {
+          "baseId": 91182,
+          "name": "Bruiser",
+          "created": true,
+          "role": "bruiser",
+          "stats": {
+            "Health": 52.8,
+            "AttackDamage": 6,
+            "AttackInterval": 0.9,
+            "Speed": 96.9
+          },
+          "visual": {},
+          "fightingProfile": true
+        },
+        "101814": {
+          "baseId": 91182,
+          "name": "Mystic",
+          "created": true,
+          "role": "mystic",
+          "stats": {
+            "Health": 43.2,
+            "AttackDamage": 6.25,
+            "AttackInterval": 0.85,
+            "Speed": 86.7
+          },
+          "visual": {},
+          "fightingProfile": true
         }
       },
       "families": {
@@ -102448,7 +102717,7 @@
           "referenceId": 91160
         },
         "91161": {
-          "name": "Elder Treant",
+          "name": "Thorn Warden",
           "modelKey": "source:monster2/Golem_ElderTreant",
           "profiles": {
             "fighter": 101705,
@@ -102827,6 +103096,25 @@
             "bruiser": 101808,
             "mystic": 101809
           }
+        },
+        "91182": {
+          "name": "Shrouded Revenant",
+          "modelKey": "source:monster2/Skeleton_ShroudedRevenant",
+          "profiles": {
+            "fighter": 101810,
+            "guardian": 91182,
+            "vanguard": 101811,
+            "skirmisher": 101812,
+            "bruiser": 101813,
+            "mystic": 101814
+          },
+          "baseline": {
+            "Health": 48,
+            "AttackDamage": 5,
+            "AttackInterval": 1,
+            "Speed": 102
+          },
+          "referenceId": 101810
         }
       },
       "aliases": {

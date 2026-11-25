@@ -2085,7 +2085,7 @@
     {
       "id": 91161,
       "source": "monster2/Golem_ElderTreant",
-      "name": "Elder Treant",
+      "name": "Thorn Warden",
       "role": "guardian",
       "behaviorTemplate": 90002,
       "aerial": false,
@@ -2338,6 +2338,19 @@
       "aerial": false,
       "portrait": {
         "pattern": "\\/(?:Head|Jaw)$",
+        "cropHeight": 1,
+        "cropWidth": 1
+      }
+    },
+    {
+      "id": 91182,
+      "source": "monster2/Skeleton_ShroudedRevenant",
+      "name": "Shrouded Revenant",
+      "role": "guardian",
+      "behaviorTemplate": 90002,
+      "aerial": false,
+      "portrait": {
+        "pattern": "\\/(?:Head(?:_\\d+)?)$",
         "cropHeight": 1,
         "cropWidth": 1
       }

@@ -15,11 +15,42 @@ function fixture(queueEdit=change=>change()){
  const el=(tag,text,cls)=>new Element(tag,text,cls),state={snap:{value:stage,issues:[]},catalog:{interval:.5,stages:[{id:'A-7',variant:'A',level:7,name:'7. Desert',mapId:'Map07',waves:2}],maps:[{id:'Map07',name:'Fire map'}],units:[{id:3,name:'Unit'}]},variant:'A',wave:0,selection:[],previewHall:3,showBlockers:true,snapGrid:0,spawn:1,graph:'one',radius:18,gate:'closed'},noop=()=>{};let edits=0;
  const context={state,el,button(parent,text,handler,active){const button=el('button',text,active?'active':'');button.onclick=handler;parent.appendChild(button);return button;},field(parent,name,value,change,choices){const input=el('input');input.choices=choices;input.value=value;input.fieldName=name;input.change=change;if(typeof value==='boolean')input.checked=value;parent.appendChild(input);return input;},select(parent){const input=el('select');parent.appendChild(input);return input;},section(parent,text){parent.appendChild(el('h3',text));},note(parent,text){parent.appendChild(el('p',text));},edit(change){return queueEdit(()=>{edits++;const draft=clone(state.snap.value);change(draft);state.snap.value=draft;});},render:noop,draw:noop,top:el('div'),tabs:el('div'),left:el('div'),right:el('div'),buildingPalette:noop,buildingInspector:noop};
  for(const name of ['load','fit','startPreview','closePreview','replaceStage','action','refresh','discard','save','cancelDrag','prepareImages','editMap','jsonField','patchSelected','remove','newPath','insertPathNode','removePathNode','navigation','modal'])context[name]=noop;
+ context.createWaveModelGallery=()=>({watch:noop,clear:noop,destroy:noop});
  context.unitPicker=(dialog,spec)=>{dialog.appendChild(spec.controls);const search=el('input',undefined,'world-unit-picker-search'),grid=el('div',undefined,'world-unit-picker');search.value='';dialog.appendChild(search);dialog.appendChild(grid);const render=()=>{grid.textContent='';for(const unit of spec.units.filter(unit=>require('../worlds/unit-catalog').matches(unit,search.value))){const b=context.button(grid,require('../worlds/unit-catalog').name(unit),()=>{if(spec.selected.has(unit.id))spec.selected.delete(unit.id);else spec.selected.add(unit.id);render();},spec.selected.has(unit.id));b.dataset.unitId=unit.id;b.setAttribute('aria-pressed',String(spec.selected.has(unit.id)));}};search.oninput=render;render();};
  return{state,context,panels:Panels.create(context),edits:()=>edits};
 }
 function descendants(element){return element.children.flatMap(child=>[child,...descendants(child)]);}
 function dragEvent(clientY=10){return {clientY,preventDefault(){this.prevented=true;},stopPropagation(){},dataTransfer:{setData(){}}};}
+
+test('wave cards render full models for shared units and stage-only profiles',()=>{
+ const f=fixture(),stage=f.state.snap.value,base=f.state.catalog.units[0],localId=1000000000;
+ f.state.tab='Waves';
+ base.iconUrl='file:///head-portrait.png';
+ stage.config.EnemyProfiles={[localId]:{baseId:base.id,name:'Custom',stats:{}}};
+ const entries=stage.config.WaveCfg[0].SpawnTimeline;
+ entries[1].unitId=localId;
+ entries[2].unitId=999999;
+ entries.length=3;
+ const pristine=clone(stage),events=[];
+ f.context.createWaveModelGallery=()=>{
+  events.push('create');
+  return {watch(model,image,status,id){
+   assert(model.classList.contains('world-wave-unit-model'));
+   assert.deepEqual(model.children,[image,status]);
+   assert.equal(image.src,undefined);
+   events.push(id);
+  },clear(){events.push('clear');},destroy(){events.push('destroy');}};
+ };
+ const redraw=()=>{f.context.right.textContent='';f.panels.right();};
+ redraw();
+ assert.deepEqual(events,['create',base.id,base.id]);
+ redraw();
+ assert.deepEqual(events.slice(3),['clear',base.id,base.id]);
+ f.state.tab='Buildings';redraw();
+ assert.equal(events.at(-1),'destroy');
+ assert.deepEqual(stage,pristine);
+ assert.equal(f.edits(),0);
+});
 
 test('the Spawns sidebar moves points into and out of groups and updates the generated name',()=>{
  const f=fixture();f.state.tab='Spawns';

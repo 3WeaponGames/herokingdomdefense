@@ -14,77 +14,77 @@ ElderTreant_Attack
 ElderTreant_Body
   rotate: false
   xy: 270, 2
-  size: 240, 223
-  orig: 240, 223
+  size: 259, 231
+  orig: 259, 231
   offset: 0, 0
   index: -1
 ElderTreant_Body_Hit
   rotate: false
-  xy: 514, 2
-  size: 240, 223
-  orig: 240, 223
+  xy: 533, 2
+  size: 259, 231
+  orig: 259, 231
   offset: 0, 0
   index: -1
 u_30fb06ae07d9c4c438ca1eaafb974ac3
   rotate: false
-  xy: 758, 2
+  xy: 796, 2
   size: 120, 166
   orig: 120, 166
   offset: 0, 0
   index: -1
-ElderTreant_Leg2
-  rotate: false
-  xy: 882, 2
-  size: 72, 74
-  orig: 72, 74
-  offset: 0, 0
-  index: -1
-ElderTreant_Leg2_Hit
-  rotate: false
-  xy: 958, 2
-  size: 72, 74
-  orig: 72, 74
-  offset: 0, 0
-  index: -1
-ElderTreant_Leg
-  rotate: false
-  xy: 1034, 2
-  size: 67, 73
-  orig: 67, 73
-  offset: 0, 0
-  index: -1
-ElderTreant_Leg_Hit
-  rotate: false
-  xy: 1105, 2
-  size: 67, 73
-  orig: 67, 73
-  offset: 0, 0
-  index: -1
 u_103e5e81d58ea954180246400dd1b493
   rotate: false
-  xy: 1176, 2
+  xy: 920, 2
   size: 215, 69
   orig: 215, 69
   offset: 0, 0
   index: -1
+ElderTreant_Leg
+  rotate: false
+  xy: 1139, 2
+  size: 76, 68
+  orig: 76, 68
+  offset: 0, 0
+  index: -1
+ElderTreant_Leg_Hit
+  rotate: false
+  xy: 1219, 2
+  size: 76, 68
+  orig: 76, 68
+  offset: 0, 0
+  index: -1
+ElderTreant_Leg2
+  rotate: false
+  xy: 1299, 2
+  size: 73, 65
+  orig: 73, 65
+  offset: 0, 0
+  index: -1
+ElderTreant_Leg2_Hit
+  rotate: false
+  xy: 1376, 2
+  size: 73, 65
+  orig: 73, 65
+  offset: 0, 0
+  index: -1
 ElderTreant_Eye
   rotate: false
-  xy: 1395, 2
-  size: 86, 38
-  orig: 86, 38
+  xy: 1453, 2
+  size: 78, 30
+  orig: 78, 30
   offset: 0, 0
   index: -1
 ElderTreant_Eye2
   rotate: false
-  xy: 1485, 2
-  size: 90, 21
-  orig: 90, 21
+  xy: 1535, 2
+  size: 69, 18
+  orig: 69, 18
   offset: 0, 0
   index: -1
 ElderTreant_Eye2_Hit
   rotate: false
-  xy: 1579, 2
-  size: 90, 21
-  orig: 90, 21
+  xy: 1608, 2
+  size: 69, 18
+  orig: 69, 18
   offset: 0, 0
   index: -1

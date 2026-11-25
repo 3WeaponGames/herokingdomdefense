@@ -77,7 +77,31 @@ function blockerFixtures(map){
 }
 function polygonBlockers(map,points,op){op=op===undefined?'paint':op;const shape=Blockers.polygonBrush(points),regions=mapBlockerRegions(map),result=Blockers.combineMask(regions,shape,op);return result===regions?map:Object.assign({},map,{blockerMask:result});}
 function stroke(map,target,stroke){if(!finite(stroke.size)||stroke.size<=0||!stroke.points||!stroke.points.length||stroke.points.some(p=>!finite(p.x)||!finite(p.y)))throw Error('Brush size and finite points are required.');if(!fixedGround.includes(target)&&!(map.ground.custom||[]).some(l=>l.id===target))return previewBlockerStroke(clone(map),target,stroke);const next=clone(map),layer=groundLayer(next,target);assertEditable(layer);const value=clone(stroke);value.points=value.points.map(p=>toLocal(layer.transform,p));value.size/=(layer.transform&&layer.transform.scale||1);layer.strokes.push(value);return next;}
-function newSpawn(stage,position,map){position=require('./spawn-bounds').constrain({x:position.x,y:position.y,radius:150},map,false);const next=clone(stage),id=next.nextSpawn++;next.spawns.push({id,name:'Spawn '+id,x:position.x,y:position.y,radius:position.radius,enabled:true,graphId:null});const graphId='route-'+id,goal='goal-'+id,entry='entry-'+id;next.graphs.push({id:graphId,name:'',nameFromSpawns:true,spawnIds:[id],entry,nodes:[{id:entry,x:position.x,y:position.y},{id:goal,x:(next.buildings.find(b=>b.kind===1)||next.hero).x,y:(next.buildings.find(b=>b.kind===1)||next.hero).y+100,goal:true}],edges:[{id:'edge-'+id,from:entry,to:goal,weight:1}],legacy:false});next.spawns[next.spawns.length-1].graphId=graphId;return StageNames.refreshPaths(next);}
+function newSpawn(stage,position,map){
+ position=require('./spawn-bounds').constrain({x:position.x,y:position.y,radius:150},map,false);
+ const next=clone(stage),spawnIds=new Set(next.spawns.map(spawn=>spawn.id));
+ let id=1;
+ while(spawnIds.has(id))id++;
+
+ // Deleting a spawn can leave its path available for reuse in the editor.
+ // Keep the path counter independent of the spawn number.
+ const graphIds=new Set(next.graphs.map(graph=>graph.id));
+ const counter=Number.isSafeInteger(next.nextSpawn)?next.nextSpawn:1;
+ let routeNumber=Math.max(counter,id);
+ while(graphIds.has('route-'+routeNumber)){
+  routeNumber=routeNumber===Number.MAX_SAFE_INTEGER?1:routeNumber+1;
+ }
+ next.nextSpawn=Math.min(routeNumber+1,Number.MAX_SAFE_INTEGER);
+ const graphId='route-'+routeNumber,goal='goal-'+routeNumber,entry='entry-'+routeNumber;
+ const destination=next.buildings.find(building=>building.kind===1)||next.hero;
+ next.spawns.push({id,name:'Spawn '+id,x:position.x,y:position.y,radius:position.radius,enabled:true,graphId});
+ next.graphs.push({
+  id:graphId,name:'',nameFromSpawns:true,spawnIds:[id],entry,
+  nodes:[{id:entry,x:position.x,y:position.y},{id:goal,x:destination.x,y:destination.y+100,goal:true}],
+  edges:[{id:'edge-'+routeNumber,from:entry,to:goal,weight:1}],legacy:false
+ });
+ return StageNames.refreshPaths(next);
+}
 function removeSpawn(stage,id){
  const next=clone(stage),legacyPrefix='legacy-'+id+'-';
  next.spawns=next.spawns.filter(spawn=>spawn.id!==id);

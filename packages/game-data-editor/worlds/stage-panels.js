@@ -21,6 +21,11 @@ function create(c){
  const {state,el,button,field,select,note,section,edit,render,draw}=c;
  const waveOverview=WaveOverview.create(el);
  const stage=()=>state.snap.value,catalog=()=>state.catalog,unitRows=()=>StageProfiles.rows(stage().config,catalog().units),summary=wave=>Waves.summary(wave,catalog().interval),wave=()=>stage().config.WaveCfg[state.wave],stageCards=StageCards.create(c);
+ let waveModels,modelCatalog;
+ function destroy(){
+  if(waveModels)waveModels.destroy();
+  waveModels=modelCatalog=null;
+ }
  function draggable(list,rows,items,options={}){
   CardDrag.bind(list,rows,{stage,items,edit,cancelDrag:c.cancelDrag,...options,
    busy:()=>!!(state.closed||state.loading||state.snap.busy||options.busy?.())});
@@ -481,7 +486,14 @@ function create(c){
    handle.setAttribute('aria-label','Reorder '+name);
    heading.appendChild(handle);
   }
-  if(unit&&unit.iconUrl){const image=el('img');image.src=unit.iconUrl;image.draggable=false;heading.appendChild(image);}
+  if(unit){
+   if(!waveModels){waveModels=c.createWaveModelGallery();modelCatalog=catalog();}
+   const model=el('span',undefined,'world-unit-model world-wave-unit-model');
+   const image=el('img'),status=el('small','Loading model…','world-unit-model-status');
+   image.alt='';image.draggable=false;
+   model.appendChild(image);model.appendChild(status);heading.appendChild(model);
+   waveModels.watch(model,image,status,unit.baseProfileId||unit.id);
+  }
   heading.appendChild(el('strong',name));
   const remove=button(heading,'Remove',()=>waveEdit(target,(s,index)=>Waves.removeGroup(s,index,entry.id,interval,{allSpawns:true})));
   if(group.length>1){card.classList.add('world-wave-unit-card-multi');remove.title='Remove this unit and all its spawn rows';}
@@ -668,7 +680,13 @@ function create(c){
   if(!groups.length)note(parent,'This wave has no units yet. Use Add units to create its first group.');
   const settings=details('Wave settings & rewards','wave:'+index+':settings');parent.appendChild(settings);for(const [key,label]of [['StartSliver','Starting silver'],['CommerceSliver','Merchant silver']]){const input=numericEntry(settings,label,w[key],value=>waveEdit(target,(s,index,row)=>row[key]=value),true);input.min='0';}button(settings,'Rewards…',()=>c.jsonField('WaveReward',index));button(settings,'Edit schedule JSON…',()=>c.jsonField(w.SpawnTimeline!==undefined?'SpawnTimeline':'RefreshSoldierKind',index));
  }
- function right(){if(state.tab==='Stage')stageInspector();else if(state.tab==='Waves')waveInspector();else if(state.tab==='Paths')pathInspector();else if(state.tab==='Spawns')spawnInspector();else c.buildingInspector();if(state.snap.issues.length){section(c.right,'Validation');state.snap.issues.slice(0,12).forEach(issue=>note(c.right,issue,true));}}
- return {top,tabs,left,right,title};
+ function right(){
+  if(waveModels){
+   if(state.tab==='Waves'&&modelCatalog===catalog())waveModels.clear();
+   else destroy();
+  }
+  if(state.tab==='Stage')stageInspector();else if(state.tab==='Waves')waveInspector();else if(state.tab==='Paths')pathInspector();else if(state.tab==='Spawns')spawnInspector();else c.buildingInspector();if(state.snap.issues.length){section(c.right,'Validation');state.snap.issues.slice(0,12).forEach(issue=>note(c.right,issue,true));}
+ }
+ return {top,tabs,left,right,title,destroy};
 }
 module.exports={create,STAGE_SECTIONS,pathTitle,pathSubtitle,spawnRanges};

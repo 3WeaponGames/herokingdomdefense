@@ -908,7 +908,7 @@
     },
     {
       "id": "monster2/Golem_ElderTreant",
-      "name": "Elder Treant",
+      "name": "Thorn Warden",
       "pack": "monster2",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 2/Prefabs/Golem/Golem_Tree.prefab",
       "skeleton": "assets/resources/unit-library/monster2/Units/PlantVariants/Golem_ElderTreant.json",
@@ -943,6 +943,25 @@
       "bones": 14,
       "slots": 8,
       "variantOf": "monster2/Alien_Vampire"
+    },
+    {
+      "id": "monster2/Skeleton_ShroudedRevenant",
+      "name": "Shrouded Revenant",
+      "pack": "monster2",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 2/Prefabs/Skeleton/Skeleton_Warrior.prefab",
+      "skeleton": "assets/resources/unit-library/monster2/Units/SunTombVariants/Skeleton_ShroudedRevenant.json",
+      "uuid": "a5dd04c0-9648-547f-a15f-463fbdee4361",
+      "resource": "unit-library/monster2/Units/SunTombVariants/Skeleton_ShroudedRevenant",
+      "animations": [
+        "attack",
+        "die",
+        "move",
+        "hit",
+        "idle"
+      ],
+      "bones": 24,
+      "slots": 11,
+      "variantOf": "monster2/Skeleton_Warrior"
     }
   ],
   "parts": [

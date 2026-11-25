@@ -1,7 +1,7 @@
 'use strict';
 // One render-only Spine canvas supplies model images for the visible cards.
 // It never instantiates gameplay actors or loads audio. Offscreen images and
-// the bounded cache are released when the chooser closes.
+// the bounded cache are released when the view closes.
 const Renderer=require('../preview/spine-renderer');
 function create(scroller,describe,priorityId){
  const canvas=document.createElement('canvas'),thumbnail=document.createElement('canvas');canvas.width=canvas.height=thumbnail.width=thumbnail.height=384;const context=canvas.getContext('2d'),output=thumbnail.getContext('2d');
@@ -25,8 +25,10 @@ function create(scroller,describe,priorityId){
   }}finally{running=false;}
  }
  const observer=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{for(const entry of entries){const record=records.get(entry.target);if(!record)continue;record.visible=entry.isIntersecting;if(record.visible)enqueue(record);else{record.image.hidden=true;record.image.removeAttribute('src');record.status.hidden=false;if(record.card.dataset.modelState!=='error')record.card.dataset.modelState='waiting';}}},{root:scroller,rootMargin:'120px'}):null;
+ function unwatch(card){const record=records.get(card);if(!record)return;records.delete(card);if(observer)observer.unobserve(card);record.image.onload=null;record.image.removeAttribute('src');}
+ function clear(){for(const card of records.keys())unwatch(card);queue.length=0;}
  return{watch(card,image,status,id){image.hidden=true;const record={card,image,status,id,visible:!observer,queued:false};records.set(card,record);if(observer)observer.observe(card);else enqueue(record);},setUnit(card,id){const record=records.get(card);if(!record||record.id===id)return;record.id=id;record.image.onload=null;record.image.hidden=true;record.image.removeAttribute('src');record.status.hidden=false;record.status.textContent='Loading model…';record.status.title='';record.card.dataset.modelState='waiting';enqueue(record);},
-  unwatch(card){const record=records.get(card);if(!record)return;records.delete(card);if(observer)observer.unobserve(card);record.image.onload=null;record.image.removeAttribute('src');},
-  destroy(){closed=true;if(observer)observer.disconnect();queue.length=0;for(const record of records.values()){record.image.onload=null;record.image.removeAttribute('src');}records.clear();cache.clear();Renderer.destroyCanvas(canvas);canvas.width=canvas.height=thumbnail.width=thumbnail.height=0;}};
+  unwatch,clear,
+  destroy(){closed=true;clear();if(observer)observer.disconnect();cache.clear();Renderer.destroyCanvas(canvas);canvas.width=canvas.height=thumbnail.width=thumbnail.height=0;}};
 }
 module.exports={create};

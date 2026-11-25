@@ -9353,14 +9353,14 @@
       "context": "Enemy guide appearance · Orc Shaman"
     },
     "data.monster-roster.91161.name": {
-      "en": "Elder Treant",
-      "zh": "远古树人",
+      "en": "Thorn Warden",
+      "zh": "荆棘守护者",
       "context": "Deep Forest plant boss · monster2/Golem_ElderTreant"
     },
     "data.unitguide.91161.description": {
-      "en": "An ancient tree guardian with a mossy crown and heavy roots. It leaps and crashes down with the force of a falling oak.",
-      "zh": "头顶覆满苔叶、脚下扎着粗大树根的远古树木守卫。它高高跃起，像倒下的橡树一样重重砸落。",
-      "context": "Enemy guide appearance · Elder Treant"
+      "en": "A crimson-eyed briar treant with a crown of thorns. It leaps and slams down with its heavy roots.",
+      "zh": "头顶荆棘冠、双眼赤红的树人。它高高跃起，用粗重的根足砸向地面。",
+      "context": "Enemy guide appearance · Thorn Warden"
     },
     "data.monster-roster.91162.name": {
       "en": "Brass Scarab",
@@ -9388,8 +9388,8 @@
       "context": "Sun-Tomb Empire · monster3/Reaper_SunTombRegent"
     },
     "data.unitguide.91164.description": {
-      "en": "The ruler of the Sun-Tomb Empire guards its burial halls with a golden crook.",
-      "zh": "日陵帝国的统治者挥舞黄金权杖，守卫帝国的陵寝。",
+      "en": "A jackal-headed ruler in gilded armor who wields a sun-disk poleaxe.",
+      "zh": "身披金甲的胡狼首统治者，挥舞日轮战斧。",
       "context": "Enemy guide appearance · Sun-Tomb Regent"
     },
     "data.monster-roster.91165.name": {
@@ -9556,6 +9556,16 @@
       "en": "An armored raptor that rushes ahead of the orc line and snaps at defenders.",
       "zh": "披着护甲的迅猛龙，会冲在兽人队伍前方撕咬守军。",
       "context": "Enemy guide · Orc War Raptor"
+    },
+    "data.monster-roster.91182.name": {
+      "en": "Shrouded Revenant",
+      "zh": "蒙纱亡魂",
+      "context": "Sun-Tomb Empire · Shrouded Revenant"
+    },
+    "data.unitguide.91182.description": {
+      "en": "A linen-wrapped tomb guardian armed with a crescent shield and a heavy axe.",
+      "zh": "缠着裹尸布的陵墓守卫，手持新月盾和沉重的战斧。",
+      "context": "Enemy guide appearance · Shrouded Revenant"
     }
   },
   "images": {

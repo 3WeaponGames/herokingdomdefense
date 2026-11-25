@@ -147,7 +147,7 @@
 .world-stages .world-wave-unit-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));align-items:start;gap:11px;min-width:0}
 .world-stages .world-wave-unit-card{position:relative;display:flex;flex-direction:column;gap:10px;padding:11px;border:2px solid #697d8d;border-radius:5px;background:#252e35;min-width:0}
 .world-stages .world-wave-unit-heading{display:flex;align-items:center;gap:9px;min-width:0}
-.world-stages .world-wave-unit-heading>img{width:43px;height:43px;object-fit:contain;flex-shrink:0}
+.world-stages .world-wave-unit-heading>.world-wave-unit-model{width:min(96px,34%);aspect-ratio:1;padding-top:0;text-align:center}
 .world-stages .world-wave-unit-heading>strong{flex:1;min-width:0;font-size:13px;color:#e3edf4;line-height:1.35;overflow-wrap:anywhere}
 .world-stages .world-wave-unit-heading>button{flex-shrink:0;min-height:25px;font-size:10px;padding:4px 6px}
 .world-stages .world-wave-unit-heading>.world-wave-drag-handle{width:24px;padding:0;background:#303b44;border-color:#54616c;color:#c1ced8;font-size:16px;letter-spacing:-2px;line-height:1;cursor:grab}

@@ -54,6 +54,37 @@ test('deleting a spawn cleans membership and removing a group leaves its spawn p
  assert.deepEqual(next.spawns.map(spawn=>spawn.id),[2,3,4,5,6,7]);
 });
 
+test('new spawns reuse deleted numbers without inheriting the old paths, groups or waves',()=>{
+ const value=stage();
+ value.spawns=Array.from({length:12},(_,index)=>({id:index+1,enabled:index!==8}));
+ value.nextSpawn=13;
+ value.graphs=[{id:'route-10',spawnIds:[10]},{id:'route-13',spawnIds:[7]}];
+ const group=Groups.add(value);
+ Groups.assign(value,7,group.id);
+ Groups.assign(value,10,group.id);
+ value.config.WaveCfg=[
+  {SpawnTimeline:[{spawnId:7},{spawnId:10,routeGraphId:'route-10'}]},
+  {RefreshSoldierKind:['7#3,1','10#3,1']}
+ ];
+
+ const deleted=[10,11,12].reduce(Model.removeSpawn,value);
+ const recreated=[10,11,12].reduce((draft,id)=>{
+  const next=Model.newSpawn(draft,{x:id,y:25}),spawn=next.spawns.at(-1),path=next.graphs.at(-1);
+  assert.equal(spawn.id,id);
+  assert.equal(spawn.name,'Spawn '+id);
+  assert.equal(spawn.graphId,path.id);
+  assert.deepEqual(path.spawnIds,[id]);
+  return next;
+ },deleted);
+ assert.deepEqual(recreated.spawns.slice(0,9),value.spawns.slice(0,9));
+ assert.deepEqual(recreated.graphs.slice(0,2),[{id:'route-10',spawnIds:[]},{id:'route-13',spawnIds:[7]}]);
+ assert.deepEqual(recreated.graphs.slice(2).map(path=>path.id),['route-14','route-15','route-16']);
+ assert.deepEqual(recreated.spawnGroups[0].spawnIds,[7]);
+ assert.deepEqual(recreated.config.WaveCfg[0].SpawnTimeline,[{spawnId:7}]);
+ assert.deepEqual(recreated.config.WaveCfg[1].RefreshSoldierKind,['7#3,1']);
+ assert.equal(Model.newSpawn(recreated,{x:0,y:25}).spawns.at(-1).id,13);
+});
+
 test('spawn group validation catches malformed groups and duplicate or unknown members without rewriting the draft',()=>{
  const value=stage();
  value.spawnGroups=[{id:'duplicate',spawnIds:[1,8]},{id:'duplicate',spawnIds:[1]},null];

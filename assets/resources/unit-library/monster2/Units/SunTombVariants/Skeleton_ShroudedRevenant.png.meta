@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "17f4d2c6-992e-5e1c-a825-8068f1d472e1",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": false,
+  "width": 2048,
+  "height": 256,
+  "platformSettings": {},
+  "subMetas": {
+    "Skeleton_ShroudedRevenant": {
+      "ver": "1.0.6",
+      "uuid": "8fe9a6a3-08ea-563f-a67e-3beca8e4badb",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "17f4d2c6-992e-5e1c-a825-8068f1d472e1",
+      "trimType": "none",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 2048,
+      "height": 256,
+      "rawWidth": 2048,
+      "rawHeight": 256,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
