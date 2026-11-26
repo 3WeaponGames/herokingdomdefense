@@ -210,6 +210,17 @@ var def_KinghtFallEnemyBase = function (t) {
       Navigation.recoverStranded(this, game, t);
     } else this._enemyStall = null;
     if (mayChangeLife && !attackCurrent(this, frame)) return false;
+    var regen = this.cfg.HealthRegenPercent;
+    if (regen > 0 && Number.isFinite(regen) && Number.isFinite(t) && t > 0 &&
+        game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight) {
+      var regenTime = (frame.timers.HealthRegen || 0) + t;
+      var regenTicks = Math.floor(regenTime);
+      frame.timers.HealthRegen = regenTime - regenTicks;
+      if (regenTicks > 0 && this.hp < this.hpMax) {
+        RelicRuntime.heal(this, regen * regenTicks, { silent: true });
+        if (!attackCurrent(this, frame)) return false;
+      }
+    }
     this._targetSearchElapsed += t;
     var depth = game._depthView;
     if (!depth || depth._destroyed || depth.main !== this.node.parent) {

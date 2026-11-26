@@ -46814,7 +46814,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       }
     },
     "91007": {
@@ -46927,6 +46932,16 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91010.description]]",
         "lore": "[[loc:data.unitguide.91010.lore]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.1,
+            "duration": 3
+          }
+        }
       }
     },
     "91011": {
@@ -48008,7 +48023,7 @@
       "AttackType": 1,
       "Health": 64.77777778,
       "AttackDamage": 11.36842105,
-      "AttackInterval": 0.711,
+      "AttackInterval": 0.76788,
       "AttackRange": 49,
       "SearchRange": 223,
       "Speed": 149,
@@ -48098,7 +48113,7 @@
       "MonsterSource": "monster2/Alien_Vampire",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90009,
-      "AttackDamage": 0,
+      "AttackDamage": 3.75,
       "AttackRange": 260,
       "Guide": {
         "description": "[[loc:data.unitguide.91051.description]]",
@@ -48108,7 +48123,13 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "ranged",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
       },
       "EnemySkills": {
         "heal": {
@@ -48352,7 +48373,7 @@
       "AttackType": 1,
       "Health": 43.2,
       "AttackDamage": 4.75,
-      "AttackInterval": 1,
+      "AttackInterval": 1.1,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 117.3,
@@ -48687,7 +48708,13 @@
       },
       "UnitAttack": {
         "delivery": "ranged",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "poison": {
+            "percent": 0.12,
+            "duration": 3
+          }
+        }
       }
     },
     "91072": {
@@ -49001,7 +49028,8 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91082.description]]",
         "lore": "[[loc:data.unitguide.91082.lore]]"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "91083": {
       "ID": 91083,
@@ -49044,7 +49072,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "91084": {
       "ID": 91084,
@@ -49141,7 +49170,8 @@
             "duration": 4
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "91087": {
       "ID": 91087,
@@ -49176,7 +49206,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "91088": {
       "ID": 91088,
@@ -49225,7 +49256,8 @@
             "duration": 2
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "91089": {
       "ID": 91089,
@@ -49291,7 +49323,7 @@
       "AttackType": 1,
       "Health": 46,
       "AttackDamage": 5.7,
-      "AttackInterval": 0.91,
+      "AttackInterval": 1.0192,
       "AttackRange": 54,
       "SearchRange": 175,
       "Speed": 101,
@@ -49326,7 +49358,7 @@
       "AttackType": 1,
       "Health": 197,
       "AttackDamage": 12.2,
-      "AttackInterval": 0.82,
+      "AttackInterval": 0.9184,
       "AttackRange": 62,
       "SearchRange": 187,
       "Speed": 94,
@@ -49370,7 +49402,7 @@
       "AttackType": 1,
       "Health": 77,
       "AttackDamage": 5.3,
-      "AttackInterval": 0.93,
+      "AttackInterval": 1.0416,
       "AttackRange": 47,
       "SearchRange": 154,
       "Speed": 82,
@@ -49602,7 +49634,8 @@
           "radius": 230,
           "maxTargets": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "91100": {
       "ID": 91100,
@@ -49652,7 +49685,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "91101": {
       "ID": 91101,
@@ -49997,7 +50031,8 @@
         "pattern": "splash",
         "splashRadius": 76,
         "splashFalloff": 0.2
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "91113": {
       "ID": 91113,
@@ -50109,7 +50144,16 @@
       },
       "MonsterSource": "monster3/HornRabbit_Demon",
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
+      }
     },
     "91117": {
       "ID": 91117,
@@ -50305,7 +50349,17 @@
       },
       "MonsterSource": "monster3/Larva_Leech",
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.18,
+            "duration": 2.5
+          }
+        }
+      }
     },
     "91124": {
       "ID": 91124,
@@ -50314,7 +50368,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-berserker",
       "AttackType": 1,
       "Health": 120,
-      "AttackDamage": 12.5,
+      "AttackDamage": 14.375,
       "AttackInterval": 0.67,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -50342,7 +50396,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-red",
       "AttackType": 1,
       "Health": 75,
-      "AttackDamage": 14,
+      "AttackDamage": 16.1,
       "AttackInterval": 0.51,
       "AttackRange": 68,
       "SearchRange": 190,
@@ -50383,7 +50437,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-warlord",
       "AttackType": 1,
       "Health": 120,
-      "AttackDamage": 12.5,
+      "AttackDamage": 14.375,
       "AttackInterval": 0.67,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -50411,7 +50465,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-butcher",
       "AttackType": 1,
       "Health": 48,
-      "AttackDamage": 5,
+      "AttackDamage": 5.75,
       "AttackInterval": 1,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -50439,7 +50493,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-rookie",
       "AttackType": 1,
       "Health": 50,
-      "AttackDamage": 5.2,
+      "AttackDamage": 5.98,
       "AttackInterval": 0.98,
       "AttackRange": 51,
       "SearchRange": 170,
@@ -50474,7 +50528,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-veteran",
       "AttackType": 1,
       "Health": 48,
-      "AttackDamage": 5,
+      "AttackDamage": 5.75,
       "AttackInterval": 1,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -50605,7 +50659,8 @@
       },
       "MonsterSource": "monster3/Raptor_Swamp",
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "HealthRegenPercent": 0.015
     },
     "91134": {
       "ID": 91134,
@@ -50644,6 +50699,9 @@
           "bleed": {
             "percent": 0.12,
             "duration": 3
+          },
+          "lifeSteal": {
+            "percent": 0.12
           }
         }
       }
@@ -50656,7 +50714,7 @@
       "AttackType": 1,
       "Health": 162.55555556,
       "AttackDamage": 17.088,
-      "AttackInterval": 0.45529412,
+      "AttackInterval": 0.50992941,
       "AttackRange": 282,
       "SearchRange": 47,
       "Speed": 96,
@@ -50755,7 +50813,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/toad-giant",
       "AttackType": 2,
       "Health": 24,
-      "AttackDamage": 10,
+      "AttackDamage": 11,
       "AttackInterval": 0.5,
       "AttackRange": 250,
       "SearchRange": 0,
@@ -50949,7 +51007,13 @@
       "UnitAttack": {
         "delivery": "ranged",
         "pattern": "volley",
-        "shotsPerVolley": 2
+        "shotsPerVolley": 2,
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "91145": {
@@ -50986,7 +51050,12 @@
         "delivery": "ranged",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "91146": {
@@ -51099,7 +51168,17 @@
       },
       "MonsterSource": "monster3/Worm_Lightning",
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.14,
+            "duration": 2
+          }
+        }
+      }
     },
     "91150": {
       "ID": 91150,
@@ -51127,7 +51206,17 @@
       },
       "MonsterSource": "monster3/Worm_Poison",
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "poison": {
+            "percent": 0.1,
+            "duration": 4
+          }
+        }
+      }
     },
     "91151": {
       "ID": 91151,
@@ -51350,7 +51439,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-siegechief",
       "AttackType": 1,
       "Health": 665,
-      "AttackDamage": 38.5,
+      "AttackDamage": 44.275,
       "AttackInterval": 0.73,
       "AttackRange": 77,
       "SearchRange": 195,
@@ -51402,7 +51491,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-crimsonguard",
       "AttackType": 1,
       "Health": 244,
-      "AttackDamage": 16.5,
+      "AttackDamage": 18.975,
       "AttackInterval": 0.63,
       "AttackRange": 59,
       "SearchRange": 185,
@@ -51453,7 +51542,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/reaper-orcshaman",
       "AttackType": 1,
       "Health": 189.44444444,
-      "AttackDamage": 11.712,
+      "AttackDamage": 13.4688,
       "AttackInterval": 0.66705882,
       "AttackRange": 223,
       "SearchRange": 42,
@@ -51533,7 +51622,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "91162": {
       "ID": 91162,
@@ -51560,6 +51650,16 @@
       "BehaviorTemplate": 90002,
       "Guide": {
         "description": "[[loc:data.unitguide.91162.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "91163": {
@@ -51622,6 +51722,10 @@
         "onHit": {
           "lifeSteal": {
             "percent": 0.15
+          },
+          "burn": {
+            "percent": 0.08,
+            "duration": 2
           }
         }
       },
@@ -51643,7 +51747,7 @@
       "AttackType": 1,
       "Health": 42,
       "AttackDamage": 21.11111111,
-      "AttackInterval": 0.22272727,
+      "AttackInterval": 0.24945454,
       "AttackRange": 193,
       "SearchRange": 48,
       "Speed": 119,
@@ -51679,7 +51783,7 @@
       "AttackType": 1,
       "Health": 51,
       "AttackDamage": 8.2,
-      "AttackInterval": 0.91,
+      "AttackInterval": 1.0192,
       "AttackRange": 45,
       "SearchRange": 218,
       "Speed": 130,
@@ -51727,7 +51831,7 @@
       "AttackType": 1,
       "Health": 88.36363636,
       "AttackDamage": 9.45,
-      "AttackInterval": 0.565,
+      "AttackInterval": 0.6328,
       "AttackRange": 66,
       "SearchRange": 130,
       "Speed": 89,
@@ -51761,7 +51865,7 @@
       "AttackType": 1,
       "Health": 48,
       "AttackDamage": 5,
-      "AttackInterval": 1,
+      "AttackInterval": 1.12,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 150,
@@ -51788,7 +51892,7 @@
       "AttackType": 1,
       "Health": 507.27272727,
       "AttackDamage": 33.85416667,
-      "AttackInterval": 0.84055556,
+      "AttackInterval": 0.94142223,
       "AttackRange": 75,
       "SearchRange": 200,
       "Speed": 80,
@@ -51859,7 +51963,12 @@
         "delivery": "melee",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       },
       "EnemySkills": {
         "haste": {
@@ -51985,7 +52094,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/bird-orcwyvern",
       "AttackType": 1,
       "Health": 49,
-      "AttackDamage": 12.45555556,
+      "AttackDamage": 14.32388889,
       "AttackInterval": 0.37272727,
       "AttackRange": 244,
       "SearchRange": 55,
@@ -52045,7 +52154,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "91176": {
@@ -52126,7 +52240,13 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "burn": {
+            "percent": 0.09,
+            "duration": 2
+          }
+        }
       }
     },
     "91179": {
@@ -52168,7 +52288,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.18
+          }
+        }
       },
       "EnemySkills": {
         "moveSlow": {
@@ -52209,6 +52334,16 @@
       "BehaviorTemplate": 90002,
       "EnemyTargeting": {
         "mode": "hero"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.08,
+            "duration": 3
+          }
+        }
       }
     },
     "91181": {
@@ -52218,7 +52353,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
       "AttackType": 1,
       "Health": 50,
-      "AttackDamage": 6.3,
+      "AttackDamage": 7.245,
       "AttackInterval": 1.13,
       "AttackRange": 43,
       "SearchRange": 240,
@@ -52293,7 +52428,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/rhino-orcwarbeast",
       "AttackType": 1,
       "Health": 88,
-      "AttackDamage": 11,
+      "AttackDamage": 12.65,
       "AttackInterval": 0.45,
       "AttackRange": 64,
       "SearchRange": 167,
@@ -52444,7 +52579,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/buffalo-hellgatebehemoth",
       "AttackType": 1,
       "Health": 72,
-      "AttackDamage": 10.02777778,
+      "AttackDamage": 11.03055556,
       "AttackInterval": 0.6,
       "AttackRange": 67,
       "SearchRange": 179,
@@ -52469,7 +52604,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.015
     },
     "100000": {
       "ID": 100000,
@@ -54843,7 +54979,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       }
     },
     "100086": {
@@ -54883,7 +55024,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       }
     },
     "100087": {
@@ -54923,7 +55069,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       }
     },
     "100088": {
@@ -54963,7 +55114,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       }
     },
     "100089": {
@@ -55003,7 +55159,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       }
     },
     "100090": {
@@ -55436,6 +55597,16 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91010.description]]",
         "lore": "[[loc:data.unitguide.91010.lore]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.1,
+            "duration": 3
+          }
+        }
       }
     },
     "100106": {
@@ -55463,6 +55634,16 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91010.description]]",
         "lore": "[[loc:data.unitguide.91010.lore]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.1,
+            "duration": 3
+          }
+        }
       }
     },
     "100107": {
@@ -55490,6 +55671,16 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91010.description]]",
         "lore": "[[loc:data.unitguide.91010.lore]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.1,
+            "duration": 3
+          }
+        }
       }
     },
     "100108": {
@@ -55517,6 +55708,16 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91010.description]]",
         "lore": "[[loc:data.unitguide.91010.lore]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.1,
+            "duration": 3
+          }
+        }
       }
     },
     "100109": {
@@ -55544,6 +55745,16 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91010.description]]",
         "lore": "[[loc:data.unitguide.91010.lore]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.1,
+            "duration": 3
+          }
+        }
       }
     },
     "100110": {
@@ -60723,7 +60934,7 @@
       "AttackType": 1,
       "Health": 58.88888889,
       "AttackDamage": 9.47368421,
-      "AttackInterval": 0.79,
+      "AttackInterval": 0.8532,
       "AttackRange": 49,
       "SearchRange": 223,
       "Speed": 157,
@@ -60771,7 +60982,7 @@
       "AttackType": 1,
       "Health": 70.66666667,
       "AttackDamage": 8.52631579,
-      "AttackInterval": 0.711,
+      "AttackInterval": 0.76788,
       "AttackRange": 49,
       "SearchRange": 223,
       "Speed": 141,
@@ -60819,7 +61030,7 @@
       "AttackType": 1,
       "Health": 53,
       "AttackDamage": 9,
-      "AttackInterval": 0.79,
+      "AttackInterval": 0.8532,
       "AttackRange": 49,
       "SearchRange": 223,
       "Speed": 180,
@@ -60867,7 +61078,7 @@
       "AttackType": 1,
       "Health": 53,
       "AttackDamage": 8.52631579,
-      "AttackInterval": 0.869,
+      "AttackInterval": 0.93852,
       "AttackRange": 49,
       "SearchRange": 223,
       "Speed": 172,
@@ -60915,7 +61126,7 @@
       "AttackType": 1,
       "Health": 53,
       "AttackDamage": 11.84210526,
-      "AttackInterval": 0.6715,
+      "AttackInterval": 0.72522,
       "AttackRange": 49,
       "SearchRange": 223,
       "Speed": 133,
@@ -61110,7 +61321,7 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90009,
-      "AttackDamage": 0,
+      "AttackDamage": 3,
       "AttackRange": 260,
       "Guide": {
         "description": "[[loc:data.unitguide.91051.description]]",
@@ -61120,7 +61331,13 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "ranged",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
       },
       "EnemySkills": {
         "heal": {
@@ -61151,7 +61368,7 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90009,
-      "AttackDamage": 0,
+      "AttackDamage": 2.7,
       "AttackRange": 260,
       "Guide": {
         "description": "[[loc:data.unitguide.91051.description]]",
@@ -61161,7 +61378,13 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "ranged",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
       },
       "EnemySkills": {
         "heal": {
@@ -61192,7 +61415,7 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90009,
-      "AttackDamage": 0,
+      "AttackDamage": 2.85,
       "AttackRange": 260,
       "Guide": {
         "description": "[[loc:data.unitguide.91051.description]]",
@@ -61202,7 +61425,13 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "ranged",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
       },
       "EnemySkills": {
         "heal": {
@@ -61233,7 +61462,7 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90009,
-      "AttackDamage": 0,
+      "AttackDamage": 2.7,
       "AttackRange": 260,
       "Guide": {
         "description": "[[loc:data.unitguide.91051.description]]",
@@ -61243,7 +61472,13 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "ranged",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
       },
       "EnemySkills": {
         "heal": {
@@ -61274,7 +61509,7 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90009,
-      "AttackDamage": 0,
+      "AttackDamage": 3.6,
       "AttackRange": 260,
       "Guide": {
         "description": "[[loc:data.unitguide.91051.description]]",
@@ -61284,7 +61519,13 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "ranged",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
       },
       "EnemySkills": {
         "heal": {
@@ -62388,7 +62629,7 @@
       "AttackType": 1,
       "Health": 48,
       "AttackDamage": 5,
-      "AttackInterval": 1,
+      "AttackInterval": 1.1,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 102,
@@ -62415,7 +62656,7 @@
       "AttackType": 1,
       "Health": 57.6,
       "AttackDamage": 4.5,
-      "AttackInterval": 0.9,
+      "AttackInterval": 0.99,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 91.8,
@@ -62442,7 +62683,7 @@
       "AttackType": 1,
       "Health": 43.2,
       "AttackDamage": 4.5,
-      "AttackInterval": 1.1,
+      "AttackInterval": 1.21,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 112.2,
@@ -62469,7 +62710,7 @@
       "AttackType": 1,
       "Health": 52.8,
       "AttackDamage": 6,
-      "AttackInterval": 0.9,
+      "AttackInterval": 0.99,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 96.9,
@@ -62496,7 +62737,7 @@
       "AttackType": 1,
       "Health": 43.2,
       "AttackDamage": 6.25,
-      "AttackInterval": 0.85,
+      "AttackInterval": 0.935,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 86.7,
@@ -65415,7 +65656,8 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91082.description]]",
         "lore": "[[loc:data.unitguide.91082.lore]]"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100466": {
       "ID": 100466,
@@ -65442,7 +65684,8 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91082.description]]",
         "lore": "[[loc:data.unitguide.91082.lore]]"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100467": {
       "ID": 100467,
@@ -65469,7 +65712,8 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91082.description]]",
         "lore": "[[loc:data.unitguide.91082.lore]]"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100468": {
       "ID": 100468,
@@ -65496,7 +65740,8 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91082.description]]",
         "lore": "[[loc:data.unitguide.91082.lore]]"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100469": {
       "ID": 100469,
@@ -65523,7 +65768,8 @@
       "Guide": {
         "description": "[[loc:data.unitguide.91082.description]]",
         "lore": "[[loc:data.unitguide.91082.lore]]"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100470": {
       "ID": 100470,
@@ -65565,7 +65811,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100471": {
       "ID": 100471,
@@ -65607,7 +65854,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100472": {
       "ID": 100472,
@@ -65649,7 +65897,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100473": {
       "ID": 100473,
@@ -65691,7 +65940,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100474": {
       "ID": 100474,
@@ -65733,7 +65983,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100475": {
       "ID": 100475,
@@ -66043,7 +66294,8 @@
             "duration": 4
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100486": {
       "ID": 100486,
@@ -66083,7 +66335,8 @@
             "duration": 4
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100487": {
       "ID": 100487,
@@ -66123,7 +66376,8 @@
             "duration": 4
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100488": {
       "ID": 100488,
@@ -66163,7 +66417,8 @@
             "duration": 4
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100489": {
       "ID": 100489,
@@ -66203,7 +66458,8 @@
             "duration": 4
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100490": {
       "ID": 100490,
@@ -66237,7 +66493,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100491": {
       "ID": 100491,
@@ -66271,7 +66528,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100492": {
       "ID": 100492,
@@ -66305,7 +66563,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100493": {
       "ID": 100493,
@@ -66339,7 +66598,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100494": {
       "ID": 100494,
@@ -66373,7 +66633,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100495": {
       "ID": 100495,
@@ -66421,7 +66682,8 @@
             "duration": 2
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100496": {
       "ID": 100496,
@@ -66469,7 +66731,8 @@
             "duration": 2
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100497": {
       "ID": 100497,
@@ -66517,7 +66780,8 @@
             "duration": 2
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100498": {
       "ID": 100498,
@@ -66565,7 +66829,8 @@
             "duration": 2
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100499": {
       "ID": 100499,
@@ -66613,7 +66878,8 @@
             "duration": 2
           }
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100500": {
       "ID": 100500,
@@ -66893,7 +67159,7 @@
       "AttackType": 1,
       "Health": 55.2,
       "AttackDamage": 5.13,
-      "AttackInterval": 0.819,
+      "AttackInterval": 0.91728,
       "AttackRange": 54,
       "SearchRange": 175,
       "Speed": 91,
@@ -66927,7 +67193,7 @@
       "AttackType": 1,
       "Health": 41.4,
       "AttackDamage": 5.415,
-      "AttackInterval": 0.91,
+      "AttackInterval": 1.0192,
       "AttackRange": 54,
       "SearchRange": 175,
       "Speed": 116,
@@ -66961,7 +67227,7 @@
       "AttackType": 1,
       "Health": 41.4,
       "AttackDamage": 5.13,
-      "AttackInterval": 1.001,
+      "AttackInterval": 1.12112,
       "AttackRange": 54,
       "SearchRange": 175,
       "Speed": 111,
@@ -66995,7 +67261,7 @@
       "AttackType": 1,
       "Health": 50.6,
       "AttackDamage": 6.84,
-      "AttackInterval": 0.819,
+      "AttackInterval": 0.91728,
       "AttackRange": 54,
       "SearchRange": 175,
       "Speed": 96,
@@ -67029,7 +67295,7 @@
       "AttackType": 1,
       "Health": 41.4,
       "AttackDamage": 7.125,
-      "AttackInterval": 0.7735,
+      "AttackInterval": 0.86632,
       "AttackRange": 54,
       "SearchRange": 175,
       "Speed": 86,
@@ -67063,7 +67329,7 @@
       "AttackType": 1,
       "Health": 179.09090909,
       "AttackDamage": 10.16666667,
-      "AttackInterval": 0.91111111,
+      "AttackInterval": 1.02044444,
       "AttackRange": 62,
       "SearchRange": 187,
       "Speed": 99,
@@ -67106,7 +67372,7 @@
       "AttackType": 1,
       "Health": 214.90909091,
       "AttackDamage": 9.15,
-      "AttackInterval": 0.82,
+      "AttackInterval": 0.9184,
       "AttackRange": 62,
       "SearchRange": 187,
       "Speed": 89,
@@ -67149,7 +67415,7 @@
       "AttackType": 1,
       "Health": 161.18181818,
       "AttackDamage": 9.65833333,
-      "AttackInterval": 0.91111111,
+      "AttackInterval": 1.02044444,
       "AttackRange": 62,
       "SearchRange": 187,
       "Speed": 114,
@@ -67192,7 +67458,7 @@
       "AttackType": 1,
       "Health": 161.18181818,
       "AttackDamage": 9.15,
-      "AttackInterval": 1.00222222,
+      "AttackInterval": 1.12248889,
       "AttackRange": 62,
       "SearchRange": 187,
       "Speed": 109,
@@ -67235,7 +67501,7 @@
       "AttackType": 1,
       "Health": 161.18181818,
       "AttackDamage": 12.70833333,
-      "AttackInterval": 0.77444444,
+      "AttackInterval": 0.86737777,
       "AttackRange": 62,
       "SearchRange": 187,
       "Speed": 84,
@@ -67278,7 +67544,7 @@
       "AttackType": 1,
       "Health": 64.16666667,
       "AttackDamage": 5.88888889,
-      "AttackInterval": 1.03333333,
+      "AttackInterval": 1.15733333,
       "AttackRange": 47,
       "SearchRange": 154,
       "Speed": 91,
@@ -67320,7 +67586,7 @@
       "AttackType": 1,
       "Health": 57.75,
       "AttackDamage": 5.59444444,
-      "AttackInterval": 1.03333333,
+      "AttackInterval": 1.15733333,
       "AttackRange": 47,
       "SearchRange": 154,
       "Speed": 105,
@@ -67362,7 +67628,7 @@
       "AttackType": 1,
       "Health": 57.75,
       "AttackDamage": 5.3,
-      "AttackInterval": 1.13666667,
+      "AttackInterval": 1.27306667,
       "AttackRange": 47,
       "SearchRange": 154,
       "Speed": 100,
@@ -67404,7 +67670,7 @@
       "AttackType": 1,
       "Health": 70.58333333,
       "AttackDamage": 7.06666667,
-      "AttackInterval": 0.93,
+      "AttackInterval": 1.0416,
       "AttackRange": 47,
       "SearchRange": 154,
       "Speed": 87,
@@ -67446,7 +67712,7 @@
       "AttackType": 1,
       "Health": 57.75,
       "AttackDamage": 7.36111111,
-      "AttackInterval": 0.87833333,
+      "AttackInterval": 0.98373333,
       "AttackRange": 47,
       "SearchRange": 154,
       "Speed": 80,
@@ -68271,7 +68537,8 @@
           "radius": 230,
           "maxTargets": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100551": {
       "ID": 100551,
@@ -68314,7 +68581,8 @@
           "radius": 230,
           "maxTargets": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100552": {
       "ID": 100552,
@@ -68357,7 +68625,8 @@
           "radius": 230,
           "maxTargets": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100553": {
       "ID": 100553,
@@ -68400,7 +68669,8 @@
           "radius": 230,
           "maxTargets": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100554": {
       "ID": 100554,
@@ -68443,7 +68713,8 @@
           "radius": 230,
           "maxTargets": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100555": {
       "ID": 100555,
@@ -68492,7 +68763,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100556": {
       "ID": 100556,
@@ -68541,7 +68813,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100557": {
       "ID": 100557,
@@ -68590,7 +68863,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100558": {
       "ID": 100558,
@@ -68639,7 +68913,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100559": {
       "ID": 100559,
@@ -68688,7 +68963,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100560": {
       "ID": 100560,
@@ -70209,7 +70485,8 @@
         "pattern": "splash",
         "splashRadius": 76,
         "splashFalloff": 0.2
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100616": {
       "ID": 100616,
@@ -70245,7 +70522,8 @@
         "pattern": "splash",
         "splashRadius": 76,
         "splashFalloff": 0.2
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100617": {
       "ID": 100617,
@@ -70281,7 +70559,8 @@
         "pattern": "splash",
         "splashRadius": 76,
         "splashFalloff": 0.2
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100618": {
       "ID": 100618,
@@ -70317,7 +70596,8 @@
         "pattern": "splash",
         "splashRadius": 76,
         "splashFalloff": 0.2
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100619": {
       "ID": 100619,
@@ -70353,7 +70633,8 @@
         "pattern": "splash",
         "splashRadius": 76,
         "splashFalloff": 0.2
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "100620": {
       "ID": 100620,
@@ -70785,7 +71066,16 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
+      }
     },
     "100636": {
       "ID": 100636,
@@ -70812,7 +71102,16 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
+      }
     },
     "100637": {
       "ID": 100637,
@@ -70839,7 +71138,16 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
+      }
     },
     "100638": {
       "ID": 100638,
@@ -70866,7 +71174,16 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
+      }
     },
     "100639": {
       "ID": 100639,
@@ -70893,7 +71210,16 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.1
+          }
+        }
+      }
     },
     "100640": {
       "ID": 100640,
@@ -71730,7 +72056,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.18,
+            "duration": 2.5
+          }
+        }
+      }
     },
     "100671": {
       "ID": 100671,
@@ -71757,7 +72093,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.18,
+            "duration": 2.5
+          }
+        }
+      }
     },
     "100672": {
       "ID": 100672,
@@ -71821,7 +72167,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.18,
+            "duration": 2.5
+          }
+        }
+      }
     },
     "100674": {
       "ID": 100674,
@@ -71848,7 +72204,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.18,
+            "duration": 2.5
+          }
+        }
+      }
     },
     "100675": {
       "ID": 100675,
@@ -71857,7 +72223,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-berserker",
       "AttackType": 1,
       "Health": 109.09090909,
-      "AttackDamage": 10.41666666,
+      "AttackDamage": 11.97916666,
       "AttackInterval": 0.74444444,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -71884,7 +72250,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-berserker",
       "AttackType": 1,
       "Health": 130.90909091,
-      "AttackDamage": 9.375,
+      "AttackDamage": 10.78125,
       "AttackInterval": 0.67,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -71911,7 +72277,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-berserker",
       "AttackType": 1,
       "Health": 98.18181818,
-      "AttackDamage": 9.89583333,
+      "AttackDamage": 11.38020833,
       "AttackInterval": 0.74444444,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -71938,7 +72304,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-berserker",
       "AttackType": 1,
       "Health": 98.18181818,
-      "AttackDamage": 9.375,
+      "AttackDamage": 10.78125,
       "AttackInterval": 0.81888888,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -71965,7 +72331,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-berserker",
       "AttackType": 1,
       "Health": 98.18181818,
-      "AttackDamage": 13.02083333,
+      "AttackDamage": 14.97395833,
       "AttackInterval": 0.63277777,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -71992,7 +72358,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-red",
       "AttackType": 1,
       "Health": 68.18181818,
-      "AttackDamage": 11.66666667,
+      "AttackDamage": 13.41666667,
       "AttackInterval": 0.56666667,
       "AttackRange": 68,
       "SearchRange": 190,
@@ -72032,7 +72398,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-red",
       "AttackType": 1,
       "Health": 81.81818182,
-      "AttackDamage": 10.5,
+      "AttackDamage": 12.075,
       "AttackInterval": 0.51,
       "AttackRange": 68,
       "SearchRange": 190,
@@ -72072,7 +72438,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-red",
       "AttackType": 1,
       "Health": 61.36363636,
-      "AttackDamage": 11.08333333,
+      "AttackDamage": 12.74583333,
       "AttackInterval": 0.56666667,
       "AttackRange": 68,
       "SearchRange": 190,
@@ -72112,7 +72478,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-red",
       "AttackType": 1,
       "Health": 61.36363636,
-      "AttackDamage": 10.5,
+      "AttackDamage": 12.075,
       "AttackInterval": 0.62333333,
       "AttackRange": 68,
       "SearchRange": 190,
@@ -72152,7 +72518,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-red",
       "AttackType": 1,
       "Health": 61.36363636,
-      "AttackDamage": 14.58333333,
+      "AttackDamage": 16.77083333,
       "AttackInterval": 0.48166667,
       "AttackRange": 68,
       "SearchRange": 190,
@@ -72192,7 +72558,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-warlord",
       "AttackType": 1,
       "Health": 109.09090909,
-      "AttackDamage": 10.41666666,
+      "AttackDamage": 11.97916666,
       "AttackInterval": 0.74444444,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72219,7 +72585,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-warlord",
       "AttackType": 1,
       "Health": 130.90909091,
-      "AttackDamage": 9.375,
+      "AttackDamage": 10.78125,
       "AttackInterval": 0.67,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72246,7 +72612,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-warlord",
       "AttackType": 1,
       "Health": 98.18181818,
-      "AttackDamage": 9.89583333,
+      "AttackDamage": 11.38020833,
       "AttackInterval": 0.74444444,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72273,7 +72639,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-warlord",
       "AttackType": 1,
       "Health": 98.18181818,
-      "AttackDamage": 9.375,
+      "AttackDamage": 10.78125,
       "AttackInterval": 0.81888888,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72300,7 +72666,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-warlord",
       "AttackType": 1,
       "Health": 98.18181818,
-      "AttackDamage": 13.02083333,
+      "AttackDamage": 14.97395833,
       "AttackInterval": 0.63277777,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72327,7 +72693,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-butcher",
       "AttackType": 1,
       "Health": 57.6,
-      "AttackDamage": 4.5,
+      "AttackDamage": 5.175,
       "AttackInterval": 0.9,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72354,7 +72720,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-butcher",
       "AttackType": 1,
       "Health": 43.2,
-      "AttackDamage": 4.75,
+      "AttackDamage": 5.4625,
       "AttackInterval": 1,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72381,7 +72747,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-butcher",
       "AttackType": 1,
       "Health": 43.2,
-      "AttackDamage": 4.5,
+      "AttackDamage": 5.175,
       "AttackInterval": 1.1,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72408,7 +72774,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-butcher",
       "AttackType": 1,
       "Health": 52.8,
-      "AttackDamage": 6,
+      "AttackDamage": 6.9,
       "AttackInterval": 0.9,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72435,7 +72801,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-butcher",
       "AttackType": 1,
       "Health": 43.2,
-      "AttackDamage": 6.25,
+      "AttackDamage": 7.1875,
       "AttackInterval": 0.85,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72462,7 +72828,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-rookie",
       "AttackType": 1,
       "Health": 60,
-      "AttackDamage": 4.68,
+      "AttackDamage": 5.382,
       "AttackInterval": 0.882,
       "AttackRange": 51,
       "SearchRange": 170,
@@ -72496,7 +72862,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-rookie",
       "AttackType": 1,
       "Health": 45,
-      "AttackDamage": 4.94,
+      "AttackDamage": 5.681,
       "AttackInterval": 0.98,
       "AttackRange": 51,
       "SearchRange": 170,
@@ -72530,7 +72896,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-rookie",
       "AttackType": 1,
       "Health": 45,
-      "AttackDamage": 4.68,
+      "AttackDamage": 5.382,
       "AttackInterval": 1.078,
       "AttackRange": 51,
       "SearchRange": 170,
@@ -72564,7 +72930,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-rookie",
       "AttackType": 1,
       "Health": 55,
-      "AttackDamage": 6.24,
+      "AttackDamage": 7.176,
       "AttackInterval": 0.882,
       "AttackRange": 51,
       "SearchRange": 170,
@@ -72598,7 +72964,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-rookie",
       "AttackType": 1,
       "Health": 45,
-      "AttackDamage": 6.5,
+      "AttackDamage": 7.475,
       "AttackInterval": 0.833,
       "AttackRange": 51,
       "SearchRange": 170,
@@ -72632,7 +72998,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-veteran",
       "AttackType": 1,
       "Health": 57.6,
-      "AttackDamage": 4.5,
+      "AttackDamage": 5.175,
       "AttackInterval": 0.9,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72659,7 +73025,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-veteran",
       "AttackType": 1,
       "Health": 43.2,
-      "AttackDamage": 4.75,
+      "AttackDamage": 5.4625,
       "AttackInterval": 1,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72686,7 +73052,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-veteran",
       "AttackType": 1,
       "Health": 43.2,
-      "AttackDamage": 4.5,
+      "AttackDamage": 5.175,
       "AttackInterval": 1.1,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72713,7 +73079,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-veteran",
       "AttackType": 1,
       "Health": 52.8,
-      "AttackDamage": 6,
+      "AttackDamage": 6.9,
       "AttackInterval": 0.9,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -72740,7 +73106,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-veteran",
       "AttackType": 1,
       "Health": 43.2,
-      "AttackDamage": 6.25,
+      "AttackDamage": 7.1875,
       "AttackInterval": 0.85,
       "AttackRange": 50,
       "SearchRange": 220,
@@ -73190,7 +73556,8 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "HealthRegenPercent": 0.015
     },
     "100721": {
       "ID": 100721,
@@ -73217,7 +73584,8 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "HealthRegenPercent": 0.015
     },
     "100722": {
       "ID": 100722,
@@ -73244,7 +73612,8 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "HealthRegenPercent": 0.015
     },
     "100723": {
       "ID": 100723,
@@ -73271,7 +73640,8 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "HealthRegenPercent": 0.015
     },
     "100724": {
       "ID": 100724,
@@ -73298,7 +73668,8 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "HealthRegenPercent": 0.015
     },
     "100725": {
       "ID": 100725,
@@ -73336,6 +73707,9 @@
           "bleed": {
             "percent": 0.12,
             "duration": 3
+          },
+          "lifeSteal": {
+            "percent": 0.12
           }
         }
       }
@@ -73376,6 +73750,9 @@
           "bleed": {
             "percent": 0.12,
             "duration": 3
+          },
+          "lifeSteal": {
+            "percent": 0.12
           }
         }
       }
@@ -73416,6 +73793,9 @@
           "bleed": {
             "percent": 0.12,
             "duration": 3
+          },
+          "lifeSteal": {
+            "percent": 0.12
           }
         }
       }
@@ -73456,6 +73836,9 @@
           "bleed": {
             "percent": 0.12,
             "duration": 3
+          },
+          "lifeSteal": {
+            "percent": 0.12
           }
         }
       }
@@ -73496,6 +73879,9 @@
           "bleed": {
             "percent": 0.12,
             "duration": 3
+          },
+          "lifeSteal": {
+            "percent": 0.12
           }
         }
       }
@@ -73508,7 +73894,7 @@
       "AttackType": 1,
       "Health": 147.77777778,
       "AttackDamage": 14.24,
-      "AttackInterval": 0.50588235,
+      "AttackInterval": 0.56658823,
       "AttackRange": 282,
       "SearchRange": 47,
       "Speed": 101,
@@ -73551,7 +73937,7 @@
       "AttackType": 1,
       "Health": 177.33333333,
       "AttackDamage": 12.816,
-      "AttackInterval": 0.45529412,
+      "AttackInterval": 0.50992941,
       "AttackRange": 282,
       "SearchRange": 47,
       "Speed": 91,
@@ -73594,7 +73980,7 @@
       "AttackType": 1,
       "Health": 133,
       "AttackDamage": 13.528,
-      "AttackInterval": 0.50588235,
+      "AttackInterval": 0.56658823,
       "AttackRange": 282,
       "SearchRange": 47,
       "Speed": 116,
@@ -73637,7 +74023,7 @@
       "AttackType": 1,
       "Health": 133,
       "AttackDamage": 12.816,
-      "AttackInterval": 0.55647059,
+      "AttackInterval": 0.62324706,
       "AttackRange": 282,
       "SearchRange": 47,
       "Speed": 111,
@@ -73680,7 +74066,7 @@
       "AttackType": 1,
       "Health": 133,
       "AttackDamage": 17.8,
-      "AttackInterval": 0.43,
+      "AttackInterval": 0.4816,
       "AttackRange": 282,
       "SearchRange": 47,
       "Speed": 86,
@@ -73992,7 +74378,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/toad-giant",
       "AttackType": 2,
       "Health": 26.66666666,
-      "AttackDamage": 11.11111111,
+      "AttackDamage": 12.22222222,
       "AttackInterval": 0.45454545,
       "AttackRange": 250,
       "SearchRange": 0,
@@ -74019,7 +74405,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/toad-giant",
       "AttackType": 2,
       "Health": 31.99999999,
-      "AttackDamage": 10,
+      "AttackDamage": 11,
       "AttackInterval": 0.40909091,
       "AttackRange": 250,
       "SearchRange": 0,
@@ -74046,7 +74432,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/toad-giant",
       "AttackType": 2,
       "Health": 24,
-      "AttackDamage": 10.55555555,
+      "AttackDamage": 11.61111111,
       "AttackInterval": 0.45454545,
       "AttackRange": 250,
       "SearchRange": 0,
@@ -74073,7 +74459,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/toad-giant",
       "AttackType": 2,
       "Health": 29.33333333,
-      "AttackDamage": 13.33333333,
+      "AttackDamage": 14.66666666,
       "AttackInterval": 0.40909091,
       "AttackRange": 250,
       "SearchRange": 0,
@@ -74100,7 +74486,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/toad-giant",
       "AttackType": 2,
       "Health": 24,
-      "AttackDamage": 13.88888889,
+      "AttackDamage": 15.27777778,
       "AttackInterval": 0.38636363,
       "AttackRange": 250,
       "SearchRange": 0,
@@ -74827,7 +75213,13 @@
       "UnitAttack": {
         "delivery": "ranged",
         "pattern": "volley",
-        "shotsPerVolley": 2
+        "shotsPerVolley": 2,
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "100776": {
@@ -74862,7 +75254,13 @@
       "UnitAttack": {
         "delivery": "ranged",
         "pattern": "volley",
-        "shotsPerVolley": 2
+        "shotsPerVolley": 2,
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "100777": {
@@ -74897,7 +75295,13 @@
       "UnitAttack": {
         "delivery": "ranged",
         "pattern": "volley",
-        "shotsPerVolley": 2
+        "shotsPerVolley": 2,
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "100778": {
@@ -74932,7 +75336,13 @@
       "UnitAttack": {
         "delivery": "ranged",
         "pattern": "volley",
-        "shotsPerVolley": 2
+        "shotsPerVolley": 2,
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "100779": {
@@ -74967,7 +75377,13 @@
       "UnitAttack": {
         "delivery": "ranged",
         "pattern": "volley",
-        "shotsPerVolley": 2
+        "shotsPerVolley": 2,
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "100780": {
@@ -75003,7 +75419,12 @@
         "delivery": "ranged",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "100781": {
@@ -75039,7 +75460,12 @@
         "delivery": "ranged",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "100782": {
@@ -75075,7 +75501,12 @@
         "delivery": "ranged",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "100783": {
@@ -75111,7 +75542,12 @@
         "delivery": "ranged",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "100784": {
@@ -75147,7 +75583,12 @@
         "delivery": "ranged",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "100785": {
@@ -75580,7 +76021,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.14,
+            "duration": 2
+          }
+        }
+      }
     },
     "100801": {
       "ID": 100801,
@@ -75610,7 +76061,13 @@
       "BehaviorTemplate": 90001,
       "UnitAttack": {
         "delivery": "ranged",
-        "pattern": "chain"
+        "pattern": "chain",
+        "onHit": {
+          "slow": {
+            "percent": 0.14,
+            "duration": 2
+          }
+        }
       }
     },
     "100802": {
@@ -75638,7 +76095,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.14,
+            "duration": 2
+          }
+        }
+      }
     },
     "100803": {
       "ID": 100803,
@@ -75665,7 +76132,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.14,
+            "duration": 2
+          }
+        }
+      }
     },
     "100804": {
       "ID": 100804,
@@ -75692,7 +76169,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.14,
+            "duration": 2
+          }
+        }
+      }
     },
     "100805": {
       "ID": 100805,
@@ -75719,7 +76206,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "poison": {
+            "percent": 0.1,
+            "duration": 4
+          }
+        }
+      }
     },
     "100806": {
       "ID": 100806,
@@ -75746,7 +76243,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "poison": {
+            "percent": 0.1,
+            "duration": 4
+          }
+        }
+      }
     },
     "100807": {
       "ID": 100807,
@@ -75776,7 +76283,13 @@
       "BehaviorTemplate": 90001,
       "UnitAttack": {
         "delivery": "ranged",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "poison": {
+            "percent": 0.1,
+            "duration": 4
+          }
+        }
       }
     },
     "100808": {
@@ -75804,7 +76317,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "poison": {
+            "percent": 0.1,
+            "duration": 4
+          }
+        }
+      }
     },
     "100809": {
       "ID": 100809,
@@ -75831,7 +76354,17 @@
         "lore": "[[loc:data.unitguide.90001.lore]]"
       },
       "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
+      "BehaviorTemplate": 90001,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "poison": {
+            "percent": 0.1,
+            "duration": 4
+          }
+        }
+      }
     },
     "101655": {
       "ID": 101655,
@@ -76815,7 +77348,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-siegechief",
       "AttackType": 1,
       "Health": 604.54545455,
-      "AttackDamage": 32.08333333,
+      "AttackDamage": 36.89583333,
       "AttackInterval": 0.81111111,
       "AttackRange": 77,
       "SearchRange": 195,
@@ -76866,7 +77399,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-siegechief",
       "AttackType": 1,
       "Health": 725.45454545,
-      "AttackDamage": 28.875,
+      "AttackDamage": 33.20625,
       "AttackInterval": 0.73,
       "AttackRange": 77,
       "SearchRange": 195,
@@ -76917,7 +77450,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-siegechief",
       "AttackType": 1,
       "Health": 544.09090909,
-      "AttackDamage": 30.47916667,
+      "AttackDamage": 35.05104167,
       "AttackInterval": 0.81111111,
       "AttackRange": 77,
       "SearchRange": 195,
@@ -76968,7 +77501,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-siegechief",
       "AttackType": 1,
       "Health": 544.09090909,
-      "AttackDamage": 28.875,
+      "AttackDamage": 33.20625,
       "AttackInterval": 0.89222222,
       "AttackRange": 77,
       "SearchRange": 195,
@@ -77019,7 +77552,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsmasher-siegechief",
       "AttackType": 1,
       "Health": 544.09090909,
-      "AttackDamage": 40.10416667,
+      "AttackDamage": 46.11979167,
       "AttackInterval": 0.68944444,
       "AttackRange": 77,
       "SearchRange": 195,
@@ -77070,7 +77603,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-crimsonguard",
       "AttackType": 1,
       "Health": 292.8,
-      "AttackDamage": 14.85,
+      "AttackDamage": 17.0775,
       "AttackInterval": 0.567,
       "AttackRange": 59,
       "SearchRange": 185,
@@ -77120,7 +77653,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-crimsonguard",
       "AttackType": 1,
       "Health": 219.6,
-      "AttackDamage": 15.675,
+      "AttackDamage": 18.02625,
       "AttackInterval": 0.63,
       "AttackRange": 59,
       "SearchRange": 185,
@@ -77170,7 +77703,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-crimsonguard",
       "AttackType": 1,
       "Health": 219.6,
-      "AttackDamage": 14.85,
+      "AttackDamage": 17.0775,
       "AttackInterval": 0.693,
       "AttackRange": 59,
       "SearchRange": 185,
@@ -77220,7 +77753,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-crimsonguard",
       "AttackType": 1,
       "Health": 268.4,
-      "AttackDamage": 19.8,
+      "AttackDamage": 22.77,
       "AttackInterval": 0.567,
       "AttackRange": 59,
       "SearchRange": 185,
@@ -77270,7 +77803,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/orcsword-crimsonguard",
       "AttackType": 1,
       "Health": 219.6,
-      "AttackDamage": 20.625,
+      "AttackDamage": 23.71875,
       "AttackInterval": 0.5355,
       "AttackRange": 59,
       "SearchRange": 185,
@@ -77320,7 +77853,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/reaper-orcshaman",
       "AttackType": 1,
       "Health": 172.22222222,
-      "AttackDamage": 9.76,
+      "AttackDamage": 11.224,
       "AttackInterval": 0.74117647,
       "AttackRange": 223,
       "SearchRange": 42,
@@ -77362,7 +77895,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/reaper-orcshaman",
       "AttackType": 1,
       "Health": 206.66666667,
-      "AttackDamage": 8.784,
+      "AttackDamage": 10.1016,
       "AttackInterval": 0.66705882,
       "AttackRange": 223,
       "SearchRange": 42,
@@ -77404,7 +77937,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/reaper-orcshaman",
       "AttackType": 1,
       "Health": 155,
-      "AttackDamage": 9.272,
+      "AttackDamage": 10.6628,
       "AttackInterval": 0.74117647,
       "AttackRange": 223,
       "SearchRange": 42,
@@ -77446,7 +77979,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/reaper-orcshaman",
       "AttackType": 1,
       "Health": 155,
-      "AttackDamage": 8.784,
+      "AttackDamage": 10.1016,
       "AttackInterval": 0.81529412,
       "AttackRange": 223,
       "SearchRange": 42,
@@ -77488,7 +78021,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/reaper-orcshaman",
       "AttackType": 1,
       "Health": 155,
-      "AttackDamage": 12.2,
+      "AttackDamage": 14.03,
       "AttackInterval": 0.63,
       "AttackRange": 223,
       "SearchRange": 42,
@@ -77566,7 +78099,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "101706": {
       "ID": 101706,
@@ -77611,7 +78145,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "101707": {
       "ID": 101707,
@@ -77656,7 +78191,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "101708": {
       "ID": 101708,
@@ -77701,7 +78237,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "101709": {
       "ID": 101709,
@@ -77746,7 +78283,8 @@
           "maxTargets": 4,
           "duration": 3
         }
-      }
+      },
+      "HealthRegenPercent": 0.03
     },
     "101710": {
       "ID": 101710,
@@ -77772,6 +78310,16 @@
       "BehaviorTemplate": 90002,
       "Guide": {
         "description": "[[loc:data.unitguide.91162.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "101711": {
@@ -77798,6 +78346,16 @@
       "BehaviorTemplate": 90002,
       "Guide": {
         "description": "[[loc:data.unitguide.91162.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "101712": {
@@ -77824,6 +78382,16 @@
       "BehaviorTemplate": 90002,
       "Guide": {
         "description": "[[loc:data.unitguide.91162.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "101713": {
@@ -77850,6 +78418,16 @@
       "BehaviorTemplate": 90002,
       "Guide": {
         "description": "[[loc:data.unitguide.91162.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "101714": {
@@ -77876,6 +78454,16 @@
       "BehaviorTemplate": 90002,
       "Guide": {
         "description": "[[loc:data.unitguide.91162.description]]"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "slow": {
+            "percent": 0.12,
+            "duration": 1.75
+          }
+        }
       }
     },
     "101715": {
@@ -78047,7 +78635,17 @@
       },
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90002,
-      "IsBoss": true
+      "IsBoss": true,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "burn": {
+            "percent": 0.08,
+            "duration": 2
+          }
+        }
+      }
     },
     "101721": {
       "ID": 101721,
@@ -78074,7 +78672,17 @@
       },
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90002,
-      "IsBoss": true
+      "IsBoss": true,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "burn": {
+            "percent": 0.08,
+            "duration": 2
+          }
+        }
+      }
     },
     "101722": {
       "ID": 101722,
@@ -78101,7 +78709,17 @@
       },
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90002,
-      "IsBoss": true
+      "IsBoss": true,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "burn": {
+            "percent": 0.08,
+            "duration": 2
+          }
+        }
+      }
     },
     "101723": {
       "ID": 101723,
@@ -78128,7 +78746,17 @@
       },
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90002,
-      "IsBoss": true
+      "IsBoss": true,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "burn": {
+            "percent": 0.08,
+            "duration": 2
+          }
+        }
+      }
     },
     "101724": {
       "ID": 101724,
@@ -78155,7 +78783,17 @@
       },
       "MonsterPack": "monster3",
       "BehaviorTemplate": 90002,
-      "IsBoss": true
+      "IsBoss": true,
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "burn": {
+            "percent": 0.08,
+            "duration": 2
+          }
+        }
+      }
     },
     "101725": {
       "ID": 101725,
@@ -78165,7 +78803,7 @@
       "AttackType": 1,
       "Health": 46.66666667,
       "AttackDamage": 22.22222222,
-      "AttackInterval": 0.22272727,
+      "AttackInterval": 0.24945454,
       "AttackRange": 193,
       "SearchRange": 48,
       "Speed": 104,
@@ -78200,7 +78838,7 @@
       "AttackType": 1,
       "Health": 56,
       "AttackDamage": 20,
-      "AttackInterval": 0.20045455,
+      "AttackInterval": 0.2245091,
       "AttackRange": 193,
       "SearchRange": 48,
       "Speed": 93,
@@ -78235,7 +78873,7 @@
       "AttackType": 1,
       "Health": 42,
       "AttackDamage": 20,
-      "AttackInterval": 0.245,
+      "AttackInterval": 0.2744,
       "AttackRange": 193,
       "SearchRange": 48,
       "Speed": 114,
@@ -78270,7 +78908,7 @@
       "AttackType": 1,
       "Health": 51.33333333,
       "AttackDamage": 26.66666667,
-      "AttackInterval": 0.20045455,
+      "AttackInterval": 0.2245091,
       "AttackRange": 193,
       "SearchRange": 48,
       "Speed": 98,
@@ -78305,7 +78943,7 @@
       "AttackType": 1,
       "Health": 42,
       "AttackDamage": 27.77777778,
-      "AttackInterval": 0.18931818,
+      "AttackInterval": 0.21203636,
       "AttackRange": 193,
       "SearchRange": 48,
       "Speed": 88,
@@ -78340,7 +78978,7 @@
       "AttackType": 1,
       "Health": 56.66666667,
       "AttackDamage": 8.63157895,
-      "AttackInterval": 0.91,
+      "AttackInterval": 1.0192,
       "AttackRange": 45,
       "SearchRange": 218,
       "Speed": 113,
@@ -78387,7 +79025,7 @@
       "AttackType": 1,
       "Health": 68,
       "AttackDamage": 7.76842105,
-      "AttackInterval": 0.819,
+      "AttackInterval": 0.91728,
       "AttackRange": 45,
       "SearchRange": 218,
       "Speed": 102,
@@ -78434,7 +79072,7 @@
       "AttackType": 1,
       "Health": 51,
       "AttackDamage": 7.76842105,
-      "AttackInterval": 1.001,
+      "AttackInterval": 1.12112,
       "AttackRange": 45,
       "SearchRange": 218,
       "Speed": 124,
@@ -78481,7 +79119,7 @@
       "AttackType": 1,
       "Health": 62.33333333,
       "AttackDamage": 10.35789474,
-      "AttackInterval": 0.819,
+      "AttackInterval": 0.91728,
       "AttackRange": 45,
       "SearchRange": 218,
       "Speed": 107,
@@ -78528,7 +79166,7 @@
       "AttackType": 1,
       "Health": 51,
       "AttackDamage": 10.78947368,
-      "AttackInterval": 0.7735,
+      "AttackInterval": 0.86632,
       "AttackRange": 45,
       "SearchRange": 218,
       "Speed": 96,
@@ -78575,7 +79213,7 @@
       "AttackType": 1,
       "Health": 73.63636364,
       "AttackDamage": 10.5,
-      "AttackInterval": 0.62777778,
+      "AttackInterval": 0.70311111,
       "AttackRange": 66,
       "SearchRange": 130,
       "Speed": 99,
@@ -78608,7 +79246,7 @@
       "AttackType": 1,
       "Health": 66.27272727,
       "AttackDamage": 9.975,
-      "AttackInterval": 0.62777778,
+      "AttackInterval": 0.70311111,
       "AttackRange": 66,
       "SearchRange": 130,
       "Speed": 114,
@@ -78641,7 +79279,7 @@
       "AttackType": 1,
       "Health": 66.27272727,
       "AttackDamage": 9.45,
-      "AttackInterval": 0.69055556,
+      "AttackInterval": 0.77342223,
       "AttackRange": 66,
       "SearchRange": 130,
       "Speed": 109,
@@ -78674,7 +79312,7 @@
       "AttackType": 1,
       "Health": 81,
       "AttackDamage": 12.6,
-      "AttackInterval": 0.565,
+      "AttackInterval": 0.6328,
       "AttackRange": 66,
       "SearchRange": 130,
       "Speed": 94,
@@ -78707,7 +79345,7 @@
       "AttackType": 1,
       "Health": 66.27272727,
       "AttackDamage": 13.125,
-      "AttackInterval": 0.53361111,
+      "AttackInterval": 0.59764444,
       "AttackRange": 66,
       "SearchRange": 130,
       "Speed": 84,
@@ -78740,7 +79378,7 @@
       "AttackType": 1,
       "Health": 53.33333333,
       "AttackDamage": 5.26315789,
-      "AttackInterval": 1,
+      "AttackInterval": 1.12,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 130.43478261,
@@ -78766,7 +79404,7 @@
       "AttackType": 1,
       "Health": 64,
       "AttackDamage": 4.73684211,
-      "AttackInterval": 0.9,
+      "AttackInterval": 1.008,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 117.39130435,
@@ -78792,7 +79430,7 @@
       "AttackType": 1,
       "Health": 48,
       "AttackDamage": 4.73684211,
-      "AttackInterval": 1.1,
+      "AttackInterval": 1.232,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 143.47826087,
@@ -78818,7 +79456,7 @@
       "AttackType": 1,
       "Health": 58.66666666,
       "AttackDamage": 6.31578947,
-      "AttackInterval": 0.9,
+      "AttackInterval": 1.008,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 123.91304348,
@@ -78844,7 +79482,7 @@
       "AttackType": 1,
       "Health": 48,
       "AttackDamage": 6.57894737,
-      "AttackInterval": 0.85,
+      "AttackInterval": 0.952,
       "AttackRange": 50,
       "SearchRange": 220,
       "Speed": 110.86956522,
@@ -78870,7 +79508,7 @@
       "AttackType": 1,
       "Health": 563.63636364,
       "AttackDamage": 27.08333333,
-      "AttackInterval": 0.98888889,
+      "AttackInterval": 1.10755556,
       "AttackRange": 75,
       "SearchRange": 200,
       "Speed": 89,
@@ -78915,7 +79553,7 @@
       "AttackType": 1,
       "Health": 676.36363636,
       "AttackDamage": 24.375,
-      "AttackInterval": 0.89,
+      "AttackInterval": 0.9968,
       "AttackRange": 75,
       "SearchRange": 200,
       "Speed": 81,
@@ -78960,7 +79598,7 @@
       "AttackType": 1,
       "Health": 507.27272727,
       "AttackDamage": 25.72916667,
-      "AttackInterval": 0.98888889,
+      "AttackInterval": 1.10755556,
       "AttackRange": 75,
       "SearchRange": 200,
       "Speed": 103,
@@ -79005,7 +79643,7 @@
       "AttackType": 1,
       "Health": 507.27272727,
       "AttackDamage": 24.375,
-      "AttackInterval": 1.08777778,
+      "AttackInterval": 1.21831111,
       "AttackRange": 75,
       "SearchRange": 200,
       "Speed": 98,
@@ -79050,7 +79688,7 @@
       "AttackType": 1,
       "Health": 620,
       "AttackDamage": 32.5,
-      "AttackInterval": 0.89,
+      "AttackInterval": 0.9968,
       "AttackRange": 75,
       "SearchRange": 200,
       "Speed": 85,
@@ -79119,7 +79757,12 @@
         "delivery": "melee",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       },
       "EnemySkills": {
         "haste": {
@@ -79163,7 +79806,12 @@
         "delivery": "melee",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       },
       "EnemySkills": {
         "haste": {
@@ -79207,7 +79855,12 @@
         "delivery": "melee",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       },
       "EnemySkills": {
         "haste": {
@@ -79251,7 +79904,12 @@
         "delivery": "melee",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       },
       "EnemySkills": {
         "haste": {
@@ -79295,7 +79953,12 @@
         "delivery": "melee",
         "pattern": "splash",
         "splashRadius": 70,
-        "splashFalloff": 0.2
+        "splashFalloff": 0.2,
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.12
+          }
+        }
       },
       "EnemySkills": {
         "haste": {
@@ -79834,7 +80497,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/bird-orcwyvern",
       "AttackType": 1,
       "Health": 54.44444444,
-      "AttackDamage": 13.11111111,
+      "AttackDamage": 15.07777778,
       "AttackInterval": 0.37272727,
       "AttackRange": 244,
       "SearchRange": 55,
@@ -79869,7 +80532,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/bird-orcwyvern",
       "AttackType": 1,
       "Health": 65.33333333,
-      "AttackDamage": 11.8,
+      "AttackDamage": 13.57,
       "AttackInterval": 0.33545455,
       "AttackRange": 244,
       "SearchRange": 55,
@@ -79904,7 +80567,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/bird-orcwyvern",
       "AttackType": 1,
       "Health": 49,
-      "AttackDamage": 11.8,
+      "AttackDamage": 13.57,
       "AttackInterval": 0.41,
       "AttackRange": 244,
       "SearchRange": 55,
@@ -79939,7 +80602,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/bird-orcwyvern",
       "AttackType": 1,
       "Health": 59.88888889,
-      "AttackDamage": 15.73333333,
+      "AttackDamage": 18.09333333,
       "AttackInterval": 0.33545455,
       "AttackRange": 244,
       "SearchRange": 55,
@@ -79974,7 +80637,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/bird-orcwyvern",
       "AttackType": 1,
       "Health": 49,
-      "AttackDamage": 16.38888889,
+      "AttackDamage": 18.84722222,
       "AttackInterval": 0.31681818,
       "AttackRange": 244,
       "SearchRange": 55,
@@ -80032,7 +80695,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "101776": {
@@ -80065,7 +80733,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "101777": {
@@ -80098,7 +80771,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "101778": {
@@ -80131,7 +80809,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "101779": {
@@ -80164,7 +80847,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.08
+          }
+        }
       }
     },
     "101780": {
@@ -80427,7 +81115,13 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "burn": {
+            "percent": 0.09,
+            "duration": 2
+          }
+        }
       }
     },
     "101791": {
@@ -80460,7 +81154,13 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "burn": {
+            "percent": 0.09,
+            "duration": 2
+          }
+        }
       }
     },
     "101792": {
@@ -80493,7 +81193,13 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "burn": {
+            "percent": 0.09,
+            "duration": 2
+          }
+        }
       }
     },
     "101793": {
@@ -80526,7 +81232,13 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "burn": {
+            "percent": 0.09,
+            "duration": 2
+          }
+        }
       }
     },
     "101794": {
@@ -80559,7 +81271,13 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "burn": {
+            "percent": 0.09,
+            "duration": 2
+          }
+        }
       }
     },
     "101795": {
@@ -80600,7 +81318,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.18
+          }
+        }
       },
       "EnemySkills": {
         "moveSlow": {
@@ -80650,7 +81373,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.18
+          }
+        }
       },
       "EnemySkills": {
         "moveSlow": {
@@ -80700,7 +81428,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.18
+          }
+        }
       },
       "EnemySkills": {
         "moveSlow": {
@@ -80750,7 +81483,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.18
+          }
+        }
       },
       "EnemySkills": {
         "moveSlow": {
@@ -80800,7 +81538,12 @@
       },
       "UnitAttack": {
         "delivery": "melee",
-        "pattern": "single"
+        "pattern": "single",
+        "onHit": {
+          "lifeSteal": {
+            "percent": 0.18
+          }
+        }
       },
       "EnemySkills": {
         "moveSlow": {
@@ -80840,6 +81583,16 @@
       "BehaviorTemplate": 90002,
       "EnemyTargeting": {
         "mode": "hero"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.08,
+            "duration": 3
+          }
+        }
       }
     },
     "101801": {
@@ -80870,6 +81623,16 @@
       "BehaviorTemplate": 90002,
       "EnemyTargeting": {
         "mode": "hero"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.08,
+            "duration": 3
+          }
+        }
       }
     },
     "101802": {
@@ -80900,6 +81663,16 @@
       "BehaviorTemplate": 90002,
       "EnemyTargeting": {
         "mode": "hero"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.08,
+            "duration": 3
+          }
+        }
       }
     },
     "101803": {
@@ -80930,6 +81703,16 @@
       "BehaviorTemplate": 90002,
       "EnemyTargeting": {
         "mode": "hero"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.08,
+            "duration": 3
+          }
+        }
       }
     },
     "101804": {
@@ -80960,6 +81743,16 @@
       "BehaviorTemplate": 90002,
       "EnemyTargeting": {
         "mode": "hero"
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single",
+        "onHit": {
+          "bleed": {
+            "percent": 0.08,
+            "duration": 3
+          }
+        }
       }
     },
     "101805": {
@@ -80969,7 +81762,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
       "AttackType": 1,
       "Health": 55.55555556,
-      "AttackDamage": 6.63157895,
+      "AttackDamage": 7.62631579,
       "AttackInterval": 1.13,
       "AttackRange": 43,
       "SearchRange": 240,
@@ -81016,7 +81809,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
       "AttackType": 1,
       "Health": 66.66666667,
-      "AttackDamage": 5.96842105,
+      "AttackDamage": 6.86368421,
       "AttackInterval": 1.017,
       "AttackRange": 43,
       "SearchRange": 240,
@@ -81063,7 +81856,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
       "AttackType": 1,
       "Health": 50,
-      "AttackDamage": 5.96842105,
+      "AttackDamage": 6.86368421,
       "AttackInterval": 1.243,
       "AttackRange": 43,
       "SearchRange": 240,
@@ -81110,7 +81903,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
       "AttackType": 1,
       "Health": 61.11111111,
-      "AttackDamage": 7.95789474,
+      "AttackDamage": 9.15157895,
       "AttackInterval": 1.017,
       "AttackRange": 43,
       "SearchRange": 240,
@@ -81157,7 +81950,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/raptor-orcwar",
       "AttackType": 1,
       "Health": 50,
-      "AttackDamage": 8.28947368,
+      "AttackDamage": 9.53289473,
       "AttackInterval": 0.9605,
       "AttackRange": 43,
       "SearchRange": 240,
@@ -81334,7 +82127,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/rhino-orcwarbeast",
       "AttackType": 1,
       "Health": 73.33333333,
-      "AttackDamage": 12.22222222,
+      "AttackDamage": 14.05555555,
       "AttackInterval": 0.5,
       "AttackRange": 64,
       "SearchRange": 167,
@@ -81381,7 +82174,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/rhino-orcwarbeast",
       "AttackType": 1,
       "Health": 66,
-      "AttackDamage": 11.61111111,
+      "AttackDamage": 13.35277778,
       "AttackInterval": 0.5,
       "AttackRange": 64,
       "SearchRange": 167,
@@ -81428,7 +82221,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/rhino-orcwarbeast",
       "AttackType": 1,
       "Health": 66,
-      "AttackDamage": 11,
+      "AttackDamage": 12.65,
       "AttackInterval": 0.55,
       "AttackRange": 64,
       "SearchRange": 167,
@@ -81475,7 +82268,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/rhino-orcwarbeast",
       "AttackType": 1,
       "Health": 80.66666667,
-      "AttackDamage": 14.66666667,
+      "AttackDamage": 16.86666667,
       "AttackInterval": 0.45,
       "AttackRange": 64,
       "SearchRange": 167,
@@ -81522,7 +82315,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster3/rhino-orcwarbeast",
       "AttackType": 1,
       "Health": 66,
-      "AttackDamage": 15.27777778,
+      "AttackDamage": 17.56944445,
       "AttackInterval": 0.425,
       "AttackRange": 64,
       "SearchRange": 167,
@@ -82074,7 +82867,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/buffalo-hellgatebehemoth",
       "AttackType": 1,
       "Health": 80,
-      "AttackDamage": 10.55555556,
+      "AttackDamage": 11.61111112,
       "AttackInterval": 0.6,
       "AttackRange": 67,
       "SearchRange": 179,
@@ -82098,7 +82891,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.015
     },
     "101831": {
       "ID": 101831,
@@ -82107,7 +82901,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/buffalo-hellgatebehemoth",
       "AttackType": 1,
       "Health": 96,
-      "AttackDamage": 9.5,
+      "AttackDamage": 10.45,
       "AttackInterval": 0.54,
       "AttackRange": 67,
       "SearchRange": 179,
@@ -82131,7 +82925,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.015
     },
     "101832": {
       "ID": 101832,
@@ -82140,7 +82935,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/buffalo-hellgatebehemoth",
       "AttackType": 1,
       "Health": 72,
-      "AttackDamage": 9.5,
+      "AttackDamage": 10.45,
       "AttackInterval": 0.66,
       "AttackRange": 67,
       "SearchRange": 179,
@@ -82164,7 +82959,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.015
     },
     "101833": {
       "ID": 101833,
@@ -82173,7 +82969,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/buffalo-hellgatebehemoth",
       "AttackType": 1,
       "Health": 88,
-      "AttackDamage": 12.66666667,
+      "AttackDamage": 13.93333334,
       "AttackInterval": 0.54,
       "AttackRange": 67,
       "SearchRange": 179,
@@ -82197,7 +82993,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.015
     },
     "101834": {
       "ID": 101834,
@@ -82206,7 +83003,7 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/buffalo-hellgatebehemoth",
       "AttackType": 1,
       "Health": 72,
-      "AttackDamage": 13.19444444,
+      "AttackDamage": 14.51388888,
       "AttackInterval": 0.51,
       "AttackRange": 67,
       "SearchRange": 179,
@@ -82230,7 +83027,8 @@
       "UnitAttack": {
         "delivery": "melee",
         "pattern": "single"
-      }
+      },
+      "HealthRegenPercent": 0.015
     }
   },
   "TalentCfg": {
@@ -102327,7 +103125,7 @@
           "stats": {
             "Health": 58.88888889,
             "AttackDamage": 9.47368421,
-            "AttackInterval": 0.79,
+            "AttackInterval": 0.8532,
             "Speed": 157,
             "AttackRange": 49,
             "SearchRange": 223,
@@ -102355,7 +103153,7 @@
           "stats": {
             "Health": 70.66666667,
             "AttackDamage": 8.52631579,
-            "AttackInterval": 0.711,
+            "AttackInterval": 0.76788,
             "Speed": 141,
             "AttackRange": 49,
             "SearchRange": 223,
@@ -102383,7 +103181,7 @@
           "stats": {
             "Health": 53,
             "AttackDamage": 9,
-            "AttackInterval": 0.79,
+            "AttackInterval": 0.8532,
             "Speed": 180,
             "AttackRange": 49,
             "SearchRange": 223,
@@ -102411,7 +103209,7 @@
           "stats": {
             "Health": 53,
             "AttackDamage": 8.52631579,
-            "AttackInterval": 0.869,
+            "AttackInterval": 0.93852,
             "Speed": 172,
             "AttackRange": 49,
             "SearchRange": 223,
@@ -102439,7 +103237,7 @@
           "stats": {
             "Health": 53,
             "AttackDamage": 11.84210526,
-            "AttackInterval": 0.6715,
+            "AttackInterval": 0.72522,
             "Speed": 133,
             "AttackRange": 49,
             "SearchRange": 223,
@@ -102538,7 +103336,7 @@
             "Health": 302.22222222,
             "AttackInterval": 0.37647059,
             "Speed": 99,
-            "AttackDamage": 0,
+            "AttackDamage": 3,
             "AttackRange": 260,
             "SearchRange": 0,
             "EnemyTargeting": {
@@ -102559,7 +103357,7 @@
             "Health": 362.66666667,
             "AttackInterval": 0.33882353,
             "Speed": 89,
-            "AttackDamage": 0,
+            "AttackDamage": 2.7,
             "AttackRange": 260,
             "SearchRange": 0,
             "EnemyTargeting": {
@@ -102580,7 +103378,7 @@
             "Health": 272,
             "AttackInterval": 0.37647059,
             "Speed": 114,
-            "AttackDamage": 0,
+            "AttackDamage": 2.85,
             "AttackRange": 260,
             "SearchRange": 0,
             "EnemyTargeting": {
@@ -102601,7 +103399,7 @@
             "Health": 272,
             "AttackInterval": 0.41411765,
             "Speed": 109,
-            "AttackDamage": 0,
+            "AttackDamage": 2.7,
             "AttackRange": 260,
             "SearchRange": 0,
             "EnemyTargeting": {
@@ -102622,7 +103420,7 @@
             "Health": 332.44444444,
             "AttackInterval": 0.33882353,
             "Speed": 94,
-            "AttackDamage": 0,
+            "AttackDamage": 3.6,
             "AttackRange": 260,
             "SearchRange": 0,
             "EnemyTargeting": {
@@ -103197,7 +103995,7 @@
           "stats": {
             "Health": 48,
             "AttackDamage": 5,
-            "AttackInterval": 1,
+            "AttackInterval": 1.1,
             "Speed": 102
           },
           "visual": {},
@@ -103211,7 +104009,7 @@
           "stats": {
             "Health": 57.6,
             "AttackDamage": 4.5,
-            "AttackInterval": 0.9,
+            "AttackInterval": 0.99,
             "Speed": 91.8
           },
           "visual": {},
@@ -103225,7 +104023,7 @@
           "stats": {
             "Health": 43.2,
             "AttackDamage": 4.5,
-            "AttackInterval": 1.1,
+            "AttackInterval": 1.21,
             "Speed": 112.2
           },
           "visual": {},
@@ -103239,7 +104037,7 @@
           "stats": {
             "Health": 52.8,
             "AttackDamage": 6,
-            "AttackInterval": 0.9,
+            "AttackInterval": 0.99,
             "Speed": 96.9
           },
           "visual": {},
@@ -103253,7 +104051,7 @@
           "stats": {
             "Health": 43.2,
             "AttackDamage": 6.25,
-            "AttackInterval": 0.85,
+            "AttackInterval": 0.935,
             "Speed": 86.7
           },
           "visual": {},
@@ -105537,7 +106335,7 @@
           "stats": {
             "Health": 55.2,
             "AttackDamage": 5.13,
-            "AttackInterval": 0.819,
+            "AttackInterval": 0.91728,
             "Speed": 91,
             "AttackRange": 54,
             "SearchRange": 175,
@@ -105557,7 +106355,7 @@
           "stats": {
             "Health": 41.4,
             "AttackDamage": 5.415,
-            "AttackInterval": 0.91,
+            "AttackInterval": 1.0192,
             "Speed": 116,
             "AttackRange": 54,
             "SearchRange": 175,
@@ -105577,7 +106375,7 @@
           "stats": {
             "Health": 41.4,
             "AttackDamage": 5.13,
-            "AttackInterval": 1.001,
+            "AttackInterval": 1.12112,
             "Speed": 111,
             "AttackRange": 54,
             "SearchRange": 175,
@@ -105597,7 +106395,7 @@
           "stats": {
             "Health": 50.6,
             "AttackDamage": 6.84,
-            "AttackInterval": 0.819,
+            "AttackInterval": 0.91728,
             "Speed": 96,
             "AttackRange": 54,
             "SearchRange": 175,
@@ -105617,7 +106415,7 @@
           "stats": {
             "Health": 41.4,
             "AttackDamage": 7.125,
-            "AttackInterval": 0.7735,
+            "AttackInterval": 0.86632,
             "Speed": 86,
             "AttackRange": 54,
             "SearchRange": 175,
@@ -105637,7 +106435,7 @@
           "stats": {
             "Health": 179.09090909,
             "AttackDamage": 10.16666667,
-            "AttackInterval": 0.91111111,
+            "AttackInterval": 1.02044444,
             "Speed": 99,
             "AttackRange": 62,
             "SearchRange": 187,
@@ -105658,7 +106456,7 @@
           "stats": {
             "Health": 214.90909091,
             "AttackDamage": 9.15,
-            "AttackInterval": 0.82,
+            "AttackInterval": 0.9184,
             "Speed": 89,
             "AttackRange": 62,
             "SearchRange": 187,
@@ -105679,7 +106477,7 @@
           "stats": {
             "Health": 161.18181818,
             "AttackDamage": 9.65833333,
-            "AttackInterval": 0.91111111,
+            "AttackInterval": 1.02044444,
             "Speed": 114,
             "AttackRange": 62,
             "SearchRange": 187,
@@ -105700,7 +106498,7 @@
           "stats": {
             "Health": 161.18181818,
             "AttackDamage": 9.15,
-            "AttackInterval": 1.00222222,
+            "AttackInterval": 1.12248889,
             "Speed": 109,
             "AttackRange": 62,
             "SearchRange": 187,
@@ -105721,7 +106519,7 @@
           "stats": {
             "Health": 161.18181818,
             "AttackDamage": 12.70833333,
-            "AttackInterval": 0.77444444,
+            "AttackInterval": 0.86737777,
             "Speed": 84,
             "AttackRange": 62,
             "SearchRange": 187,
@@ -105742,7 +106540,7 @@
           "stats": {
             "Health": 64.16666667,
             "AttackDamage": 5.88888889,
-            "AttackInterval": 1.03333333,
+            "AttackInterval": 1.15733333,
             "Speed": 91,
             "AttackRange": 47,
             "SearchRange": 154,
@@ -105770,7 +106568,7 @@
           "stats": {
             "Health": 57.75,
             "AttackDamage": 5.59444444,
-            "AttackInterval": 1.03333333,
+            "AttackInterval": 1.15733333,
             "Speed": 105,
             "AttackRange": 47,
             "SearchRange": 154,
@@ -105798,7 +106596,7 @@
           "stats": {
             "Health": 57.75,
             "AttackDamage": 5.3,
-            "AttackInterval": 1.13666667,
+            "AttackInterval": 1.27306667,
             "Speed": 100,
             "AttackRange": 47,
             "SearchRange": 154,
@@ -105826,7 +106624,7 @@
           "stats": {
             "Health": 70.58333333,
             "AttackDamage": 7.06666667,
-            "AttackInterval": 0.93,
+            "AttackInterval": 1.0416,
             "Speed": 87,
             "AttackRange": 47,
             "SearchRange": 154,
@@ -105854,7 +106652,7 @@
           "stats": {
             "Health": 57.75,
             "AttackDamage": 7.36111111,
-            "AttackInterval": 0.87833333,
+            "AttackInterval": 0.98373333,
             "Speed": 80,
             "AttackRange": 47,
             "SearchRange": 154,
@@ -108137,7 +108935,7 @@
           "role": "fighter",
           "stats": {
             "Health": 109.09090909,
-            "AttackDamage": 10.41666666,
+            "AttackDamage": 11.97916666,
             "AttackInterval": 0.74444444,
             "Speed": 89.47368421
           },
@@ -108151,7 +108949,7 @@
           "role": "guardian",
           "stats": {
             "Health": 130.90909091,
-            "AttackDamage": 9.375,
+            "AttackDamage": 10.78125,
             "AttackInterval": 0.67,
             "Speed": 80.52631579
           },
@@ -108165,7 +108963,7 @@
           "role": "vanguard",
           "stats": {
             "Health": 98.18181818,
-            "AttackDamage": 9.89583333,
+            "AttackDamage": 11.38020833,
             "AttackInterval": 0.74444444,
             "Speed": 102.89473684
           },
@@ -108179,7 +108977,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 98.18181818,
-            "AttackDamage": 9.375,
+            "AttackDamage": 10.78125,
             "AttackInterval": 0.81888888,
             "Speed": 98.42105263
           },
@@ -108193,7 +108991,7 @@
           "role": "mystic",
           "stats": {
             "Health": 98.18181818,
-            "AttackDamage": 13.02083333,
+            "AttackDamage": 14.97395833,
             "AttackInterval": 0.63277777,
             "Speed": 76.05263158
           },
@@ -108207,7 +109005,7 @@
           "role": "fighter",
           "stats": {
             "Health": 68.18181818,
-            "AttackDamage": 11.66666667,
+            "AttackDamage": 13.41666667,
             "AttackInterval": 0.56666667,
             "Speed": 95,
             "AttackRange": 68,
@@ -108233,7 +109031,7 @@
           "role": "guardian",
           "stats": {
             "Health": 81.81818182,
-            "AttackDamage": 10.5,
+            "AttackDamage": 12.075,
             "AttackInterval": 0.51,
             "Speed": 85,
             "AttackRange": 68,
@@ -108259,7 +109057,7 @@
           "role": "vanguard",
           "stats": {
             "Health": 61.36363636,
-            "AttackDamage": 11.08333333,
+            "AttackDamage": 12.74583333,
             "AttackInterval": 0.56666667,
             "Speed": 109,
             "AttackRange": 68,
@@ -108285,7 +109083,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 61.36363636,
-            "AttackDamage": 10.5,
+            "AttackDamage": 12.075,
             "AttackInterval": 0.62333333,
             "Speed": 104,
             "AttackRange": 68,
@@ -108311,7 +109109,7 @@
           "role": "mystic",
           "stats": {
             "Health": 61.36363636,
-            "AttackDamage": 14.58333333,
+            "AttackDamage": 16.77083333,
             "AttackInterval": 0.48166667,
             "Speed": 81,
             "AttackRange": 68,
@@ -108337,7 +109135,7 @@
           "role": "fighter",
           "stats": {
             "Health": 109.09090909,
-            "AttackDamage": 10.41666666,
+            "AttackDamage": 11.97916666,
             "AttackInterval": 0.74444444,
             "Speed": 89.47368421
           },
@@ -108351,7 +109149,7 @@
           "role": "guardian",
           "stats": {
             "Health": 130.90909091,
-            "AttackDamage": 9.375,
+            "AttackDamage": 10.78125,
             "AttackInterval": 0.67,
             "Speed": 80.52631579
           },
@@ -108365,7 +109163,7 @@
           "role": "vanguard",
           "stats": {
             "Health": 98.18181818,
-            "AttackDamage": 9.89583333,
+            "AttackDamage": 11.38020833,
             "AttackInterval": 0.74444444,
             "Speed": 102.89473684
           },
@@ -108379,7 +109177,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 98.18181818,
-            "AttackDamage": 9.375,
+            "AttackDamage": 10.78125,
             "AttackInterval": 0.81888888,
             "Speed": 98.42105263
           },
@@ -108393,7 +109191,7 @@
           "role": "mystic",
           "stats": {
             "Health": 98.18181818,
-            "AttackDamage": 13.02083333,
+            "AttackDamage": 14.97395833,
             "AttackInterval": 0.63277777,
             "Speed": 76.05263158
           },
@@ -108407,7 +109205,7 @@
           "role": "guardian",
           "stats": {
             "Health": 57.6,
-            "AttackDamage": 4.5,
+            "AttackDamage": 5.175,
             "AttackInterval": 0.9,
             "Speed": 91.8
           },
@@ -108421,7 +109219,7 @@
           "role": "vanguard",
           "stats": {
             "Health": 43.2,
-            "AttackDamage": 4.75,
+            "AttackDamage": 5.4625,
             "AttackInterval": 1,
             "Speed": 117.3
           },
@@ -108435,7 +109233,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 43.2,
-            "AttackDamage": 4.5,
+            "AttackDamage": 5.175,
             "AttackInterval": 1.1,
             "Speed": 112.2
           },
@@ -108449,7 +109247,7 @@
           "role": "bruiser",
           "stats": {
             "Health": 52.8,
-            "AttackDamage": 6,
+            "AttackDamage": 6.9,
             "AttackInterval": 0.9,
             "Speed": 96.9
           },
@@ -108463,7 +109261,7 @@
           "role": "mystic",
           "stats": {
             "Health": 43.2,
-            "AttackDamage": 6.25,
+            "AttackDamage": 7.1875,
             "AttackInterval": 0.85,
             "Speed": 86.7
           },
@@ -108477,7 +109275,7 @@
           "role": "guardian",
           "stats": {
             "Health": 60,
-            "AttackDamage": 4.68,
+            "AttackDamage": 5.382,
             "AttackInterval": 0.882,
             "Speed": 94,
             "AttackRange": 51,
@@ -108497,7 +109295,7 @@
           "role": "vanguard",
           "stats": {
             "Health": 45,
-            "AttackDamage": 4.94,
+            "AttackDamage": 5.681,
             "AttackInterval": 0.98,
             "Speed": 120,
             "AttackRange": 51,
@@ -108517,7 +109315,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 45,
-            "AttackDamage": 4.68,
+            "AttackDamage": 5.382,
             "AttackInterval": 1.078,
             "Speed": 114,
             "AttackRange": 51,
@@ -108537,7 +109335,7 @@
           "role": "bruiser",
           "stats": {
             "Health": 55,
-            "AttackDamage": 6.24,
+            "AttackDamage": 7.176,
             "AttackInterval": 0.882,
             "Speed": 99,
             "AttackRange": 51,
@@ -108557,7 +109355,7 @@
           "role": "mystic",
           "stats": {
             "Health": 45,
-            "AttackDamage": 6.5,
+            "AttackDamage": 7.475,
             "AttackInterval": 0.833,
             "Speed": 88,
             "AttackRange": 51,
@@ -108577,7 +109375,7 @@
           "role": "guardian",
           "stats": {
             "Health": 57.6,
-            "AttackDamage": 4.5,
+            "AttackDamage": 5.175,
             "AttackInterval": 0.9,
             "Speed": 91.8
           },
@@ -108591,7 +109389,7 @@
           "role": "vanguard",
           "stats": {
             "Health": 43.2,
-            "AttackDamage": 4.75,
+            "AttackDamage": 5.4625,
             "AttackInterval": 1,
             "Speed": 117.3
           },
@@ -108605,7 +109403,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 43.2,
-            "AttackDamage": 4.5,
+            "AttackDamage": 5.175,
             "AttackInterval": 1.1,
             "Speed": 112.2
           },
@@ -108619,7 +109417,7 @@
           "role": "bruiser",
           "stats": {
             "Health": 52.8,
-            "AttackDamage": 6,
+            "AttackDamage": 6.9,
             "AttackInterval": 0.9,
             "Speed": 96.9
           },
@@ -108633,7 +109431,7 @@
           "role": "mystic",
           "stats": {
             "Health": 43.2,
-            "AttackDamage": 6.25,
+            "AttackDamage": 7.1875,
             "AttackInterval": 0.85,
             "Speed": 86.7
           },
@@ -109028,7 +109826,7 @@
           "stats": {
             "Health": 147.77777778,
             "AttackDamage": 14.24,
-            "AttackInterval": 0.50588235,
+            "AttackInterval": 0.56658823,
             "Speed": 101,
             "AttackRange": 282,
             "SearchRange": 47,
@@ -109049,7 +109847,7 @@
           "stats": {
             "Health": 177.33333333,
             "AttackDamage": 12.816,
-            "AttackInterval": 0.45529412,
+            "AttackInterval": 0.50992941,
             "Speed": 91,
             "AttackRange": 282,
             "SearchRange": 47,
@@ -109070,7 +109868,7 @@
           "stats": {
             "Health": 133,
             "AttackDamage": 13.528,
-            "AttackInterval": 0.50588235,
+            "AttackInterval": 0.56658823,
             "Speed": 116,
             "AttackRange": 282,
             "SearchRange": 47,
@@ -109091,7 +109889,7 @@
           "stats": {
             "Health": 133,
             "AttackDamage": 12.816,
-            "AttackInterval": 0.55647059,
+            "AttackInterval": 0.62324706,
             "Speed": 111,
             "AttackRange": 282,
             "SearchRange": 47,
@@ -109112,7 +109910,7 @@
           "stats": {
             "Health": 133,
             "AttackDamage": 17.8,
-            "AttackInterval": 0.43,
+            "AttackInterval": 0.4816,
             "Speed": 86,
             "AttackRange": 282,
             "SearchRange": 47,
@@ -109272,7 +110070,7 @@
           "role": "fighter",
           "stats": {
             "Health": 26.66666666,
-            "AttackDamage": 11.11111111,
+            "AttackDamage": 12.22222222,
             "AttackInterval": 0.45454545,
             "Speed": 61.81818182
           },
@@ -109286,7 +110084,7 @@
           "role": "guardian",
           "stats": {
             "Health": 31.99999999,
-            "AttackDamage": 10,
+            "AttackDamage": 11,
             "AttackInterval": 0.40909091,
             "Speed": 55.63636364
           },
@@ -109300,7 +110098,7 @@
           "role": "vanguard",
           "stats": {
             "Health": 24,
-            "AttackDamage": 10.55555555,
+            "AttackDamage": 11.61111111,
             "AttackInterval": 0.45454545,
             "Speed": 71.09090909
           },
@@ -109314,7 +110112,7 @@
           "role": "bruiser",
           "stats": {
             "Health": 29.33333333,
-            "AttackDamage": 13.33333333,
+            "AttackDamage": 14.66666666,
             "AttackInterval": 0.40909091,
             "Speed": 58.72727273
           },
@@ -109328,7 +110126,7 @@
           "role": "mystic",
           "stats": {
             "Health": 24,
-            "AttackDamage": 13.88888889,
+            "AttackDamage": 15.27777778,
             "AttackInterval": 0.38636363,
             "Speed": 52.54545455
           },
@@ -110785,7 +111583,7 @@
           "role": "fighter",
           "stats": {
             "Health": 604.54545455,
-            "AttackDamage": 32.08333333,
+            "AttackDamage": 36.89583333,
             "AttackInterval": 0.81111111,
             "Speed": 93,
             "AttackRange": 77,
@@ -110806,7 +111604,7 @@
           "role": "guardian",
           "stats": {
             "Health": 725.45454545,
-            "AttackDamage": 28.875,
+            "AttackDamage": 33.20625,
             "AttackInterval": 0.73,
             "Speed": 83,
             "AttackRange": 77,
@@ -110827,7 +111625,7 @@
           "role": "vanguard",
           "stats": {
             "Health": 544.09090909,
-            "AttackDamage": 30.47916667,
+            "AttackDamage": 35.05104167,
             "AttackInterval": 0.81111111,
             "Speed": 107,
             "AttackRange": 77,
@@ -110848,7 +111646,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 544.09090909,
-            "AttackDamage": 28.875,
+            "AttackDamage": 33.20625,
             "AttackInterval": 0.89222222,
             "Speed": 102,
             "AttackRange": 77,
@@ -110869,7 +111667,7 @@
           "role": "mystic",
           "stats": {
             "Health": 544.09090909,
-            "AttackDamage": 40.10416667,
+            "AttackDamage": 46.11979167,
             "AttackInterval": 0.68944444,
             "Speed": 80,
             "AttackRange": 77,
@@ -110890,7 +111688,7 @@
           "role": "guardian",
           "stats": {
             "Health": 292.8,
-            "AttackDamage": 14.85,
+            "AttackDamage": 17.0775,
             "AttackInterval": 0.567,
             "Speed": 84,
             "AttackRange": 59,
@@ -110919,7 +111717,7 @@
           "role": "vanguard",
           "stats": {
             "Health": 219.6,
-            "AttackDamage": 15.675,
+            "AttackDamage": 18.02625,
             "AttackInterval": 0.63,
             "Speed": 107,
             "AttackRange": 59,
@@ -110948,7 +111746,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 219.6,
-            "AttackDamage": 14.85,
+            "AttackDamage": 17.0775,
             "AttackInterval": 0.693,
             "Speed": 102,
             "AttackRange": 59,
@@ -110977,7 +111775,7 @@
           "role": "bruiser",
           "stats": {
             "Health": 268.4,
-            "AttackDamage": 19.8,
+            "AttackDamage": 22.77,
             "AttackInterval": 0.567,
             "Speed": 88,
             "AttackRange": 59,
@@ -111006,7 +111804,7 @@
           "role": "mystic",
           "stats": {
             "Health": 219.6,
-            "AttackDamage": 20.625,
+            "AttackDamage": 23.71875,
             "AttackInterval": 0.5355,
             "Speed": 80,
             "AttackRange": 59,
@@ -111035,7 +111833,7 @@
           "role": "fighter",
           "stats": {
             "Health": 172.22222222,
-            "AttackDamage": 9.76,
+            "AttackDamage": 11.224,
             "AttackInterval": 0.74117647,
             "Speed": 100,
             "AttackRange": 223,
@@ -111056,7 +111854,7 @@
           "role": "guardian",
           "stats": {
             "Health": 206.66666667,
-            "AttackDamage": 8.784,
+            "AttackDamage": 10.1016,
             "AttackInterval": 0.66705882,
             "Speed": 90,
             "AttackRange": 223,
@@ -111077,7 +111875,7 @@
           "role": "vanguard",
           "stats": {
             "Health": 155,
-            "AttackDamage": 9.272,
+            "AttackDamage": 10.6628,
             "AttackInterval": 0.74117647,
             "Speed": 115,
             "AttackRange": 223,
@@ -111098,7 +111896,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 155,
-            "AttackDamage": 8.784,
+            "AttackDamage": 10.1016,
             "AttackInterval": 0.81529412,
             "Speed": 110,
             "AttackRange": 223,
@@ -111119,7 +111917,7 @@
           "role": "mystic",
           "stats": {
             "Health": 155,
-            "AttackDamage": 12.2,
+            "AttackDamage": 14.03,
             "AttackInterval": 0.63,
             "Speed": 85,
             "AttackRange": 223,
@@ -111473,7 +112271,7 @@
           "stats": {
             "Health": 46.66666667,
             "AttackDamage": 22.22222222,
-            "AttackInterval": 0.22272727,
+            "AttackInterval": 0.24945454,
             "Speed": 104,
             "AttackRange": 193,
             "SearchRange": 48,
@@ -111493,7 +112291,7 @@
           "stats": {
             "Health": 56,
             "AttackDamage": 20,
-            "AttackInterval": 0.20045455,
+            "AttackInterval": 0.2245091,
             "Speed": 93,
             "AttackRange": 193,
             "SearchRange": 48,
@@ -111513,7 +112311,7 @@
           "stats": {
             "Health": 42,
             "AttackDamage": 20,
-            "AttackInterval": 0.245,
+            "AttackInterval": 0.2744,
             "Speed": 114,
             "AttackRange": 193,
             "SearchRange": 48,
@@ -111533,7 +112331,7 @@
           "stats": {
             "Health": 51.33333333,
             "AttackDamage": 26.66666667,
-            "AttackInterval": 0.20045455,
+            "AttackInterval": 0.2245091,
             "Speed": 98,
             "AttackRange": 193,
             "SearchRange": 48,
@@ -111553,7 +112351,7 @@
           "stats": {
             "Health": 42,
             "AttackDamage": 27.77777778,
-            "AttackInterval": 0.18931818,
+            "AttackInterval": 0.21203636,
             "Speed": 88,
             "AttackRange": 193,
             "SearchRange": 48,
@@ -111573,7 +112371,7 @@
           "stats": {
             "Health": 56.66666667,
             "AttackDamage": 8.63157895,
-            "AttackInterval": 0.91,
+            "AttackInterval": 1.0192,
             "Speed": 113,
             "AttackRange": 45,
             "SearchRange": 218,
@@ -111601,7 +112399,7 @@
           "stats": {
             "Health": 68,
             "AttackDamage": 7.76842105,
-            "AttackInterval": 0.819,
+            "AttackInterval": 0.91728,
             "Speed": 102,
             "AttackRange": 45,
             "SearchRange": 218,
@@ -111629,7 +112427,7 @@
           "stats": {
             "Health": 51,
             "AttackDamage": 7.76842105,
-            "AttackInterval": 1.001,
+            "AttackInterval": 1.12112,
             "Speed": 124,
             "AttackRange": 45,
             "SearchRange": 218,
@@ -111657,7 +112455,7 @@
           "stats": {
             "Health": 62.33333333,
             "AttackDamage": 10.35789474,
-            "AttackInterval": 0.819,
+            "AttackInterval": 0.91728,
             "Speed": 107,
             "AttackRange": 45,
             "SearchRange": 218,
@@ -111685,7 +112483,7 @@
           "stats": {
             "Health": 51,
             "AttackDamage": 10.78947368,
-            "AttackInterval": 0.7735,
+            "AttackInterval": 0.86632,
             "Speed": 96,
             "AttackRange": 45,
             "SearchRange": 218,
@@ -111713,7 +112511,7 @@
           "stats": {
             "Health": 73.63636364,
             "AttackDamage": 10.5,
-            "AttackInterval": 0.62777778,
+            "AttackInterval": 0.70311111,
             "Speed": 99,
             "AttackRange": 66,
             "SearchRange": 130,
@@ -111733,7 +112531,7 @@
           "stats": {
             "Health": 66.27272727,
             "AttackDamage": 9.975,
-            "AttackInterval": 0.62777778,
+            "AttackInterval": 0.70311111,
             "Speed": 114,
             "AttackRange": 66,
             "SearchRange": 130,
@@ -111753,7 +112551,7 @@
           "stats": {
             "Health": 66.27272727,
             "AttackDamage": 9.45,
-            "AttackInterval": 0.69055556,
+            "AttackInterval": 0.77342223,
             "Speed": 109,
             "AttackRange": 66,
             "SearchRange": 130,
@@ -111773,7 +112571,7 @@
           "stats": {
             "Health": 81,
             "AttackDamage": 12.6,
-            "AttackInterval": 0.565,
+            "AttackInterval": 0.6328,
             "Speed": 94,
             "AttackRange": 66,
             "SearchRange": 130,
@@ -111793,7 +112591,7 @@
           "stats": {
             "Health": 66.27272727,
             "AttackDamage": 13.125,
-            "AttackInterval": 0.53361111,
+            "AttackInterval": 0.59764444,
             "Speed": 84,
             "AttackRange": 66,
             "SearchRange": 130,
@@ -111813,7 +112611,7 @@
           "stats": {
             "Health": 53.33333333,
             "AttackDamage": 5.26315789,
-            "AttackInterval": 1,
+            "AttackInterval": 1.12,
             "Speed": 130.43478261
           },
           "visual": {},
@@ -111827,7 +112625,7 @@
           "stats": {
             "Health": 64,
             "AttackDamage": 4.73684211,
-            "AttackInterval": 0.9,
+            "AttackInterval": 1.008,
             "Speed": 117.39130435
           },
           "visual": {},
@@ -111841,7 +112639,7 @@
           "stats": {
             "Health": 48,
             "AttackDamage": 4.73684211,
-            "AttackInterval": 1.1,
+            "AttackInterval": 1.232,
             "Speed": 143.47826087
           },
           "visual": {},
@@ -111855,7 +112653,7 @@
           "stats": {
             "Health": 58.66666666,
             "AttackDamage": 6.31578947,
-            "AttackInterval": 0.9,
+            "AttackInterval": 1.008,
             "Speed": 123.91304348
           },
           "visual": {},
@@ -111869,7 +112667,7 @@
           "stats": {
             "Health": 48,
             "AttackDamage": 6.57894737,
-            "AttackInterval": 0.85,
+            "AttackInterval": 0.952,
             "Speed": 110.86956522
           },
           "visual": {},
@@ -111883,7 +112681,7 @@
           "stats": {
             "Health": 563.63636364,
             "AttackDamage": 27.08333333,
-            "AttackInterval": 0.98888889,
+            "AttackInterval": 1.10755556,
             "Speed": 89,
             "AttackRange": 75,
             "SearchRange": 200,
@@ -111904,7 +112702,7 @@
           "stats": {
             "Health": 676.36363636,
             "AttackDamage": 24.375,
-            "AttackInterval": 0.89,
+            "AttackInterval": 0.9968,
             "Speed": 81,
             "AttackRange": 75,
             "SearchRange": 200,
@@ -111925,7 +112723,7 @@
           "stats": {
             "Health": 507.27272727,
             "AttackDamage": 25.72916667,
-            "AttackInterval": 0.98888889,
+            "AttackInterval": 1.10755556,
             "Speed": 103,
             "AttackRange": 75,
             "SearchRange": 200,
@@ -111946,7 +112744,7 @@
           "stats": {
             "Health": 507.27272727,
             "AttackDamage": 24.375,
-            "AttackInterval": 1.08777778,
+            "AttackInterval": 1.21831111,
             "Speed": 98,
             "AttackRange": 75,
             "SearchRange": 200,
@@ -111967,7 +112765,7 @@
           "stats": {
             "Health": 620,
             "AttackDamage": 32.5,
-            "AttackInterval": 0.89,
+            "AttackInterval": 0.9968,
             "Speed": 85,
             "AttackRange": 75,
             "SearchRange": 200,
@@ -112342,7 +113140,7 @@
           "role": "fighter",
           "stats": {
             "Health": 54.44444444,
-            "AttackDamage": 13.11111111,
+            "AttackDamage": 15.07777778,
             "AttackInterval": 0.37272727,
             "Speed": 107,
             "AttackRange": 244,
@@ -112362,7 +113160,7 @@
           "role": "guardian",
           "stats": {
             "Health": 65.33333333,
-            "AttackDamage": 11.8,
+            "AttackDamage": 13.57,
             "AttackInterval": 0.33545455,
             "Speed": 97,
             "AttackRange": 244,
@@ -112382,7 +113180,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 49,
-            "AttackDamage": 11.8,
+            "AttackDamage": 13.57,
             "AttackInterval": 0.41,
             "Speed": 118,
             "AttackRange": 244,
@@ -112402,7 +113200,7 @@
           "role": "bruiser",
           "stats": {
             "Health": 59.88888889,
-            "AttackDamage": 15.73333333,
+            "AttackDamage": 18.09333333,
             "AttackInterval": 0.33545455,
             "Speed": 102,
             "AttackRange": 244,
@@ -112422,7 +113220,7 @@
           "role": "mystic",
           "stats": {
             "Health": 49,
-            "AttackDamage": 16.38888889,
+            "AttackDamage": 18.84722222,
             "AttackInterval": 0.31681818,
             "Speed": 91,
             "AttackRange": 244,
@@ -113002,7 +113800,7 @@
           "created": true,
           "stats": {
             "Health": 55.55555556,
-            "AttackDamage": 6.63157895,
+            "AttackDamage": 7.62631579,
             "AttackInterval": 1.13,
             "Speed": 127,
             "AttackRange": 43,
@@ -113030,7 +113828,7 @@
           "created": true,
           "stats": {
             "Health": 66.66666667,
-            "AttackDamage": 5.96842105,
+            "AttackDamage": 6.86368421,
             "AttackInterval": 1.017,
             "Speed": 114,
             "AttackRange": 43,
@@ -113058,7 +113856,7 @@
           "created": true,
           "stats": {
             "Health": 50,
-            "AttackDamage": 5.96842105,
+            "AttackDamage": 6.86368421,
             "AttackInterval": 1.243,
             "Speed": 140,
             "AttackRange": 43,
@@ -113086,7 +113884,7 @@
           "created": true,
           "stats": {
             "Health": 61.11111111,
-            "AttackDamage": 7.95789474,
+            "AttackDamage": 9.15157895,
             "AttackInterval": 1.017,
             "Speed": 121,
             "AttackRange": 43,
@@ -113114,7 +113912,7 @@
           "created": true,
           "stats": {
             "Health": 50,
-            "AttackDamage": 8.28947368,
+            "AttackDamage": 9.53289473,
             "AttackInterval": 0.9605,
             "Speed": 108,
             "AttackRange": 43,
@@ -113217,7 +114015,7 @@
           "role": "fighter",
           "stats": {
             "Health": 73.33333333,
-            "AttackDamage": 12.22222222,
+            "AttackDamage": 14.05555555,
             "AttackInterval": 0.5,
             "Speed": 89,
             "AttackRange": 64,
@@ -113245,7 +114043,7 @@
           "role": "vanguard",
           "stats": {
             "Health": 66,
-            "AttackDamage": 11.61111111,
+            "AttackDamage": 13.35277778,
             "AttackInterval": 0.5,
             "Speed": 102,
             "AttackRange": 64,
@@ -113273,7 +114071,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 66,
-            "AttackDamage": 11,
+            "AttackDamage": 12.65,
             "AttackInterval": 0.55,
             "Speed": 98,
             "AttackRange": 64,
@@ -113301,7 +114099,7 @@
           "role": "bruiser",
           "stats": {
             "Health": 80.66666667,
-            "AttackDamage": 14.66666667,
+            "AttackDamage": 16.86666667,
             "AttackInterval": 0.45,
             "Speed": 84,
             "AttackRange": 64,
@@ -113329,7 +114127,7 @@
           "role": "mystic",
           "stats": {
             "Health": 66,
-            "AttackDamage": 15.27777778,
+            "AttackDamage": 17.56944445,
             "AttackInterval": 0.425,
             "Speed": 80,
             "AttackRange": 64,
@@ -113567,7 +114365,7 @@
           "role": "fighter",
           "stats": {
             "Health": 80,
-            "AttackDamage": 10.55555556,
+            "AttackDamage": 11.61111112,
             "AttackInterval": 0.6,
             "Speed": 97,
             "AttackRange": 67,
@@ -113587,7 +114385,7 @@
           "role": "guardian",
           "stats": {
             "Health": 96,
-            "AttackDamage": 9.5,
+            "AttackDamage": 10.45,
             "AttackInterval": 0.54,
             "Speed": 87,
             "AttackRange": 67,
@@ -113607,7 +114405,7 @@
           "role": "skirmisher",
           "stats": {
             "Health": 72,
-            "AttackDamage": 9.5,
+            "AttackDamage": 10.45,
             "AttackInterval": 0.66,
             "Speed": 106,
             "AttackRange": 67,
@@ -113627,7 +114425,7 @@
           "role": "bruiser",
           "stats": {
             "Health": 88,
-            "AttackDamage": 12.66666667,
+            "AttackDamage": 13.93333334,
             "AttackInterval": 0.54,
             "Speed": 92,
             "AttackRange": 67,
@@ -113647,7 +114445,7 @@
           "role": "mystic",
           "stats": {
             "Health": 72,
-            "AttackDamage": 13.19444444,
+            "AttackDamage": 14.51388888,
             "AttackInterval": 0.51,
             "Speed": 82,
             "AttackRange": 67,
@@ -114771,7 +115569,7 @@
           "baseline": {
             "Health": 58.88888889,
             "AttackDamage": 9.47368421,
-            "AttackInterval": 0.79,
+            "AttackInterval": 0.8532,
             "Speed": 156.52173913
           },
           "referenceId": 100300,
@@ -114811,7 +115609,7 @@
             "Health": 302.22222222,
             "AttackInterval": 0.37647059,
             "Speed": 98.82352941,
-            "AttackDamage": 0
+            "AttackDamage": 3
           },
           "referenceId": 91051,
           "defaultProfileId": 91051
@@ -114981,7 +115779,7 @@
           "baseline": {
             "Health": 48,
             "AttackDamage": 5,
-            "AttackInterval": 1,
+            "AttackInterval": 1.1,
             "Speed": 102
           },
           "referenceId": 100355
@@ -115567,7 +116365,7 @@
           "baseline": {
             "Health": 46,
             "AttackDamage": 5.7,
-            "AttackInterval": 0.91,
+            "AttackInterval": 1.0192,
             "Speed": 101
           },
           "referenceId": 100510,
@@ -115587,7 +116385,7 @@
           "baseline": {
             "Health": 179.09090909,
             "AttackDamage": 10.16666667,
-            "AttackInterval": 0.91111111,
+            "AttackInterval": 1.02044444,
             "Speed": 98.94736842
           },
           "referenceId": 100516,
@@ -115607,7 +116405,7 @@
           "baseline": {
             "Health": 64.16666667,
             "AttackDamage": 5.88888889,
-            "AttackInterval": 1.03333333,
+            "AttackInterval": 1.15733333,
             "Speed": 91.11111111
           },
           "referenceId": 100520,
@@ -116199,7 +116997,7 @@
           },
           "baseline": {
             "Health": 109.09090909,
-            "AttackDamage": 10.41666666,
+            "AttackDamage": 11.97916666,
             "AttackInterval": 0.74444444,
             "Speed": 89.47368421
           },
@@ -116218,7 +117016,7 @@
           },
           "baseline": {
             "Health": 68.18181818,
-            "AttackDamage": 11.66666667,
+            "AttackDamage": 13.41666667,
             "AttackInterval": 0.56666667,
             "Speed": 94.73684211
           },
@@ -116238,7 +117036,7 @@
           },
           "baseline": {
             "Health": 109.09090909,
-            "AttackDamage": 10.41666666,
+            "AttackDamage": 11.97916666,
             "AttackInterval": 0.74444444,
             "Speed": 89.47368421
           },
@@ -116257,7 +117055,7 @@
           },
           "baseline": {
             "Health": 48,
-            "AttackDamage": 5,
+            "AttackDamage": 5.75,
             "AttackInterval": 1,
             "Speed": 102
           },
@@ -116276,7 +117074,7 @@
           },
           "baseline": {
             "Health": 50,
-            "AttackDamage": 5.2,
+            "AttackDamage": 5.98,
             "AttackInterval": 0.98,
             "Speed": 104
           },
@@ -116296,7 +117094,7 @@
           },
           "baseline": {
             "Health": 48,
-            "AttackDamage": 5,
+            "AttackDamage": 5.75,
             "AttackInterval": 1,
             "Speed": 102
           },
@@ -116412,7 +117210,7 @@
           "baseline": {
             "Health": 147.77777778,
             "AttackDamage": 14.24,
-            "AttackInterval": 0.50588235,
+            "AttackInterval": 0.56658823,
             "Speed": 101.17647059
           },
           "referenceId": 91135,
@@ -116469,7 +117267,7 @@
           },
           "baseline": {
             "Health": 26.66666666,
-            "AttackDamage": 11.11111111,
+            "AttackDamage": 12.22222222,
             "AttackInterval": 0.45454545,
             "Speed": 61.81818182
           },
@@ -116859,7 +117657,7 @@
           },
           "baseline": {
             "Health": 604.54545455,
-            "AttackDamage": 32.08333333,
+            "AttackDamage": 36.89583333,
             "AttackInterval": 0.81111111,
             "Speed": 92.63157895
           },
@@ -116879,7 +117677,7 @@
           },
           "baseline": {
             "Health": 244,
-            "AttackDamage": 16.5,
+            "AttackDamage": 18.975,
             "AttackInterval": 0.63,
             "Speed": 93
           },
@@ -116899,7 +117697,7 @@
           },
           "baseline": {
             "Health": 172.22222222,
-            "AttackDamage": 9.76,
+            "AttackDamage": 11.224,
             "AttackInterval": 0.74117647,
             "Speed": 100
           },
@@ -116990,7 +117788,7 @@
           "baseline": {
             "Health": 46.66666667,
             "AttackDamage": 22.22222222,
-            "AttackInterval": 0.22272727,
+            "AttackInterval": 0.24945454,
             "Speed": 103.63636364
           },
           "referenceId": 91165,
@@ -117010,7 +117808,7 @@
           "baseline": {
             "Health": 56.66666667,
             "AttackDamage": 8.63157895,
-            "AttackInterval": 0.91,
+            "AttackInterval": 1.0192,
             "Speed": 113.04347826
           },
           "referenceId": 91166,
@@ -117030,7 +117828,7 @@
           "baseline": {
             "Health": 73.63636364,
             "AttackDamage": 10.5,
-            "AttackInterval": 0.62777778,
+            "AttackInterval": 0.70311111,
             "Speed": 98.94736842
           },
           "referenceId": 91167,
@@ -117050,7 +117848,7 @@
           "baseline": {
             "Health": 53.33333333,
             "AttackDamage": 5.26315789,
-            "AttackInterval": 1,
+            "AttackInterval": 1.12,
             "Speed": 130.43478261
           },
           "referenceId": 91168,
@@ -117069,7 +117867,7 @@
           "baseline": {
             "Health": 563.63636364,
             "AttackDamage": 27.08333333,
-            "AttackInterval": 0.98888889,
+            "AttackInterval": 1.10755556,
             "Speed": 89.47368421
           },
           "referenceId": 91169,
@@ -117167,7 +117965,7 @@
           "name": "Orc Wyvern",
           "baseline": {
             "Health": 54.44444444,
-            "AttackDamage": 13.11111111,
+            "AttackDamage": 15.07777778,
             "AttackInterval": 0.37272727,
             "Speed": 107.27272727
           },
@@ -117287,7 +118085,7 @@
           "referenceId": 91181,
           "baseline": {
             "Health": 55.55555556,
-            "AttackDamage": 6.63157895,
+            "AttackDamage": 7.62631579,
             "AttackInterval": 1.13,
             "Speed": 126.95652174
           },
@@ -117325,7 +118123,7 @@
           "name": "Orc War Beast",
           "baseline": {
             "Health": 73.33333333,
-            "AttackDamage": 12.22222222,
+            "AttackDamage": 14.05555555,
             "AttackInterval": 0.5,
             "Speed": 88.88888889
           },
@@ -117385,7 +118183,7 @@
           "name": "Hellgate Behemoth",
           "baseline": {
             "Health": 80,
-            "AttackDamage": 10.55555556,
+            "AttackDamage": 11.61111112,
             "AttackInterval": 0.6,
             "Speed": 96.66666667
           },

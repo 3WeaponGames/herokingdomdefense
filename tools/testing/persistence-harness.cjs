@@ -6,13 +6,14 @@ const root = path.resolve(__dirname, '../..');
 const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
 const clone = value => JSON.parse(JSON.stringify(value));
 
-function harness(saved = {}) {
+function harness(saved = {}, beforeRecords) {
   const storage = new Map(Object.entries(saved));
   const state = { events: [], intervals: [], failKeys: new Set(), writes: 0, crashAt: Infinity };
   const modules = {};
   const singleton = object => ({ getInstance: () => object });
   const localStorage = {
     getItem: key => storage.get(key) ?? null,
+    removeItem(key) { storage.delete(key); },
     setItem(key, value) { if (state.failKeys.has(key) || state.failAll) throw Error('quota exceeded'); storage.set(key, value); state.writes++; }
   };
   const globals = { console: { log() {}, error() {}, warn() {} }, Date, Math, localStorage,
@@ -53,11 +54,12 @@ function harness(saved = {}) {
   };
   const Player = load('KinghtFallPlayerMgr').KinghtFallPlayerMgr;
   const player = Player.getInstance();
+  if (beforeRecords) beforeRecords({ globals, modules, load });
   for (const [property, name] of [['udata', 'User'], ['missionData', 'Mission'], ['dailyData', 'Daily'], ['guideData', 'Guide'], ['gameData', 'Game']]) {
     const Record = load('KinghtFall' + name + 'Data')['KinghtFall' + name + 'Data'];
     const record = player[property] = new Record();
     record.createData();
-    const raw = storage.get(record.gameKey);
+    const raw = Cache.getData(record.gameKey);
     if (raw) record.data = record.readSaveRecord(raw, record.gameKey, 'local', false);
     const save = record.saveData;
     record.saveData = function () {

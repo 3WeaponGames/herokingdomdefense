@@ -76,3 +76,75 @@ test('opening the test service does no writes and pending real progress keeps ow
   f.run('day');
   assert.equal(f.state.writes, writes);
 });
+
+test('advancing a test day renews the shop daily deal and keeps the saved shop and wallet intact', () => {
+  const f = fixture();
+  const manager = { ...f.modules.KinghtFallDataMgr.KinghtFallDataMgr.getInstance(), getTreasureCfg: () => config.TreasureCfg };
+  const shop = f.load('ShopRuntime').create(f.player, manager, {
+    now: () => f.daily.calendarTime(), isTestProfile: f.Progress.active
+  });
+  f.run('playtime');
+  const view = shop.getView();
+  assert.equal(view.ready, true, view.error);
+  assert.equal(shop.claimDaily(view.token).ok, true);
+  assert.equal(shop.getView().dailyDeal.claimed, true);
+  f.run('day');
+  assert.equal(shop.getView().dailyDeal.claimed, false);
+  assert.equal(f.Cache.clearAll(), false);
+  assert.deepEqual(f.persist(), f.before);
+});
+
+for (const isNative of [false, true]) {
+  test(`reset boots an empty test profile and returning reloads the saved progress (${isNative ? 'native' : 'browser'})`, () => {
+    let restarts = 0;
+    const tabStorage = new Map(), restart = () => { restarts++; };
+    function boot({ globals, modules }) {
+      globals.cc.sys = { isNative, localStorage: globals.localStorage };
+      globals.cc.game.restart = restart;
+      globals.window = { location: { reload: restart }, sessionStorage: {
+        getItem: key => tabStorage.get(key), setItem: (key, value) => tabStorage.set(key, value), removeItem: key => tabStorage.delete(key)
+      } };
+      modules.TestMode = { TestMode: { getInstance: () => ({ isAvailable: () => true }) } };
+    }
+    const before = harness({}, boot);
+    before.player.udata.data.goldNum = 4589;
+    before.player.guideData.data.GroupId = 99;
+    before.player.rewardRecords().forEach(record => record.saveData());
+    const otherProgress = 'test' + 'trackdata';
+    before.Cache.saveData(otherProgress, 'previous player');
+    before.Cache.saveData('MUSIC', '0');
+    const original = before.persist();
+    before.load('RewardTestProgress').returnToSavedProgress();
+    assert.equal(restarts, 0);
+    before.load('RewardTestProgress').requestNewPlayer(before.player);
+    assert.equal(restarts, 1);
+
+    const fresh = harness(before.persist(), context => {
+      boot(context);
+      assert.equal(context.load('RewardTestProgress').prepareStartup(), false);
+    });
+    assert.equal(fresh.load('RewardTestProgress').active(), true);
+    assert.notEqual(fresh.player.udata.getGoldNum(), 4589);
+    assert.equal(fresh.player.guideData.getGroupId(), 1);
+    assert.equal(fresh.Cache.getData(otherProgress), null);
+    assert.equal(fresh.Cache.getData('MUSIC'), '0');
+    fresh.Cache.saveData(otherProgress, 'test player');
+    assert(fresh.claim('sign'));
+    assert.deepEqual(fresh.persist(), original);
+    fresh.load('RewardTestProgress').returnToSavedProgress();
+    assert.equal(restarts, 2);
+    const reopened = harness(fresh.persist(), context => {
+      boot(context);
+      const progress = context.load('RewardTestProgress');
+      assert.equal(progress.prepareStartup(), true);
+      assert.equal(progress.prepareStartup(), false);
+    });
+    assert.equal(reopened.load('RewardTestProgress').active(), false);
+    assert.equal(reopened.player.udata.getGoldNum(), 4589);
+    assert.equal(reopened.player.guideData.getGroupId(), 99);
+    assert.equal(reopened.player.getDailyData().getSignDay(), 0);
+    assert.equal(reopened.player.getDailyData().getSignReward(), 0);
+    assert.equal(reopened.Cache.getData(otherProgress), 'previous player');
+    assert.deepEqual(reopened.persist(), original);
+  });
+}
