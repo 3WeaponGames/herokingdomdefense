@@ -7,6 +7,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const source = fs.readFileSync(path.resolve(__dirname, '../../assets/_script/NativeOcclusionMaskCache.js'), 'utf8');
+const targetlessSource = fs.readFileSync(path.resolve(__dirname, '../native/targetless-actor-captures-adapter.inc'), 'utf8');
 
 function fixture(options = {}) {
   const calls = [];
@@ -181,7 +182,7 @@ test('a runtime compatibility change releases cached wrappers and empty input re
   for (const value of [null, undefined, {}, false]) assert.doesNotThrow(() => { f.api.sync(value); f.api.dispose(value); });
 });
 
-function captureFixture(grouped = false) {
+function captureFixture(grouped = false, prepare) {
   const f = fixture();
   const main = {}, branch = { _parent: main }, leaf = { _parent: branch };
   const privateCamera = { _camera: {}, targetTexture: {} };
@@ -257,10 +258,27 @@ function captureFixture(grouped = false) {
     Mask.prototype.getMaterial = function (index) { return this._materials[index]; };
     Mask.prototype.getMaterials = function () { return this._materials; };
   }
+  if (prepare) prepare(f);
   f.api.sync(mask);
   node._renderFlag = FLAG_UPDATE_RENDER_DATA;
   return { f, mask, node, view, leaf, RenderFlow, privateCamera,
     capture(root = leaf, camera = privateCamera._camera) { RenderFlow.render(root, 0, camera); } };
+}
+
+function targetlessAdapter(f) {
+  const { cc } = f;
+  cc.RenderComponent = class RenderComponent {};
+  const { RenderFlow } = cc;
+  RenderFlow.renderCamera = (camera, root) => RenderFlow.render(root, 0, camera);
+  const adapter = vm.createContext({ cc, RenderFlow, sp: {}, spine: { _hkdTargetlessLeaf: () => 2 },
+    hkdTargetlessRender: RenderFlow.render, hkdTargetlessRenderCamera: RenderFlow.renderCamera });
+  vm.runInContext(targetlessSource, adapter, { filename: 'targetless-actor-captures-adapter.inc' });
+  cc.RenderFlow._hkdTargetlessAdapter.initialize();
+  return adapter;
+}
+
+function targetlessRequest() {
+  return { materialized: false, materialize() { this.materialized = true; return true; } };
 }
 
 test('disjoint private capture retains the queued mask until a root that can draw it', () => {
@@ -341,6 +359,65 @@ test('the verified adapter receives only disjoint capture scopes and a mask-spec
   assert.throws(() => g.capture(), /render failed/);
   assert.equal(queue.scope, null);
   finish();
+});
+
+test('the generated foreground wrapper owns an immutable carry function and registers with the native adapter', () => {
+  let adapter;
+  const { f, mask, view, RenderFlow, capture } = captureFixture(true, fixture => {
+    adapter = targetlessAdapter(fixture);
+  });
+  const assembler = mask._assembler, original = f.prototype._updateRenderData;
+  const wrapper = assembler._updateRenderData;
+  assert.notEqual(wrapper, original);
+  const carry = wrapper._hkdCarryDirtyMask;
+  assert.equal(typeof carry, 'function');
+  const descriptor = Object.getOwnPropertyDescriptor(wrapper, '_hkdCarryDirtyMask');
+  assert.equal(descriptor.value, carry);
+  assert.equal(descriptor.writable, false);
+  assert.equal(descriptor.configurable, false);
+  assert.equal(Reflect.set(wrapper, '_hkdCarryDirtyMask', () => false), false);
+  assert.equal(Reflect.deleteProperty(wrapper, '_hkdCarryDirtyMask'), false);
+  assert.equal(adapter.hkdTargetlessOwnsMaskWrapper(mask, assembler, wrapper), true);
+
+  const request = targetlessRequest();
+  adapter.hkdTargetlessBeforeCarry(request, mask, assembler, wrapper);
+  adapter.hkdTargetlessBeforeDirty(request, mask, assembler, 'data');
+  assert.equal(request.materialized, false);
+
+  const carryChecks = [];
+  RenderFlow._nativeFlow.render = () => carryChecks.push(carry());
+  const finish = f.api.beginCaptureUpdates(view);
+  try {
+    capture();
+    capture(view.main);
+    assert.deepEqual(carryChecks, [true, false]);
+    assert.equal(mask.geometry, 1);
+  } finally {
+    finish();
+  }
+  f.api.dispose(mask);
+  assert.equal(assembler._updateRenderData, original);
+});
+
+test('a lookalike mask assembler materializes the target before its foreign data method can run', () => {
+  let adapter;
+  const request = targetlessRequest();
+  let foreignCalls = 0;
+  const { mask, capture } = captureFixture(true, fixture => {
+    adapter = targetlessAdapter(fixture);
+    fixture.value._assembler.updateRenderData = function () {
+      assert.equal(request.materialized, true);
+      foreignCalls++;
+    };
+  });
+  const assembler = mask._assembler, wrapper = assembler._updateRenderData;
+  assert.equal(typeof wrapper._hkdCarryDirtyMask, 'function');
+  assert.equal(adapter.hkdTargetlessOwnsMaskWrapper(mask, assembler, wrapper), false);
+  adapter.hkdTargetlessBeforeCarry(request, mask, assembler, wrapper);
+  assert.equal(request.materialized, true);
+  assert.equal(foreignCalls, 0);
+  capture();
+  assert.equal(foreignCalls, 1);
 });
 
 test('only the owned targetless actor route carries masks without a physical target', () => {

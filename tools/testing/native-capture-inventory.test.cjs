@@ -95,6 +95,23 @@ test('native inventory restores exact tree and component order after reordering 
   assert.deepEqual(raw, wrappers(nested, second, rightRig, root, first, leftRig));
 });
 
+test('native inventory keeps wide and deep ranks in the same order as short paths', () => {
+  const f = fixture();
+  const scene = new f.Scene();
+  const siblings = Array.from({ length: 1026 }, () => new f.Node(scene));
+  const nodes = [0, 1, 2, 3, 7, 511, 1023, 1024, 1025].map(rank => siblings[rank]);
+  let branch = siblings[1023];
+  for (let depth = 0; depth < 30; depth++) branch = new f.Node(branch);
+
+  const components = [scene, ...nodes, branch, branch].map((node, index) => new f.Skeleton(node, String(index)));
+  const native = wrappers(...components.reverse());
+  assert.deepEqual(f.inventory(scene, native), f.expected(scene));
+
+  scene.children.reverse();
+  branch._components.reverse();
+  assert.deepEqual(f.inventory(scene, native), f.expected(scene));
+});
+
 test('inventory uses live activation, native owner, component type and scene membership each collection', () => {
   const f = fixture();
   const scene = new f.Scene();

@@ -269,6 +269,12 @@ Runtime.prototype.startKnockback=function(enemy,away,amount){
 };
 Runtime.prototype.advanceKnockbacks=function(){var self=this,owned=this.knockbacks,remaining=[];owned.forEach(function(record){
   if(!self.knockbackCurrent(record)){if(record.enemy._heroKnockback===record)delete record.enemy._heroKnockback;return;}
+  if(record.enemy._statusHitReaction){
+    if(record.pausedAt===undefined)record.pausedAt=self.state.time;
+    remaining.push(record);
+    return;
+  }
+  if(record.pausedAt!==undefined){record.started+=self.state.time-record.pausedAt;delete record.pausedAt;}
   var progress=Skills.knockbackProgress(self.state.time-record.started),delta=progress-record.progress,p=point(record.enemy);
   require("KinghtFallNavigation").moveManual(record.enemy,self.game,cc.v2(p.x+record.x*delta,p.y+record.y*delta));record.progress=progress;
   if(progress<1&&self.knockbackCurrent(record))remaining.push(record);else if(record.enemy._heroKnockback===record)delete record.enemy._heroKnockback;

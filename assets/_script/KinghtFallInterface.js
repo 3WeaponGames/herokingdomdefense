@@ -25,7 +25,10 @@ function applyBuffTint(actor) {
   var records = actor.debuffInfo;
   for (var index = records.length - 1; index >= 0; index--) {
     if (!records[index].skillTint) continue;
-    if (!actor._buffTint || actor._buffTint.body !== body) actor._buffTint = { body: body, color: body.color };
+    if (!actor._buffTint || actor._buffTint.body !== body) {
+      var color = actor._statusHitReaction ? require("UnitHitFeedback").baseColor(body) : body.color;
+      actor._buffTint = { body: body, color: color };
+    }
     body.color = new cc.Color().fromHEX(records[index].skillTint);
     return;
   }

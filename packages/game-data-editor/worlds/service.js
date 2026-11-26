@@ -3,6 +3,7 @@ const StageNames=require('./stage-names');
 const StageBiome=require('./stage-biome');
 const fs=require('fs'),path=require('path'),os=require('os'),crypto=require('crypto'),url=require('url');
 const UnitCatalog=require('./unit-catalog');
+const WaveCounts=require('./wave-counts');
 const UnitLibrary=require('../../hkd-characters/lib/unit-library');
 const M=require('./model'),L=require('./legacy'),P=require('./prefab'),B=require('./baker'),JSONDoc=require('../lib/json-document'),History=require('./history'),Library=require('./library'),Groups=require('./groups'),StageReplace=require('./stage-replace');
 const campaignFile=L.configFile('A');
@@ -62,7 +63,9 @@ class Service{
   const charactersFile='assets/resources/characters/catalog.json',characters=fs.existsSync(path.join(this.root,charactersFile))?L.read(this.root,charactersFile):null;
   const units=UnitCatalog.rows(index.documents.A,catalog,unitIcon,characters,UnitLibrary.customSources(this.root));
   const battleTasks=require('../lib/stage-tasks').catalog(index.documents.A,text);
-  return {version:this.version,buildingLooks,maps:this.mapCatalog(),stages:this.stageCatalog().map(s=>Object.assign({},s,{name:text(s.name)})),library:index.library,units,battleTasks,interval:Number(index.documents.A.ParameterCfg['60018'].Value)||.5,recovery:this.hadRecovery||this.recoveries().length>0,recoveries:this.recoveries(),images:this.images,collections:Library.summary(this)};}
+  const interval=Number(index.documents.A.ParameterCfg['60018'].Value)||.5;
+  const waveCountTargets=WaveCounts.referenceTotals(index.documents.A.LevelCfg,interval);
+  return {version:this.version,buildingLooks,maps:this.mapCatalog(),stages:this.stageCatalog().map(s=>Object.assign({},s,{name:text(s.name)})),library:index.library,units,battleTasks,interval,waveCountTargets,recovery:this.hadRecovery||this.recoveries().length>0,recoveries:this.recoveries(),images:this.images,collections:Library.summary(this)};}
  availableMaps(){return this.index().maps.filter(map=>map.archived!==true);}
  mapCatalog(){return this.availableMaps().map(map=>{const doc=this.docs['map:'+map.id],value=doc?doc.data:map;return {id:map.id,name:value.name,biome:value.biome,thumbnail:this.thumbnail(map.id)};});}
  unitPreview(request){const id=Number(request&&request.id),config=this.index().documents.A,unit=(config.SoldierCfg||{})[id];if(!Number.isSafeInteger(id)||!unit||!unit.prefab||[90011,90012].includes(id))throw Error('Choose a spawnable unit.');const data=require('../lib/unit-assets').describe(this.root,{type:'enemy',id,documents:{A:{data:config}},noShared:true});data.visual=clone((config.GameTools&&config.GameTools.visuals||{})[data.key]||{});return data;}
@@ -72,7 +75,20 @@ class Service{
  loadStage(stageId){this.index();const key='stage:'+stageId;if(!this.docs[key]){const parts=/^A-(\d+)$/.exec(stageId);if(!parts)throw Error('Invalid stage');const level=Number(parts[1]);if(!Number.isSafeInteger(level)||level<1||stageId!=='A-'+level)throw Error('Choose a canonical stage identifier.');const config=L.read(this.root,campaignFile).LevelCfg.find(s=>s.Level===level);if(!config)throw Error('Stage was removed');const file='authoring/worlds/stages/'+stageId+'.json';const data=fs.existsSync(path.join(this.root,file))?L.read(this.root,file):L.adaptStage(this.root,'A',level,config);data.config=clone(config);data.sourceRevision=L.hash(JSON.stringify(config));StageNames.refreshTowers(StageNames.refreshPaths(data));this.docs[key]={key,file,original:clone(data),data,revision:fingerprint(path.join(this.root,file))};this.loadMap(data.mapId);}return this.docs[key];}
  loadGroups(){return Library.load(this);}
  doc(key){if(key===Library.KEY)return this.loadGroups();return key.startsWith('map:')?this.loadMap(key.slice(4)):this.loadStage(key.slice(6));}
- snapshot(key,detachedValue,{placementPreview=false}={}){const doc=this.doc(key),value=detachedValue===undefined?doc.data:detachedValue,issues=key===Library.KEY?Groups.validate(value,this.assetTable()):key.startsWith('map:')?M.validateMap(value,this.assetTable()):this.stageIssues(value,this.loadMap(value.mapId).data);return {version:this.version,key,stageName:key.startsWith('stage:')?localizedStageName(this.root,value.config&&value.config.Name):undefined,globalShadowSettings:key===Library.KEY?undefined:this.shadowSettings(),unitCatalogRevision:this.unitCatalogRevision||0,stageClipboard:this.stageClipboard?clone(this.stageClipboard.metadata):null,buildingPreview:key.startsWith('stage:')?require('./building-preview').describe(this,value,{buildingLevels:true,barracksTypes:!placementPreview}):undefined,value:clone(value),dirty:!equal(value,doc.original),canUndo:this.undo.some(x=>x.key===key),canRedo:this.redo.some(x=>x.key===key),issues,sharedMapDraft:key.startsWith('stage:')?this.stageSaveContext(value,issues):null,busy:this.busy,affected:key.startsWith('map:')?this.affected(value.id):[],drafts:Object.values(this.docs).filter(d=>!equal(d.data,d.original)).map(d=>d.key),collections:Library.summary(this),recoveryBackup:this.recoveryBackup};}
+ snapshot(key,detachedValue,{placementPreview=false,waveIndex}={}){
+  const doc=this.doc(key),value=detachedValue===undefined?doc.data:detachedValue,stage=key.startsWith('stage:');
+  const issues=key===Library.KEY?Groups.validate(value,this.assetTable()):key.startsWith('map:')?M.validateMap(value,this.assetTable()):this.stageIssues(value,this.loadMap(value.mapId).data);
+  const content=waveIndex===undefined?{
+   value:clone(value),stageName:stage?localizedStageName(this.root,value.config&&value.config.Name):undefined,
+   globalShadowSettings:key===Library.KEY?undefined:this.shadowSettings(),
+   buildingPreview:stage?require('./building-preview').describe(this,value,{buildingLevels:true,barracksTypes:!placementPreview}):undefined
+  }:{waveIndex,wave:clone(value.config.WaveCfg[waveIndex])};
+  return {version:this.version,key,...content,unitCatalogRevision:this.unitCatalogRevision||0,
+   stageClipboard:this.stageClipboard?clone(this.stageClipboard.metadata):null,dirty:!equal(value,doc.original),
+   canUndo:this.undo.some(x=>x.key===key),canRedo:this.redo.some(x=>x.key===key),issues,
+   sharedMapDraft:stage?this.stageSaveContext(value,issues):null,busy:this.busy,affected:key.startsWith('map:')?this.affected(value.id):[],
+   drafts:Object.values(this.docs).filter(d=>!equal(d.data,d.original)).map(d=>d.key),collections:Library.summary(this),recoveryBackup:this.recoveryBackup};
+ }
  stageSaveContext(stage,issues){
   const map=this.loadMap(stage.mapId);if(equal(map.data,map.original))return null;
   const affected=Array.from(new Set(this.affected(stage.mapId).concat(stage.id))),otherDrafts=affected.filter(id=>id!==stage.id&&this.docs['stage:'+id]&&!equal(this.docs['stage:'+id].data,this.docs['stage:'+id].original));
@@ -141,7 +157,28 @@ class Service{
   // Name edits must not seed terrain overrides in legacy maps.
   const nameOnly=value.name!==doc.data.name&&equal(Object.assign({},doc.data,{name:value.name}),value);
   if(request.key.startsWith('map:')&&!nameOnly&&!M.hasGlobalBlockers(value))value.blockerMask=clone(M.mapBlockerRegions(doc.data));
-  this.undo.push({key:doc.key,edits:History.diff(doc.data,value)});this.redo=this.redo.filter(item=>item.key!==doc.key);doc.data=value;this.version++;this.persist();return this.snapshot(doc.key);
+  this.recordChange(doc,value);
+  return this.snapshot(doc.key);
+ }
+ changeWave({key,version,waveIndex,wave}){
+  this.expect(version);
+  if(typeof key!=='string'||!key.startsWith('stage:'))throw Error('Select a stage before editing a wave.');
+  const doc=this.doc(key),waves=doc.data.config.WaveCfg;
+  const previous=Array.isArray(waves)&&Number.isInteger(waveIndex)&&waves[waveIndex];
+  if(!previous||!wave||typeof wave!=='object'||Array.isArray(wave)||wave.Wave!==previous.Wave||wave.id!==previous.id){
+   throw Error('The wave changed. Select it again before editing.');
+  }
+  if(!equal(previous,wave)){
+   const WaveCfg=waves.slice();
+   WaveCfg[waveIndex]=clone(wave);
+   this.recordChange(doc,{...doc.data,config:{...doc.data.config,WaveCfg}});
+  }
+  return this.snapshot(key,undefined,{waveIndex});
+ }
+ recordChange(doc,value){
+  this.undo.push({key:doc.key,edits:History.diff(doc.data,value)});
+  this.redo=this.redo.filter(item=>item.key!==doc.key);
+  doc.data=value;this.version++;this.persist();
  }
  history(request,redo){this.expect(request.version);const from=redo?this.redo:this.undo,to=redo?this.undo:this.redo;let at=from.length-1;while(at>=0&&from[at].key!==request.key)at--;if(at<0)return this.snapshot(request.key);const change=from.splice(at,1)[0];const doc=this.doc(request.key),value=clone(doc.data);History.apply(value,change.edits,redo);doc.data=value;to.push(change);this.version++;this.persist();return this.snapshot(request.key);}
  refresh(request){this.expect(request.version);L.invalidateScripts(this.root);require('../lib/unit-assets').invalidate();this._previewConfigs=null;const removed=new Set();for(const key of Object.keys(this.docs))if(equal(this.docs[key].data,this.docs[key].original)){delete this.docs[key];removed.add(key);}this.undo=this.undo.filter(e=>!removed.has(e.key));this.redo=this.redo.filter(e=>!removed.has(e.key));this.indexData=null;this.palette=null;this.sources={};this.version++;const maps=this.availableMaps(),key=request.key.startsWith('map:')&&!this.docs[request.key]&&!maps.some(m=>'map:'+m.id===request.key)?'map:'+maps[0].id:request.key;return this.snapshot(key);}

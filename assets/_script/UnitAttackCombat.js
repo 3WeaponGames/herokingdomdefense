@@ -3,8 +3,12 @@
 var Rules = require("./UnitAttackRules");
 var TowerCombat = require("./TowerCombat");
 var FlightTargeting = require("./FlightTargeting");
+var Indicators = require("./UnitAttackIndicators");
 var Navigation = require("KinghtFallNavigation");
 var Overrides = require("GameToolsOverrides");
+var damageEffectIds = Object.keys(Rules.damageEffects);
+var barracksDamage = { barracksProjectile: true };
+var healingCueDuration = .38;
 
 function battleCurrent(scope) {
   var ui = scope.ui, game = scope.game;
@@ -64,6 +68,139 @@ function nearby(scope, center, range, exclude) {
     return entry;
   }).filter(function (entry) { return entry.distance <= range; }).sort(function (a, b) { return a.distance - b.distance; });
 }
+function effectsBattleCurrent(state) {
+  return state.data.round === state.round && battleCurrent(state);
+}
+function effectsCurrent(state) {
+  return state.game._unitAttackEffects === state && effectsBattleCurrent(state);
+}
+function activeSlow(actor, type) {
+  return type !== undefined && actor.debuffInfo && actor.debuffInfo.some(function (buff) {
+    return buff.type === type && buff.data.subNum > 0 && (buff.timeMax === -1 || buff.time < buff.timeMax);
+  });
+}
+function clearEffects(game) {
+  var state = game._unitAttackEffects;
+  if (!state) return;
+  game._unitAttackEffects = null;
+  state.targets.forEach(Indicators.remove);
+  state.targets.clear();
+}
+function removeEffectTarget(state, node, target) {
+  state.targets.delete(node);
+  Indicators.remove(target);
+}
+function placeEffects(game) {
+  var state = game._unitAttackEffects;
+  if (!state) return;
+  if (!effectsCurrent(state)) return clearEffects(game);
+  for (var [node, target] of state.targets) {
+    var slowed = activeSlow(target.entry.actor, target.slowType);
+    if (targetCurrent(target.entry) && (target.effects.size || slowed || target.healTime > 0)) {
+      Indicators.place(target, game.ndUI, slowed, target.healTime / healingCueDuration);
+    } else removeEffectTarget(state, node, target);
+  }
+  if (game._unitAttackEffects === state && !state.targets.size) clearEffects(game);
+}
+function effectTarget(scope, entry) {
+  var game = scope.game, state = game._unitAttackEffects;
+  if (scope.stage !== require("KinghtFallModle").KinghtFallGameStage.Fight) return null;
+  if (!state || !effectsCurrent(state)) {
+    clearEffects(game);
+    state = game._unitAttackEffects = {
+      game: game, ui: scope.ui, data: scope.data, epoch: scope.epoch, stage: scope.stage,
+      round: scope.data.round, targets: new Map()
+    };
+  }
+  var target = state.targets.get(entry.node);
+  if (!target || target.entry.actor !== entry.actor || !targetCurrent(target.entry)) {
+    if (target) Indicators.remove(target);
+    target = { entry: entry, effects: new Map(), healTime: 0 };
+    state.targets.set(entry.node, target);
+  }
+  return target;
+}
+function applyDamageEffects(scope, entry, amount) {
+  var onHit = scope.rules.onHit;
+  var ids = damageEffectIds.filter(function (id) {
+    var effect = onHit[id];
+    return effect && effect.percent > 0 && effect.duration > 0 && (!entry.buildInfo || Rules.damageEffects[id].buildings);
+  });
+  if (!ids.length || !targetCurrent(entry)) return;
+  var target = effectTarget(scope, entry);
+  if (!target) return;
+  target.side = scope.side;
+  ids.forEach(function (id) {
+    var effect = onHit[id], rate = amount * effect.percent, previous = target.effects.get(id);
+    if (!previous) {
+      target.effects.set(id, { rate: rate, remaining: effect.duration, elapsed: 0, pendingDamage: 0 });
+    } else if (rate >= previous.rate) {
+      // Refresh a matching application without delaying the next tick.
+      previous.remaining = rate === previous.rate ? Math.max(previous.remaining, effect.duration) : effect.duration;
+      previous.rate = rate;
+    }
+  });
+}
+function advanceDamageEffects(target, dt) {
+  var hit = null;
+  for (var [id, effect] of target.effects) {
+    var step = Math.min(dt, effect.remaining);
+    effect.remaining -= step;
+    effect.elapsed += step;
+    effect.pendingDamage += step * effect.rate;
+    var expired = effect.remaining <= 1e-9;
+    var seconds = Math.floor(effect.elapsed + 1e-9);
+    if (!expired && !seconds) continue;
+    var remainder = expired ? 0 : Math.max(0, effect.elapsed - seconds);
+    var carry = remainder * effect.rate;
+    var damage = effect.pendingDamage - carry;
+    if (damage > 0) {
+      if (!hit) hit = { amount: 0, effects: [] };
+      hit.amount += damage;
+      hit.effects.push(id);
+    }
+    if (expired) target.effects.delete(id);
+    else {
+      effect.elapsed = remainder;
+      effect.pendingDamage = carry;
+    }
+  }
+  return hit;
+}
+function tickEffects(game, dt) {
+  var state = game._unitAttackEffects;
+  if (!state || state.stepping) return;
+  if (!effectsCurrent(state)) return clearEffects(game);
+  if (!(dt > 0) || !isFinite(dt)) return;
+  state.stepping = true;
+  try {
+    for (var [node, target] of state.targets) {
+      if (!effectsCurrent(state)) return;
+      var entry = target.entry;
+      if (!targetCurrent(entry)) { removeEffectTarget(state, node, target); continue; }
+      target.healTime = Math.max(0, target.healTime - dt);
+      var hit = advanceDamageEffects(target, dt), due = hit && isFinite(hit.amount);
+      if (due) {
+        // Resolve simultaneous ticks together through normal damage defenses.
+        // Secondary ally damage keeps barracks credit without triggering on-hit effects.
+        var ally = target.side === "ally";
+        var dealt = entry.actor.onAttacked(hit.amount, null, ally, ally ? barracksDamage : undefined);
+        if (!effectsCurrent(state)) return;
+        if (dealt > 0 && isFinite(dealt) && targetCurrent(entry) && cc.resources) {
+          require("UnitHitFeedback").playStatus(entry.actor, hit.effects, function () { return effectsBattleCurrent(state); }, state.ui);
+          if (!effectsCurrent(state)) return;
+        }
+      }
+      if (state.targets.get(node) === target &&
+          (due && !targetCurrent(entry) || !target.effects.size && !(target.healTime > 0) && !activeSlow(entry.actor, target.slowType))) {
+        removeEffectTarget(state, node, target);
+      }
+    }
+  } finally {
+    state.stepping = false;
+    if (game._unitAttackEffects === state && (!state.targets.size || !effectsCurrent(state))) clearEffects(game);
+  }
+}
 function deal(scope, entry, amount, impact, current) {
   if (!(amount > 0) || !isFinite(amount) || !current() || !targetCurrent(entry) || !canTarget(scope, entry.actor) ||
       protectedByWall(scope, entry.actor)) return false;
@@ -81,11 +218,22 @@ function deal(scope, entry, amount, impact, current) {
     if (slow && slow.percent > 0 && slow.duration > 0 && !entry.buildInfo && entry.actor.addBuff && targetCurrent(entry)) {
       var types = require("KinghtFallInterface").KinghtFallEnemyBuffType;
       entry.actor.addBuff(types.MoveSlow, { subNum: slow.percent, time: slow.duration }, "moveSlow");
+      if (current() && targetCurrent(entry) && activeSlow(entry.actor, types.MoveSlow)) {
+        var slowed = effectTarget(scope, entry);
+        if (slowed) slowed.slowType = types.MoveSlow;
+      }
     }
+    if (damageEffectIds.some(function (id) { return onHit[id]; }) && current()) applyDamageEffects(scope, entry, amount);
     if (lifeSteal && lifeSteal.percent > 0 && hpBefore > 0 && source && source.hpMax > 0 &&
         current() && sourceCurrent(scope) && TowerCombat.live(source)) {
       // Use the resolved damage and cap it to the HP the target had before the hit.
-      require("RelicRuntime").heal(source, Math.min(dealt, hpBefore) * lifeSteal.percent / source.hpMax);
+      var healed = require("RelicRuntime").heal(source, Math.min(dealt, hpBefore) * lifeSteal.percent / source.hpMax);
+      if (healed > 0 && current() && sourceCurrent(scope) && TowerCombat.live(source)) {
+        var recipient = TowerCombat.capture(source);
+        recipient.buildInfo = source.buildInfo;
+        var healing = effectTarget(scope, recipient);
+        if (healing) healing.healTime = healingCueDuration;
+      }
     }
   }
   var effects = scope.effects;
@@ -255,3 +403,6 @@ function advance(shot, dt) {
 exports.releaseEnemy = function () { release(this, "enemy"); };
 exports.releaseAlly = function () { release(this, "ally"); };
 exports.advance = advance;
+exports.tickEffects = tickEffects;
+exports.placeEffects = placeEffects;
+exports.clearEffects = clearEffects;

@@ -152,3 +152,40 @@ test('an owned inactive foreground mask remains eligible after Creator clears it
   root._components.push(new Mask());
   assert.equal(isStockForegroundMask(view, mask, coverage), false);
 });
+
+test('medium-crowd coverage requires the owned native route and a live cached animation blocker', () => {
+  class Skeleton {
+    isAnimationCached() { return this.cached; }
+  }
+  const scene = { children: [] };
+  const blocker = new Skeleton();
+  blocker.cached = true;
+  blocker.node = { parent: scene, activeInHierarchy: true, _components: [blocker] };
+  scene.children.push(blocker.node);
+  const view = { _cachedCaptureBlocker: blocker };
+  const spine = { _hkdTargetlessLeaf() {} };
+  let ownsRoute = true;
+  const nativeState = { ownsTargetlessRoute: candidate => ownsRoute && candidate === view };
+  const { canCheckMediumForeground } = load('KinghtFallDepthView.js', {
+    cc: { director: { getScene: () => scene } }, sp: { Skeleton }, spine, nativeState
+  }, '\nnativeMaskState = nativeState;\nexports.canCheckMediumForeground = canCheckMediumForeground;');
+
+  assert.equal(canCheckMediumForeground(view, 47), false);
+  assert.equal(canCheckMediumForeground(view, 48), true);
+  assert.equal(canCheckMediumForeground(view, 63), true);
+  assert.equal(canCheckMediumForeground(view, 64), false);
+  ownsRoute = false;
+  assert.equal(canCheckMediumForeground(view, 50), false);
+  ownsRoute = true;
+  blocker.enabled = false;
+  assert.equal(canCheckMediumForeground(view, 50), false);
+  blocker.enabled = true;
+  blocker.cached = false;
+  assert.equal(canCheckMediumForeground(view, 50), false);
+  blocker.cached = true;
+  scene.children.length = 0;
+  assert.equal(canCheckMediumForeground(view, 50), false);
+  scene.children.push(blocker.node);
+  delete spine._hkdTargetlessLeaf;
+  assert.equal(canCheckMediumForeground(view, 50), false);
+});

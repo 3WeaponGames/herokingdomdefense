@@ -303,7 +303,7 @@ var def_KinghtFallUIGame = function (t) {
     });
     var collect = this._battleHud && this._battleHud.collectButton;
     (collect || this.ndTask).on(collect ? "click" : cc.Node.EventType.TOUCH_END, function () {
-      if (collect && t.ctrGame.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare) return;
+      if (collect && (!collect.activeInHierarchy || t.ctrGame.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare)) return;
       t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
       t.getTask();
     });
@@ -847,16 +847,16 @@ var def_KinghtFallUIGame = function (t) {
     this.ndLevelInfo.getChildByName("labName").getComponent(cc.Label).string = this.T(this.ctrGame.gameData.levelCfg.Name);
     this.ndLevelInfo.getChildByName("labOrder").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle02), this.ctrGame.gameData.round + "/" + this.ctrGame.gameData.levelCfg.WaveCfg.length);
     var task = this.ctrGame.gameData.taskInfo, current = task.index < task.list.length;
-    if (current || this._battleHud && task.list.length) {
+    if (current) {
       var id = task.list[task.index];
-      var description = !current ? "battle.task.finished" : (typeof id === "string" && Array.isArray(task.targets) &&
+      var description = (typeof id === "string" && Array.isArray(task.targets) &&
         require("BattleTaskObjectives").descriptionToken(id, task.targets[task.index], task.progress)) ||
         $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGameTaskEnem(id).Name;
       this.ndTask.getChildByName("labName").getComponent(cc.Label).string = this.T(description);
-      var collect = this._battleHud ? this._battleHud.collectButton : this.ndTask.getChildByName("labGet");
-      collect.active = current && task.stage == 1;
-      this.ndTask.getChildByName("labNoFinish").active = current && task.stage == 0;
     }
+    var collect = this._battleHud ? this._battleHud.collectButton : this.ndTask.getChildByName("labGet");
+    collect.active = current && task.stage == 1;
+    this.ndTask.getChildByName("labNoFinish").active = current && task.stage == 0;
     if (this._battleHud) require("BattleHud").updateTasks(this, task);
     else this.ndTask.active = current;
   };

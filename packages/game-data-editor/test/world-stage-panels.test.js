@@ -200,6 +200,166 @@ test('pins group starts and applies hand-edited proposal values as Manual timing
  assert.equal(field('Spawn group 3 (3)').value,'20');
 });
 
+test('Balance wave suggests a total and applies an edited count with timing in a single draft operation',async()=>{
+ const f=fixture(),wave=f.state.snap.value.config.WaveCfg[0];
+ f.state.tab='Waves';
+ f.state.catalog.waveCountTargets=[9,12];
+ f.state.catalog.units.push({id:4,name:'Elite',enemyClass:'elite'},{id:5,name:'Boss',enemyClass:'boss'});
+ wave.SpawnTimeline[0].editorManualTiming=true;
+ wave.SpawnTimeline[2].unitId=4;
+ wave.SpawnTimeline[3].unitId=5;
+ let modal;
+ f.context.modal=(title,body,apply)=>{
+  modal={dialog:f.context.el('div'),applyButton:f.context.el('button'),apply};
+  body(modal.dialog);return modal;
+ };
+ async function reopen(){
+  f.context.right.textContent='';f.panels.right();
+  await descendants(f.context.right).find(node=>node.classList.contains('world-wave-balance-button')).onclick();
+ }
+ const nodes=()=>descendants(modal.dialog);
+ const select=name=>nodes().find(node=>node.tagName==='label'&&node.children[0].textContent===name).children[1];
+ const preview=()=>nodes().find(node=>node.textContent==='Preview changes').onclick();
+ const before=clone(f.state.snap.value);
+ await reopen();
+ assert.equal(select('Target unit count').value,'9');
+ assert.match(modal.dialog.textContent,/Stages 15–20 suggest 9 units/);
+ await preview();
+ assert.match(modal.dialog.textContent,/Total units49/);
+ assert.match(modal.dialog.textContent,/6Current 1/);
+ assert.deepEqual(f.state.snap.value,before);
+ assert.equal(f.edits(),0);
+
+ const input=select('Target unit count');
+ input.value='2';input.oninput();
+ await assert.rejects(modal.apply(),/Preview these settings/);
+ await preview();
+ assert.match(modal.dialog.textContent,/at least 4 units/);
+ input.value='6';input.oninput();
+ await preview();
+ assert.match(modal.dialog.textContent,/Total units46/);
+ assert(!modal.applyButton.disabled);
+ await modal.apply();
+ const saved=f.state.snap.value.config.WaveCfg[0];
+ assert.equal(saved.editorTimingBalance.totalUnits,6);
+ assert.deepEqual(saved.SpawnTimeline.map(row=>row.count),[1,3,1,1]);
+ assert.deepEqual(saved.SpawnTimeline[0],wave.SpawnTimeline[0]);
+ assert.equal(f.edits(),1);
+
+ await reopen();
+ const target=select('Target unit count');
+ assert.equal(target.value,'6');
+ const suggested=nodes().find(node=>node.textContent==='Use suggested total (9)');
+ assert(!suggested.disabled);
+ suggested.onclick();
+ assert.equal(target.value,'9');
+ target.value='';target.oninput();
+ await preview();await modal.apply();
+ assert.equal(f.state.snap.value.config.WaveCfg[0].editorTimingBalance.totalUnits,null);
+ assert.deepEqual(f.state.snap.value.config.WaveCfg[0].SpawnTimeline.map(row=>row.count),[1,3,1,1]);
+ await reopen();
+ assert.equal(select('Target unit count').value,'');
+});
+
+async function openStageBalance(f){
+ let modal;
+ f.state.tab='Waves';
+ f.context.modal=(title,body,apply)=>{
+  modal={dialog:f.context.el('div'),applyButton:f.context.el('button'),apply};
+  body(modal.dialog);return modal;
+ };
+ f.panels.left();
+ await descendants(f.context.left).find(node=>node.textContent==='Balance All Waves…').onclick();
+ const nodes=()=>descendants(modal.dialog);
+ const inputs=nodes().filter(node=>node.tagName==='input');
+ assert.equal(inputs.length,1);
+ return {
+  ...modal,percentage:inputs[0],
+  preview:()=>nodes().find(node=>node.tagName==='button'&&node.textContent==='Preview changes').onclick(),
+  row:name=>nodes().find(node=>node.tagName==='tr'&&node.children[0].textContent===name).children.map(cell=>cell.textContent)
+ };
+}
+
+test('stage balance scales both directions from suggested totals and applies the whole populated stage in one draft',async()=>{
+ const f=fixture(),stage=f.state.snap.value,[first,legacy]=stage.config.WaveCfg;
+ f.state.catalog.waveCountTargets=[10,20,25];
+ stage.spawns.push({id:2,name:'East',enabled:true});
+ stage.spawnGroups=[{id:'east',spawnIds:[2]}];
+ first.SpawnTimeline[0].editorManualTiming=true;
+ first.SpawnTimeline[1].spawnId=2;
+ first.editorTimingBalance={peakCap:4,defeatSeconds:.5,lastSpawnLimit:15,pushPeaks:[4,null],groupStarts:{east:3},future:'keep'};
+ const empty={id:7,Wave:3,SpawnTimeline:[],future:{keep:true}};
+ stage.config.WaveCfg.push(empty);
+ const before=clone(stage),review=await openStageBalance(f);
+ assert.equal(review.percentage.value,'100');
+ assert(review.applyButton.disabled);
+ await review.preview();
+ assert.deepEqual(review.row('Wave 1').slice(1,4),['4','10','10']);
+ review.percentage.value='80';review.percentage.oninput();
+ await review.preview();
+ assert.deepEqual(review.row('Wave 1').slice(1,4),['4','8','8']);
+ assert.deepEqual(review.row('Wave 2').slice(1,4),['1','16','16']);
+ review.percentage.value='125';review.percentage.oninput();
+ await assert.rejects(review.apply(),/Preview this percentage/);
+ await review.preview();
+ assert.deepEqual(review.row('Wave 1').slice(1,4),['4','13','13']);
+ assert.deepEqual(review.row('Wave 2').slice(1,4),['1','25','25']);
+ assert.match(review.row('Wave 3').at(-1),/Add units/);
+ assert(!review.applyButton.disabled);
+ assert.deepEqual(f.state.snap.value,before);
+ assert.equal(f.edits(),0);
+
+ await review.apply();
+ const [firstDraft,secondDraft,emptyDraft]=f.state.snap.value.config.WaveCfg;
+ assert.equal(f.edits(),1);
+ assert.deepEqual(firstDraft.SpawnTimeline[0],first.SpawnTimeline[0]);
+ assert.equal(firstDraft.SpawnTimeline[1].startSeconds,3);
+ assert.deepEqual(firstDraft.editorTimingBalance,{...first.editorTimingBalance,totalUnits:13});
+ assert.deepEqual(secondDraft.RefreshSoldierKind,legacy.RefreshSoldierKind);
+ assert.equal(secondDraft.editorTimingBalance.totalUnits,25);
+ assert.deepEqual(emptyDraft,empty);
+ const Pressure=require('../worlds/wave-pressure');
+ const measured=Pressure.build(firstDraft,[],.5,.5);
+ assert.equal(measured.totals.units,13);
+ assert(measured.peaks.units.value<=4 && measured.duration<=15);
+ assert.equal(Pressure.build(secondDraft,[],.5).totals.units,25);
+});
+
+test('stage balance refuses a partial or stale proposal',async()=>{
+ const f=fixture(),stage=f.state.snap.value;
+ f.state.catalog.waveCountTargets=[10,20];
+ stage.config.WaveCfg[1].editorTimingBalance={peakCap:1,lastSpawnLimit:1,defeatSeconds:1,pushPeaks:[null]};
+ const before=clone(stage),review=await openStageBalance(f);
+ review.percentage.value='0';review.percentage.oninput();await review.preview();
+ assert.match(review.dialog.textContent,/positive whole percentage/);
+ review.percentage.value='100';review.percentage.oninput();await review.preview();
+ assert.match(review.row('Wave 2').at(-1),/Blocked.*at least 19 s/);
+ assert(review.applyButton.disabled);
+ await assert.rejects(review.apply(),/Preview this percentage/);
+ review.percentage.value='10';review.percentage.oninput();await review.preview();
+ assert(!review.applyButton.disabled);
+ assert.deepEqual(review.row('Wave 1').slice(1,4),['4','1','4']);
+ assert.match(review.row('Wave 1').at(-1),/at least one/);
+ f.state.catalog.waveCountTargets[1]++;
+ await assert.rejects(review.apply(),/balance inputs changed/);
+ assert.deepEqual(f.state.snap.value,before);
+ assert.equal(f.edits(),0);
+});
+
+test('stage balance leaves the draft untouched when every wave is empty or already fits',async()=>{
+ const f=fixture(),stage=f.state.snap.value;
+ f.state.catalog.waveCountTargets=[10,20];
+ for(const row of stage.config.WaveCfg[0].SpawnTimeline)row.editorManualTiming=true;
+ stage.config.WaveCfg[1].RefreshSoldierKind=[];
+ const before=clone(stage),review=await openStageBalance(f);
+ await review.preview();
+ assert.match(review.row('Wave 1').at(-1),/All counts are fixed/);
+ assert.match(review.row('Wave 2').at(-1),/Add units/);
+ assert(review.applyButton.disabled);
+ assert.deepEqual(f.state.snap.value,before);
+ assert.equal(f.edits(),0);
+});
+
 test('balance waits for a queued timing edit and rejects a stale unit catalog review',async()=>{
  let release;
  const gate=new Promise(resolve=>{release=resolve;}),f=fixture(change=>gate.then(change));
@@ -280,6 +440,43 @@ test('wave overview restores each reviewed defeat rate and reports a breached sa
  assert.match(f.context.top.textContent,/Peak 4 \/ 1 enemies · Last spawn 4 s \/ 3 s/);
  f.state.wave=1;f.panels.top();assert.equal(rate().value,'1.25');
  f.state.wave=0;f.panels.top();assert.equal(rate().value,'0.75');assert.equal(f.edits(),0);
+});
+
+test('wave count and timing fields select all on click and commit once on Enter',()=>{
+ const f=fixture(),calls=[];
+ f.state.tab='Waves';
+ const field=f.context.field;
+ f.context.field=(parent,label,value,change,choices)=>{
+  const input=field(parent,label,value,change,choices);
+  if(!choices&&typeof value==='number'){
+   input.value=input.dataset.modelValue=String(value);
+   input.onchange=()=>change(Number(input.value));
+   input.select=()=>{input.selected=input.value;};
+  }
+  return input;
+ };
+ f.context.editWave=(index,change)=>{
+  calls.push(index);
+  const next=clone(f.state.snap.value);
+  change(next);f.state.snap.value=next;
+  panels.refreshWave(index);
+ };
+ const panels=Panels.create(f.context);
+ panels.right();
+ const card=descendants(f.context.right).find(node=>node.dataset.entryId==='a');
+ const nodes=()=>descendants(card);
+ const count=nodes().find(node=>node.fieldName==='Count'),start=nodes().find(node=>node.fieldName==='Starts at (s)');
+ const enter=input=>{let prevented=false;input.onkeydown({key:'Enter',preventDefault(){prevented=true;}});assert(prevented);};
+ start.onclick();assert.equal(start.selected,'1');
+ start.value='8.5';enter(start);start.onchange();
+ assert.match(card.textContent,/8.5 s \/ every 1 s · Manual/);
+ assert.equal(nodes().find(node=>node.fieldName==='Starts at (s)'),start);
+ count.onfocus();assert.equal(count.selected,'1');
+ count.value='7';enter(count);count.onchange();
+ assert.deepEqual(calls,[0,0]);
+ assert.equal(nodes().find(node=>node.fieldName==='Count'),count);
+ assert.deepEqual(f.state.snap.value.config.WaveCfg[0].SpawnTimeline[0],
+  {id:'a',unitId:3,spawnId:1,count:7,startSeconds:8.5,intervalSeconds:1,routeGraphId:'one',future:{keep:1},editorManualTiming:true});
 });
 
 test('spawn and wave timing fields have three step sizes on each side and timing overrides lock their row',()=>{

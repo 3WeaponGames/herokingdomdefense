@@ -109,6 +109,63 @@ function cachedRigInScene(renderer, scene) {
   }
   return node === scene;
 }
+// A recent cached rig can still rule out preparation after the preferred rig
+// leaves the scene. Keep this history separate from the multi-contact proof.
+var cachedCaptureAlternates = new WeakMap();
+var MAX_REMEMBERED_CAPTURE_BLOCKERS = 8;
+
+function currentCaptureAlternates(view, scene, create) {
+  var game = view.game, saved = cachedCaptureAlternates.get(view);
+  if (!game || !scene || view._destroyed) return null;
+  if (saved && (saved.scene !== scene || saved.data !== game.gameData || saved.epoch !== game._combatEpoch)) {
+    cachedCaptureAlternates.delete(view);
+    saved = null;
+  }
+  if (!saved && create) {
+    saved = { scene: scene, data: game.gameData, epoch: game._combatEpoch, entries: [] };
+    cachedCaptureAlternates.set(view, saved);
+  }
+  return saved;
+}
+
+function recordCaptureBlocker(view, scene, renderer) {
+  var saved = currentCaptureAlternates(view, scene, true);
+  if (!saved || !renderer || !renderer.node) return;
+  var entries = saved.entries;
+  for (var i = 0; i < entries.length; i++) {
+    if (entries[i].renderer === renderer) {
+      entries.splice(i, 1);
+      break;
+    }
+  }
+  entries.unshift({ renderer: renderer, node: renderer.node });
+  if (entries.length > MAX_REMEMBERED_CAPTURE_BLOCKERS) entries.pop();
+}
+
+function findAlternateCaptureBlocker(view, scene, preferred) {
+  var saved = currentCaptureAlternates(view, scene, false);
+  if (!saved) return false;
+  for (var i = 0; i < saved.entries.length; i++) {
+    var entry = saved.entries[i], renderer = entry.renderer;
+    if (renderer === preferred) continue;
+    try {
+      if (Object.getPrototypeOf(renderer) === sp.Skeleton.prototype &&
+          renderer.node === entry.node && entry.node.getComponents === nativeCaptureComponentQuery &&
+          cc.isValid(renderer, true) && cc.isValid(entry.node, true) && cachedRigInScene(renderer, scene)) return true;
+    } catch (ignored) {
+      // A released or foreign wrapper cannot authorize early rejection.
+    }
+  }
+  return false;
+}
+function ownsCachedPreparationObservers(scope) {
+  var view = scope.view, sys = cc.sys, Node = cc.Node;
+  return !!(view && scope._sceneRepairOwner === view && view._nativeCaptureScope === scope &&
+    sys && sys.isNative && sys.OS_WINDOWS && sys.os === sys.OS_WINDOWS && cc.ENGINE_VERSION === "2.4.13" &&
+    Node && Node.prototype && Node.prototype.getComponents === nativeCaptureComponentQuery &&
+    sp.Skeleton && sp.Skeleton.prototype.isAnimationCached === nativeCacheMode &&
+    nativeMaskState && typeof nativeMaskState.ownsTargetlessRoute === "function" && nativeMaskState.ownsTargetlessRoute(view));
+}
 // Settle current zero-delta animation poses without generating every rig's
 // vertex/index buffers in the first manual camera. Unsupported middleware keeps
 // the ordinary unchanged first camera and its original callback behavior.
@@ -127,12 +184,17 @@ NativeCaptureScope.prototype.prepare=function() {
   var scene=cc.director.getScene(), blocker=this.view._cachedCaptureBlocker;
   if (cachedRigInScene(blocker,scene)) return false;
   this.view._cachedCaptureBlocker=null;
+  if(this._singleOrdinaryContact && ownsCachedPreparationObservers(this) &&
+      findAlternateCaptureBlocker(this.view,scene,blocker))return false;
   var renderers=activeNativeRenderers(scene,true),manager;
   if(!renderers)return false;
   for(var i=0;i<renderers.length;i++){
     var renderer=renderers[i];
     if(renderer.enabled!==false&&!this.resolve(renderer)){
-      if(cachedRigInScene(renderer,scene))this.view._cachedCaptureBlocker=renderer;
+      if(cachedRigInScene(renderer,scene)) {
+        this.view._cachedCaptureBlocker=renderer;
+        if(ownsCachedPreparationObservers(this))recordCaptureBlocker(this.view,scene,renderer);
+      }
       return false;
     }
   }
@@ -2793,8 +2855,15 @@ function isStockForegroundMask(view, mask, coverage) {
     root.children.length <= 1 && (!root.children.length || root.children[0] === node);
 }
 
-function canHideForegroundScenery(view, object, entry) {
-  var state = view._silhouetteBudget, source = entry.sources.length === 1 && entry.sources[0];
+function canCheckMediumForeground(view, actorCount) {
+  return actorCount >= 48 && actorCount < 64 && typeof spine !== "undefined" &&
+    typeof spine._hkdTargetlessLeaf === "function" && !!nativeMaskState &&
+    typeof nativeMaskState.ownsTargetlessRoute === "function" && nativeMaskState.ownsTargetlessRoute(view) &&
+    cachedRigInScene(view._cachedCaptureBlocker, cc.director.getScene());
+}
+
+function canHideForegroundScenery(view, object, entry, priority) {
+  var state = priority || view._silhouetteBudget, source = entry.sources.length === 1 && entry.sources[0];
   return state && state.config && object.node._depthMapObject === true && !object.buildings &&
     !object.node._depthBuilding && !object.node._depthBuildingOwner && entry.tint === ENEMY &&
     entry.actor.cfg && Number(entry.actor.cfg.ID) > 0 && !importantSilhouette(state, entry) &&
@@ -2975,12 +3044,26 @@ DepthView.prototype.update = function () {
   var silhouetteActors=ordinarySilhouetteActors(this, active);
   var silhouetteSet=silhouetteActors===active?null:new Set(silhouetteActors);
   matchOcclusion(this, active, candidates, visible, cache, footprints, silhouetteSet);
-  var coverage = this.nativeCapture && cc.sys && cc.sys.isNative && cc.sys.os === cc.sys.OS_WINDOWS &&
-    cc.ENGINE_VERSION === "2.4.13" &&
-    active.length >= 64 && typeof spine !== "undefined" && typeof spine._hkdReadSceneryAlpha === "function"
+  var coverageHost = this.nativeCapture && cc.sys && cc.sys.isNative && cc.sys.os === cc.sys.OS_WINDOWS &&
+    cc.ENGINE_VERSION === "2.4.13" && typeof spine !== "undefined" && typeof spine._hkdReadSceneryAlpha === "function";
+  // The warm fallback can issue many individual captures even with fewer actors.
+  // Use the no-reader proof there without advancing the optional tint budget.
+  var mediumCoverage = coverageHost && canCheckMediumForeground(this, active.length);
+  var coverage = coverageHost && (active.length >= 64 || mediumCoverage)
     ? require("NativeSceneryMaskCoverage") : null;
   if (coverage && !coverage.planar(this)) coverage = null;
   var coverageDraw = coverage && { read: false };
+  var coveragePriority;
+  if (mediumCoverage && coverage && !this._silhouetteBudget) {
+    coveragePriority = this._mediumForegroundPriority;
+    if (!coveragePriority || coveragePriority.data !== game.gameData || coveragePriority.epoch !== game._combatEpoch ||
+        coveragePriority.round !== game.gameData.round) {
+      coveragePriority = this._mediumForegroundPriority = {
+        data: game.gameData, epoch: game._combatEpoch, round: game.gameData.round
+      };
+    }
+    refreshSilhouettePriority(this, coveragePriority);
+  }
   this.objects.forEach(function (object) {
     var candidate = byObject.get(object), hidden = candidate && candidate.hidden;
     var hiddenActors = object.masks.size && hidden && hidden.length ?
@@ -3006,6 +3089,7 @@ DepthView.prototype.update = function () {
   this._vertexConsumers = cache.vertexConsumers;
   try {
     var firstSnapshot=false, emptyCaptureContacts;
+    if(captureScope)captureScope._singleOrdinaryContact=draw.length===1;
     if(this.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"){
       var batchCount=draw.length===1?1:0, preparedFirst=false, warmLater=false;
       var multi=draw.length>1&&captureScope&&captureScope.enabled;
@@ -3063,7 +3147,8 @@ DepthView.prototype.update = function () {
       var shared = false, firstForeground = null, firstFrame, grouped = false;
       hidden.forEach(function (entry) {
         var mask = object.masks.get(entry.actor);
-        if (coverage && canHideForegroundScenery(self, object, entry) && isStockForegroundMask(self, mask, coverage)) {
+        if (coverage && (!mediumCoverage || emptyCaptureContacts) &&
+            canHideForegroundScenery(self, object, entry, coveragePriority) && isStockForegroundMask(self, mask, coverage)) {
           if (!alphaChecked) {
             alphaChecked = true;
             alpha = coverage.readAlpha(self, object, coverageDraw);
@@ -3148,6 +3233,7 @@ DepthView.prototype.destroy = function () {
   if (this._foregroundStencil) this._foregroundStencil.clear();
   this._foregroundStencil = null;
   if(this._nativeCaptureScope)this._nativeCaptureScope.finish();
+  cachedCaptureAlternates.delete(this);
   this._nativeCaptureScope=null;this._nativeCaptureRefs=null;this._cachedCaptureBlocker=null;this._nativeCaptureInventory=null;
   this._destroyed = true;
   cc.director.off(cc.Director.EVENT_BEFORE_DRAW, this.update, this);
@@ -3162,6 +3248,7 @@ DepthView.prototype.destroy = function () {
   this._vertexStore = null;
   this._vertexConsumers = null;
   this._silhouetteBudget = null;
+  this._mediumForegroundPriority = null;
   if (this._depthKinds) {
     this._depthKinds.forEach(function (previous, node) {
       if (previous.building === undefined) delete node._depthBuilding; else node._depthBuilding = previous.building;

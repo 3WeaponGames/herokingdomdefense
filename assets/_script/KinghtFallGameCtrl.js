@@ -157,6 +157,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this._projectileLooks = null;
     GameToolsOverrides.clear();
     this._combatEpoch++;
+    if (this._unitAttackEffects) require("UnitAttackCombat").clearEffects(this);
     this._battleSettlement = null;
     this.isAgg = false;
     this.rallyPoint = null;
@@ -244,6 +245,7 @@ var def_KinghtFallGameCtrl = function (t) {
     if (this._depthView) this._depthView.destroy();
     this._depthView = null;
     this._combatEpoch++;
+    if (this._unitAttackEffects) require("UnitAttackCombat").clearEffects(this);
     if (this._mapPhysicsManager) this._mapPhysicsManager.off("before-step", this._syncMapPhysics, this);
     this._mapPhysicsManager = null;
     this._mapPhysicsRoot = null;
@@ -293,6 +295,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.vec2_2.x = cc.misc.clampf(this.vec2_2.x, -this.mapSize.width / 2 + cc.winSize.width / 2, this.mapSize.width / 2 - cc.winSize.width / 2);
     this.vec2_2.y = cc.misc.clampf(this.vec2_2.y, -this.mapSize.height / 2 + cc.winSize.height / 2, this.mapSize.height / 2 - cc.winSize.height / 2);
     this.camera.node.setPosition(this.vec2_2);
+    if (this._unitAttackEffects) require("UnitAttackCombat").placeEffects(this);
   };
   _ctor.prototype.testInstantBuild = function () {
     if (!TestMode.getInstance().isEnabled() || this.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare ||
@@ -333,9 +336,13 @@ var def_KinghtFallGameCtrl = function (t) {
       if (data._advisorFinalClaimRetry <= 0) data.tryEndGame();
       if (!frameCurrent(this, ui, data, epoch, stage)) return;
     }
+    if (this._unitAttackEffects) {
+      require("UnitAttackCombat").tickEffects(this, t);
+      if (!frameCurrent(this, ui, data, epoch, stage)) return;
+    }
     if (this.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight && this.gameData) {
       this.gameData._relicCombatTime = (this.gameData._relicCombatTime || 0) + t;
-      this.ctrPlay._relicMoving = !this.ctrPlay.isDead() && !!(this.moveDir && (this.moveDir.x || this.moveDir.y));
+      this.ctrPlay._relicMoving = !this.ctrPlay.isDead() && !this.ctrPlay._hitReactionPlaying && !!(this.moveDir && (this.moveDir.x || this.moveDir.y));
       require("RelicCombat").updateHero(this.ctrPlay, t);
       require("RelicBattle").updateHeroAura(this.gameData, this.ctrPlay, t, this.ctrPlay._relicMoving);
       if (!frameCurrent(this, ui, data, epoch, stage)) return;
@@ -1041,6 +1048,9 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.onPauseGame = function () {
     this.setAudioPaused(true);
+    if (this._unitAttackEffects && this.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Fight) {
+      require("UnitAttackCombat").clearEffects(this);
+    }
     if (this._unitTest) this._unitTest.setPause(true);
     this.ctrPlay.setPause(true);
     var t = this.gameData.getEnemyList();
@@ -1129,6 +1139,7 @@ var def_KinghtFallGameCtrl = function (t) {
     if (this._unitVoices) require("UnitVoices").dispose(this);
     if (this.upBulid && this.upBulid.cancelUpgrade) this.upBulid.cancelUpgrade();
     this._combatEpoch++;
+    if (this._unitAttackEffects) require("UnitAttackCombat").clearEffects(this);
     for (var t = 0; t < this.ndPlayArr2.length; t++) {
       this.ndPlayArr2[t].cancel();
       this.ndPlayArr2[t].node.active = false;

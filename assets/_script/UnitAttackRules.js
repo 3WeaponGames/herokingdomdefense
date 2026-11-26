@@ -15,7 +15,26 @@ var fields = {
   chainRange: { value: 160, min: 0 },
   chainDamageLoss: { value: .25, min: 0, max: 1 }
 };
-var hitEffects = {
+function damageEffect(label, percent, duration, buildings) {
+  return {
+    label: label,
+    buildings: buildings,
+    fields: {
+      percent: {
+        label: label + " damage per second (%)", value: percent, min: 0, max: 1, percent: true,
+        help: "Percentage of the triggering hit's damage applied each second." +
+          (buildings ? " Affects troops, the hero, and buildings." : " Affects troops and the hero.")
+      },
+      duration: { label: label + " duration (seconds)", value: duration, min: 0 }
+    }
+  };
+}
+var damageEffects = {
+  poison: damageEffect("Poison", .1, 5, false),
+  burn: damageEffect("Burn", .25, 2, true),
+  bleed: damageEffect("Bleed", .15, 3, false)
+};
+var hitEffects = Object.assign({
   slow: {
     label: "Slow",
     fields: {
@@ -35,7 +54,7 @@ var hitEffects = {
       }
     }
   }
-};
+}, damageEffects);
 
 function object(value) { return !!value && typeof value === "object" && !Array.isArray(value); }
 function allowed(delivery, pattern) {
@@ -127,6 +146,7 @@ function issues(raw) {
 exports.patterns = patterns;
 exports.fields = fields;
 exports.hitEffects = hitEffects;
+exports.damageEffects = damageEffects;
 exports.allowed = allowed;
 exports.active = active;
 exports.attackType = attackType;

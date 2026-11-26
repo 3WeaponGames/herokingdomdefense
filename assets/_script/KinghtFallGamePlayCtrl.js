@@ -210,6 +210,13 @@ var def_KinghtFallGamePlayCtrl = function (t) {
     this.delAllBuff();
   };
   _ctor.prototype.doMove = function (t, e, fight) {
+    if (this._hitReactionPlaying) {
+      this._relicMoving = false;
+      if (this.rigidBody) this.rigidBody.linearVelocity = cc.Vec2.ZERO;
+      this.ctrPlayAni.setIdle();
+      if (this._opposingForm) require("EnemyPolymorph").pose(this, false);
+      return;
+    }
     this._relicMoving = !this.isDead() && !!(t.x || t.y);
     if (this.state != r.Reborn) {
       this.setLeft(t.x);
@@ -292,6 +299,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.endRoundGame = function () {
     GameToolsOverrides.cancel(this);
+    if (this._statusHitReaction) require("UnitHitFeedback").reset(this);
     this.time[C.Attack] = 0;
     if (this.isDead()) {
       this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.ReviveShow, 0);
@@ -370,6 +378,7 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.onDead = function () {
     GameToolsOverrides.cancel(this);
+    if (this._statusHitReaction) require("UnitHitFeedback").reset(this);
     this._relicMoving = false;
     var generation = this.node._combatGeneration = (this.node._combatGeneration || 0) + 1;
     var t = this;

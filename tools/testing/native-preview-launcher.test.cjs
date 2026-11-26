@@ -4,6 +4,8 @@ const filename=process.env.HKD_NATIVE_LAUNCHER_SOURCE||path.join(__dirname,'../n
 const terrainRevision=require('../native/terrain-geometry-revision.cjs'),groupedMasks=require('../native/grouped-mask-queue.cjs');
 const sdkRoot=process.env.HKD_CREATOR_SDK_ROOT||(process.platform==='win32'?'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/cocos2d-x':null);
 const terrainSDK=!!sdkRoot&&terrainRevision.PATCHES.every(patch=>fs.existsSync(path.join(sdkRoot,patch.file)));
+const budget=require('../native/v8-inline-budget.cjs');
+const v8SDK=!!sdkRoot&&budget.definitions().every(patch=>fs.existsSync(path.join(sdkRoot,patch.file)));
 function write(file,value){fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,Buffer.isBuffer(value)||typeof value==='string'?value:JSON.stringify(value));}
 function tree(root){const result={};function scan(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const f=path.join(dir,e.name);if(e.isDirectory())scan(f);else result[path.relative(root,f)]=sha(fs.readFileSync(f));}}scan(root);return result;}
 function fixture(){
@@ -158,17 +160,28 @@ test('terrain preview rejects missing receipt, clone drift and unsupported Creat
  }
 });
 
-function targetlessFixture(f){
+function writeExecutable(f,executable){
+ write(f.executable,executable);
+ f.manifest.runtime.executableSha256=sha(executable);
+ Object.assign(f.manifest.runtime.files.find(row=>row.relativePath==='simulator.exe'),{bytes:executable.length,sha256:sha(executable)});
+ write(f.manifestFile,f.manifest);
+}
+function targetlessFixture(f,{manualCameraMatrices=false}={}){
  terrainFixture(f);
  const builder=require('../native/build-native-preview.cjs'),targetless=require('../native/targetless-actor-captures.cjs');
  const earlier=new Map();
+ if(manualCameraMatrices){
+  const matrix=require('../native/manual-camera-matrices.cjs'),patch=matrix.definition();
+  earlier.set(patch.file,matrix.patchSource(fs.readFileSync(path.join(sdkRoot,patch.file)),patch));
+  f.manifest.features.manualCameraMatrices=true;
+ }
  for(const module of [require('../native/capture-renderer-inventory.cjs'),require('../native/capture-framebuffer-status.cjs')]){
   for(const patch of module.definitions(false)){
    const before=earlier.get(patch.file)||fs.readFileSync(path.join(sdkRoot,patch.file));
    earlier.set(patch.file,module.patchSource(before,patch));
   }
  }
- const patches=targetless.definitions().map(patch=>{
+ const patches=targetless.definitions(f.manifest.features).map(patch=>{
   const before=earlier.get(patch.file)||fs.readFileSync(path.join(sdkRoot,patch.file));
   write(path.join(f.build,'source-patch-backups',targetless.DIRECTORY,patch.file),before);
   write(path.join(f.clone,patch.file),targetless.patchSource(before,patch));
@@ -178,19 +191,90 @@ function targetlessFixture(f){
  write(file,diff);
  Object.assign(f.manifest.features,{captureFramebufferStatus:true,targetlessActorCaptures:true});
  f.manifest.targetlessActorCapturesDiff={file,format:'exact-replacement-v1',sha256:sha(diff)};
- const executable=Buffer.from('MZ isolated launcher fixture\0_hkdTargetlessLeaf\0');
- write(f.executable,executable);
- f.manifest.runtime.executableSha256=sha(executable);
- Object.assign(f.manifest.runtime.files.find(row=>row.relativePath==='simulator.exe'),{bytes:executable.length,sha256:sha(executable)});
- write(f.manifestFile,f.manifest);
+ writeExecutable(f,Buffer.from('MZ isolated launcher fixture\0_hkdTargetlessLeaf\0'));
  return {firstPatchedSource:path.join(f.clone,patches[0].file)};
+}
+
+function nativeExportImage(symbol){
+ // Represent a real x86 PE initialized data export without compiler or game startup.
+ const image=Buffer.alloc(0x600),nt=0x80,optional=nt+24,rdata=optional+224,data=rdata+40;
+ image.writeUInt16LE(0x5a4d,0);
+ image.writeUInt32LE(nt,0x3c);
+ image.writeUInt32LE(0x4550,nt);
+ image.writeUInt16LE(0x14c,nt+4);
+ image.writeUInt16LE(2,nt+6);
+ image.writeUInt16LE(224,nt+20);
+ image.writeUInt16LE(0x10b,optional);
+ image.writeUInt32LE(16,optional+92);
+ image.writeUInt32LE(0x1000,optional+96);
+ image.writeUInt32LE(0x100,optional+100);
+ for(const [at,name,rva,raw,flags] of [[rdata,'.rdata',0x1000,0x200,0x40000040],[data,'.data',0x2000,0x400,0xc0000040]]){
+  image.write(name,at);
+  image.writeUInt32LE(0x200,at+8);
+  image.writeUInt32LE(rva,at+12);
+  image.writeUInt32LE(0x200,at+16);
+  image.writeUInt32LE(raw,at+20);
+  image.writeUInt32LE(flags,at+36);
+ }
+ image.writeUInt32LE(1,0x214);
+ image.writeUInt32LE(1,0x218);
+ image.writeUInt32LE(0x1040,0x21c);
+ image.writeUInt32LE(0x1050,0x220);
+ image.writeUInt32LE(0x1060,0x224);
+ image.writeUInt32LE(0x2000,0x240);
+ image.writeUInt32LE(0x1080,0x250);
+ image.write(symbol+'\0',0x280);
+ image.writeUInt32LE(1,0x400);
+ return image;
+}
+function leafMatricesImage(){
+ const image=nativeExportImage('HKDTargetlessLeafMatrices');
+ image.write('_hkdTargetlessLeaf\0',0x320);
+ return image;
+}
+function leafMatricesFixture(f){
+ targetlessFixture(f,{manualCameraMatrices:true});
+ const builder=require('../native/build-native-preview.cjs'),matrices=require('../native/targetless-leaf-matrices.cjs');
+ f.manifest.features.targetlessLeafMatrices=true;
+ const patches=matrices.definitions(f.manifest.features).map(patch=>{
+  const copied=path.join(f.clone,patch.file);
+  const before=fs.readFileSync(fs.existsSync(copied)?copied:path.join(sdkRoot,patch.file));
+  write(path.join(f.build,'source-patch-backups',matrices.DIRECTORY,patch.file),before);
+  write(copied,matrices.patchSource(before,patch));
+  return {...patch,feature:matrices.FEATURE};
+ });
+ const diff=builder.sourcePatchDiff(patches),file=path.join(f.build,matrices.DIRECTORY+'-diff.json');
+ write(file,diff);
+ f.manifest.targetlessLeafMatricesDiff={file,format:'exact-replacement-v1',sha256:sha(diff)};
+ const executable=leafMatricesImage();
+ f.manifest.runtime.targetlessLeafMatrices=matrices.verifyExport(executable);
+ writeExecutable(f,executable);
+ return {patches,diff,executable};
+}
+
+function v8InlineBudgetFixture(f){
+ const {sourcePatchDiff}=require('../native/build-native-preview.cjs');
+ const patches=budget.definitions().map(patch=>{
+  const before=fs.readFileSync(path.join(sdkRoot,patch.file));
+  write(path.join(f.build,'source-patch-backups',budget.DIRECTORY,patch.file),before);
+  write(path.join(f.clone,patch.file),budget.patchSource(before,patch));
+  return {...patch,feature:budget.FEATURE};
+ });
+ const diff=sourcePatchDiff(patches),file=path.join(f.build,budget.DIRECTORY+'-diff.json');
+ write(file,diff);
+ f.manifest.features.v8InlineBudget=true;
+ f.manifest.v8InlineBudgetDiff={file,format:'exact-replacement-v1',sha256:sha(diff)};
+ const executable=nativeExportImage('HKDV8InlineBudget');
+ f.manifest.runtime.v8InlineBudget=budget.verifyExport(executable);
+ writeExecutable(f,executable);
+ return {diff,source:path.join(f.clone,patches[0].file),executable};
 }
 
 test('targetless routing is an explicit opt-in that composes verified private core and grouped adapter',{skip:!terrainSDK},async()=>{
  const f=fixture(),api=load(f);
  targetlessFixture(f);
  const normal=await api.prepare(f.options);
- assert(!normal.proof.patches.targetlessActorCaptures&&!normal.proof.patches.groupedMaskQueue);
+ assert(!normal.proof.patches.targetlessActorCaptures&&!normal.proof.patches.groupedMaskQueue&&!normal.proof.patches.targetlessLeafMatrices);
  const prepared=await api.prepare({...f.options,targetlessActorCaptures:true});
  const expected=require('../native/targetless-actor-captures-resources.cjs');
  const proof=prepared.proof.patches.targetlessActorCaptures;
@@ -230,11 +314,156 @@ test('targetless preflight rejects a stock Release or drifted targetless native 
  assert.equal(f.calls.length,0);
 });
 
+test('matrix metadata or an undeclared native marker fails closed on a legacy Release',async()=>{
+ for(const kind of ['flag','missing prerequisite','receipt','export receipt','marker']){
+  const f=fixture(),api=load(f);
+  if(kind==='flag')f.manifest.features.targetlessLeafMatrices='true';
+  if(kind==='missing prerequisite')f.manifest.features.targetlessLeafMatrices=true;
+  if(kind==='receipt')f.manifest.targetlessLeafMatricesDiff={};
+  if(kind==='export receipt')f.manifest.runtime.targetlessLeafMatrices={};
+  if(kind==='marker')writeExecutable(f,leafMatricesImage());
+  write(f.manifestFile,f.manifest);
+  await assert.rejects(api.prepare(f.options),/targetless leaf matrices/i);
+  assert(!fs.existsSync(f.output));
+  assert.equal(f.calls.length,0);
+ }
+});
+
+test('leaf matrix build receipts compose with the old targetless launch flag and attest the linked export',{skip:!terrainSDK},async()=>{
+ const f=fixture(),api=load(f);
+ leafMatricesFixture(f);
+ const ordinary=await api.prepare(f.options),prepared=await api.prepare({...f.options,targetlessActorCaptures:true});
+ const inactive=ordinary.proof.patches.targetlessLeafMatrices,active=prepared.proof.patches.targetlessLeafMatrices;
+ assert.equal(inactive.active,false);
+ assert.equal(active.active,true);
+ assert.equal(active.nativeDiffSha256,f.manifest.targetlessLeafMatricesDiff.sha256);
+ assert.deepEqual(JSON.parse(JSON.stringify(active.nativeExport)),f.manifest.runtime.targetlessLeafMatrices);
+ assert(!ordinary.proof.patches.targetlessActorCaptures);
+ assert(prepared.proof.patches.targetlessActorCaptures&&prepared.proof.patches.groupedMaskQueue);
+ assert.equal(f.calls.length,0);
+ api.launch(ordinary);
+ api.launch(prepared);
+ assert.equal(f.calls.length,2);
+ active.active=false;
+ assert.throws(()=>api.launch(prepared),/matrices receipt does not match/);
+ active.active=true;
+ delete prepared.proof.patches.targetlessLeafMatrices;
+ assert.throws(()=>api.launch(prepared),/matrices do not match/);
+ assert.equal(f.calls.length,2);
+});
+
+test('leaf matrix prepare and launch reject missing, drifted or substituted native proofs',{skip:!terrainSDK},async()=>{
+ const f=fixture(),api=load(f);
+ const {patches,diff,executable}=leafMatricesFixture(f),opts={...f.options,targetlessActorCaptures:true};
+ const record=f.manifest.targetlessLeafMatricesDiff;
+ delete f.manifest.targetlessLeafMatricesDiff;
+ write(f.manifestFile,f.manifest);
+ await assert.rejects(api.prepare(opts),/Missing or invalid.*matrices build receipt/);
+ f.manifest.targetlessLeafMatricesDiff=record;
+ const altered=Buffer.concat([diff,Buffer.from(' ')]);
+ write(record.file,altered);
+ record.sha256=sha(altered);
+ write(f.manifestFile,f.manifest);
+ await assert.rejects(api.prepare(opts),/pinned native changes/);
+ write(record.file,diff);
+ record.sha256=sha(diff);
+ const validMarker=f.manifest.runtime.targetlessLeafMatrices;
+ f.manifest.runtime.targetlessLeafMatrices={...validMarker,value:0};
+ write(f.manifestFile,f.manifest);
+ await assert.rejects(api.prepare(opts),/export receipt does not match/);
+ f.manifest.runtime.targetlessLeafMatrices=validMarker;
+ const wrongValue=Buffer.from(executable);
+ wrongValue.writeUInt32LE(0,0x400);
+ writeExecutable(f,wrongValue);
+ await assert.rejects(api.prepare(opts),/matrices|DWORD/i);
+ writeExecutable(f,executable);
+ assert(!fs.existsSync(f.output));
+ const prepared=await api.prepare(opts);
+ const targetlessBackups=path.join(f.build,'source-patch-backups','targetless-actor-captures');
+ const overlap=patches.find(patch=>fs.existsSync(path.join(targetlessBackups,patch.file)));
+ assert(overlap,'Leaf matrices must exercise a shared targetless source');
+ const original=path.join(targetlessBackups,overlap.file);
+ const predecessor=fs.readFileSync(original);
+ write(original,'modified preceding native patch input');
+ assert.throws(()=>api.launch(prepared),/Targetless actor captures native source hash mismatch/);
+ write(original,predecessor);
+ const file=path.join(f.clone,patches[0].file),native=fs.readFileSync(file);
+ write(file,'modified final native source');
+ assert.throws(()=>api.launch(prepared),/matrices native source hash mismatch/);
+ write(file,native);
+ const substitute=Buffer.from(executable);
+ substitute[0x430]=1;
+ writeExecutable(f,substitute);
+ assert.throws(()=>api.launch(prepared),/executable path or hash changed/);
+ assert.equal(f.calls.length,0);
+});
+
 test('CLI prepares a grouped mask queue session without launching when requested',async()=>{
  const f=fixture();let calls=0;
  load(f,{cli:true,prepareOnly:true,groupedMaskQueue:true,patchAdapter(){calls++;return Buffer.from('// grouped preview');}});
  await waitFor(()=>f.logs.some(s=>String(s).includes('Prepared only')));
  assert.equal(calls,1);assert.equal(f.calls.length,0);
+});
+
+test('V8 inline budget is verified and attested independently of the targetless route',{skip:!v8SDK},async()=>{
+ const f=fixture(),api=load(f);
+ v8InlineBudgetFixture(f);
+ const prepared=await api.prepare(f.options);
+ const expected={nativeDiffSha256:f.manifest.v8InlineBudgetDiff.sha256,nativeExport:f.manifest.runtime.v8InlineBudget};
+ const proof=JSON.parse(fs.readFileSync(path.join(prepared.run,'preview-proof.json'),'utf8'));
+ assert.deepEqual(proof.patches.v8InlineBudget,expected);
+ assert.equal(proof.patches.targetlessActorCaptures,undefined);
+ assert.equal(f.calls.length,0);
+ const child=api.launch(prepared);
+ assert.equal(f.calls.length,1);
+ child.emit('exit',0,null);
+});
+
+test('an undeclared V8 inline budget export or receipt cannot pass as a stock Release',async()=>{
+ for(const kind of ['flag','diff','export receipt','marker']){
+  const f=fixture();
+  if(kind==='flag')f.manifest.features.v8InlineBudget='true';
+  if(kind==='diff')f.manifest.v8InlineBudgetDiff={};
+  if(kind==='export receipt')f.manifest.runtime.v8InlineBudget={};
+  if(kind==='marker')writeExecutable(f,nativeExportImage('HKDV8InlineBudget'));
+  write(f.manifestFile,f.manifest);
+  await assert.rejects(load(f).prepare(f.options),/V8 inline budget/);
+  assert(!fs.existsSync(f.output));
+  assert.equal(f.calls.length,0);
+ }
+});
+
+test('V8 inline budget refuses modified source, native receipts and prepared proofs',{skip:!v8SDK},async()=>{
+ const f=fixture(),api=load(f);
+ const {diff,source,executable}=v8InlineBudgetFixture(f);
+ const record=f.manifest.v8InlineBudgetDiff,marker=f.manifest.runtime.v8InlineBudget;
+ const altered=Buffer.concat([diff,Buffer.from(' ')]);
+ write(record.file,altered);
+ record.sha256=sha(altered);
+ write(f.manifestFile,f.manifest);
+ await assert.rejects(api.prepare(f.options),/V8 inline budget.*pinned native changes/);
+ write(record.file,diff);
+ record.sha256=sha(diff);
+
+ const invalidMarker=Buffer.from(executable);
+ invalidMarker.writeUInt32LE(0,0x400);
+ writeExecutable(f,invalidMarker);
+ await assert.rejects(api.prepare(f.options),/V8 inline budget export.*DWORD value 1/);
+ writeExecutable(f,executable);
+ f.manifest.runtime.v8InlineBudget={...marker,value:0};
+ write(f.manifestFile,f.manifest);
+ await assert.rejects(api.prepare(f.options),/V8 inline budget export receipt does not match/);
+ assert(!fs.existsSync(f.output));
+ f.manifest.runtime.v8InlineBudget=marker;
+ write(f.manifestFile,f.manifest);
+
+ const prepared=await api.prepare(f.options),native=fs.readFileSync(source);
+ write(source,'changed native source after preparation');
+ assert.throws(()=>api.launch(prepared),/V8 inline budget native source hash mismatch/);
+ write(source,native);
+ delete prepared.proof.patches.v8InlineBudget;
+ assert.throws(()=>api.launch(prepared),/Prepared V8 inline budget receipt does not match/);
+ assert.equal(f.calls.length,0);
 });
 
 test('CLI prepare-only starts no child and SIGINT stops only its exact owned child with listener cleanup',async()=>{const f=fixture();load(f,{cli:true,prepareOnly:true});await waitFor(()=>f.logs.some(s=>String(s).includes('Prepared only')));assert.equal(f.calls.length,0);const g=fixture();load(g,{cli:true});await waitFor(()=>g.calls.length===1&&g.process.listenerCount('SIGINT')===1);g.process.emit('SIGINT');assert.equal(g.kills,1);assert.equal(g.process.listenerCount('SIGINT'),0);assert(g.child.killed);});

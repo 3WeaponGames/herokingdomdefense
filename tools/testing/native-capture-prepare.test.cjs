@@ -78,6 +78,72 @@ for(const change of ['mode','disabled','detached','component replaced'])test('a 
  assert.equal(prepare(),true);assert(reads>first);assert.equal(f.owner._cachedCaptureBlocker,null);assert.equal(f.updates(),1);
 });
 
+function alternatingCachedRigs() {
+ const f=enhance(current.fixture(4));
+ const [source, first, second]=f.renderers;
+ const Type=first.constructor;
+ Type.prototype.isAnimationCached=function(){return this.cached;};
+ f.renderers.forEach(renderer=>delete renderer.isAnimationCached);
+ Object.assign(f.cc.sys,{os:'Windows',OS_WINDOWS:'Windows'});
+ f.owner.game={gameData:{},_combatEpoch:1};
+ f.context.maskRoute={ownsTargetlessRoute:view=>view===f.owner};
+ vm.runInContext(`
+   nativeCacheMode=sp.Skeleton.prototype.isAnimationCached;
+   nativeCaptureComponentQuery=cc.Node.prototype.getComponents;
+   nativeMaskState=maskRoute;
+ `,f.context);
+ let scans=0;
+ const components=source.node._components;
+ Object.defineProperty(source.node,'_components',{get(){scans++;return components;}});
+ function run(single=true, draw) {
+  return battleCapture(f,()=>{
+   const scope=f.owner._nativeCaptureScope;
+   scope._singleOrdinaryContact=single;
+   const prepared=scope.prepare();
+   if(draw)scope.capture(source.node,()=>f.pass(source.node));
+   return prepared;
+  });
+ }
+ first.cached=true;
+ assert.equal(run(),false);
+ assert.equal(f.owner._cachedCaptureBlocker,first);
+ first.cached=false;
+ second.cached=true;
+ assert.equal(run(),false);
+ assert.equal(f.owner._cachedCaptureBlocker,second);
+ second.cached=false;
+ first.cached=true;
+ return {f,first,source,run,scans:()=>scans};
+}
+
+test('one owned contact can use a live earlier cached rig without publishing a new preferred blocker',()=>{
+ const {f,source,run,scans}=alternatingCachedRigs();
+ const before=scans();
+ source.state.pendingPose=81;
+ assert.equal(run(true,true),false);
+ assert.equal(scans(),before);
+ assert.equal(f.owner._cachedCaptureBlocker,null);
+ assert.equal(f.updates(),0);
+ assert.equal(f.writes.length,0);
+ assert.equal(f.passes.length,1);
+ assert.equal(f.passes[0][0].pose,81);
+});
+
+for(const change of ['multiple contacts','foreign route','foreign component query','game data','combat epoch','detached rig','retiring rig']) {
+ test('a remembered rig does not bypass the original scene walk after '+change,()=>{
+  const {f,first,run,scans}=alternatingCachedRigs();
+  if(change==='foreign route')f.context.maskRoute.ownsTargetlessRoute=()=>false;
+  if(change==='foreign component query')first.node.getComponents=()=>[first];
+  if(change==='game data')f.owner.game.gameData={};
+  if(change==='combat epoch')f.owner.game._combatEpoch++;
+  if(change==='detached rig')f.scene.children.splice(f.scene.children.indexOf(first.node),1);
+  if(change==='retiring rig')first.toDestroy=true;
+  const before=scans();
+  assert.equal(run(change!=='multiple contacts'),change==='detached rig');
+  assert(scans()>before);
+ });
+}
+
 test('the Scene activeInHierarchy getter is never queried by the preflight traversal',()=>{
  const f=enhance(current.fixture(3));Object.defineProperty(f.scene,'activeInHierarchy',{get(){throw Error('invalid native Scene getter');}});const scope=ownedScope(f);assert(scope.prepare());scope.finish();
 });

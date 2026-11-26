@@ -10,6 +10,9 @@ const captureFramebufferStatus = require('../native/capture-framebuffer-status.c
 const nvidiaOptimus = require('../native/nvidia-optimus.cjs');
 const terrainRevision = require('../native/terrain-geometry-revision.cjs');
 const groupedMasks = require('../native/grouped-mask-queue.cjs');
+const targetlessActorCaptures = require('../native/targetless-actor-captures.cjs');
+const targetlessLeafMatrices = require('../native/targetless-leaf-matrices.cjs');
+const v8InlineBudget = require('../native/v8-inline-budget.cjs');
 function fixture(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'hkd-native-build-'));t.after(()=>{assert(path.basename(root).startsWith('hkd-native-build-')&&path.dirname(root)===os.tmpdir());fs.rmSync(root,{recursive:true,force:true});});return root;}
 function write(file,bytes='fixture'){fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,bytes);return file;}
 function projectFixture(project,includes){
@@ -241,7 +244,7 @@ test('NVIDIA preference patches only the cloned main.cpp and records its source 
   api.verifySourcePatchArtifacts(root,prepared,diff);
 });
 
-function optimusImage(){
+function optimusImage(exportName = 'NvOptimusEnablement'){
   const image=pe(),nt=0x80,optional=nt+24,section=optional+224,data=section+40;
   image.writeUInt16LE(2,nt+6);
   image.writeUInt32LE(16,optional+92);
@@ -268,7 +271,7 @@ function optimusImage(){
   image.writeUInt32LE(0x10a0,0x254);
   image.writeUInt16LE(1,0x260);
   image.writeUInt16LE(0,0x262);
-  image.write('NvOptimusEnablement\0',0x280);
+  image.write(exportName+'\0',0x280);
   image.write('ZAnotherExport\0',0x2a0);
   image.writeUInt32LE(1,0x800);
   return image;
@@ -293,6 +296,73 @@ test('NVIDIA receipt resolves a real initialized data export and validates its D
   }
   assert.throws(()=>nvidiaOptimus.verifyExport(Buffer.alloc(12)),/DOS header/);
   assert.throws(()=>nvidiaOptimus.verifyExport(optimusImage().subarray(0,0x870)),/section range/);
+});
+
+test('targetless leaf matrices are opt-in and require both matrix and targetless support', () => {
+  const targetless = ['--capture-framebuffer-status', '--terrain-geometry-revision', '--targetless-actor-captures'];
+  assert.equal(Object.hasOwn(api.parseArgs([]), 'targetlessLeafMatrices'), false);
+  assert.throws(() => api.parseArgs(['--targetless-leaf-matrices']), /requires --targetless-actor-captures and --manual-camera-matrices/);
+  assert.throws(() => api.parseArgs([...targetless, '--targetless-leaf-matrices']), /requires --targetless-actor-captures and --manual-camera-matrices/);
+  const options = api.parseArgs([...targetless, '--manual-camera-matrices', '--targetless-leaf-matrices']);
+  assert.equal(options.targetlessLeafMatrices, true);
+  assert.throws(() => api.parseArgs([...targetless, '--manual-camera-matrices', '--targetless-leaf-matrices', 'false']), /Unknown/);
+
+  const symbol = 'HKDTargetlessLeafMatrices';
+  assert.deepEqual(targetlessLeafMatrices.verifyExport(optimusImage(symbol)), {symbol, value: 1, rva: 0x2000, section: '.data'});
+  assert.throws(() => targetlessLeafMatrices.verifyExport(optimusImage()), /missing HKDTargetlessLeafMatrices/);
+});
+
+test('the V8 inlining budget is an independent, value-free Release option with a linked receipt', () => {
+  assert.equal(Object.hasOwn(api.parseArgs([]), 'v8InlineBudget'), false);
+  assert.deepEqual(api.parseArgs(['--v8-inline-budget']), {v8InlineBudget: true});
+  assert.throws(() => api.parseArgs(['--v8-inline-budget', 'off']), /Unknown/);
+  const symbol = 'HKDV8InlineBudget';
+  assert.deepEqual(v8InlineBudget.verifyExport(optimusImage(symbol)), {symbol, value: 1, rva: 0x2000, section: '.data'});
+  assert.throws(() => v8InlineBudget.verifyExport(optimusImage()), /missing HKDV8InlineBudget/);
+});
+
+test('the V8 inlining patch verifies the installed Creator source and the scoped clone', {skip: !creatorSDK}, t => {
+  const root = fixture(t), sdkClone = path.join(root, 'clone');
+  const definitions = v8InlineBudget.definitions();
+  assert.equal(definitions.length, 1);
+  const [definition] = definitions;
+  const installed = path.join(creatorSDK, definition.file);
+  const before = fs.readFileSync(installed);
+  const cloned = write(path.join(sdkClone, definition.file), before);
+  const patches = api.prepareSourcePatches(sdkClone, true, definitions, v8InlineBudget.FEATURE);
+  const diff = api.writeSourcePatchArtifacts(root, sdkClone, patches);
+  assert.equal(path.basename(diff.file), 'v8-inline-budget-diff.json');
+  api.verifySourcePatchArtifacts(root, patches, diff);
+  assert.equal(sha(fs.readFileSync(cloned)), definition.afterSha256);
+  assert.deepEqual(fs.readFileSync(installed), before);
+});
+
+test('targetless leaf matrices preserve the exact preceding native patch receipts', {
+  skip: !creatorSDK
+}, t => {
+  const root = fixture(t);
+  const options = {manualCameraMatrices: true, targetlessActorCaptures: true};
+  const definitions = targetlessLeafMatrices.definitions(options);
+  const files = new Set(definitions.map(patch => patch.file));
+  for (const file of files) write(path.join(root, file), fs.readFileSync(path.join(creatorSDK, file)));
+
+  const manual = api.prepareSourcePatches(root, true, [manualCameraMatrices.definition()], 'manualCameraMatrices');
+  const targetlessDefinitions = targetlessActorCaptures.definitions(options).filter(patch => files.has(patch.file));
+  const targetless = api.prepareSourcePatches(root, true, targetlessDefinitions, targetlessActorCaptures.FEATURE, manual);
+  const leaf = api.prepareSourcePatches(root, true, definitions, targetlessLeafMatrices.FEATURE, manual.concat(targetless));
+  assert.equal(leaf.length, 4);
+  assert.equal(targetless.length, 2);
+  for (const earlier of targetless) {
+    const later = leaf.find(patch => patch.file === earlier.file);
+    assert.equal(later.beforeSha256, earlier.afterSha256);
+  }
+  const manualDiff = api.writeSourcePatchArtifacts(root, root, manual);
+  const targetlessDiff = api.writeSourcePatchArtifacts(root, root, targetless);
+  const leafDiff = api.writeSourcePatchArtifacts(root, root, leaf);
+  api.verifySourcePatchArtifacts(root, manual, manualDiff);
+  api.verifySourcePatchArtifacts(root, targetless, targetlessDiff);
+  api.verifySourcePatchArtifacts(root, leaf, leafDiff);
+  assert.deepEqual(JSON.parse(fs.readFileSync(leafDiff.file)).patches.map(patch => patch.file), [...files]);
 });
 
 test('foreground stencil reuse is an independent native Release option', () => {

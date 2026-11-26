@@ -6227,10 +6227,10 @@
       "zh": "领取",
       "context": "Royal Advisor task reward button"
     },
-    "battle.task.finished": {
-      "en": "All tasks complete",
-      "zh": "所有任务均已完成",
-      "context": "Royal Advisor task bubble after the final claim"
+    "battle.task.reward": {
+      "en": "Reward:",
+      "zh": "奖励：",
+      "context": "Label before the Royal Advisor's current task reward amount"
     },
     "battle.task.objective.kill-hero": {"en":"Enemies defeated by the hero · {0}/{1}","zh":"英雄击败的敌人 · {0}/{1}","context":"Royal Advisor objective progress"},
     "battle.task.objective.kill-barracks": {"en":"Enemies defeated by barracks units · {0}/{1}","zh":"兵营部队击败的敌人 · {0}/{1}","context":"Royal Advisor objective progress"},
