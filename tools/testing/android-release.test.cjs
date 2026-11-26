@@ -71,3 +71,46 @@ test('WebP conversion updates atlas page names while retaining frame names', () 
   assert.equal(retargetAtlas(spine, 'test/skeleton.atlas', conversions), spine.replace('page.png', 'page.webp'));
   assert.equal(retargetAtlas(plist, 'test/atlas.plist', conversions), plist.replace('string>page.png', 'string>page.webp'));
 });
+
+test('Android stages only the active campaign and its generated map dependencies', t => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'hkd-android-campaign-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const source = path.join(directory, 'source');
+  const output = path.join(directory, 'android');
+  const configFile = 'assets/KinghtFallConfig/GameJsonCfg.json';
+  const mapBundle = 'assets/KinghtFallIconMap/';
+  const active = { Level: 1, prefab: 'Generated/Stages/A-1', Map: 'Generated/Maps/active/thumbnail',
+    WaveCfg: [{ HealthCoefficient: 2.6, AttackCoefficient: 2.4, SpawnTimeline: [{ unitId: 5, count: 2 }] }] };
+  const parked = { Level: 2, prefab: 'Generated/Stages/A-2', Map: 'Generated/Maps/parked/thumbnail', WaveCfg: [] };
+  const stages = [active, parked, { ...active, Level: 3 }];
+  const config = { LevelCfg: stages, GameTools: { campaignStageLimit: 1 }, futureSetting: { keep: true } };
+  const writeJson = (name, data) => {
+    const file = path.join(source, name);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify(data));
+  };
+  writeJson('project.json', { version: '2.4.13' });
+  writeJson(configFile, config);
+  for (const stage of [active, parked]) {
+    const uuid = `e8ef74c7-7697-4ec7-93ac-b2fae22cac8${stage.Level}`;
+    const atlas = path.posix.dirname(stage.Map) + '/atlas.json';
+    writeJson(mapBundle + stage.prefab + '.prefab', [{ __uuid__: uuid }]);
+    writeJson(mapBundle + stage.prefab + '.prefab.meta', {});
+    writeJson(mapBundle + stage.Map + '.png', {});
+    writeJson(mapBundle + atlas, {});
+    writeJson(mapBundle + atlas + '.meta', { uuid });
+  }
+  const result = prepareRelease(fs.realpathSync(source), output);
+  assert.deepEqual(result.campaignStages, { included: [1], excluded: [2, 3] });
+  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(output, configFile), 'utf8')), { ...config, LevelCfg: [active] });
+  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(source, configFile), 'utf8')), config);
+  for (const [stage, included] of [[active, true], [parked, false]]) {
+    for (const resource of [stage.prefab + '.prefab', stage.prefab + '.prefab.meta', stage.Map + '.png', path.posix.dirname(stage.Map) + '/atlas.json']) {
+      assert.equal(fs.existsSync(path.join(output, mapBundle, resource)), included, resource);
+      assert(fs.existsSync(path.join(source, mapBundle, resource)));
+    }
+  }
+  writeJson('assets/resources/invalid-stage-reference.json', { prefab: parked.prefab });
+  assert.throws(() => prepareRelease(fs.realpathSync(source), path.join(directory, 'invalid-release')),
+    /An active release asset references a disabled stage prefab/);
+});

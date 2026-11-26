@@ -108,12 +108,12 @@ var def_KinghtFallModle = function () {
     var n = Math.floor(t / 60);
     return (n = Math.floor(n / 10).toString() + n % 10) + ":" + e;
   };
-  _ctor.prototype.compareIsToday = function (t) {
+  _ctor.prototype.compareIsToday = function (t, now) {
     var e = new Date(t);
     var n = e.getFullYear();
     var i = e.getMonth();
     var a = e.getDate();
-    var o = new Date();
+    var o = now === undefined ? new Date() : new Date(now);
     var r = o.getFullYear();
     var s = o.getMonth();
     var l = o.getDate();

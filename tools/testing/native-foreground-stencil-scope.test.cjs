@@ -172,10 +172,3 @@ test('throw and nested native camera rendering both close the armed scope exactl
     assert.equal(f.calls.at(-1)[4], false);
   }
 });
-
-test('the depth callback records only repeated foreground captures and publishes after capture cleanup', () => {
-  const update = depth.slice(depth.indexOf('DepthView.prototype.update ='), depth.indexOf('DepthView.prototype.destroy ='));
-  assert.match(update, /if \(stencilBatch && !stencilBatch\.cancelled && above\)/);
-  assert.match(update, /if \(!grouped\) stencilBatch\.entries\.push\(firstForeground, object, firstFrame, index \+ 1\)/);
-  assert.match(update, /stencilBatch\.finish\(stencilComplete && captureFinished\)/);
-});

@@ -377,7 +377,8 @@ var def_KinghtFallEnemyBase = function (t) {
     var start = Navigation.positionOf(this.node, game), target = Navigation.positionOf(node, game);
     if (failure.revision !== navigation.revision || failure.generation !== node._combatGeneration ||
         cc.Vec2.distance(failure.target, target) > 20 ||
-        cc.Vec2.distance(failure.start, start) > 20 && (!failure.partial || navigation.grid.segmentClear(start, target, failure.radius))) {
+        cc.Vec2.distance(failure.start, start) > 20 && (!failure.partial ||
+          (Navigation.usesFlightGrid(this) ? navigation.gridFor(this) : navigation.grid).segmentClear(start, target, failure.radius))) {
       failures.delete(key);
       return true;
     }

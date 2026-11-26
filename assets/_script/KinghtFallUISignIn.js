@@ -19,6 +19,9 @@ var $z1EventMgr = require("EventMgr");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
+function calendarDay(daily) {
+  return new Date(daily.calendarTime ? daily.calendarTime() : Date.now()).toDateString();
+}
 var def_KinghtFallUISignIn = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -41,7 +44,7 @@ var def_KinghtFallUISignIn = function (t) {
   _ctor.prototype.canClaim = function (multiplier, claim, day, date) {
     var daily = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getDailyData();
     daily.ensureCurrentDay();
-    if (date !== undefined && date !== new Date().toDateString()) return false;
+    if (date !== undefined && date !== calendarDay(daily)) return false;
     var currentDay = daily.getSignDay();
     if (!this.cfgList[currentDay] || day !== undefined && day !== currentDay) return false;
     var expected = claim === 1 && multiplier === 1 ? 1 : 0;
@@ -72,11 +75,11 @@ var def_KinghtFallUISignIn = function (t) {
       if (pending) { pending.retry(); return; }
       if (!t.canClaim(multiplier, 1)) return;
       var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance(), daily = player.getDailyData(), day = daily.getSignDay();
-      var date = new Date().toDateString();
+      var date = calendarDay(daily);
       var reward = { id: t.cfgList[day].Item[0], num: t.cfgList[day].Item[1] }, count = t.cfgList.length;
       var position = EarnedAds.point(t.ndDayList[day].convertToWorldSpaceAR(t.ndDayList[day].getChildByName("sprIcon").position));
       var stage = player.getUserData().getMaxStage(), tracked = false, expected = multiplier === 1 ? 1 : 0;
-      function eligible() { daily.ensureCurrentDay(); return date === new Date().toDateString() && daily.getSignDay() === day && daily.getSignReward() === expected; }
+      function eligible() { daily.ensureCurrentDay(); return date === calendarDay(daily) && daily.getSignDay() === day && daily.getSignReward() === expected; }
       var request = EarnedAds.create(t, "_signAdReward", player, function () {
         if (!eligible()) return { done: true, show: false };
         if (!tracked) { tracked = true;

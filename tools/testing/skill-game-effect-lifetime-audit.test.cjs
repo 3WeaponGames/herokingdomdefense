@@ -26,6 +26,25 @@ test('a replaced spatial dispatcher cannot begin new presentation requests throu
  for(const kind of ['impact','death','attack','named','track']){const f=fixture();f.ui.ctrEffect={};f.request(kind);assert.equal(f.pending.length,0);assert.equal(f.allocated(),0);}
 });
 
+test('the first attack impact uses the held stage prefab and allocates only what it needs', () => {
+ const f = fixture(), prefab = {};
+ f.ui._stageAssets = { assets: { 'effects/impact:prefab': prefab } };
+ const checkout = f.pool.getNodeFromPrefab;
+ f.pool.getNodeFromPrefab = function (key, asset, spareCount) {
+  assert.equal(key, 'impact');
+  assert.equal(asset, prefab);
+  assert.equal(spareCount, 0);
+  return checkout();
+ };
+ f.request('impact');
+ assert.equal(f.pending.length, 0);
+ assert.equal(f.allocated(), 1);
+ assert.equal(f.nodes[0].skeleton.plays[0].name, 'jian_lv2');
+ f.nodes[0].skeleton.complete();
+ f.request('impact');
+ assert.equal(f.allocated(), 1);
+});
+
 test('completed or externally recycled effects cannot be returned by stale callbacks after a new checkout',()=>{
  for(const kind of ['impact','death','attack','named','track']){
   const f=fixture();f.request(kind);f.finish();const node=f.nodes[0],old=kind==='track'?(f.scheduled[0]&&f.scheduled[0].callback||(()=>f.owner.update(0))):node.skeleton.complete;

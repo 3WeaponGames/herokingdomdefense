@@ -81,27 +81,98 @@ test('new terrain objects keep scenery priority through movement and leave no co
   type.onDestroy.call(component); assert.equal(node._depthMapForeground, undefined);
 });
 
-test('occlusion captures follow actual render order after building priority, without disabling rear silhouettes', () => {
-  const { DepthView, Sprite } = load();
-  const main = new Node('ndMain'), tower = new Node('Tower', main, 0, 10), rock = new Node('Rock', main, 0, -10), hero = new Node('Hero', main, 0, -20);
-  tower._depthBuilding = true; rock._depthScenery = true;
-  rock.width = hero.width = 20; rock.height = 100; hero.height = 30; rock.anchorY = hero.anchorY = 0;
-  const rockArt = rock.addComponent(Sprite), heroArt = hero.addComponent(Sprite); rockArt.enabled = heroArt.enabled = true;
-  const actor = { node: hero, spAni: heroArt, hp: 100 }, object = { node: rock, sources: [rockArt], masks: new Map() };
-  const game = { ctrPlay: actor, gameData: { getSoldierList: () => [], getEnemyList: () => [] } };
-  let captures = 0;
-  const view = { main, game, objects: [object], nativeCapture: true, nativeActors: new Map(),
-    sort: DepthView.prototype.sort,
-    snapshot(entry) { captures++; entry.center = { x: 0, y: 0 }; entry.size = { width: 20, height: 100 }; entry.frame = {}; },
-    makeMask(entry, actor) { const overlay = new Node('Overlay', main); overlay._occlusionMask = true; overlay.setContentSize = size => { overlay.width = size.width; overlay.height = size.height; }; entry.overlay = { node: overlay, mask: {} }; const mask = { node: new Node('Silhouette', overlay) }; entry.masks.set(actor, mask); return mask; },
-    syncNativeMask() {}
-  };
-  DepthView.prototype.update.call(view); assert.equal(captures, 0, 'a visible foreground unit must not trigger a pointless capture through the rock');
-  hero.y = 20; DepthView.prototype.update.call(view); assert.equal(captures, 1, 'units genuinely behind scenery still receive the normal silhouette');
-  assert.equal(object.overlay.node.active, true);
-  hero.y = -20; DepthView.prototype.update.call(view); assert.equal(captures, 1); assert.equal(object.overlay.node.active, false, 'the old silhouette clears when the actor returns in front');
-  rock._depthMapForeground = true; hero.y = -20; DepthView.prototype.update.call(view);
-  assert.equal(captures, 1); assert.equal(object.overlay.node.active, false, 'a unit in front of the whole building stack needs no stale scenery silhouette');
+test('Stage 10 depth sorting lets a cliff cover walkers behind it', () => {
+  const { DepthView, Sprite, Skeleton } = load();
+  const main = new Node('ndMain'), hero = new Node('Hero', main, 0, 20);
+  const cliff = new Node('Cliff', main, 0, 0), grass = new Node('Grass', main, 0, 40);
+  const house = new Node('House', main, 200, 0), wing = new Node('House wing', main, 210, 0);
+  function sprite(node, height) {
+    node.width = 40;
+    node.height = height;
+    node.anchorX = .5;
+    node.anchorY = 0;
+    const art = node.addComponent(Sprite);
+    art.enabled = true;
+    return art;
+  }
+  const actor = { node: hero, spAni: sprite(hero, 35) };
+  cliff._depthMapObject = true;
+  cliff._depthLayerOrder = 5;
+  grass._depthMapObject = true;
+  grass._depthLayerOrder = 7;
+  sprite(cliff, 100);
+  sprite(grass, 10);
+  const build = { node: house, ndAniMain: house.addComponent(Skeleton), ndAniOther: [wing.addComponent(Skeleton)] };
+  const game = { ctrPlay: actor, gameData: { levelCfg: { StageLayoutId: 'A-10' }, bulidPointMap: { one: build },
+    obstacles: [{ node: cliff }, { node: grass }] } };
+  const view = { main, game, objects: [], _prioritizeCliffs: true };
+  DepthView.prototype.prepareObjects.call(view);
+  DepthView.prototype.sort.call(view);
+  assert(hero.zIndex < cliff.zIndex, 'grass in a higher layer does not expose the unit through the cliff');
+  assert(cliff.zIndex < grass.zIndex && grass.zIndex < house.zIndex);
+  hero.y = -10;
+  DepthView.prototype.sort.call(view);
+  assert(cliff.zIndex < hero.zIndex, 'a walker in front of the cliff stays visible');
+});
+
+test('every stage keeps living unit HP bars in front without allocating overlap renderers', () => {
+  const campaign = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../assets/KinghtFallConfig/GameJsonCfg.json')));
+  class SceneNode extends Node {
+    destroy() { this.destroyed = true; this.setParent(null); }
+  }
+  for (const isNative of [false, true]) {
+    let draw;
+    const { DepthView } = load({
+      Node: SceneNode,
+      macro: { MAX_ZINDEX: 32767 },
+      sys: { isNative },
+      director: {
+        on(_event, callback, owner) { draw = () => callback.call(owner); },
+        off() { draw = null; },
+        getScene() { assert.fail('allocated an overlap camera'); },
+        getTotalFrames: () => 1
+      },
+      resources: { load() { assert.fail('loaded an overlap shader'); } }
+    });
+    for (const levelCfg of [...Object.values(campaign.LevelCfg), {}]) {
+      const main = new SceneNode('ndMain', null, 40), overlay = new SceneNode('ndUI');
+      function actor(name, barField) {
+        const node = new SceneNode(name, main);
+        const bar = {
+          node: new SceneNode('HP', node),
+          moveToBattleLayer(layer) { this.node.setParent(layer); },
+          restoreBattleParent() { this.node.setParent(node); },
+          syncBattlePosition(_game, _size, _frame, _cadence, projection) {
+            this.node.x = projection.x + projection.a * node.x;
+          },
+          battleReferenceSize: () => ({ width: 64, height: 10 })
+        };
+        const unit = { node, hp: 100, hpMax: 100, [barField]: bar };
+        node._combatActor = unit;
+        return unit;
+      }
+      const hero = actor('Hero', 'ctrHp'), ally = actor('Ally', 'hpctrl'), enemy = actor('Enemy', 'hpctrl');
+      const units = [hero, ally, enemy], bars = [hero.ctrHp, ally.hpctrl, enemy.hpctrl];
+      const view = new DepthView({ ndMain: main, ndUI: overlay, ctrPlay: hero,
+        gameData: { levelCfg, bulidPointMap: {}, getSoldierList: () => [ally], getEnemyList: () => [enemy] } });
+      const layer = view._unitHealthLayer;
+      assert.equal(layer.parent, overlay);
+      assert.equal(layer.zIndex, 32767);
+      draw();
+      assert.deepEqual(layer.children, bars.map(bar => bar.node));
+      assert.equal(enemy.hpctrl.node.x, 40);
+      enemy.node.x = 20;
+      draw();
+      assert.equal(enemy.hpctrl.node.x, 60);
+      enemy.hp = 0;
+      draw();
+      assert.equal(enemy.hpctrl.node.parent, enemy.node);
+      view.destroy();
+      assert.equal(draw, null);
+      assert.equal(layer.destroyed, true);
+      bars.forEach((bar, index) => assert.equal(bar.node.parent, units[index].node));
+    }
+  }
 });
 
 
@@ -114,7 +185,7 @@ test('building models and wings share authored object-layer slots while ground a
  build.renderLayerOrder=0;DepthView.prototype.prepareObjects.call(view);DepthView.prototype.sort.call(view);assert(owner.zIndex<cliff.zIndex&&owner.zIndex<tree.zIndex,'ground-only slot places the whole building behind all objects');
 });
 
-for (const nativeCapture of [false, true]) test('foreground units stay whole across a building corner and conflicting scenery layers (' + (nativeCapture ? 'native' : 'web') + ')', () => {
+test('unit depth follows the building footprint at the center and corners', () => {
   const { DepthView, Sprite } = load();
   const main = new Node('ndMain'), building = new Node('Barracks', main), scenery = new Node('Rock', main, 0, -20);
   building._depthBuilding = true;
@@ -138,44 +209,23 @@ for (const nativeCapture of [false, true]) test('foreground units stay whole acr
   const units = [hero, ally, enemy];
   const polygon = [new Vec2(-90, 25), new Vec2(0, -45), new Vec2(90, 25), new Vec2(0, 95)];
   const owner = { node: building, getWposPhyCol2: () => [{ points: polygon }] };
-  const object = { node: building, sources: [facade], baseSources: [facade], masks: new Map(),
+  const object = { node: building, sources: [facade], baseSources: [facade],
     buildings: [{ owner, base: null, weapon: null, ruins: null }] };
-  let captures = 0;
   const game = { ctrPlay: hero, gameData: { getSoldierList: () => [ally], getEnemyList: () => [enemy] } };
-  const view = Object.assign(Object.create(DepthView.prototype), {
-    main, game, objects: [object], nativeCapture, nativeActors: new Map(),
-    snapshot(entry) {
-      captures++;
-      Object.assign(entry, { center: { x: 0, y: 0 }, size: { width: 220, height: 240 }, frame: {} });
-    },
-    makeMask(entry, unit) {
-      const overlay = new Node('Overlay', main);
-      overlay._occlusionMask = true;
-      overlay.setContentSize = size => Object.assign(overlay, size);
-      entry.overlay = { node: overlay, mask: {} };
-      const mask = { node: new Node('Silhouette', overlay), visuals: [] };
-      entry.masks.set(unit, mask);
-      return mask;
-    },
-    syncNativeMask() {}
-  });
+  const view = Object.assign(Object.create(DepthView.prototype), { main, game, objects: [object] });
   units.forEach(unit => unit.node.setPosition(0, -10));
-  view.update();
+  view.sort();
   assert(scenery.zIndex < building.zIndex);
   assert(units.every(unit => unit.node.zIndex > building.zIndex), 'lower scenery cannot pull a foreground unit behind the building');
-  assert.equal(captures, 0);
 
   units.forEach((unit, index) => unit.node.setPosition(index === 1 ? 94 : -94, 22));
-  view.update();
+  view.sort();
   assert(units.every(unit => unit.node.zIndex > building.zIndex), 'units just outside either corner stay in full color');
-  assert.equal(captures, 0, 'the foreground corner never generates a clipping stencil');
 
   hero.node.setPosition(0, 100);
-  view.update();
-  const mask = object.masks.get(hero);
-  assert(mask && mask.node.active, 'a unit behind the footprint still follows the normal depth');
+  view.sort();
+  assert(hero.node.zIndex < building.zIndex);
   hero.node.setPosition(94, 25);
-  view.update();
+  view.sort();
   assert(hero.node.zIndex > building.zIndex);
-  assert.equal(mask.node.active, false, 'the rear stencil clears on the same frame as the crossing');
 });

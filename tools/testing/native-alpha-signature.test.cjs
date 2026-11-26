@@ -9,9 +9,9 @@ const root = path.resolve(__dirname, '../..');
 const source = fs.readFileSync(path.join(root, 'assets/_script/KinghtFallDepthView.js'), 'utf8');
 const runtime = path.join(process.env.COCOS_ENGINE_ROOT || process.env.COCOS_SPINE_ROOT || 'C:/ProgramData/cocos/editors/Creator/2.4.13/resources/engine', 'extensions/spine/lib/spine.js');
 function load() {
-  const context = { exports: {}, cc: {}, sp: {} };
+  const context = { exports: {}, cc: {}, sp: { Skeleton: class Skeleton {} } };
   vm.runInNewContext(source, context);
-  return vm.runInNewContext('({signature:nativeAlphaSignature,same:sameStamp})', context);
+  return vm.runInNewContext('({signature:nativeAlphaSignature,snapshot:snapshotSignature,same:sameStamp,Skeleton:sp.Skeleton})', context);
 }
 function bone() { return { a: 1, b: 0, c: 0, d: 1, worldX: 0, worldY: 0, active: true }; }
 function region() {
@@ -150,6 +150,24 @@ test('unknown clipping and incomplete native mesh APIs fall back without committ
     assert.equal(f.signature(f.renderer, out), false);
     assert.deepEqual(out, ['prior source']);
   }
+});
+
+test('shadow warmup can capture incomplete native slot wrappers without caching unknown geometry', () => {
+  const f = fixture();
+  const renderer = Object.assign(new f.Skeleton(), f.renderer, { enabled: true });
+  renderer.node.activeInHierarchy = true;
+  f.skeleton.slots = f.slots;
+  const view = { nativeCapture: true };
+  const object = { sources: [renderer] };
+  const cache = { transforms: new Map([[renderer.node, { x: 0, y: 0, a: 1, b: 0, c: 0, d: 1 }]]) };
+  const getAttachment = f.slots[0].getAttachment;
+  delete f.slots[0].getAttachment;
+  const initial = f.snapshot(view, object, cache);
+  assert(!f.same(initial, f.snapshot(view, object, cache)));
+  f.slots[0].getAttachment = getAttachment;
+  const ready = f.snapshot(view, object, cache);
+  assert(!f.same(initial, ready));
+  assert(f.same(ready, f.snapshot(view, object, cache)));
 });
 
 test('native handle caches retire on rig replacement and preserve temporarily suppressed source alpha', () => {

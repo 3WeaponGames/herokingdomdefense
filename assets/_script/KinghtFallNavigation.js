@@ -2,6 +2,12 @@
 // All positions are in ndMain coordinates. The planner uses actual enabled
 // physics shapes, not sprite bounds or the old hand-authored detour markers.
 var NavigationGrid = require("NavigationGrid").NavigationGrid;
+var FlightTargeting = require("FlightTargeting");
+
+function usesFlightGrid(unit) {
+  return !!unit && unit.navigationTeam !== "friendly" && FlightTargeting.isFlying(unit);
+}
+exports.usesFlightGrid = usesFlightGrid;
 
 function point(node, main, offset) {
   if (!offset && node.parent === main) return { x: node.x, y: node.y };
@@ -166,6 +172,12 @@ Navigation.prototype.shape = function (collider, forcedPoints, authoredPoints, r
   this._shapeCache.set(collider, { forced: !!forcedPoints, round: !!roundPoints, stamp: stamp.slice(), polygon: vertices });
   return vertices;
 };
+function flightBlockers(polygons, owners, mapPolygonCount) {
+  // Every wall component has this method, including solid wall runs with no gate.
+  return polygons.filter(function (_, i) {
+    return i < mapPolygonCount || !owners[i].getNavigationGateShapes;
+  });
+}
 Navigation.prototype.refresh = function () {
   if (this._frameManaged && !this._refreshPending && this._snapshotFrame === this._frameId) return;
   var now = Date.now();
@@ -181,7 +193,8 @@ Navigation.prototype.refresh = function () {
   this._terrainScan = null;
   polygons.length = friendly.length = passages.length = terrain.length = owners.length = friendlyTerrain.length = 0;
   seen.clear();
-  game.gameData.obstacles.concat(game.gameData.getBulidList()).forEach(function (owner) {
+  var mapOwners = game.gameData.obstacles, mapOwnerCount = mapOwners.length, mapPolygonCount = 0;
+  mapOwners.concat(game.gameData.getBulidList()).forEach(function (owner, index) {
     // Gate wings are sibling nodes referenced as Skeleton components, not
     // descendants of the gate. Their enabled physics shapes still block units.
     var gateShapes = owner.getNavigationGateShapes && owner.getNavigationGateShapes(true);
@@ -207,17 +220,26 @@ Navigation.prototype.refresh = function () {
         if (body.length >= 3) { polygons.push(body); terrain.push(collider); owners.push(owner); friendly.push(body); friendlyTerrain.push(collider); }
       }
     }
+    if (index < mapOwnerCount) mapPolygonCount = polygons.length;
   });
   var size = game.mapSize;
   var bounds = { minX: -size.width / 2, minY: -size.height / 2, maxX: size.width / 2, maxY: size.height / 2 };
-  var same = this.grid && this.grid.bounds.minX === bounds.minX && this.grid.bounds.minY === bounds.minY && this.grid.bounds.maxX === bounds.maxX && this.grid.bounds.maxY === bounds.maxY;
-  same = same && polygons.length === this._polygons.length && friendly.length === this._friendlyPolygons.length &&
+  var sameBounds = this.grid && this.grid.bounds.minX === bounds.minX && this.grid.bounds.minY === bounds.minY && this.grid.bounds.maxX === bounds.maxX && this.grid.bounds.maxY === bounds.maxY;
+  var same = sameBounds && this._mapPolygonCount === mapPolygonCount && polygons.length === this._polygons.length && friendly.length === this._friendlyPolygons.length &&
     polygons.every(function (p, index) { return p === navigation._polygons[index] && owners[index] === navigation.grid.terrainOwners[index]; }) &&
     friendly.every(function (p, index) { return p === navigation._friendlyPolygons[index]; });
   if (same) this._terrainScan = scratch;
   if (!same) {
     this._requestUnits.forEach(function(unit){cancelRequest(unit);});
     this._activeSearches.forEach(function(active){cancelRequest(active.unit);});
+    if (this._flightGrid) {
+      // Wall changes leave the flight grid and its cached spawn placements valid.
+      var previous = this._flightBlockers, current = sameBounds && flightBlockers(polygons, owners, mapPolygonCount);
+      if (!current || current.length !== previous.length || current.some(function (p, i) { return p !== previous[i]; })) {
+        this._flightGrid = this._flightBlockers = null;
+      }
+    }
+    this._mapPolygonCount = mapPolygonCount;
     this._polygons = polygons;
     this._friendlyPolygons = friendly;
     this._friendlyPassages = passages;
@@ -234,6 +256,13 @@ Navigation.prototype.refresh = function () {
 };
 Navigation.prototype.gridFor = function (unit) {
   this.refresh();
+  if (usesFlightGrid(unit)) {
+    if (!this._flightGrid) {
+      this._flightBlockers = flightBlockers(this._polygons, this.grid.terrainOwners, this._mapPolygonCount);
+      this._flightGrid = new NavigationGrid(this._flightBlockers, this.grid.bounds, this.grid.cellSize);
+    }
+    return this._flightGrid;
+  }
   if (unit.navigationTeam !== "friendly" || unit._automaticEgress && unit._automaticEgress.owner === this && unit._automaticEgress.fullGrid) return this.grid;
   // The upgraded first-map gate has a valid body-width passage between its
   // wings that a 20-unit lattice misses. Keep body clearance; sample more finely.
@@ -302,9 +331,11 @@ exports.prepareTerrainExit=function(unit,game,spawn,bodyRadius){
   recordTerrainExit(unit,navigation,grid,start,radius);
 };
 exports.moveManual=function(unit,game,localPosition){
-  if(unit.rigidBody&&unit.rigidBody.active===false){unit._terrainExit=null;unit.node.setPosition(localPosition);return;}
-  var navigation=get(game),grid=navigation.gridFor(unit),radius=navigation.radius(unit),start=point(unit.node,game.ndMain),world=unit.node.parent?unit.node.parent.convertToWorldSpaceAR(localPosition):localPosition,target=game.ndMain.convertToNodeSpaceAR(world);
-  recordTerrainExit(unit,navigation,grid,start,radius);
+  var flight = usesFlightGrid(unit);
+  if(!flight&&unit.rigidBody&&unit.rigidBody.active===false){unit._terrainExit=null;unit.node.setPosition(localPosition);return;}
+  var navigation=get(game),grid=navigation.gridFor(unit),radius=navigation.radius(unit,flight),start=point(unit.node,game.ndMain),world=unit.node.parent?unit.node.parent.convertToWorldSpaceAR(localPosition):localPosition,target=game.ndMain.convertToNodeSpaceAR(world);
+  if (flight) unit._terrainExit = null;
+  else recordTerrainExit(unit,navigation,grid,start,radius);
   if(!grid.canExitBlocked(start,target,radius,true)){
     var x={x:target.x,y:start.y},y={x:start.x,y:target.y},canX=distance(start,x)>ARRIVAL_EPSILON&&grid.canExitBlocked(start,x,radius,true),canY=distance(start,y)>ARRIVAL_EPSILON&&grid.canExitBlocked(start,y,radius,true);
     if(canX||canY)target=canX&&(!canY||distance(x,target)<=distance(y,target))?x:y;
@@ -412,10 +443,11 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly, breach) {
   var destination = target, state;
   // Also clear velocity on blocked/finished routes, before any early return.
   if (unit.rigidBody) unit.rigidBody.linearVelocity = cc.Vec2.ZERO;
-  // Some unit types intentionally cross buildings with their physics disabled.
-  if (unit._unitTestRadius || !unit.rigidBody || unit.rigidBody.active !== false) {
+  var flight = usesFlightGrid(unit);
+  if (flight || unit._unitTestRadius || !unit.rigidBody || unit.rigidBody.active !== false) {
+    if (flight) breach = false;
     var solid = this.gridFor(unit), grid = breach ? this.gridThroughWalls() : solid;
-    var radius = unit._unitTestRadius || this.radius(unit);
+    var radius = unit._unitTestRadius || this.radius(unit, flight);
     var startWalkable;
     state = unit._navigationState;
     // Let a bounded in-flight query finish when its moving target advances.
@@ -442,7 +474,7 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly, breach) {
     var goal = changed ? { x: target.x, y: target.y } : null;
     var direct = !!goal && !escapeOnly && grid.segmentClear(start, goal, radius);
     // A clear start on the solid grid cannot have a terrain overlap to exit.
-    if (grid === solid && (startWalkable || direct)) unit._terrainExit = null;
+    if (flight || grid === solid && (startWalkable || direct)) unit._terrainExit = null;
     else recordTerrainExit(unit, this, solid, start, radius);
     if (changed) {
       // Directly clear routes should continue even if another actor is using
@@ -533,7 +565,7 @@ Navigation.prototype.move = function (unit, target, dt, escapeOnly, breach) {
     destination = state.points[state.index];
   } else { cancelRequest(unit); unit._navigationState = null; unit._navigationProgress = null; }
   var detouring = false, progress = unit._navigationProgress;
-  if (state && step > 0 && (escapeOnly || (startWalkable === undefined ? grid.isWalkable(start, radius) : startWalkable))) {
+  if (!flight && state && step > 0 && (escapeOnly || (startWalkable === undefined ? grid.isWalkable(start, radius) : startWalkable))) {
     if (!progress || progress.owner !== this || progress.revision !== this.revision || distance(progress.target, target) > 20) {
       progress = unit._navigationProgress = { owner: this, revision: this.revision, target: { x: target.x, y: target.y }, point: start, elapsed: 0 };
     }
@@ -618,11 +650,12 @@ exports.recoverStranded = function (unit, game, dt) {
   record.elapsed+=Math.min(dt,.1);
   if (record.elapsed<5 || navigation._strandedRecoveryFrame===navigation._frameId) return false;
   navigation._strandedRecoveryFrame=navigation._frameId;
+  var flight = usesFlightGrid(unit);
   var grid=navigation.gridFor(unit);
   // Body measurement scans the collider subtree and transforms its vertices.
   // Ordinary movement already measures it; only repeat that work when this
   // five-second watchdog is actually going to search for a recovery position.
-  var radius=unit._unitTestRadius||navigation.radius(unit),anchors=[],bounds=grid.bounds,margin=radius+.01;
+  var radius=unit._unitTestRadius||navigation.radius(unit,flight),anchors=[],bounds=grid.bounds,margin=radius+.01;
   function anchor(value) {
     if(!value||!isFinite(value.x)||!isFinite(value.y))return;
     var p={x:Math.max(bounds.minX+margin,Math.min(bounds.maxX-margin,value.x)),y:Math.max(bounds.minY+margin,Math.min(bounds.maxY-margin,value.y))};
@@ -635,16 +668,20 @@ exports.recoverStranded = function (unit, game, dt) {
   // An active pursuit retains its own prepared path, rather than jumping away
   // from a live combat target to a different authored route segment.
   if(!(target&&target.tag)&&route&&route.pathList)route.pathList.slice(route.nodeIndex,route.nodeIndex+8).forEach(function(node){if(node&&cc.isValid(node,true))anchor(point(node,game.ndMain));});
-  var buildings=recoveryBuildings(navigation,grid);
+  var buildings=flight?null:recoveryBuildings(navigation,grid);
   // Every candidate needs a clear segment to a continuation point.
   if (!anchors.length) {
     record.elapsed = 3;
     return false;
   }
-  var actors=game.gameData.getEnemyList().concat(game.gameData.getSoldierList(),[game.ctrPlay]),occupied=[];
-  actors.forEach(function(other){if(other!==unit&&other&&other.node&&other.node.activeInHierarchy!==false&&!other._isPooled&&(!other.isDead||!other.isDead()))occupied.push({point:point(other.node,game.ndMain),radius:navigation.radius(other)});});
+  var occupied=[];
+  if (!flight) {
+    var actors=game.gameData.getEnemyList().concat(game.gameData.getSoldierList(),[game.ctrPlay]);
+    actors.forEach(function(other){if(other!==unit&&other&&other.node&&other.node.activeInHierarchy!==false&&!other._isPooled&&(!other.isDead||!other.isDead()))occupied.push({point:point(other.node,game.ndMain),radius:navigation.radius(other)});});
+  }
   function safe(p) {
     return distance(start,p)>=Math.max(16,radius*2)&&grid.isWalkable(p,radius)&&
+      (!flight||grid.canExitBlocked(start,p,radius,true))&&
       (!buildings||buildings.canExitBlocked(start,p,radius,true))&&
       anchors.some(function(a){return distance(p,a)>1&&grid.segmentClear(p,a,radius);})&&
       occupied.every(function(other){return distance(p,other.point)>radius+other.radius+2;});
@@ -901,8 +938,10 @@ exports.resumeEnemyRoute = function (unit, game) {
   var main = game.ndMain, start = point(unit.node, main), index = route.nodeIndex;
   var best = distance(start, point(nodes[index], main));
   var navigation = get(game), radius = 0;
-  var collides = unit._unitTestRadius || !unit.rigidBody || unit.rigidBody.active !== false;
-  if (collides) { navigation.refresh(); radius = unit._unitTestRadius || navigation.radius(unit); }
+  var flight = usesFlightGrid(unit), grid;
+  if (flight) grid = navigation.gridFor(unit);
+  else if (unit._unitTestRadius || !unit.rigidBody || unit.rigidBody.active !== false) { navigation.refresh(); grid = navigation.grid; }
+  if (grid) radius = unit._unitTestRadius || navigation.radius(unit, flight);
   // Find the nearest forward route segment that can be rejoined directly.
   // A segment behind a wall is not evidence that its preceding waypoints were
   // passed. Ties keep the earlier segment, including at crossing/looping routes.
@@ -919,7 +958,7 @@ exports.resumeEnemyRoute = function (unit, game) {
     var rejoin = { x: a.x + dx * progress, y: a.y + dy * progress };
     var score = distance(start, rejoin);
     if (score + ARRIVAL_EPSILON >= best) continue;
-    if (collides && !navigation.grid.segmentClear(start, rejoin, radius)) continue;
+    if (grid && !grid.segmentClear(start, rejoin, radius)) continue;
     best = score;
     route.nodeIndex = i + 1;
   }

@@ -194,7 +194,7 @@ var def_KinghtFallGameCtrl = function (t) {
     this.ctrPlay.ndRange.setParent(this.ndUI);
     this.ndAggFlag.setParent(this.ndMain);
     this.gameData.initMap();
-    if (cc.Camera && cc.RenderTexture) this._depthView = new DepthView(this);
+    this._depthView = new DepthView(this);
     this._bindMapPhysics(t);
   };
   _ctor.prototype._bindMapPhysics = function (map) {
@@ -1192,7 +1192,7 @@ var def_KinghtFallGameCtrl = function (t) {
         if (overrideMovement) previewCfg.BuildingCross = movement === "ground" ? 1 : 0;
         if (overrideTargeting) previewCfg.EnemyTargeting = { mode: targeting };
       }
-      var areaCollides = !!(previewCfg || i).BuildingCross;
+      var spawnCfg = previewCfg || i, areaCollides = !!spawnCfg.BuildingCross;
       var o = function (i) {
         var generation = i._combatGeneration, actor = null;
         function current() { return cc.isValid(n, true) && cc.isValid(n.node, true) && n._combatEpoch === epoch && n.gameData === data && n.ndMain === main && $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === n && cc.isValid(i, true) && i._combatGeneration === generation && (!preview || preview.current()) && sourceCurrent(); }
@@ -1214,7 +1214,7 @@ var def_KinghtFallGameCtrl = function (t) {
         try {
           i.setPosition(Navigation.positionOf(spawnNode, n));
           if (!current()) { abandon(); return; }
-          var spawnArea = !transformSource && require('SpawnArea').prepare(o, n, e, areaCollides);
+          var spawnArea = !transformSource && require('SpawnArea').prepare(o, n, e, areaCollides, spawnCfg);
           if (spawnArea === null) { cc.warn('Spawn circle '+e+' has no walkable position for enemy '+t);abandon();return; }
           n._authoredRouteOverride = route;
           var lease = { generation: generation, previewCfg: previewCfg };
@@ -1320,13 +1320,14 @@ var def_KinghtFallGameCtrl = function (t) {
       pathList: [],
       nodeIndex: 0
     };
+    var authoredHolder = this.ndPath.getChildByName('Authored routes');
+    var authoredPaths = authoredHolder && authoredHolder.getComponent('AuthoredStagePaths');
     var i = [];
     var a = this.gameData.getBulidList();
     for (var o = 0; o < a.length; o++) {
-      (l = a[o]).getIsLock() && i.push(l.ID);
+      var building = a[o];
+      if (building.getIsLock() && (!authoredPaths || !building.isDestroyed)) i.push(building.ID);
     }
-    var authoredHolder = this.ndPath.getChildByName('Authored routes');
-    var authoredPaths = authoredHolder && authoredHolder.getComponent('AuthoredStagePaths');
     if (authoredPaths) {
       n.pathList = authoredPaths.resolve(t, i, this._authoredRouteOverride);
       return n;

@@ -156,8 +156,8 @@
       {
         "id": 11,
         "Wave": 1,
-        "HealthCoefficient": 3.5,
-        "AttackCoefficient": 3.3,
+        "HealthCoefficient": 3.35,
+        "AttackCoefficient": 3.15,
         "StartSliver": 6,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
@@ -175,20 +175,20 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
+            "unitId": 91175,
             "spawnId": 1,
-            "unitId": 91015,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "count": 9,
+            "startSeconds": 0.625,
+            "intervalSeconds": 1.25,
+            "id": "legacy-1-0"
           }
         ]
       },
       {
         "id": 11,
         "Wave": 2,
-        "HealthCoefficient": 3.5,
-        "AttackCoefficient": 3.3,
+        "HealthCoefficient": 3.35,
+        "AttackCoefficient": 3.15,
         "StartSliver": 9,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
@@ -208,36 +208,28 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
+            "unitId": 91175,
             "spawnId": 1,
-            "unitId": 100170,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "count": 10,
+            "startSeconds": 0.625,
+            "intervalSeconds": 1.375,
+            "id": "legacy-1-0"
           },
           {
-            "id": "legacy-2-0",
+            "unitId": 100728,
             "spawnId": 2,
-            "unitId": 100788,
-            "count": 4,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 100391,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "count": 3,
+            "startSeconds": 5.25,
+            "intervalSeconds": 3.75,
+            "id": "entry-2"
           }
         ]
       },
       {
         "id": 11,
         "Wave": 3,
-        "HealthCoefficient": 3.8,
-        "AttackCoefficient": 3.6,
+        "HealthCoefficient": 3.65,
+        "AttackCoefficient": 3.45,
         "StartSliver": 9,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
@@ -258,44 +250,36 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
+            "unitId": 91175,
             "spawnId": 1,
-            "unitId": 100130,
-            "count": 7,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "count": 13,
+            "startSeconds": 0.625,
+            "intervalSeconds": 1.75,
+            "id": "legacy-1-0"
           },
           {
-            "id": "legacy-2-0",
-            "spawnId": 2,
-            "unitId": 100131,
+            "unitId": 100728,
+            "spawnId": 3,
             "count": 4,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "startSeconds": 5.375,
+            "intervalSeconds": 3.75,
+            "id": "entry-2"
           },
           {
-            "id": "legacy-7-0",
-            "spawnId": 7,
-            "unitId": 100170,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-8-0",
-            "spawnId": 8,
-            "unitId": 100798,
-            "count": 3,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "unitId": 101781,
+            "spawnId": 2,
+            "count": 4,
+            "startSeconds": 7.5,
+            "intervalSeconds": 3.875,
+            "id": "entry-3"
           }
         ]
       },
       {
         "id": 11,
         "Wave": 4,
-        "HealthCoefficient": 3.8,
-        "AttackCoefficient": 3.6,
+        "HealthCoefficient": 3.65,
+        "AttackCoefficient": 3.45,
         "StartSliver": 9,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
@@ -317,52 +301,54 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
-            "spawnId": 1,
-            "unitId": 100170,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "unitId": 91175,
+            "spawnId": 4,
+            "count": 9,
+            "startSeconds": 0.625,
+            "intervalSeconds": 1.625,
+            "id": "entry-2",
+            "unitGroupId": "unit-group-0"
           },
           {
-            "id": "legacy-2-0",
-            "spawnId": 2,
-            "unitId": 100788,
-            "count": 3,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 100131,
-            "count": 3,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-7-0",
-            "spawnId": 7,
-            "unitId": 100170,
-            "count": 7,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-8-0",
-            "spawnId": 8,
-            "unitId": 100131,
+            "unitId": 100728,
+            "spawnId": 5,
             "count": 4,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "startSeconds": 3.5,
+            "intervalSeconds": 3.375,
+            "id": "entry-3"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 8,
+            "count": 6,
+            "startSeconds": 16.5,
+            "intervalSeconds": 2.25,
+            "id": "legacy-8-0",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 1000033000,
+            "spawnId": 9,
+            "count": 2,
+            "startSeconds": 19.625,
+            "intervalSeconds": 3.625,
+            "id": "entry-4"
+          },
+          {
+            "unitId": 101781,
+            "spawnId": 7,
+            "count": 3,
+            "startSeconds": 21.75,
+            "intervalSeconds": 2.875,
+            "id": "entry-5"
           }
         ]
       },
       {
         "id": 11,
         "Wave": 5,
-        "HealthCoefficient": 4,
-        "AttackCoefficient": 3.8,
+        "HealthCoefficient": 3.85,
+        "AttackCoefficient": 3.65,
         "StartSliver": 10,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
@@ -384,52 +370,54 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
-            "spawnId": 1,
-            "unitId": 100173,
-            "count": 1,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "unitId": 91175,
+            "spawnId": 8,
+            "count": 9,
+            "startSeconds": 0.625,
+            "intervalSeconds": 1.625,
+            "id": "entry-4",
+            "unitGroupId": "unit-group-0"
           },
           {
-            "id": "legacy-2-0",
-            "spawnId": 2,
-            "unitId": 100170,
-            "count": 7,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "unitId": 101781,
+            "spawnId": 9,
+            "count": 4,
+            "startSeconds": 3.75,
+            "intervalSeconds": 3.375,
+            "id": "entry-5"
           },
           {
-            "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 91015,
+            "unitId": 91175,
+            "spawnId": 12,
             "count": 6,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "startSeconds": 15.75,
+            "intervalSeconds": 2.375,
+            "id": "entry-6",
+            "unitGroupId": "unit-group-0"
           },
           {
-            "id": "legacy-7-0",
-            "spawnId": 7,
-            "unitId": 100080,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-10-0",
+            "unitId": 91006,
             "spawnId": 10,
-            "unitId": 100131,
-            "count": 6,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "count": 3,
+            "startSeconds": 19,
+            "intervalSeconds": 3.75,
+            "id": "entry-7"
+          },
+          {
+            "unitId": 100728,
+            "spawnId": 11,
+            "count": 3,
+            "startSeconds": 21.125,
+            "intervalSeconds": 3.375,
+            "id": "entry-8"
           }
         ]
       },
       {
         "id": 11,
         "Wave": 6,
-        "HealthCoefficient": 4,
-        "AttackCoefficient": 3.8,
+        "HealthCoefficient": 3.85,
+        "AttackCoefficient": 3.65,
         "StartSliver": 10,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
@@ -453,68 +441,79 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
-            "spawnId": 1,
-            "unitId": 91015,
-            "count": 10,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "unitId": 91175,
+            "spawnId": 12,
+            "count": 8,
+            "startSeconds": 0.625,
+            "intervalSeconds": 1.625,
+            "id": "entry-2",
+            "unitGroupId": "unit-group-0"
           },
           {
-            "id": "legacy-2-0",
-            "spawnId": 2,
-            "unitId": 100798,
-            "count": 4,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 100131,
-            "count": 3,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-7-1",
-            "spawnId": 7,
-            "unitId": 100788,
-            "count": 3,
-            "startSeconds": 5.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-8-1",
-            "spawnId": 8,
-            "unitId": 100170,
-            "count": 3,
-            "startSeconds": 5.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-10-0",
+            "unitId": 101781,
             "spawnId": 10,
-            "unitId": 100170,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "count": 3,
+            "startSeconds": 3.875,
+            "intervalSeconds": 3.875,
+            "id": "entry-3"
           },
           {
-            "id": "legacy-11-0",
-            "spawnId": 11,
-            "unitId": 100798,
+            "unitId": 1000033000,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 13.75,
+            "intervalSeconds": 3.625,
+            "id": "entry-4"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 3,
+            "count": 7,
+            "startSeconds": 15.25,
+            "intervalSeconds": 1.75,
+            "id": "entry-5",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 100728,
+            "spawnId": 2,
             "count": 3,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "startSeconds": 17.375,
+            "intervalSeconds": 3.75,
+            "id": "legacy-2-0"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 5,
+            "count": 7,
+            "startSeconds": 28.25,
+            "intervalSeconds": 1.625,
+            "id": "entry-6",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 100782,
+            "spawnId": 4,
+            "count": 2,
+            "startSeconds": 31.375,
+            "intervalSeconds": 4,
+            "id": "entry-7"
+          },
+          {
+            "unitId": 91051,
+            "spawnId": 6,
+            "count": 1,
+            "startSeconds": 33.5,
+            "intervalSeconds": 0.5,
+            "id": "entry-8"
           }
         ]
       },
       {
         "id": 11,
         "Wave": 7,
-        "HealthCoefficient": 4.1,
-        "AttackCoefficient": 3.9,
+        "HealthCoefficient": 3.95,
+        "AttackCoefficient": 3.75,
         "StartSliver": 11,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
@@ -539,76 +538,81 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
+            "unitId": 91175,
             "spawnId": 1,
-            "unitId": 100788,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "count": 9,
+            "startSeconds": 0.625,
+            "intervalSeconds": 1.75,
+            "id": "entry-4",
+            "unitGroupId": "unit-group-0"
           },
           {
-            "id": "legacy-2-0",
-            "spawnId": 2,
-            "unitId": 100131,
-            "count": 8,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-3-0",
+            "unitId": 100728,
             "spawnId": 3,
-            "unitId": 100798,
-            "count": 3,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-7-0",
-            "spawnId": 7,
-            "unitId": 91015,
             "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "startSeconds": 3.5,
+            "intervalSeconds": 2.875,
+            "id": "entry-5",
+            "unitGroupId": "unit-group-1"
           },
           {
-            "id": "legacy-8-0",
-            "spawnId": 8,
-            "unitId": 100788,
+            "unitId": 91006,
+            "spawnId": 5,
             "count": 3,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "startSeconds": 17.375,
+            "intervalSeconds": 3.75,
+            "id": "entry-6"
           },
           {
-            "id": "legacy-9-0",
+            "unitId": 91175,
+            "spawnId": 4,
+            "count": 7,
+            "startSeconds": 19,
+            "intervalSeconds": 2,
+            "id": "entry-7",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 100782,
+            "spawnId": 6,
+            "count": 3,
+            "startSeconds": 21.125,
+            "intervalSeconds": 4,
+            "id": "entry-8"
+          },
+          {
+            "unitId": 101781,
             "spawnId": 9,
-            "unitId": 100131,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "count": 3,
+            "startSeconds": 33.25,
+            "intervalSeconds": 3.875,
+            "id": "entry-9"
           },
           {
-            "id": "legacy-10-1",
-            "spawnId": 10,
-            "unitId": 91015,
-            "count": 5,
-            "startSeconds": 5.5,
-            "intervalSeconds": 0.5
+            "unitId": 91175,
+            "spawnId": 8,
+            "count": 6,
+            "startSeconds": 35.125,
+            "intervalSeconds": 2,
+            "id": "legacy-8-0",
+            "unitGroupId": "unit-group-0"
           },
           {
-            "id": "legacy-11-1",
-            "spawnId": 11,
-            "unitId": 100798,
-            "count": 5,
-            "startSeconds": 5.5,
-            "intervalSeconds": 0.5
+            "unitId": 100728,
+            "spawnId": 7,
+            "count": 3,
+            "startSeconds": 37.25,
+            "intervalSeconds": 3.75,
+            "id": "entry-10",
+            "unitGroupId": "unit-group-1"
           }
         ]
       },
       {
         "id": 11,
         "Wave": 8,
-        "HealthCoefficient": 4.1,
-        "AttackCoefficient": 3.9,
+        "HealthCoefficient": 3.95,
+        "AttackCoefficient": 3.75,
         "StartSliver": 11,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
@@ -633,76 +637,79 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
-            "spawnId": 1,
-            "unitId": 100131,
-            "count": 10,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-2-0",
-            "spawnId": 2,
-            "unitId": 100788,
+            "unitId": 101781,
+            "spawnId": 5,
             "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "startSeconds": 0.625,
+            "intervalSeconds": 3.625,
+            "id": "entry-2"
           },
           {
-            "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 100131,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "unitId": 91175,
+            "spawnId": 4,
+            "count": 9,
+            "startSeconds": 2.25,
+            "intervalSeconds": 1.625,
+            "id": "entry-3",
+            "unitGroupId": "unit-group-1"
           },
           {
-            "id": "legacy-7-0",
-            "spawnId": 7,
-            "unitId": 100798,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-8-0",
-            "spawnId": 8,
-            "unitId": 100131,
-            "count": 8,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-9-0",
+            "unitId": 91175,
             "spawnId": 9,
-            "unitId": 100788,
+            "count": 9,
+            "startSeconds": 17.625,
+            "intervalSeconds": 2.25,
+            "id": "legacy-9-0",
+            "unitGroupId": "unit-group-1"
+          },
+          {
+            "unitId": 100728,
+            "spawnId": 8,
+            "count": 5,
+            "startSeconds": 20.875,
+            "intervalSeconds": 3.625,
+            "id": "entry-4"
+          },
+          {
+            "unitId": 91006,
+            "spawnId": 7,
             "count": 3,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "startSeconds": 23.125,
+            "intervalSeconds": 3.75,
+            "id": "entry-5"
           },
           {
-            "id": "legacy-10-1",
+            "unitId": 91051,
             "spawnId": 10,
-            "unitId": 100798,
-            "count": 6,
-            "startSeconds": 5.5,
-            "intervalSeconds": 0.5
+            "count": 3,
+            "startSeconds": 37.125,
+            "intervalSeconds": 4.125,
+            "id": "entry-6"
           },
           {
-            "id": "legacy-11-1",
+            "unitId": 91175,
             "spawnId": 11,
-            "unitId": 100131,
-            "count": 6,
-            "startSeconds": 5.5,
-            "intervalSeconds": 0.5
+            "count": 9,
+            "startSeconds": 38.5,
+            "intervalSeconds": 1.625,
+            "id": "legacy-11-1",
+            "unitGroupId": "unit-group-1"
+          },
+          {
+            "unitId": 100782,
+            "spawnId": 12,
+            "count": 2,
+            "startSeconds": 40.75,
+            "intervalSeconds": 4,
+            "id": "entry-7"
           }
         ]
       },
       {
         "id": 11,
         "Wave": 9,
-        "HealthCoefficient": 4.2,
-        "AttackCoefficient": 4,
+        "HealthCoefficient": 4.05,
+        "AttackCoefficient": 3.85,
         "StartSliver": 12,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
@@ -728,84 +735,79 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
-            "spawnId": 1,
-            "unitId": 91015,
-            "count": 8,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-2-0",
-            "spawnId": 2,
-            "unitId": 100131,
-            "count": 7,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 100788,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-7-0",
-            "spawnId": 7,
-            "unitId": 91015,
-            "count": 10,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-8-0",
-            "spawnId": 8,
-            "unitId": 100798,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-9-0",
+            "unitId": 91006,
             "spawnId": 9,
-            "unitId": 100131,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "count": 4,
+            "startSeconds": 0.625,
+            "intervalSeconds": 3.75,
+            "id": "entry-3"
           },
           {
-            "id": "legacy-10-1",
+            "unitId": 91175,
+            "spawnId": 8,
+            "count": 10,
+            "startSeconds": 2.375,
+            "intervalSeconds": 1.375,
+            "id": "legacy-8-0",
+            "unitGroupId": "unit-group-1"
+          },
+          {
+            "unitId": 91175,
             "spawnId": 10,
-            "unitId": 100170,
-            "count": 5,
-            "startSeconds": 8,
-            "intervalSeconds": 0.5
+            "count": 10,
+            "startSeconds": 16.875,
+            "intervalSeconds": 2.125,
+            "id": "legacy-10-1",
+            "unitGroupId": "unit-group-1"
           },
           {
-            "id": "legacy-11-1",
+            "unitId": 100728,
             "spawnId": 11,
-            "unitId": 91015,
-            "count": 5,
-            "startSeconds": 8,
-            "intervalSeconds": 0.5
+            "count": 6,
+            "startSeconds": 19.75,
+            "intervalSeconds": 3.125,
+            "id": "entry-4"
           },
           {
-            "id": "legacy-12-1",
+            "unitId": 1000033000,
             "spawnId": 12,
-            "unitId": 100788,
+            "count": 2,
+            "startSeconds": 21.875,
+            "intervalSeconds": 3.625,
+            "id": "entry-5"
+          },
+          {
+            "unitId": 101781,
+            "spawnId": 2,
             "count": 5,
-            "startSeconds": 8,
-            "intervalSeconds": 0.5
+            "startSeconds": 37.75,
+            "intervalSeconds": 3.875,
+            "id": "entry-6"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 3,
+            "count": 9,
+            "startSeconds": 39.25,
+            "intervalSeconds": 1.875,
+            "id": "legacy-3-0",
+            "unitGroupId": "unit-group-1"
+          },
+          {
+            "unitId": 91051,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 41.5,
+            "intervalSeconds": 4.125,
+            "id": "entry-7"
           }
         ]
       },
       {
         "id": 11,
         "Wave": 10,
-        "HealthCoefficient": 4.2,
-        "AttackCoefficient": 4,
+        "HealthCoefficient": 4.05,
+        "AttackCoefficient": 3.85,
         "StartSliver": 12,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
@@ -831,88 +833,686 @@
         ],
         "SpawnTimeline": [
           {
-            "count": 1,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5,
-            "spawnId": 1,
-            "inheritSpawnTiming": [
-              "startSeconds",
-              "intervalSeconds"
-            ],
             "unitId": 91175,
-            "id": "entry-1"
+            "spawnId": 10,
+            "count": 9,
+            "startSeconds": 0.625,
+            "intervalSeconds": 2.125,
+            "id": "entry-12",
+            "unitGroupId": "unit-group-0"
           },
           {
-            "count": 1,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5,
-            "spawnId": 1,
-            "inheritSpawnTiming": [
-              "startSeconds",
-              "intervalSeconds"
-            ],
-            "unitId": 91176,
-            "id": "entry-2"
+            "unitId": 100728,
+            "spawnId": 11,
+            "count": 7,
+            "startSeconds": 3.5,
+            "intervalSeconds": 2.375,
+            "id": "entry-13",
+            "unitGroupId": "unit-group-1"
           },
           {
-            "count": 1,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5,
+            "unitId": 101781,
+            "spawnId": 2,
+            "count": 4,
+            "startSeconds": 19.875,
+            "intervalSeconds": 3.875,
+            "id": "entry-14"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 3,
+            "count": 9,
+            "startSeconds": 21.5,
+            "intervalSeconds": 2,
+            "id": "entry-2",
+            "editorManualTiming": true,
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 1000033000,
             "spawnId": 1,
-            "inheritSpawnTiming": [
-              "startSeconds",
-              "intervalSeconds"
-            ],
-            "unitId": 91145,
+            "count": 3,
+            "startSeconds": 23.625,
+            "intervalSeconds": 3.625,
+            "id": "entry-15"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 6,
+            "count": 9,
+            "startSeconds": 39.5,
+            "intervalSeconds": 2.375,
+            "id": "entry-16",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 91006,
+            "spawnId": 4,
+            "count": 4,
+            "startSeconds": 42.75,
+            "intervalSeconds": 3.75,
+            "id": "entry-17"
+          },
+          {
+            "unitId": 100728,
+            "spawnId": 5,
+            "count": 5,
+            "startSeconds": 44.875,
+            "intervalSeconds": 3.5,
+            "id": "entry-10",
+            "editorManualTiming": true,
+            "unitGroupId": "unit-group-1"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "Wave": 11,
+        "HealthCoefficient": 4.1,
+        "AttackCoefficient": 3.9,
+        "StartSliver": 12,
+        "CommerceSliver": 16,
+        "RefreshSoldierKind": [
+          "1#91015,10",
+          "2#100798,4",
+          "3#100131,3",
+          "10#100170,5",
+          "11#100798,3",
+          "7#-1,10;100788,3",
+          "8#-1,10;100170,3"
+        ],
+        "WaveReward": [
+          [
+            2001,
+            107920
+          ],
+          [
+            2004,
+            5
+          ]
+        ],
+        "SpawnTimeline": [
+          {
+            "unitId": 91175,
+            "spawnId": 2,
+            "count": 11,
+            "startSeconds": 0.625,
+            "intervalSeconds": 1.625,
+            "id": "entry-2",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 100728,
+            "spawnId": 3,
+            "count": 4,
+            "startSeconds": 3.75,
+            "intervalSeconds": 3.75,
             "id": "entry-3"
           },
           {
-            "count": 1,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5,
-            "spawnId": 1,
-            "inheritSpawnTiming": [
-              "startSeconds",
-              "intervalSeconds"
-            ],
-            "unitId": 91051,
+            "unitId": 91006,
+            "spawnId": 6,
+            "count": 4,
+            "startSeconds": 19.125,
+            "intervalSeconds": 3.75,
             "id": "entry-4"
           },
           {
-            "count": 1,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5,
-            "spawnId": 1,
-            "inheritSpawnTiming": [
-              "startSeconds",
-              "intervalSeconds"
-            ],
-            "unitId": 91006,
-            "id": "entry-5"
+            "unitId": 91175,
+            "spawnId": 4,
+            "count": 9,
+            "startSeconds": 20.875,
+            "intervalSeconds": 1.875,
+            "id": "entry-5",
+            "unitGroupId": "unit-group-0"
           },
           {
-            "count": 1,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5,
-            "spawnId": 1,
-            "inheritSpawnTiming": [
-              "startSeconds",
-              "intervalSeconds"
-            ],
-            "unitId": 91179,
+            "unitId": 1000033000,
+            "spawnId": 5,
+            "count": 3,
+            "startSeconds": 23,
+            "intervalSeconds": 3.625,
             "id": "entry-6"
           },
           {
+            "unitId": 101781,
+            "spawnId": 7,
+            "count": 6,
+            "startSeconds": 38.875,
+            "intervalSeconds": 3,
+            "id": "entry-7"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 9,
+            "count": 6,
+            "startSeconds": 40.25,
+            "intervalSeconds": 2.5,
+            "id": "entry-8",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 100782,
+            "spawnId": 8,
+            "count": 2,
+            "startSeconds": 42.5,
+            "intervalSeconds": 4,
+            "id": "entry-9"
+          },
+          {
+            "unitId": 91051,
+            "spawnId": 11,
+            "count": 3,
+            "startSeconds": 55.625,
+            "intervalSeconds": 4.125,
+            "id": "entry-10"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 10,
+            "count": 6,
+            "startSeconds": 57.125,
+            "intervalSeconds": 1.5,
+            "id": "entry-11",
+            "unitGroupId": "unit-group-0"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "Wave": 12,
+        "HealthCoefficient": 4.15,
+        "AttackCoefficient": 3.95,
+        "StartSliver": 12,
+        "CommerceSliver": 16,
+        "RefreshSoldierKind": [
+          "1#100788,5",
+          "2#100131,8",
+          "3#100798,3",
+          "7#91015,5",
+          "8#100788,3",
+          "9#100131,5",
+          "10#-1,10;91015,5",
+          "11#-1,10;100798,5"
+        ],
+        "WaveReward": [
+          [
+            2001,
+            107920
+          ],
+          [
+            2004,
+            5
+          ]
+        ],
+        "SpawnTimeline": [
+          {
+            "unitId": 91175,
+            "spawnId": 6,
+            "count": 11,
+            "startSeconds": 0.625,
+            "intervalSeconds": 1.75,
+            "id": "entry-5",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 101781,
+            "spawnId": 4,
+            "count": 5,
+            "startSeconds": 3.875,
+            "intervalSeconds": 3.5,
+            "id": "entry-6"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 7,
+            "count": 9,
+            "startSeconds": 20.5,
+            "intervalSeconds": 2.25,
+            "id": "legacy-7-0",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 100728,
+            "spawnId": 9,
+            "count": 5,
+            "startSeconds": 23.375,
+            "intervalSeconds": 3.75,
+            "id": "entry-7"
+          },
+          {
+            "unitId": 1000033000,
+            "spawnId": 8,
+            "count": 3,
+            "startSeconds": 25.5,
+            "intervalSeconds": 3.625,
+            "id": "entry-8"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 11,
+            "count": 7,
+            "startSeconds": 40.625,
+            "intervalSeconds": 2.5,
+            "id": "legacy-11-1",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 91006,
+            "spawnId": 10,
+            "count": 5,
+            "startSeconds": 43.625,
+            "intervalSeconds": 3.25,
+            "id": "entry-9"
+          },
+          {
+            "unitId": 100782,
+            "spawnId": 12,
+            "count": 3,
+            "startSeconds": 45.875,
+            "intervalSeconds": 4,
+            "id": "entry-10"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 3,
+            "count": 7,
+            "startSeconds": 58.75,
+            "intervalSeconds": 1.75,
+            "id": "legacy-3-0",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 91051,
+            "spawnId": 2,
+            "count": 3,
+            "startSeconds": 62,
+            "intervalSeconds": 3.5,
+            "id": "entry-11"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "Wave": 13,
+        "HealthCoefficient": 4.2,
+        "AttackCoefficient": 4,
+        "StartSliver": 12,
+        "CommerceSliver": 16,
+        "RefreshSoldierKind": [
+          "1#100131,10",
+          "2#100788,5",
+          "3#100131,5",
+          "7#100798,5",
+          "8#100131,8",
+          "9#100788,3",
+          "10#-1,10;100798,6",
+          "11#-1,10;100131,6"
+        ],
+        "WaveReward": [
+          [
+            2001,
+            107920
+          ],
+          [
+            2004,
+            5
+          ]
+        ],
+        "SpawnTimeline": [
+          {
+            "unitId": 101781,
+            "spawnId": 7,
+            "count": 6,
+            "startSeconds": 0.625,
+            "intervalSeconds": 3.375,
+            "id": "entry-2"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 9,
+            "count": 10,
+            "startSeconds": 2,
+            "intervalSeconds": 1.75,
+            "id": "legacy-9-0",
+            "unitGroupId": "unit-group-1"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 11,
+            "count": 9,
+            "startSeconds": 19.625,
+            "intervalSeconds": 2.375,
+            "id": "legacy-11-1",
+            "unitGroupId": "unit-group-1"
+          },
+          {
+            "unitId": 100728,
+            "spawnId": 10,
+            "count": 6,
+            "startSeconds": 22.75,
+            "intervalSeconds": 3.25,
+            "id": "legacy-10-1"
+          },
+          {
+            "unitId": 100782,
+            "spawnId": 12,
+            "count": 3,
+            "startSeconds": 24.875,
+            "intervalSeconds": 4,
+            "id": "entry-3"
+          },
+          {
+            "unitId": 91006,
+            "spawnId": 3,
+            "count": 4,
+            "startSeconds": 41.25,
+            "intervalSeconds": 3.75,
+            "id": "entry-4"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 2,
+            "count": 9,
+            "startSeconds": 43,
+            "intervalSeconds": 1.875,
+            "id": "legacy-2-0",
+            "unitGroupId": "unit-group-1"
+          },
+          {
+            "unitId": 1000033000,
+            "spawnId": 1,
+            "count": 3,
+            "startSeconds": 45.125,
+            "intervalSeconds": 3.625,
+            "id": "entry-5"
+          },
+          {
+            "unitId": 91051,
+            "spawnId": 4,
+            "count": 3,
+            "startSeconds": 60.75,
+            "intervalSeconds": 4.125,
+            "id": "entry-6"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 5,
+            "count": 9,
+            "startSeconds": 62.125,
+            "intervalSeconds": 1.375,
+            "id": "entry-7",
+            "unitGroupId": "unit-group-1"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "Wave": 14,
+        "HealthCoefficient": 4.25,
+        "AttackCoefficient": 4.05,
+        "StartSliver": 12,
+        "CommerceSliver": 16,
+        "RefreshSoldierKind": [
+          "1#91015,8",
+          "2#100131,7",
+          "3#100788,5",
+          "7#91015,10",
+          "8#100798,5",
+          "9#100131,5",
+          "10#-1,15;100170,5",
+          "11#-1,15;91015,5",
+          "12#-1,15;100788,5"
+        ],
+        "WaveReward": [
+          [
+            2001,
+            107920
+          ],
+          [
+            2004,
+            5
+          ]
+        ],
+        "SpawnTimeline": [
+          {
+            "unitId": 91175,
+            "spawnId": 11,
+            "count": 14,
+            "startSeconds": 0.625,
+            "intervalSeconds": 1.5,
+            "id": "legacy-11-1",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 1000033000,
+            "spawnId": 10,
+            "count": 4,
+            "startSeconds": 3.75,
+            "intervalSeconds": 3.625,
+            "id": "entry-4"
+          },
+          {
+            "unitId": 101781,
+            "spawnId": 3,
+            "count": 5,
+            "startSeconds": 22.125,
+            "intervalSeconds": 3.875,
+            "id": "entry-5"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 2,
+            "count": 9,
+            "startSeconds": 24,
+            "intervalSeconds": 2.25,
+            "id": "entry-6",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 91006,
+            "spawnId": 1,
+            "count": 4,
+            "startSeconds": 26.125,
+            "intervalSeconds": 3.75,
+            "id": "entry-2"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 4,
+            "count": 12,
+            "startSeconds": 44,
+            "intervalSeconds": 2.125,
+            "id": "entry-7",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 100728,
+            "spawnId": 5,
+            "count": 7,
+            "startSeconds": 46.875,
+            "intervalSeconds": 3.375,
+            "id": "entry-8"
+          },
+          {
+            "unitId": 100782,
+            "spawnId": 6,
+            "count": 2,
+            "startSeconds": 49,
+            "intervalSeconds": 4,
+            "id": "entry-9"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 8,
+            "count": 6,
+            "startSeconds": 69.5,
+            "intervalSeconds": 1.875,
+            "id": "legacy-8-0",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 91051,
+            "spawnId": 9,
+            "count": 3,
+            "startSeconds": 72.625,
+            "intervalSeconds": 3,
+            "id": "entry-10"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "Wave": 15,
+        "HealthCoefficient": 4.35,
+        "AttackCoefficient": 4.15,
+        "StartSliver": 12,
+        "CommerceSliver": 16,
+        "RefreshSoldierKind": [
+          "1#91034,1",
+          "2#91015,9",
+          "3#100788,2",
+          "7#91067,1",
+          "8#100131,4",
+          "9#100798,3",
+          "10#-1,15;91015,5",
+          "11#-1,15;100788,3",
+          "12#-1,15;100798,3"
+        ],
+        "WaveReward": [
+          [
+            2001,
+            107920
+          ],
+          [
+            2004,
+            5
+          ]
+        ],
+        "SpawnTimeline": [
+          {
+            "unitId": 91175,
+            "spawnId": 3,
+            "count": 15,
+            "startSeconds": 0.625,
+            "intervalSeconds": 2.25,
+            "id": "entry-2",
+            "editorManualTiming": true,
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 100728,
+            "spawnId": 2,
+            "count": 6,
+            "startSeconds": 3.875,
+            "intervalSeconds": 3.75,
+            "id": "entry-12",
+            "unitGroupId": "unit-group-1"
+          },
+          {
+            "unitId": 101781,
+            "spawnId": 1,
+            "count": 5,
+            "startSeconds": 6.125,
+            "intervalSeconds": 3.875,
+            "id": "entry-13",
+            "unitGroupId": "unit-group-2"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 4,
+            "count": 13,
+            "startSeconds": 35.125,
+            "intervalSeconds": 2.375,
+            "id": "entry-14",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 91006,
+            "spawnId": 5,
+            "count": 6,
+            "startSeconds": 38,
+            "intervalSeconds": 3.75,
+            "id": "entry-15",
+            "unitGroupId": "unit-group-3"
+          },
+          {
+            "unitId": 1000033000,
+            "spawnId": 6,
+            "count": 4,
+            "startSeconds": 40.125,
+            "intervalSeconds": 3.625,
+            "id": "entry-16"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 8,
+            "count": 12,
+            "startSeconds": 66,
+            "intervalSeconds": 2.25,
+            "id": "entry-17",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 91006,
+            "spawnId": 9,
+            "count": 5,
+            "startSeconds": 69.125,
+            "intervalSeconds": 3.75,
+            "id": "entry-1",
+            "unitGroupId": "unit-group-3"
+          },
+          {
+            "unitId": 101781,
+            "spawnId": 7,
+            "count": 3,
+            "startSeconds": 71.25,
+            "intervalSeconds": 3.875,
+            "id": "entry-3",
+            "unitGroupId": "unit-group-2"
+          },
+          {
+            "unitId": 91175,
+            "spawnId": 12,
+            "count": 10,
+            "startSeconds": 92.25,
+            "intervalSeconds": 2.5,
+            "id": "entry-4",
+            "unitGroupId": "unit-group-0"
+          },
+          {
+            "unitId": 100728,
+            "spawnId": 10,
+            "count": 4,
+            "startSeconds": 95.5,
+            "intervalSeconds": 3.75,
+            "id": "entry-5",
+            "unitGroupId": "unit-group-1"
+          },
+          {
+            "unitId": 100782,
+            "spawnId": 11,
+            "count": 3,
+            "startSeconds": 97.625,
+            "intervalSeconds": 4,
+            "id": "entry-6"
+          },
+          {
+            "unitId": 91051,
+            "spawnId": 12,
+            "count": 4,
+            "startSeconds": 99.75,
+            "intervalSeconds": 4.125,
+            "id": "entry-7"
+          },
+          {
             "count": 1,
-            "startSeconds": 0.5,
+            "startSeconds": 114.75,
             "intervalSeconds": 0.5,
             "spawnId": 1,
-            "inheritSpawnTiming": [
-              "startSeconds",
-              "intervalSeconds"
-            ],
             "unitId": 91171,
-            "id": "entry-7"
+            "id": "entry-8",
+            "editorManualTiming": true
           }
         ]
       }
@@ -920,7 +1520,16 @@
     "EnvironmentBiome": "ice",
     "EnvironmentBiomeOverride": true,
     "EnvironmentMapId": "map-concept-02-lakeward-basin",
-    "StageLayoutId": "A-11"
+    "StageLayoutId": "A-11",
+    "EnemyProfiles": {
+      "1000033000": {
+        "baseId": 101796,
+        "name": "Vanguard · 325 speed",
+        "stats": {
+          "Speed": 325
+        }
+      }
+    }
   },
   "basePrefab": "Map03",
   "buildings": [
@@ -6097,489 +6706,2606 @@
   ],
   "graphs": [
     {
-      "id": "legacy-route-827",
-      "name": "Spawns 1–3 · Route 1",
+      "id": "s11-g1-hall",
+      "name": "East - Main Hall",
+      "nameFromSpawns": false,
       "spawnIds": [
         1,
         2,
         3
       ],
-      "entry": "legacy-route-827-0",
+      "entry": "p1",
       "nodes": [
         {
-          "id": "legacy-route-827-0",
-          "goal": false,
-          "x": -698.377,
-          "y": 1063.913
+          "id": "p1",
+          "x": 659,
+          "y": 607,
+          "goal": false
         },
         {
-          "id": "legacy-route-827-1",
-          "goal": false,
-          "x": -637.996,
-          "y": 638.21
+          "id": "p2",
+          "x": 495,
+          "y": 614,
+          "goal": false
         },
         {
-          "id": "legacy-route-827-2",
-          "goal": false,
-          "x": -337.05400000000003,
-          "y": 190.443
+          "id": "p3",
+          "x": 302,
+          "y": 616,
+          "goal": false
         },
         {
-          "id": "legacy-route-827-3",
-          "goal": true,
-          "x": 77.87699999999998,
-          "y": 86.185
+          "id": "p4",
+          "x": 146,
+          "y": 629,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": 33,
+          "y": 701,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": -40,
+          "y": 759,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -108,
+          "y": 784,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -264,
+          "y": 860,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -373,
+          "y": 934,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": -404.05,
+          "y": 990.67,
+          "goal": true
         }
       ],
       "edges": [
         {
-          "id": "legacy-route-827-edge-0",
-          "from": "legacy-route-827-0",
-          "to": "legacy-route-827-1",
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
           "weight": 1
         },
         {
-          "id": "legacy-route-827-edge-1",
-          "from": "legacy-route-827-1",
-          "to": "legacy-route-827-2",
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
           "weight": 1
         },
         {
-          "id": "legacy-route-827-edge-2",
-          "from": "legacy-route-827-2",
-          "to": "legacy-route-827-3",
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
           "weight": 1
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true,
-      "nameFromSpawns": true
+      "weight": 5,
+      "spread": 28
     },
     {
-      "id": "legacy-route-842",
-      "name": "Spawns 1–3 · Route 2",
+      "id": "s11-g1-b40",
+      "name": "East - Tower 6 detour",
+      "nameFromSpawns": false,
       "spawnIds": [
         1,
         2,
         3
       ],
-      "entry": "legacy-route-842-0",
+      "entry": "p1",
       "nodes": [
         {
-          "id": "legacy-route-842-0",
-          "goal": false,
-          "x": -695.548,
-          "y": 1061.085
+          "id": "p1",
+          "x": 659,
+          "y": 607,
+          "goal": false
         },
         {
-          "id": "legacy-route-842-1",
-          "goal": false,
-          "x": -635.167,
-          "y": 635.381
+          "id": "p2",
+          "x": 495,
+          "y": 614,
+          "goal": false
         },
         {
-          "id": "legacy-route-842-2",
-          "goal": false,
-          "x": -259.812,
-          "y": 154.84
+          "id": "p3",
+          "x": 243.72,
+          "y": 698.4,
+          "goal": false
         },
         {
-          "id": "legacy-route-842-3",
-          "goal": false,
-          "x": -292.864,
-          "y": -169.722
+          "id": "p4",
+          "x": 0,
+          "y": 719,
+          "goal": false
         },
         {
-          "id": "legacy-route-842-4",
-          "goal": false,
-          "x": -347.337,
-          "y": -384.333
+          "id": "p5",
+          "x": -40,
+          "y": 759,
+          "goal": false
         },
         {
-          "id": "legacy-route-842-5",
-          "goal": false,
-          "x": 326.013,
-          "y": -296.863
+          "id": "p6",
+          "x": -108,
+          "y": 784,
+          "goal": false
         },
         {
-          "id": "legacy-route-842-6",
-          "goal": true,
-          "x": 176.106,
-          "y": 84.975
+          "id": "p7",
+          "x": -264,
+          "y": 860,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -373,
+          "y": 934,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -404.05,
+          "y": 990.67,
+          "goal": true
         }
       ],
       "edges": [
         {
-          "id": "legacy-route-842-edge-0",
-          "from": "legacy-route-842-0",
-          "to": "legacy-route-842-1",
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
           "weight": 1
         },
         {
-          "id": "legacy-route-842-edge-1",
-          "from": "legacy-route-842-1",
-          "to": "legacy-route-842-2",
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
           "weight": 1
         },
         {
-          "id": "legacy-route-842-edge-2",
-          "from": "legacy-route-842-2",
-          "to": "legacy-route-842-3",
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
           "weight": 1
         },
         {
-          "id": "legacy-route-842-edge-3",
-          "from": "legacy-route-842-3",
-          "to": "legacy-route-842-4",
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
           "weight": 1
         },
         {
-          "id": "legacy-route-842-edge-4",
-          "from": "legacy-route-842-4",
-          "to": "legacy-route-842-5",
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
           "weight": 1
         },
         {
-          "id": "legacy-route-842-edge-5",
-          "from": "legacy-route-842-5",
-          "to": "legacy-route-842-6",
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
           "weight": 1
         }
       ],
-      "requiresAnyBuilding": [],
-      "legacy": true,
-      "nameFromSpawns": true
+      "requiresAnyBuilding": [ 40 ],
+      "weight": 2,
+      "spread": 28
     },
     {
-      "id": "legacy-route-866",
-      "name": "Spawns 4–6 · Route 1",
+      "id": "s11-g1-b41",
+      "name": "East - Mill 1 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        1,
+        2,
+        3
+      ],
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": 659,
+          "y": 607,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": 360.15,
+          "y": 538.62,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": 33,
+          "y": 701,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": -40,
+          "y": 759,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": -108,
+          "y": 784,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": -264,
+          "y": 860,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -373,
+          "y": 934,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -404.05,
+          "y": 990.67,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        },
+        {
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        }
+      ],
+      "requiresAnyBuilding": [ 41 ],
+      "weight": 2,
+      "spread": 28
+    },
+    {
+      "id": "s11-g1-b25",
+      "name": "East - Tower 2 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        1,
+        2,
+        3
+      ],
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": 659,
+          "y": 607,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": 411.37,
+          "y": 905.74,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": 300,
+          "y": 699,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": 33,
+          "y": 701,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": -40,
+          "y": 759,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": -108,
+          "y": 784,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -264,
+          "y": 860,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -373,
+          "y": 934,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -404.05,
+          "y": 990.67,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        },
+        {
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        }
+      ],
+      "requiresAnyBuilding": [ 25 ],
+      "weight": 2,
+      "spread": 28
+    },
+    {
+      "id": "s11-g2-hall",
+      "name": "West - Main Hall",
+      "nameFromSpawns": false,
       "spawnIds": [
         4,
         5,
         6
       ],
-      "entry": "legacy-route-866-0",
+      "entry": "p1",
       "nodes": [
         {
-          "id": "legacy-route-866-0",
-          "goal": false,
-          "x": -159.858,
-          "y": 1140.729
+          "id": "p1",
+          "x": -678,
+          "y": -231,
+          "goal": false
         },
         {
-          "id": "legacy-route-866-1",
-          "goal": false,
-          "x": 41.026999999999994,
-          "y": 748.017
+          "id": "p2",
+          "x": -570,
+          "y": -126,
+          "goal": false
         },
         {
-          "id": "legacy-route-866-2",
-          "goal": false,
-          "x": 212.515,
-          "y": 542.719
+          "id": "p3",
+          "x": -540,
+          "y": -61,
+          "goal": false
         },
         {
-          "id": "legacy-route-866-3",
-          "goal": true,
-          "x": 207.038,
-          "y": 186.497
+          "id": "p4",
+          "x": -474,
+          "y": 55,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": -460,
+          "y": 99,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": -524,
+          "y": 200,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -571,
+          "y": 346,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -578,
+          "y": 552,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -524,
+          "y": 704,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": -342,
+          "y": 798,
+          "goal": false
+        },
+        {
+          "id": "p11",
+          "x": -300,
+          "y": 839,
+          "goal": false
+        },
+        {
+          "id": "p12",
+          "x": -295,
+          "y": 867,
+          "goal": false
+        },
+        {
+          "id": "p13",
+          "x": -407,
+          "y": 940,
+          "goal": false
+        },
+        {
+          "id": "p14",
+          "x": -440,
+          "y": 971.39,
+          "goal": true
         }
       ],
       "edges": [
         {
-          "id": "legacy-route-866-edge-0",
-          "from": "legacy-route-866-0",
-          "to": "legacy-route-866-1",
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
           "weight": 1
         },
         {
-          "id": "legacy-route-866-edge-1",
-          "from": "legacy-route-866-1",
-          "to": "legacy-route-866-2",
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
           "weight": 1
         },
         {
-          "id": "legacy-route-866-edge-2",
-          "from": "legacy-route-866-2",
-          "to": "legacy-route-866-3",
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
+          "weight": 1
+        },
+        {
+          "id": "e10",
+          "from": "p10",
+          "to": "p11",
+          "weight": 1
+        },
+        {
+          "id": "e11",
+          "from": "p11",
+          "to": "p12",
+          "weight": 1
+        },
+        {
+          "id": "e12",
+          "from": "p12",
+          "to": "p13",
+          "weight": 1
+        },
+        {
+          "id": "e13",
+          "from": "p13",
+          "to": "p14",
           "weight": 1
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true,
-      "nameFromSpawns": true
+      "weight": 5,
+      "spread": 28
     },
     {
-      "id": "legacy-route-881",
-      "name": "Spawns 4–6 · Route 2",
+      "id": "s11-g2-b42",
+      "name": "West - Mill 2 detour",
+      "nameFromSpawns": false,
       "spawnIds": [
         4,
         5,
         6
       ],
-      "entry": "legacy-route-881-0",
+      "entry": "p1",
       "nodes": [
         {
-          "id": "legacy-route-881-0",
-          "goal": false,
-          "x": -159.858,
-          "y": 1140.729
+          "id": "p1",
+          "x": -678,
+          "y": -231,
+          "goal": false
         },
         {
-          "id": "legacy-route-881-1",
-          "goal": false,
-          "x": 41.026999999999994,
-          "y": 748.017
+          "id": "p2",
+          "x": -572.49,
+          "y": -178.31,
+          "goal": false
         },
         {
-          "id": "legacy-route-881-2",
-          "goal": false,
-          "x": 414.197,
-          "y": 506.05
+          "id": "p3",
+          "x": -600,
+          "y": -141,
+          "goal": false
         },
         {
-          "id": "legacy-route-881-3",
-          "goal": true,
-          "x": 165.25199999999998,
-          "y": 203.908
+          "id": "p4",
+          "x": -474,
+          "y": 55,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": -460,
+          "y": 99,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": -524,
+          "y": 200,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -571,
+          "y": 346,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -578,
+          "y": 552,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -524,
+          "y": 704,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": -342,
+          "y": 798,
+          "goal": false
+        },
+        {
+          "id": "p11",
+          "x": -300,
+          "y": 839,
+          "goal": false
+        },
+        {
+          "id": "p12",
+          "x": -295,
+          "y": 867,
+          "goal": false
+        },
+        {
+          "id": "p13",
+          "x": -407,
+          "y": 940,
+          "goal": false
+        },
+        {
+          "id": "p14",
+          "x": -440,
+          "y": 971.39,
+          "goal": true
         }
       ],
       "edges": [
         {
-          "id": "legacy-route-881-edge-0",
-          "from": "legacy-route-881-0",
-          "to": "legacy-route-881-1",
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
           "weight": 1
         },
         {
-          "id": "legacy-route-881-edge-1",
-          "from": "legacy-route-881-1",
-          "to": "legacy-route-881-2",
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
           "weight": 1
         },
         {
-          "id": "legacy-route-881-edge-2",
-          "from": "legacy-route-881-2",
-          "to": "legacy-route-881-3",
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
+          "weight": 1
+        },
+        {
+          "id": "e10",
+          "from": "p10",
+          "to": "p11",
+          "weight": 1
+        },
+        {
+          "id": "e11",
+          "from": "p11",
+          "to": "p12",
+          "weight": 1
+        },
+        {
+          "id": "e12",
+          "from": "p12",
+          "to": "p13",
+          "weight": 1
+        },
+        {
+          "id": "e13",
+          "from": "p13",
+          "to": "p14",
           "weight": 1
         }
       ],
-      "requiresAnyBuilding": [],
-      "legacy": true,
-      "nameFromSpawns": true
+      "requiresAnyBuilding": [ 42 ],
+      "weight": 2,
+      "spread": 28
     },
     {
-      "id": "legacy-route-896",
-      "name": "Spawns 7–9 · Route 1",
+      "id": "s11-g2-b27",
+      "name": "West - Tower 4 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        4,
+        5,
+        6
+      ],
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": -678,
+          "y": -231,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": -570,
+          "y": -126,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": -560,
+          "y": -81,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": -377.23,
+          "y": -32.57,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": -524,
+          "y": 200,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": -571,
+          "y": 346,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -578,
+          "y": 552,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -524,
+          "y": 704,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -342,
+          "y": 798,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": -300,
+          "y": 839,
+          "goal": false
+        },
+        {
+          "id": "p11",
+          "x": -295,
+          "y": 867,
+          "goal": false
+        },
+        {
+          "id": "p12",
+          "x": -407,
+          "y": 940,
+          "goal": false
+        },
+        {
+          "id": "p13",
+          "x": -440,
+          "y": 971.39,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        },
+        {
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
+          "weight": 1
+        },
+        {
+          "id": "e10",
+          "from": "p10",
+          "to": "p11",
+          "weight": 1
+        },
+        {
+          "id": "e11",
+          "from": "p11",
+          "to": "p12",
+          "weight": 1
+        },
+        {
+          "id": "e12",
+          "from": "p12",
+          "to": "p13",
+          "weight": 1
+        }
+      ],
+      "requiresAnyBuilding": [ 27 ],
+      "weight": 2,
+      "spread": 28
+    },
+    {
+      "id": "s11-g2-b24",
+      "name": "West - Tower 1 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        4,
+        5,
+        6
+      ],
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": -678,
+          "y": -231,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": -570,
+          "y": -126,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": -540,
+          "y": -61,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": -474,
+          "y": 55,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": -460,
+          "y": 99,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": -524,
+          "y": 200,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -571,
+          "y": 346,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -578,
+          "y": 552,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -460,
+          "y": 639,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": -420,
+          "y": 639,
+          "goal": false
+        },
+        {
+          "id": "p11",
+          "x": -360.19,
+          "y": 635.03,
+          "goal": false
+        },
+        {
+          "id": "p12",
+          "x": -295,
+          "y": 867,
+          "goal": false
+        },
+        {
+          "id": "p13",
+          "x": -407,
+          "y": 940,
+          "goal": false
+        },
+        {
+          "id": "p14",
+          "x": -440,
+          "y": 971.39,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        },
+        {
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
+          "weight": 1
+        },
+        {
+          "id": "e10",
+          "from": "p10",
+          "to": "p11",
+          "weight": 1
+        },
+        {
+          "id": "e11",
+          "from": "p11",
+          "to": "p12",
+          "weight": 1
+        },
+        {
+          "id": "e12",
+          "from": "p12",
+          "to": "p13",
+          "weight": 1
+        },
+        {
+          "id": "e13",
+          "from": "p13",
+          "to": "p14",
+          "weight": 1
+        }
+      ],
+      "requiresAnyBuilding": [
+        24
+      ],
+      "weight": 2,
+      "spread": 28
+    },
+    {
+      "id": "s11-g3-hall",
+      "name": "Northeast - Main Hall",
+      "nameFromSpawns": false,
       "spawnIds": [
         7,
         8,
         9
       ],
-      "entry": "legacy-route-896-0",
+      "entry": "p1",
       "nodes": [
         {
-          "id": "legacy-route-896-0",
-          "goal": false,
-          "x": 585.053,
-          "y": 941.064
+          "id": "p1",
+          "x": 562,
+          "y": 1133,
+          "goal": false
         },
         {
-          "id": "legacy-route-896-1",
-          "goal": false,
-          "x": 413.207,
-          "y": 402.969
+          "id": "p2",
+          "x": 502,
+          "y": 988,
+          "goal": false
         },
         {
-          "id": "legacy-route-896-2",
-          "goal": true,
-          "x": 213.139,
-          "y": 174.591
+          "id": "p3",
+          "x": 471,
+          "y": 826,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": 353,
+          "y": 718,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": 188,
+          "y": 634,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": 35,
+          "y": 701,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -40,
+          "y": 759,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -115,
+          "y": 776,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -259,
+          "y": 851,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": -369,
+          "y": 933,
+          "goal": false
+        },
+        {
+          "id": "p11",
+          "x": -403.49,
+          "y": 991.72,
+          "goal": true
         }
       ],
       "edges": [
         {
-          "id": "legacy-route-896-edge-0",
-          "from": "legacy-route-896-0",
-          "to": "legacy-route-896-1",
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
           "weight": 1
         },
         {
-          "id": "legacy-route-896-edge-1",
-          "from": "legacy-route-896-1",
-          "to": "legacy-route-896-2",
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        },
+        {
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
+          "weight": 1
+        },
+        {
+          "id": "e10",
+          "from": "p10",
+          "to": "p11",
           "weight": 1
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true,
-      "nameFromSpawns": true
+      "weight": 5,
+      "spread": 28
     },
     {
-      "id": "legacy-route-908",
-      "name": "Spawns 10–12 · Route 1",
+      "id": "s11-g3-b25",
+      "name": "Northeast - Tower 2 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        7,
+        8,
+        9
+      ],
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": 562,
+          "y": 1133,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": 502,
+          "y": 988,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": 438.14,
+          "y": 959.04,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": 300,
+          "y": 699,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": 188,
+          "y": 634,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": 35,
+          "y": 701,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -40,
+          "y": 759,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -115,
+          "y": 776,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -259,
+          "y": 851,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": -369,
+          "y": 933,
+          "goal": false
+        },
+        {
+          "id": "p11",
+          "x": -403.49,
+          "y": 991.72,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        },
+        {
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
+          "weight": 1
+        },
+        {
+          "id": "e10",
+          "from": "p10",
+          "to": "p11",
+          "weight": 1
+        }
+      ],
+      "requiresAnyBuilding": [
+        25
+      ],
+      "weight": 2,
+      "spread": 28
+    },
+    {
+      "id": "s11-g3-b40",
+      "name": "Northeast - Tower 6 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        7,
+        8,
+        9
+      ],
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": 562,
+          "y": 1133,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": 502,
+          "y": 988,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": 471,
+          "y": 826,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": 260,
+          "y": 699,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": 240,
+          "y": 699,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": 230.61,
+          "y": 709.18,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": 35,
+          "y": 701,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -40,
+          "y": 759,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -115,
+          "y": 776,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": -259,
+          "y": 851,
+          "goal": false
+        },
+        {
+          "id": "p11",
+          "x": -369,
+          "y": 933,
+          "goal": false
+        },
+        {
+          "id": "p12",
+          "x": -403.49,
+          "y": 991.72,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        },
+        {
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
+          "weight": 1
+        },
+        {
+          "id": "e10",
+          "from": "p10",
+          "to": "p11",
+          "weight": 1
+        },
+        {
+          "id": "e11",
+          "from": "p11",
+          "to": "p12",
+          "weight": 1
+        }
+      ],
+      "requiresAnyBuilding": [
+        40
+      ],
+      "weight": 2,
+      "spread": 28
+    },
+    {
+      "id": "s11-g4-hall",
+      "name": "South - Main Hall",
+      "nameFromSpawns": false,
       "spawnIds": [
         10,
         11,
         12
       ],
-      "entry": "legacy-route-908-0",
+      "entry": "p1",
       "nodes": [
         {
-          "id": "legacy-route-908-0",
-          "goal": false,
-          "x": 214.137,
-          "y": -1150.361
+          "id": "p1",
+          "x": -178,
+          "y": -1220,
+          "goal": false
         },
         {
-          "id": "legacy-route-908-1",
-          "goal": false,
-          "x": 651.044,
-          "y": -918.25
+          "id": "p2",
+          "x": -370,
+          "y": -1169,
+          "goal": false
         },
         {
-          "id": "legacy-route-908-2",
-          "goal": false,
-          "x": 260.77,
-          "y": -564.724
+          "id": "p3",
+          "x": -546,
+          "y": -1009,
+          "goal": false
         },
         {
-          "id": "legacy-route-908-3",
-          "goal": true,
-          "x": 216.003,
-          "y": 60.97
+          "id": "p4",
+          "x": -665,
+          "y": -784,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": -695,
+          "y": -559,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": -665,
+          "y": -344,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -600,
+          "y": -181,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -575,
+          "y": -138,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -600,
+          "y": -161,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": -476,
+          "y": 56,
+          "goal": false
+        },
+        {
+          "id": "p11",
+          "x": -460,
+          "y": 99,
+          "goal": false
+        },
+        {
+          "id": "p12",
+          "x": -529,
+          "y": 204,
+          "goal": false
+        },
+        {
+          "id": "p13",
+          "x": -573,
+          "y": 347,
+          "goal": false
+        },
+        {
+          "id": "p14",
+          "x": -581,
+          "y": 540,
+          "goal": false
+        },
+        {
+          "id": "p15",
+          "x": -522,
+          "y": 701,
+          "goal": false
+        },
+        {
+          "id": "p16",
+          "x": -339,
+          "y": 798,
+          "goal": false
+        },
+        {
+          "id": "p17",
+          "x": -300,
+          "y": 839,
+          "goal": false
+        },
+        {
+          "id": "p18",
+          "x": -296,
+          "y": 870,
+          "goal": false
+        },
+        {
+          "id": "p19",
+          "x": -406,
+          "y": 939,
+          "goal": false
+        },
+        {
+          "id": "p20",
+          "x": -440.02,
+          "y": 971.37,
+          "goal": true
         }
       ],
       "edges": [
         {
-          "id": "legacy-route-908-edge-0",
-          "from": "legacy-route-908-0",
-          "to": "legacy-route-908-1",
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
           "weight": 1
         },
         {
-          "id": "legacy-route-908-edge-1",
-          "from": "legacy-route-908-1",
-          "to": "legacy-route-908-2",
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
           "weight": 1
         },
         {
-          "id": "legacy-route-908-edge-2",
-          "from": "legacy-route-908-2",
-          "to": "legacy-route-908-3",
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
+          "weight": 1
+        },
+        {
+          "id": "e10",
+          "from": "p10",
+          "to": "p11",
+          "weight": 1
+        },
+        {
+          "id": "e11",
+          "from": "p11",
+          "to": "p12",
+          "weight": 1
+        },
+        {
+          "id": "e12",
+          "from": "p12",
+          "to": "p13",
+          "weight": 1
+        },
+        {
+          "id": "e13",
+          "from": "p13",
+          "to": "p14",
+          "weight": 1
+        },
+        {
+          "id": "e14",
+          "from": "p14",
+          "to": "p15",
+          "weight": 1
+        },
+        {
+          "id": "e15",
+          "from": "p15",
+          "to": "p16",
+          "weight": 1
+        },
+        {
+          "id": "e16",
+          "from": "p16",
+          "to": "p17",
+          "weight": 1
+        },
+        {
+          "id": "e17",
+          "from": "p17",
+          "to": "p18",
+          "weight": 1
+        },
+        {
+          "id": "e18",
+          "from": "p18",
+          "to": "p19",
+          "weight": 1
+        },
+        {
+          "id": "e19",
+          "from": "p19",
+          "to": "p20",
           "weight": 1
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true,
-      "nameFromSpawns": true
+      "weight": 5,
+      "spread": 28
     },
     {
-      "id": "legacy-route-923",
-      "name": "Spawns 10–12 · Route 2",
+      "id": "s11-g4-alternate",
+      "name": "South - East shore",
+      "nameFromSpawns": false,
       "spawnIds": [
         10,
         11,
         12
       ],
-      "entry": "legacy-route-923-0",
+      "entry": "p1",
       "nodes": [
         {
-          "id": "legacy-route-923-0",
-          "goal": false,
-          "x": 231.42899999999997,
-          "y": -1129.52
+          "id": "p1",
+          "x": 138,
+          "y": -1228,
+          "goal": false
         },
         {
-          "id": "legacy-route-923-1",
-          "goal": false,
-          "x": 619.341,
-          "y": -922.805
+          "id": "p2",
+          "x": 350,
+          "y": -1116,
+          "goal": false
         },
         {
-          "id": "legacy-route-923-2",
-          "goal": false,
-          "x": 265.057,
-          "y": -526.14
+          "id": "p3",
+          "x": 471,
+          "y": -918,
+          "goal": false
         },
         {
-          "id": "legacy-route-923-3",
-          "goal": false,
-          "x": 67.37700000000001,
-          "y": -330.62
+          "id": "p4",
+          "x": 523,
+          "y": -683,
+          "goal": false
         },
         {
-          "id": "legacy-route-923-4",
-          "goal": false,
-          "x": -193.92700000000002,
-          "y": -543.852
+          "id": "p5",
+          "x": 561,
+          "y": -470,
+          "goal": false
         },
         {
-          "id": "legacy-route-923-5",
-          "goal": false,
-          "x": -522.919,
-          "y": -582.841
+          "id": "p6",
+          "x": 579,
+          "y": -273,
+          "goal": false
         },
         {
-          "id": "legacy-route-923-6",
-          "goal": false,
-          "x": -330.879,
-          "y": -278.081
+          "id": "p7",
+          "x": 580,
+          "y": -53,
+          "goal": false
         },
         {
-          "id": "legacy-route-923-7",
-          "goal": true,
-          "x": 208.204,
-          "y": 105.465
+          "id": "p8",
+          "x": 572,
+          "y": 150,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": 559,
+          "y": 385,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": 510,
+          "y": 574,
+          "goal": false
+        },
+        {
+          "id": "p11",
+          "x": 298,
+          "y": 621,
+          "goal": false
+        },
+        {
+          "id": "p12",
+          "x": 119,
+          "y": 663,
+          "goal": false
+        },
+        {
+          "id": "p13",
+          "x": -40,
+          "y": 759,
+          "goal": false
+        },
+        {
+          "id": "p14",
+          "x": -89,
+          "y": 778,
+          "goal": false
+        },
+        {
+          "id": "p15",
+          "x": -252,
+          "y": 870,
+          "goal": false
+        },
+        {
+          "id": "p16",
+          "x": -374,
+          "y": 939,
+          "goal": false
+        },
+        {
+          "id": "p17",
+          "x": -402.92,
+          "y": 992.81,
+          "goal": true
         }
       ],
       "edges": [
         {
-          "id": "legacy-route-923-edge-0",
-          "from": "legacy-route-923-0",
-          "to": "legacy-route-923-1",
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
           "weight": 1
         },
         {
-          "id": "legacy-route-923-edge-1",
-          "from": "legacy-route-923-1",
-          "to": "legacy-route-923-2",
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
           "weight": 1
         },
         {
-          "id": "legacy-route-923-edge-2",
-          "from": "legacy-route-923-2",
-          "to": "legacy-route-923-3",
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
           "weight": 1
         },
         {
-          "id": "legacy-route-923-edge-3",
-          "from": "legacy-route-923-3",
-          "to": "legacy-route-923-4",
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
           "weight": 1
         },
         {
-          "id": "legacy-route-923-edge-4",
-          "from": "legacy-route-923-4",
-          "to": "legacy-route-923-5",
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
           "weight": 1
         },
         {
-          "id": "legacy-route-923-edge-5",
-          "from": "legacy-route-923-5",
-          "to": "legacy-route-923-6",
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
           "weight": 1
         },
         {
-          "id": "legacy-route-923-edge-6",
-          "from": "legacy-route-923-6",
-          "to": "legacy-route-923-7",
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
+          "weight": 1
+        },
+        {
+          "id": "e10",
+          "from": "p10",
+          "to": "p11",
+          "weight": 1
+        },
+        {
+          "id": "e11",
+          "from": "p11",
+          "to": "p12",
+          "weight": 1
+        },
+        {
+          "id": "e12",
+          "from": "p12",
+          "to": "p13",
+          "weight": 1
+        },
+        {
+          "id": "e13",
+          "from": "p13",
+          "to": "p14",
+          "weight": 1
+        },
+        {
+          "id": "e14",
+          "from": "p14",
+          "to": "p15",
+          "weight": 1
+        },
+        {
+          "id": "e15",
+          "from": "p15",
+          "to": "p16",
+          "weight": 1
+        },
+        {
+          "id": "e16",
+          "from": "p16",
+          "to": "p17",
           "weight": 1
         }
       ],
       "requiresAnyBuilding": [],
-      "legacy": true,
-      "nameFromSpawns": true
+      "weight": 3,
+      "spread": 28
+    },
+    {
+      "id": "s11-g4-b42",
+      "name": "South - Mill 2 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        10,
+        11,
+        12
+      ],
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": -178,
+          "y": -1220,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": -370,
+          "y": -1169,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": -546,
+          "y": -1009,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": -665,
+          "y": -784,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": -695,
+          "y": -559,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": -665,
+          "y": -344,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -561.81,
+          "y": -194.18,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -600,
+          "y": -161,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -476,
+          "y": 56,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": -460,
+          "y": 99,
+          "goal": false
+        },
+        {
+          "id": "p11",
+          "x": -529,
+          "y": 204,
+          "goal": false
+        },
+        {
+          "id": "p12",
+          "x": -573,
+          "y": 347,
+          "goal": false
+        },
+        {
+          "id": "p13",
+          "x": -581,
+          "y": 540,
+          "goal": false
+        },
+        {
+          "id": "p14",
+          "x": -522,
+          "y": 701,
+          "goal": false
+        },
+        {
+          "id": "p15",
+          "x": -339,
+          "y": 798,
+          "goal": false
+        },
+        {
+          "id": "p16",
+          "x": -300,
+          "y": 839,
+          "goal": false
+        },
+        {
+          "id": "p17",
+          "x": -296,
+          "y": 870,
+          "goal": false
+        },
+        {
+          "id": "p18",
+          "x": -406,
+          "y": 939,
+          "goal": false
+        },
+        {
+          "id": "p19",
+          "x": -440.02,
+          "y": 971.37,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        },
+        {
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
+          "weight": 1
+        },
+        {
+          "id": "e10",
+          "from": "p10",
+          "to": "p11",
+          "weight": 1
+        },
+        {
+          "id": "e11",
+          "from": "p11",
+          "to": "p12",
+          "weight": 1
+        },
+        {
+          "id": "e12",
+          "from": "p12",
+          "to": "p13",
+          "weight": 1
+        },
+        {
+          "id": "e13",
+          "from": "p13",
+          "to": "p14",
+          "weight": 1
+        },
+        {
+          "id": "e14",
+          "from": "p14",
+          "to": "p15",
+          "weight": 1
+        },
+        {
+          "id": "e15",
+          "from": "p15",
+          "to": "p16",
+          "weight": 1
+        },
+        {
+          "id": "e16",
+          "from": "p16",
+          "to": "p17",
+          "weight": 1
+        },
+        {
+          "id": "e17",
+          "from": "p17",
+          "to": "p18",
+          "weight": 1
+        },
+        {
+          "id": "e18",
+          "from": "p18",
+          "to": "p19",
+          "weight": 1
+        }
+      ],
+      "requiresAnyBuilding": [
+        42
+      ],
+      "weight": 2,
+      "spread": 28
+    },
+    {
+      "id": "s11-g4-b24",
+      "name": "South - Tower 1 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        10,
+        11,
+        12
+      ],
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": -178,
+          "y": -1220,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": -370,
+          "y": -1169,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": -546,
+          "y": -1009,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": -665,
+          "y": -784,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": -695,
+          "y": -559,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": -665,
+          "y": -344,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -600,
+          "y": -181,
+          "goal": false
+        },
+        {
+          "id": "p8",
+          "x": -575,
+          "y": -138,
+          "goal": false
+        },
+        {
+          "id": "p9",
+          "x": -600,
+          "y": -161,
+          "goal": false
+        },
+        {
+          "id": "p10",
+          "x": -476,
+          "y": 56,
+          "goal": false
+        },
+        {
+          "id": "p11",
+          "x": -460,
+          "y": 99,
+          "goal": false
+        },
+        {
+          "id": "p12",
+          "x": -529,
+          "y": 204,
+          "goal": false
+        },
+        {
+          "id": "p13",
+          "x": -573,
+          "y": 347,
+          "goal": false
+        },
+        {
+          "id": "p14",
+          "x": -581,
+          "y": 540,
+          "goal": false
+        },
+        {
+          "id": "p15",
+          "x": -460,
+          "y": 639,
+          "goal": false
+        },
+        {
+          "id": "p16",
+          "x": -420,
+          "y": 639,
+          "goal": false
+        },
+        {
+          "id": "p17",
+          "x": -362.43,
+          "y": 633.27,
+          "goal": false
+        },
+        {
+          "id": "p18",
+          "x": -296,
+          "y": 870,
+          "goal": false
+        },
+        {
+          "id": "p19",
+          "x": -406,
+          "y": 939,
+          "goal": false
+        },
+        {
+          "id": "p20",
+          "x": -440.02,
+          "y": 971.37,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        },
+        {
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
+        },
+        {
+          "id": "e7",
+          "from": "p7",
+          "to": "p8",
+          "weight": 1
+        },
+        {
+          "id": "e8",
+          "from": "p8",
+          "to": "p9",
+          "weight": 1
+        },
+        {
+          "id": "e9",
+          "from": "p9",
+          "to": "p10",
+          "weight": 1
+        },
+        {
+          "id": "e10",
+          "from": "p10",
+          "to": "p11",
+          "weight": 1
+        },
+        {
+          "id": "e11",
+          "from": "p11",
+          "to": "p12",
+          "weight": 1
+        },
+        {
+          "id": "e12",
+          "from": "p12",
+          "to": "p13",
+          "weight": 1
+        },
+        {
+          "id": "e13",
+          "from": "p13",
+          "to": "p14",
+          "weight": 1
+        },
+        {
+          "id": "e14",
+          "from": "p14",
+          "to": "p15",
+          "weight": 1
+        },
+        {
+          "id": "e15",
+          "from": "p15",
+          "to": "p16",
+          "weight": 1
+        },
+        {
+          "id": "e16",
+          "from": "p16",
+          "to": "p17",
+          "weight": 1
+        },
+        {
+          "id": "e17",
+          "from": "p17",
+          "to": "p18",
+          "weight": 1
+        },
+        {
+          "id": "e18",
+          "from": "p18",
+          "to": "p19",
+          "weight": 1
+        },
+        {
+          "id": "e19",
+          "from": "p19",
+          "to": "p20",
+          "weight": 1
+        }
+      ],
+      "requiresAnyBuilding": [
+        24
+      ],
+      "weight": 2,
+      "spread": 28
     }
   ],
   "hero": {
@@ -6589,7 +9315,7 @@
   "nextBuilding": 43,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "56c89f9a85203cd6d192894c0ab013745acb5828775b739dbf030db4f8cfda71",
+  "sourceRevision": "6eb44d0b64c7b59383ccb55186ccc0d72ed2a815d0e21e0896ad1f68097b270c",
   "templates": {
     "Map03": [
       {

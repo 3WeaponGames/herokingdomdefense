@@ -3,9 +3,17 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const root=path.resolve(__dirname,'../..'),read=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8').replace(/^\uFEFF/,''));
 const config=read('assets/KinghtFallConfig/GameJsonCfg.json'),catalogs={characters:read('assets/resources/characters/catalog.json'),parts:read('assets/resources/character-parts/catalog.json'),projectiles:read('assets/resources/projectiles/catalog.json')};
 const output={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/KinghtFallConfig.js'),'utf8'),{exports:output,require:()=>({OrderLayer:{}})});const names=output.KinghtFallBundelName;
+const sharedEnemy=(level,id)=>config.SoldierCfg[level.EnemyProfiles?.[id]?.baseId??id];
 
 test('stage-only Custom units preload their shared model without registering global records',()=>{
- const data=JSON.parse(JSON.stringify(config)),level=JSON.parse(JSON.stringify(data.LevelCfg[0])),unit=Object.values(data.SoldierCfg).find(row=>row.MonsterSource);level.EnemyProfiles={1000000000:{name:'Custom',baseId:unit.ID,stats:{Health:999}}};level.WaveCfg[0].SpawnTimeline=[{unitId:1000000000,count:1,spawnId:1,startSeconds:0,intervalSeconds:1}];const before=JSON.stringify(data),plan=Warm.plan(data,level,names);assert(plan.items.some(item=>item.bundle===names.Enemy&&item.path===unit.prefab));assert.equal(data.SoldierCfg[1000000000],undefined);assert.equal(JSON.stringify(data),before);
+ const data=structuredClone(config),level=structuredClone(data.LevelCfg[0]);
+ const unit=Object.values(data.SoldierCfg).find(row=>row.MonsterSource);
+ level.EnemyProfiles={...level.EnemyProfiles,1000000000:{name:'Custom',baseId:unit.ID,stats:{Health:999}}};
+ level.WaveCfg[0].SpawnTimeline=[{unitId:1000000000,count:1,spawnId:1,startSeconds:0,intervalSeconds:1}];
+ const before=JSON.stringify(data),plan=Warm.plan(data,level,names);
+ assert(plan.items.some(item=>item.bundle===names.Enemy&&item.path===unit.prefab));
+ assert.equal(data.SoldierCfg[1000000000],undefined);
+ assert.equal(JSON.stringify(data),before);
 });
 test('on-hit slows on stage enemies or barracks allies preload the saved slow effect',()=>{
  const UnitAttack={delivery:'melee',pattern:'single',onHit:{slow:{percent:.3,duration:2}}};
@@ -33,7 +41,17 @@ test('only explicitly added manual lights require the shared square sprite and o
  const data=JSON.parse(JSON.stringify(config)),level=data.LevelCfg[0],row=data.BuildEnum[1].levelList[0];row.Nightlight={version:1,lights:{},emitters:[{id:'light:1'},{id:'light:2'}]};const before=JSON.stringify(data),plan=Warm.plan(data,level,names),manual=plan.items.filter(i=>i.path==='buildings/lighting/native-window-ray');assert.equal(manual.length,1);assert.equal(manual[0].type,'frame');assert(!plan.items.some(i=>/-window-light$/.test(i.path)));assert.equal(JSON.stringify(data),before);
 });
 test('all later-wave enemies, legacy waves, all upgrade choices and allied rigs enter the stage manifest without writes',()=>{
- const before=JSON.stringify(config);for(const level of config.LevelCfg){const plan=Warm.plan(config,level,names),keys=new Set(plan.items.map(i=>i.key));assert.equal(keys.size,plan.items.length);for(const wave of level.WaveCfg)for(const spawn of wave.SpawnTimeline||[])assert(keys.has(names.Enemy+'/'+config.SoldierCfg[spawn.unitId].prefab+':prefab'));for(const id of plan.kinds)for(const row of config.BuildEnum[id].levelList||[])if(row.Appearance)assert(keys.has('resources/'+row.Appearance.sprite+':frame'));}
+ const before=JSON.stringify(config);
+ for(const level of config.LevelCfg){
+  const plan=Warm.plan(config,level,names),keys=new Set(plan.items.map(i=>i.key));
+  assert.equal(keys.size,plan.items.length);
+  for(const wave of level.WaveCfg)for(const spawn of wave.SpawnTimeline||[]){
+   const unit=sharedEnemy(level,spawn.unitId);
+   assert(unit?.prefab,'Shared model for stage '+level.Level+' enemy '+spawn.unitId);
+   assert(keys.has(names.Enemy+'/'+unit.prefab+':prefab'));
+  }
+  for(const id of plan.kinds)for(const row of config.BuildEnum[id].levelList||[])if(row.Appearance)assert(keys.has('resources/'+row.Appearance.sprite+':frame'));
+ }
  const legacy=Warm.unitIds({WaveCfg:[{RefreshSoldierKind:['1#123,4;456,2']},{SpawnTimeline:[{unitId:789}],RefreshSoldierKind:['1#999,1']}]});assert.deepEqual(legacy,['123','456','789']);assert.equal(JSON.stringify(config),before);
 });
 
@@ -44,7 +62,7 @@ test('legacy wave pauses warm only real actors and retain timeline precedence wi
  const delayedId=delayedGroup[1];
  level.WaveCfg=[{RefreshSoldierKind:wave.RefreshSoldierKind.slice()}];const before=JSON.stringify(level),plan=Warm.plan(config,level,names);
  assert(!plan.enemies.includes('-1'));assert(plan.enemies.includes(delayedId));
- assert(plan.items.some(item=>item.bundle===names.Enemy&&item.path===config.SoldierCfg[delayedId].prefab));assert.equal(JSON.stringify(level),before);
+ assert(plan.items.some(item=>item.bundle===names.Enemy&&item.path===sharedEnemy(level,delayedId).prefab));assert.equal(JSON.stringify(level),before);
  assert.deepEqual(Warm.unitIds({WaveCfg:[{RefreshSoldierKind:['1#-1,10;123,2;-1,4;456,1']},{SpawnTimeline:[{unitId:789}],RefreshSoldierKind:['1#999,1;-1,1']}]}),['123','456','789']);
  assert.throws(()=>Warm.plan(config,{...level,WaveCfg:[{RefreshSoldierKind:['1#-2,1']}]},names),/Missing stage enemy -2/);
 });

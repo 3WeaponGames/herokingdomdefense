@@ -1042,7 +1042,9 @@ function nativeAlphaSignature(source, output, scope) {
   // fade and destruction parents. Retain those changes without native reads.
   for(var parent=source.node;parent;parent=parent.parent)values.push(parent,parent.opacity);
   if(alpha!==0)for(var i=0;i<order.length;i++) {
-    var slot=order[i],entry=plan.slots.get(slot);
+    var slot=order[i];
+    if(!slot || typeof slot.getAttachment!=="function")return false;
+    var entry=plan.slots.get(slot);
     if(!entry) {
       var data=slot.data;
       entry={index:data&&data.index,name:data&&data.name,bone:slot.bone,color:slot.color};
@@ -1815,41 +1817,17 @@ function DepthView(game) {
   this.game = game;
   this.main = game.ndMain;
   this.objects = [];
-  // Native captures live renderers on the GPU, including their current mesh
-  // deformation and draw order. Browser uses its existing copied-pose pass.
-  this.nativeCapture = !!(cc.sys && cc.sys.isNative);
-  this._staticSceneryCandidateCache = this.nativeCapture && staticSceneryCandidates &&
-    staticSceneryCandidates.create(this, occlusionCandidate, point, overlaps);
-  var stencilHost = this.nativeCapture && foregroundStencilSupport();
-  this._foregroundStencil = stencilHost ? new NativeForegroundStencil(this, stencilHost) : null;
-  this.captureSupported = !this.nativeCapture;
-  this.nativeActors = new Map();
-  this._nativeActorAtlas = null;
-  this.gateOcclusion = new GateOcclusion(this);
-  this.capture = new cc.Node("OcclusionCapture");
-  this.capture.active = false;
-  this.capture.parent = cc.director.getScene();
-  this.cameraNode = new cc.Node("OcclusionCamera");
-  this.cameraNode.parent = cc.director.getScene();
-  this.camera = this.cameraNode.addComponent(cc.Camera);
-  this.camera.enabled = false;
-  this.camera.alignWithScreen = false;
-  this.camera.ortho = true;
-  this.camera.nearClip = -1000;
-  this.camera.farClip = 1000;
-  this.camera.backgroundColor = cc.color(0, 0, 0, 0);
-  this.camera.clearFlags = cc.Camera.ClearFlags.COLOR | cc.Camera.ClearFlags.DEPTH | cc.Camera.ClearFlags.STENCIL;
-  if (this.nativeCapture) {
-    var self = this;
-    cc.resources.load("OcclusionSilhouette", cc.EffectAsset, function (error, effect) {
-      if (self._destroyed) return;
-      if (error) { cc.warn("Silhouette effect could not load", error); return; }
-      self.nativeMaterial = cc.Material.create(effect);
-      self.nativeMaterial.define("USE_TEXTURE", true);
-      self.captureSupported = true;
-    });
-  }
+  var stage = game.gameData.levelCfg;
+  // Stage 10's dressed cliffs use a specific authored layer for cliff faces.
+  this._prioritizeCliffs = !!stage && stage.StageLayoutId === "A-10";
+  this._staticSceneryCandidateCache = cc.sys && cc.sys.isNative && staticSceneryCandidates &&
+    staticSceneryCandidates.create(this, occlusionCandidate, point, overlaps, seedGroundReader);
   this.prepareObjects();
+  var healthLayer = this._unitHealthLayer = new cc.Node("Battle health bars");
+  healthLayer._battleHealthLayer = true;
+  healthLayer.zIndex = cc.macro.MAX_ZINDEX;
+  healthLayer.parent = game.ndUI || this.main;
+  this._unitHealthBars = new Map();
   cc.director.on(cc.Director.EVENT_BEFORE_DRAW, this.update, this);
 }
 DepthView.prototype.prepareObjects = function () {
@@ -1889,7 +1867,7 @@ DepthView.prototype.prepareObjects = function () {
   // Everything authored in the map starts as scenery. Render roots belonging
   // to buildings/offers are promoted below; actors keep their live ground order.
   main.children.forEach(function (root) {
-    if (root !== hero && !root._combatActor && !root._occlusionMask) kind(root, false);
+    if (root !== hero && !root._combatActor && !root._battleHealthLayer && !root._occlusionMask) kind(root, false);
   });
   var buildings = this.game.gameData.bulidPointMap;
   var byNode = new Map(), buildingOwners = new Map();
@@ -1943,7 +1921,7 @@ DepthView.prototype.prepareObjects = function () {
     if (!renderers.length && !bindings) return;
     if (!root._depthGround) root._depthGround = renderers.length ? renderers[0].node : bindings[0].owner.node;
     self.objects.push({ node: root, sources: renderers, baseSources: renderers, buildings: bindings,
-      masks: new Map(), capture: null, texture: null, frame: null, signature: "" });
+      signature: null });
   });
 };
 // This cutoff is in map coordinates; camera zoom and hero scale cannot turn
@@ -2013,7 +1991,8 @@ function sceneryProps(view,ordered,main,cache,painter) {
     var row=painter&&painter(group.owner);
     var box=row&&row.shape!==undefined?row.shape:sceneryWorldShape(view,group.owner,main,undefined,cache);
     if(row&&row.shape===undefined)row.shape=box;
-    if(box)props.push({group:group,box:box,low:!!group.owner._depthMapFlat||box.maxY-box.minY<=SMALL_SCENERY_HEIGHT});
+    if(box)props.push({group:group,box:box,low:!!group.owner._depthMapFlat||box.maxY-box.minY<=SMALL_SCENERY_HEIGHT,
+      cliff:!!view._prioritizeCliffs&&group.owner._depthMapObject===true&&group.band===5});
   });
   return props;
 }
@@ -2105,6 +2084,7 @@ function compareDepth(a,b) {
 function sceneryActorOrder(view,ordered,main,props,footprints,cache) {
   if(!props.length)return false;
   var hero=view.game.ctrPlay,actors=[],scenery=[],minimum=0;
+  var prioritizeCliffs=!!view._prioritizeCliffs;
   // Authored scenery is one immutable painter sequence. In particular, pieces
   // of a continuous cliff cannot cross its trees when an actor walks nearby.
   // The previous draw sorted scene children, so unchanged scenery usually
@@ -2130,6 +2110,7 @@ function sceneryActorOrder(view,ordered,main,props,footprints,cache) {
   actors.forEach(function(actor){
     var owner=actor.owner,component=owner===hero.node?hero:owner._combatActor;
     var shape=component&&sceneryWorldShape(view,owner,main,bodyVisuals(component),cache),lower=minimum,upper=scenery.length;
+    var behindCliff=upper, solidFront=minimum;
     behind.length=0;
     if(shape){var visit=function(prop){
       if(!overlaps(shape,prop.box))return;
@@ -2137,11 +2118,20 @@ function sceneryActorOrder(view,ordered,main,props,footprints,cache) {
       // A short prop stays under a unit where they overlap, without changing
       // the depth of distant units or the authored scenery order.
       var ground=prop.building?buildingFrontY(prop.building,main,footprints,actor.feet.x,prop.ground):prop.group.ground;
-      if(!prop.low&&actor.ground>ground)behind.push(index);else lower=Math.max(lower,index+1);
+      if(!prop.low&&actor.ground>ground){
+        if(prop.cliff)behindCliff=Math.min(behindCliff,index);
+        behind.push(index);
+      }else{
+        if(prop.building||prop.cliff)solidFront=Math.max(solidFront,index+1);
+        lower=Math.max(lower,index+1);
+      }
     },candidates=spatial&&scenerySpatialCandidates(spatial,shape,true);
     if(candidates)for(var i=0;i<candidates.length;i++)visit(props[candidates[i]]);
     else props.forEach(visit);
     }
+    // Cliff faces in Stage 10 can span several dressed scenery layers. In a
+    // conflicting slot, let the cliff cover the actor before its decorations.
+    if(prioritizeCliffs&&behindCliff<lower&&behindCliff>=solidFront)lower=behindCliff;
     // A front/equal-ground actor must remain above every contacted prop. A
     // contradictory behind request cannot reverse the authored scenery or
     // hide that front actor. Compatible behind contacts retain exact depth.
@@ -2156,8 +2146,9 @@ function sceneryActorOrder(view,ordered,main,props,footprints,cache) {
       else right=middle;
     }
     actor.scenerySlot=left;
-    minimum=actor.scenerySlot;
+    if(!prioritizeCliffs)minimum=actor.scenerySlot;
   });
+  if(prioritizeCliffs)actors.sort(function(a,b){return a.scenerySlot-b.scenerySlot||b.ground-a.ground||a.index-b.index;});
   ordered.length=0;
   var next=0;
   for(var index=0;index<=scenery.length;index++){
@@ -2211,13 +2202,19 @@ function depthGroundY(ground, owner, main, cache, reads) {
   }
   return point(ground,main,0,0,cache).y;
 }
+function seedGroundReader(main, cache) {
+  var reads = depthGroundReads(main, cache);
+  return reads && function (ground, owner) {
+    return depthGroundY(ground, owner, main, cache, reads);
+  };
+}
 function collectDepthGroups(view, state, draw, cache, painter) {
   var heroActor=view.game.ctrPlay,hero=heroActor.node,main=view.main,groups=state.groups,maximum=1;
   var children=main.children,ordered=state.ordered,reads=depthGroundReads(main,cache);
   ordered.length=0;
   for(var index=0,length=children.length;index<length;index++){
     var node=children[index];
-    if(node._occlusionMask)continue;
+    if(node._battleHealthLayer || node._occlusionMask)continue;
     var groundVisual = !!node._depthGroundVisual, owner = groundVisual ? node : node._depthBuildingOwner || node, group = groups.get(owner);
     if (!group || group.draw !== draw) {
       if(!group){
@@ -2415,12 +2412,15 @@ DepthView.prototype.sort = function (footprints, cache) {
     });
     if(!sceneryActorOrder(this,ordered,main,scenery.concat(buildingProps(this,state.groups,main,shapeCache,draw)),
         footprints||new Map(),shapeCache))ordered.sort(compareDepth);
-    // Reserve one step for silhouettes and another for local gate intersections.
     for(var i=0;i<ordered.length;i++){
       var nodes=ordered[i].nodes,zIndex=i*4;
       for(var j=0;j<nodes.length;j++)if(nodes[j].zIndex!==zIndex)nodes[j].zIndex=zIndex;
     }
     sortBattleChildren(main);
+    if (!painter && !reentrant && cache && this._staticSceneryCandidateCache) {
+      if (!this._staticOcclusionBounds) this._staticOcclusionBounds = new WeakMap();
+      this._staticSceneryCandidateCache.preparePainter(cache);
+    }
   }finally{state.sorting=false;}
 };
 function makeObjectStencil(main, name) {
@@ -2471,7 +2471,18 @@ function snapshotSignature(view, object, cache) {
       if(view.nativeCapture&&nativeAlphaSignature(source,values,view._nativeCaptureScope))return;
       values.push(source._skeleton.skin && source._skeleton.skin.name);
       source._skeleton.bones.forEach(function (bone) { values.push(bone.a, bone.b, bone.c, bone.d, bone.worldX, bone.worldY); });
-      source._skeleton.slots.forEach(function (slot) { if(apertureSlot(slot))return;var attachment = slot.getAttachment(); values.push(attachment && attachment.name, attachment && attachment.region && attachment.region.name, slot.color.a); Array.prototype.push.apply(values, slot.deform); });
+      source._skeleton.slots.forEach(function (slot) {
+        if (apertureSlot(slot)) return;
+        if (!slot || typeof slot.getAttachment !== "function") {
+          // Native Spine can expose incomplete wrappers during shadow warmup.
+          // Capture the current frame without reusing a stamp for unknown geometry.
+          values.push({});
+          return;
+        }
+        var attachment = slot.getAttachment();
+        values.push(attachment && attachment.name, attachment && attachment.region && attachment.region.name, slot.color.a);
+        Array.prototype.push.apply(values, slot.deform);
+      });
     } else values.push(source.spriteFrame);
   });
   return signature;
@@ -3001,229 +3012,43 @@ function hideEmptyForeground(view, object, entry, drawId, mask, coverage, alpha,
   return true;
 }
 
+DepthView.prototype.updateUnitHealthBars = function () {
+  var layer = this._unitHealthLayer, bars = this._unitHealthBars, game = this.game;
+  var roster = [game.ctrPlay].concat(game.gameData.getSoldierList(), game.gameData.getEnemyList());
+  if (game._unitTest) game._unitTest.actors.forEach(function (actor) { roster.push(actor); });
+  var active = new Set(roster.filter(function (actor) {
+    return actor.node.activeInHierarchy && !(actor.hp <= 0) && !(actor.isDead && actor.isDead());
+  }));
+  bars.forEach(function (bar, actor) {
+    if (!active.has(actor) || (actor.hpctrl || actor.ctrHp) !== bar) {
+      bar.restoreBattleParent();
+      bars.delete(actor);
+    }
+  });
+  var heroBar = game.ctrPlay.ctrHp;
+  if (!heroBar) return;
+  var reference = heroBar.battleReferenceSize(layer);
+  var population = active.size - 1;
+  var cadence = population >= 64 ? 4 : population >= 32 ? 2 : 1;
+  var frame = cc.director.getTotalFrames();
+  var main = this.main;
+  var projection = nodeTransform(main, layer, this._healthProjection || (this._healthProjection = {}));
+  active.forEach(function (actor) {
+    var bar = actor.hpctrl || actor.ctrHp;
+    if (!bar || !cc.isValid(bar.node, true)) return;
+    if (!bars.has(actor)) {
+      bar.moveToBattleLayer(layer);
+      bars.set(actor, bar);
+    }
+    bar.syncBattlePosition(game, reference, frame, cadence, actor.node.parent === main ? projection : null);
+  });
+};
+
 DepthView.prototype.update = function () {
-  standaloneTargets(this, false);
-  var stencil = this._foregroundStencil;
-  if (stencil) stencil.clear();
-  if (!this.main.activeInHierarchy) return;
-  var footprints = new Map();
+  if (this._destroyed || !this.main.activeInHierarchy) return;
   var cache = { transforms: new Map(), bounds: new Map(), poses: new Set() };
-  this.sort(footprints, cache);
-  if (this.captureSupported === false) return;
-  if (!this._staticOcclusionBounds && this.nativeCapture) this._staticOcclusionBounds = new WeakMap();
-  var captureScope=this.nativeCapture?new NativeCaptureScope(this):null;
-  if(captureScope){captureScope._sceneRepairOwner=this;this._nativeCaptureScope=captureScope;}
-  var stencilBatch = stencil && stencil.begin(), stencilComplete = false, finishMaskUpdates;
-  try {
-  if (captureScope && nativeMaskState && typeof nativeMaskState.beginCaptureUpdates === "function") {
-    finishMaskUpdates = nativeMaskState.beginCaptureUpdates(this);
-  }
-  var self = this, game = this.game, visible = viewBounds(game, this.main), draw = [];
-  // Per-actor GPU captures only retain a draw identity. Pose buffers are web-only.
-  var nativeDraw = this.nativeCapture ? {} : null;
-  if (!this.nativeCapture) {
-    cache.vertexStore = this._vertexStore || (this._vertexStore = new WeakMap());
-    cache.vertexConsumers = new Map();
-    cache.previousVertexConsumers = this._vertexConsumers;
-  }
-  var actors = [{ actor: game.ctrPlay, tint: ALLY }].concat(game.gameData.getSoldierList().map(function (actor) { return { actor: actor, tint: ALLY }; }), game.gameData.getEnemyList().map(function (actor) { return { actor: actor, tint: ENEMY }; }));
-  if (game._unitTest) game._unitTest.actors.forEach(function (actor) { actors.push({ actor: actor, tint: ENEMY }); });
-  var active = actors.filter(function (entry) { return entry.actor.node.activeInHierarchy && !(entry.actor.hp <= 0) && !(entry.actor.isDead && entry.actor.isDead()); });
-  active.forEach(function(entry){entry.feet=actorGroundPoint(entry.actor,self.main,game.ctrPlay,cache);});
-  var activeActors=new Set(active.map(function(entry){return entry.actor;}));
-  var candidates = [], byObject = new Map();
-  if (!this._staticSceneryCandidateCache || !this._staticSceneryCandidateCache.collect(cache, visible, candidates, byObject)) {
-    this.objects.forEach(function (object) {
-      var candidate = occlusionCandidate(self, object, cache, visible);
-      if (candidate) {
-        candidates.push(candidate);
-        byObject.set(object, candidate);
-      }
-    });
-  }
-  var silhouetteActors=ordinarySilhouetteActors(this, active);
-  var silhouetteSet=silhouetteActors===active?null:new Set(silhouetteActors);
-  matchOcclusion(this, active, candidates, visible, cache, footprints, silhouetteSet);
-  var coverageHost = this.nativeCapture && cc.sys && cc.sys.isNative && cc.sys.os === cc.sys.OS_WINDOWS &&
-    cc.ENGINE_VERSION === "2.4.13" && typeof spine !== "undefined" && typeof spine._hkdReadSceneryAlpha === "function";
-  // The warm fallback can issue many individual captures even with fewer actors.
-  // Use the no-reader proof there without advancing the optional tint budget.
-  var mediumCoverage = coverageHost && canCheckMediumForeground(this, active.length);
-  var coverage = coverageHost && (active.length >= 64 || mediumCoverage)
-    ? require("NativeSceneryMaskCoverage") : null;
-  if (coverage && !coverage.planar(this)) coverage = null;
-  var coverageDraw = coverage && { read: false };
-  var coveragePriority;
-  if (mediumCoverage && coverage && !this._silhouetteBudget) {
-    coveragePriority = this._mediumForegroundPriority;
-    if (!coveragePriority || coveragePriority.data !== game.gameData || coveragePriority.epoch !== game._combatEpoch ||
-        coveragePriority.round !== game.gameData.round) {
-      coveragePriority = this._mediumForegroundPriority = {
-        data: game.gameData, epoch: game._combatEpoch, round: game.gameData.round
-      };
-    }
-    refreshSilhouettePriority(this, coveragePriority);
-  }
-  this.objects.forEach(function (object) {
-    var candidate = byObject.get(object), hidden = candidate && candidate.hidden;
-    var hiddenActors = object.masks.size && hidden && hidden.length ?
-      new Set(hidden.map(function (entry) { return entry.actor; })) : null;
-    object.masks.forEach(function (mask, actor) {
-      var masked = !!hiddenActors && hiddenActors.has(actor);
-      if (mask.node.active !== masked && !(masked && coverage && suppressedForegroundMasks.has(mask.node) &&
-          isStockForegroundMask(self, mask, coverage))) mask.node.active = masked;
-      if (!masked && mask.foreground && mask.foreground.node.active) mask.foreground.node.active = false;
-      // Visibility transitions stop tint immediately without cycling a
-      // continuously visible renderer or discarding a reusable capture.
-      if (!cc.isValid(actor.node) || !activeActors.has(actor)) { releaseObjectMask(mask); object.masks.delete(actor); }
-    });
-    if (!hidden || !hidden.length) {
-      if (object.overlay && object.overlay.node.active) object.overlay.node.active = false;
-      return;
-    }
-    if (cache.vertexConsumers) hidden.forEach(function (entry) {
-      entry.sources.forEach(function (source) { cache.vertexConsumers.set(source, (cache.vertexConsumers.get(source) || 0) + 1); });
-    });
-    draw.push(candidate);
-  });
-  this._vertexConsumers = cache.vertexConsumers;
-  try {
-    var firstSnapshot=false, emptyCaptureContacts;
-    if(captureScope)captureScope._singleOrdinaryContact=draw.length===1;
-    if(this.nativeCapture&&cc.sys&&cc.sys.isNative&&cc.ENGINE_VERSION==="2.4.13"){
-      var batchCount=draw.length===1?1:0, preparedFirst=false, warmLater=false;
-      var multi=draw.length>1&&captureScope&&captureScope.enabled;
-      if(multi)warmLater=(draw[0].hidden.length>=3||hasBatchSize(draw))&&warmLaterSnapshots(this,draw,cache);
-      if(batchCount||multi&&(warmLater||draw[0].hidden.length>=3)){
-        // Preserve the first building's signature/capture before zero-time
-        // actor callbacks, exactly as in the individual silhouette path.
-        this.snapshot(draw[0].object,draw[0].box,cache);firstSnapshot=true;
-        if(this._destroyed)return;
-        if(multi&&!captureScope.first){
-          // Settle the original first camera's zero-time events. Additional
-          // bodies can share the batch only when all intervening snapshots
-          // stay warm after those callbacks, so no object camera moves.
-          var previousAtlas=this._nativeActorAtlas,prepared=captureScope.prepare();
-          if(prepared===null||this._destroyed||this._nativeActorAtlas!==previousAtlas)return;
-          preparedFirst=prepared===true&&captureScope.quiet&&!captureScope.finished;
-          if(preparedFirst){
-            if(warmLater&&warmLaterSnapshots(this,draw,cache))batchCount=draw.length;
-            else if(draw[0].hidden.length>=3)batchCount=1;
-          }
-        }
-      }
-      if (coverage && multi && !batchCount && nativeMaskState &&
-          nativeMaskState.ownsTargetlessRoute && nativeMaskState.ownsTargetlessRoute(this) &&
-          typeof spine._hkdTargetlessLeaf === "function") emptyCaptureContacts = { draw: draw };
-      if(batchCount){
-        if(!this._nativeActorAtlas)this._nativeActorAtlas=require("NativeActorAtlas").create(this,releaseCapture);
-      if(this._nativeActorAtlas){
-        var ordinaryAtlas=this._nativeActorAtlas,requests=[],requested=new Set();
-        var requestBody=function(entry){
-          if(requested.has(entry.actor))return;requested.add(entry.actor);
-          var record=self.nativeActors.get(entry.actor);if(!record){record={};self.nativeActors.set(entry.actor,record);}
-          requests.push({actor:entry.actor,sources:entry.sources,bounds:entry.bounds,record:record});
-        };
-        for(var i=0;i<batchCount;i++)draw[i].hidden.forEach(requestBody);
-        if(!preparedFirst&&requests.length&&captureScope&&captureScope.prepare&&captureScope.prepare()===null)return;
-        if(this._destroyed||this._nativeActorAtlas!==ordinaryAtlas)return;
-        // Unsupported middleware keeps the original unchanged first camera.
-        if(requests.length&&captureScope&&!captureScope.first){
-          var first=requests[0];this._nativeActorAtlas.forget(first.record);
-          this.snapshotActor(first.record,first.sources,first.bounds);first.record.draw=nativeDraw;
-        }
-        // A fallback camera may exit the view or replace its atlas.
-        if(this._destroyed||this._nativeActorAtlas!==ordinaryAtlas)return;
-        // Ordinary silhouettes retain unsnapped one-world-texel sampling.
-        this._nativeActorAtlas.capture(requests,nativeDraw,1);
-        if(this._destroyed)return;
-      }
-      }else if(this._nativeActorAtlas)this._nativeActorAtlas.capture([],nativeDraw,1);
-    }
-    draw.forEach(function (item,index) {
-      var object = item.object, box = item.box, hidden = item.hidden;
-      if(index||!firstSnapshot)self.snapshot(object, box,cache);
-      var alpha, alphaChecked = false;
-      var shared = false, firstForeground = null, firstFrame, grouped = false;
-      hidden.forEach(function (entry) {
-        var mask = object.masks.get(entry.actor);
-        if (coverage && (!mediumCoverage || emptyCaptureContacts) &&
-            canHideForegroundScenery(self, object, entry, coveragePriority) && isStockForegroundMask(self, mask, coverage)) {
-          if (!alphaChecked) {
-            alphaChecked = true;
-            alpha = coverage.readAlpha(self, object, coverageDraw);
-          }
-          if (alpha && hideEmptyForeground(self, object, entry, nativeDraw, mask, coverage, alpha, emptyCaptureContacts)) return;
-        }
-        if (!mask) mask = self.makeMask(object, entry.actor, entry.sources);
-        if (coverage) suppressedForegroundMasks.delete(mask.node);
-        var above = actorDrawnAbove(entry.actor, object);
-        var overlay = object.overlay;
-        if (above) {
-          // The actor stays in its shared paint slot for other contacts. Cover
-          // just its pixels inside this object's silhouette at its own depth.
-          overlay = mask.foreground || (mask.foreground = makeObjectStencil(self.main, "ForegroundOcclusion"));
-          syncObjectStencil(overlay, object, entry.actor.node.zIndex + 1);
-        } else {
-          shared = true;
-          if (mask.foreground) mask.foreground.node.active = false;
-        }
-        if (mask.node.parent !== overlay.node) mask.node.parent = overlay.node;
-        mask.node.active = true;
-        mask.node.zIndex = entry.actor.node.zIndex;
-        if (!above) recordSilhouetteHint(self, entry);
-        var opacity = above ? 255 : 204;
-        if (self.nativeCapture) self.syncNativeMask(mask, entry, object, nativeDraw, opacity);
-        else mask.visuals.forEach(function (pair) { syncVisual(pair, self.main, object.center, entry.tint,cache, opacity); });
-        if (stencilBatch && !stencilBatch.cancelled && above) {
-          // Reuse requires at least two foreground masks of this same capture.
-          // Do not allocate candidates or touch the native renderer for singletons.
-          if (!firstForeground) { firstForeground = mask; firstFrame = object.frame; }
-          else {
-            if (!grouped) stencilBatch.entries.push(firstForeground, object, firstFrame, index + 1);
-            stencilBatch.entries.push(mask, object, object.frame, index + 1);
-            grouped = true;
-          }
-        }
-      });
-      if (shared) syncObjectStencil(object.overlay, object, object.node.zIndex + 1);
-      else if (object.overlay) object.overlay.node.active = false;
-    });
-    if(this.gateOcclusion)this.gateOcclusion.update(active,cache,visible,silhouetteSet);
-  } finally {
-    if(captureScope){captureScope.finish();if(this._nativeCaptureScope===captureScope)this._nativeCaptureScope=null;}
-    if (this._nativeRendered) {
-      this._nativeRendered = false;
-      // Native RenderFlow clears WORLD_TRANSFORM_CHANGED/OPACITY_CHANGED for
-      // every node, even when camera.render() draws just one body part. Restore
-      // inheritance once after the capture batch so the main draw updates the
-      // hero's follow ring, released joystick and newly laid-out popup sprites.
-      // Reflag the scene, since UI siblings also lose their pending updates.
-      var scene = cc.director.getScene(), flow = cc.RenderFlow;
-      if (scene && flow) scene._renderFlag |= flow.FLAG_WORLD_TRANSFORM | flow.FLAG_OPACITY;
-    }
-  }
-  if (this.nativeCapture) this.nativeActors.forEach(function (record, actor) {
-    if (cc.isValid(actor.node) && activeActors.has(actor)) return;
-    if(self._nativeActorAtlas)self._nativeActorAtlas.forget(record);
-    var targets = self._standaloneTargets;
-    if (targets) disposeStandaloneTarget(dropStandaloneTarget(targets, record));
-    releaseCapture(record);
-    self.nativeActors.delete(actor);
-  });
-  // New/relocated stencil nodes must follow their object in this same draw.
-  sortBattleChildren(this.main);
-  stencilComplete = true;
-  } finally {
-    var captureFinished = false;
-    try {
-      if(captureScope){captureScope.finish();if(this._nativeCaptureScope===captureScope)this._nativeCaptureScope=null;}
-      captureFinished = true;
-    } finally {
-      try { if (finishMaskUpdates) finishMaskUpdates(); }
-      finally { if (stencilBatch) stencilBatch.finish(stencilComplete && captureFinished); }
-    }
-  }
+  this.sort(new Map(), cache);
+  this.updateUnitHealthBars();
 };
 DepthView.prototype.destroy = function () {
   if (this._destroyed) return;
@@ -3232,6 +3057,12 @@ DepthView.prototype.destroy = function () {
   clearStandaloneTargets(this);
   if (this._foregroundStencil) this._foregroundStencil.clear();
   this._foregroundStencil = null;
+  if (this._unitHealthBars) {
+    this._unitHealthBars.forEach(function (bar) { bar.restoreBattleParent(); });
+    this._unitHealthBars.clear();
+    if (cc.isValid(this._unitHealthLayer, true)) this._unitHealthLayer.destroy();
+    this._unitHealthLayer = null;
+  }
   if(this._nativeCaptureScope)this._nativeCaptureScope.finish();
   cachedCaptureAlternates.delete(this);
   this._nativeCaptureScope=null;this._nativeCaptureRefs=null;this._cachedCaptureBlocker=null;this._nativeCaptureInventory=null;
@@ -3271,8 +3102,10 @@ DepthView.prototype.destroy = function () {
   if (cc.isValid(this.capture, true)) this.capture.destroy();
   if (cc.isValid(this.cameraNode, true)) this.cameraNode.destroy();
   if (this.nativeMaterial) this.nativeMaterial.destroy();
-  this.nativeActors.forEach(releaseCapture);
-  this.nativeActors.clear();
+  if (this.nativeActors) {
+    this.nativeActors.forEach(releaseCapture);
+    this.nativeActors.clear();
+  }
 };
 exports.DepthView = DepthView;
 exports.copyPose = copyPose;

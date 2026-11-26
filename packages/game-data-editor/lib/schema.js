@@ -1,6 +1,7 @@
 'use strict';
 const UnitRecords=require('./unit-records');
 const EnemyClasses=require('./enemy-classes');
+const Kingdoms=require('./unit-kingdoms');
 const MapCatalog=require('./map-catalog');
 const HeroWeapons=require('../../../assets/_script/HeroWeapons');
 const FightingTypeDamage=require('../../../assets/_script/FightingTypeDamage');
@@ -98,7 +99,7 @@ function descriptor(key, context) {
   if (['isPerecentage','vaulePercentage'].indexOf(key)>=0) result.readOnly=true;
   if (key==='AttackPriority') {result.readOnly=true;result.help='Legacy authored metadata. Current runtime selects the nearest eligible target and does not read this array.';}
   if (key==='Quality') result.options=RARITIES.map((label,i)=>({value:i+1,label}));
-  if (key==='BuildingCross') result.options=[{value:0,label:'Ignore building obstruction'},{value:1,label:'Respect building obstruction'}];
+  if (key==='BuildingCross') result.options=[{value:0,label:'Flight (cross walls and gates)'},{value:1,label:'Ground'}];
   if (key==='Suppressed') {result.label='Damage bonus against';result.help='Deals the configured counter-damage multiplier to this opposing unit. Does not change target priority.';}
   if (key==='CounterType') {result.label='Countered fighting type';result.help='Applies the configured damage multiplier to every opposing unit assigned to this type. Does not change target priority.';}
   if(key==='SightRange'){result.min=0;result.help='Absolute allied awareness radius in world units, independent of hero weapon range. Missing values use 240. A longer attack range is preserved for direct attacks.';}
@@ -563,6 +564,7 @@ function validate(documents, changes) {
   if(overrides){
     if(overrides.buildingShadows!==undefined)require('../buildings/drop-shadow-data').issues(overrides.buildingShadows).forEach(p=>issue('overrides',['buildingShadows'].concat(p.path),p.message));
     EnemyClasses.validate(overrides,base).forEach(problem=>issue('overrides',problem.path,problem.message));
+    Kingdoms.validate(overrides,base.SoldierCfg).forEach(problem=>issue('overrides',problem.path,problem.message));
     if(overrides.version!==1)issue('overrides',['version'],'Unsupported override format.');
     if(overrides.unitLevels!==undefined){
       const table=overrides.unitLevels,fields=['Health','AttackDamage','AttackInterval','AttackRange','SearchRange','SightRange','Speed'];

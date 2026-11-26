@@ -6448,8 +6448,8 @@
       "context": "Imported monster1 monster · monster1/Beetle_Red"
     },
     "data.monster-roster.91010.name": {
-      "en": "Eagle",
-      "zh": "鹰",
+      "en": "Carrion Bird",
+      "zh": "食腐鸟",
       "context": "Imported monster1 monster · monster1/Bird_Eagle"
     },
     "data.monster-roster.91011.name": {
@@ -6753,8 +6753,8 @@
       "context": "Imported monster2 monster · monster2/Dragonfly_Green"
     },
     "data.monster-roster.91071.name": {
-      "en": "Dust Fairy",
-      "zh": "星尘仙灵",
+      "en": "Black Plague",
+      "zh": "黑色瘟疫",
       "context": "Imported monster2 monster · monster2/Fairy_Dust"
     },
     "data.monster-roster.91072.name": {
@@ -9566,6 +9566,46 @@
       "en": "A linen-wrapped tomb guardian armed with a crescent shield and a heavy axe.",
       "zh": "缠着裹尸布的陵墓守卫，手持新月盾和沉重的战斧。",
       "context": "Enemy guide appearance · Shrouded Revenant"
+    },
+    "data.monster-roster.91183.name": {
+      "en": "Orc War Beast",
+      "zh": "兽人战兽",
+      "context": "Orc Kingdom · monster3/Rhino_OrcWarBeast"
+    },
+    "data.unitguide.91183.description": {
+      "en": "A heavily armored rhino that drives its horn into nearby enemies.",
+      "zh": "身披重甲的犀牛，用巨角攻击附近的敌人。",
+      "context": "Enemy guide · Orc War Beast"
+    },
+    "data.monster-roster.91184.name": {
+      "en": "Hellforge Colossus",
+      "zh": "狱炉巨像",
+      "context": "Demon Kingdom · monster3/Winter_HellforgeColossus"
+    },
+    "data.unitguide.91184.description": {
+      "en": "A plate-armored colossus that hurls a searing fist at defenders.",
+      "zh": "身披锻甲的巨像挥出灼热铁拳，攻击守军。",
+      "context": "Enemy guide · Hellforge Colossus"
+    },
+    "data.monster-roster.91185.name": {
+      "en": "Pyre Executioner",
+      "zh": "焚刑刽子手",
+      "context": "Demon Kingdom · monster3/OrcSmasher_PyreExecutioner"
+    },
+    "data.unitguide.91185.description": {
+      "en": "The executioner of the Demon Kingdom sweeps its fire-forged cleaver with both hands.",
+      "zh": "恶魔王国的刽子手双手挥动烈火锻造的巨斧。",
+      "context": "Enemy guide · Pyre Executioner"
+    },
+    "data.monster-roster.91186.name": {
+      "en": "Hellgate Behemoth",
+      "zh": "地狱门巨兽",
+      "context": "Demon Kingdom · monster1/Buffalo_HellgateBehemoth"
+    },
+    "data.unitguide.91186.description": {
+      "en": "An armored bull that lowers its horns to ram its target.",
+      "zh": "披甲的魔牛低头用双角冲撞敌人。",
+      "context": "Enemy guide · Hellgate Behemoth"
     }
   },
   "images": {

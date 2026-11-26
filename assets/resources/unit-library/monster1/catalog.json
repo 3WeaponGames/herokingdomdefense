@@ -1135,6 +1135,25 @@
       "bones": 26,
       "slots": 11,
       "variantOf": "monster1/Wolf_Gray"
+    },
+    {
+      "id": "monster1/Buffalo_HellgateBehemoth",
+      "name": "Hellgate Behemoth",
+      "pack": "monster1",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Buffalo/Buffalo_Wild.prefab",
+      "skeleton": "assets/resources/unit-library/monster1/Units/DemonVariants/Buffalo_HellgateBehemoth.json",
+      "uuid": "072f03c2-2c75-56fd-a085-c895c361b9ab",
+      "resource": "unit-library/monster1/Units/DemonVariants/Buffalo_HellgateBehemoth",
+      "animations": [
+        "die",
+        "idle",
+        "hit",
+        "move",
+        "attack"
+      ],
+      "bones": 20,
+      "slots": 10,
+      "variantOf": "monster1/Buffalo_Wild"
     }
   ],
   "parts": [

@@ -110,6 +110,8 @@ No SDK copy, executable, DLL, generated entry, benchmark fixture, screenshot, lo
 
 Creator packages the contents of `resources` and custom asset bundles. The Android staging tool copies the project to a fresh external directory and follows the paths and UUIDs used by the shipped scenes, prefabs, and configuration. It skips unreferenced files in the imported unit library, baked equipment, character editor thumbnails, generated map artwork, and two icon libraries. Add new dynamically constructed paths in those folders to the staging roots when introducing a runtime loader.
 
+The release copy applies `GameTools.campaignStageLimit` to the campaign table before resolving asset dependencies. It excludes later-stage prefabs and their unreferenced generated artwork. The source project keeps the parked stages available for future releases.
+
 Use Node 22+, `cwebp` from [libwebp](https://developers.google.com/speed/webp/download), and FFmpeg with the `libvorbis` encoder. With both programs on `PATH`, run this from the project root. Use a Git working tree or a UTF-8-aware extractor for a frozen source snapshot. The stage loader uses exact resource paths, so staging checks that projectile trail paths still match their texture IDs.
 
 ```powershell

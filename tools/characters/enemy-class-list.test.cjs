@@ -49,7 +49,7 @@ test('default character grouping and publication retain every appearance member 
 test('name search and Shift+Q/E browse visible character cards in order without changing drafts',async t=>{
  const portraits=units.map(unit=>unit.id==='91002'?{...unit,portrait:'assets/icons/archer.png'}:unit);
  const f=fixture({units:portraits});t.after(()=>f.close());await f.settle();
- const editor=f.host.querySelector('.character-editor'),list=f.byLabel('Character results'),search=f.byLabel('Search character names');
+ const editor=f.host.querySelector('.character-editor'),list=f.byLabel('Character results'),search=f.byLabel('Search character names or kingdoms');
  const name=()=>f.byLabel('Character name').value;
  const event=(key,target,options={})=>({key,target,shiftKey:true,preventDefault(){this.defaultPrevented=true;},stopPropagation(){},...options});
  const press=async(key,target=f.activeElement||list)=>{const stroke=event(key,target);editor.listeners.keydown(stroke);await f.settle();return stroke;};
@@ -72,6 +72,25 @@ test('name search and Shift+Q/E browse visible character cards in order without 
  await press('Q',f.byLabel('Search character parts'));assert.equal(name(),'Behemoth');
  search.value='No matches';search.oninput();assert.deepEqual(rows(f),[]);await press('E',list);assert.equal(name(),'Behemoth');
  await f.client.focusUnit({type:'ally',id:'90001'});await f.settle();assert.equal(search.value,'');assert.equal(name(),'Guard');
+ assert.deepEqual(f.snapshot().data,f.initial);assert.equal(f.calls.changes.length,0);assert.equal(f.calls.saves,0);
+});
+
+test('kingdom browsing exposes units with shared appearances and combines with pack and name search',async t=>{
+ const tagged=units.map(unit=>{
+  if(unit.id==='91001')return {...unit,kingdom:'orc'};
+  if(['91002','91004'].includes(unit.id))return {...unit,kingdom:'sun-tomb'};
+  return unit;
+ });
+ const f=fixture({units:tagged});t.after(()=>f.close());await f.settle();
+ const kingdom=f.byLabel('Character kingdom'),pack=f.byLabel('Character package'),search=f.byLabel('Search character names or kingdoms');
+ kingdom.value='sun-tomb';kingdom.onchange();
+ assert.deepEqual(rows(f),['Enemy · Normal · Ant · Sun-Tomb Empire','Enemy · Elite · Archer · Sun-Tomb Empire']);
+ pack.value='monster1';pack.onchange();
+ assert.deepEqual(rows(f),['Enemy · Elite · Archer · Sun-Tomb Empire']);
+ search.value=' desert archer ';search.oninput();
+ assert.deepEqual(rows(f),['Enemy · Elite · Archer · Sun-Tomb Empire']);
+ await f.client.focusUnit({type:'ally',id:'90001'});await f.settle();
+ assert.equal(kingdom.value,'all');assert.equal(search.value,'');
  assert.deepEqual(f.snapshot().data,f.initial);assert.equal(f.calls.changes.length,0);assert.equal(f.calls.saves,0);
 });
 

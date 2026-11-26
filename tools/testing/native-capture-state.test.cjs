@@ -80,57 +80,10 @@ function fixture() {
   return { view, scene, hero, follow, joystick, knob, popup, panel, wallArt, camera, render, cost, coin, hp, hpBackground, hpFill };
 }
 
-test('native occlusion captures preserve follow, joystick release and popup updates for the main draw', () => {
-  const f = fixture();
-  for (let frame = 1; frame <= 60; frame++) {
-    f.hero.move(frame * 7);
-    f.joystick.move(frame % 2 ? 120 : 0); f.knob.move(frame % 2 ? 50 : 0);
-    f.popup.move(frame * 3); f.popup.fade(frame % 2 ? 255 : 160);
-    f.view.update(); f.render(f.scene);
-    assert.equal(f.follow.vertexX, f.hero.worldX, 'follow ring retained its previous location');
-    assert.equal(f.knob.vertexX, f.joystick.x + f.knob.x, 'released joystick retained its drag position');
-    assert.equal(f.panel.vertexX, f.popup.worldX, 'popup panel missed layout movement');
-    assert.equal(f.panel.vertexOpacity, f.popup.opacity, 'popup panel missed inherited opacity');
-  }
-  // No movement on the next frame must still show the last released state.
-  f.view.update(); f.render(f.scene);
-  assert.equal(f.knob.vertexX, 0);
-  assert.equal(f.camera.captures, 122);
-});
-
 test('each native capture refreshes the selected Sprite even after an earlier capture consumed its flags', () => {
   const f = fixture();
   f.wallArt.move(75);
   f.view.renderNative([{ enabled: true, node: f.hero }], { x: 0, y: 0 }, 100, {});
   f.view.renderNative([{ enabled: true, node: f.wallArt }], { x: 0, y: 0 }, 100, {});
   assert.equal(f.wallArt.vertexX, 75);
-});
-
-test('failed native capture restores scene inheritance and detaches its target texture', () => {
-  const f = fixture(); f.hero.move(90); f.camera.fail = true;
-  assert.throws(() => f.view.update(), /capture failed/);
-  assert.equal(f.camera.targetTexture, null);
-  f.render(f.scene);
-  assert.equal(f.follow.vertexX, 90);
-});
-
-test('frames with no occlusion capture do not force scene transform updates', () => {
-  const f = fixture();
-  f.hero.y = -5; f.scene._renderFlag = 0;
-  f.view.update();
-  assert.equal(f.scene._renderFlag, 0);
-});
-
-test('native captures cannot freeze an animated barracks cost scale or leave the HP background behind its fill', () => {
-  const f = fixture();
-  for (const scale of [.01, .3, .8, 1.2, 1]) {
-    f.cost.scale(scale); f.hero.move(f.hero.x + 10); f.hp.move(15);
-    f.view.update(); f.render(f.scene);
-    assert.equal(f.coin.vertexScaleX, scale, 'cost coin froze at an intermediate reveal scale');
-    assert.equal(f.hpBackground.vertexX, f.hpFill.vertexX);
-    assert.equal(f.hpBackground.vertexX, f.hero.worldX + 15);
-  }
-  f.hp.fade(0); f.view.update(); f.render(f.scene);
-  assert.equal(f.hpBackground.vertexOpacity, 0); assert.equal(f.hpFill.vertexOpacity, 0);
-  assert.equal(f.coin.vertexScaleX, 1, 'finished reveal must restore full size');
 });

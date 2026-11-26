@@ -1,6 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('node:path'),fs=require('node:fs'),os=require('node:os');
 const W=require('../worlds/wave-editor'),Catalog=require('../worlds/unit-catalog'),{Service}=require('../worlds/service');
+const Kingdoms=require('../lib/unit-kingdoms');
 const clone=value=>JSON.parse(JSON.stringify(value));
 function stage(){return{spawns:[{id:1,enabled:true},{id:2,enabled:true}],graphs:[{id:'route',spawnIds:[1]}],config:{WaveCfg:[{id:7,Wave:1,FutureWave:{keep:true},SpawnTimeline:[{id:'original',unitId:3,spawnId:1,count:7,startSeconds:3.5,intervalSeconds:.75,routeGraphId:'route',future:{keep:[1,2]}},{id:'other',unitId:4,spawnId:2,count:1,startSeconds:1,intervalSeconds:1}]}]}};}
 const settings={spawnId:1,count:7,startSeconds:3.5,intervalSeconds:.75};
@@ -84,6 +85,47 @@ test('saved units expose exactly six fighting profiles per parent without Campai
   assert(!rows.some(unit=>unit.id===id));
  }
  for(const group of groups){assert.equal(group.units.length,6);const baseId=Number(group.key.split(':')[1]);assert.equal(Catalog.firstProfile(group.units).id,profiles.families[baseId].defaultProfileId??baseId);assert.equal(new Set(group.units.map(Catalog.profileLabel)).size,6);assert(group.units.every(unit=>unit.profileKind==='Fighting type'));}
+ const namesIn=kingdom=>groups.filter(group=>group.units[0].kingdom===kingdom).map(group=>{
+  assert(group.units.every(unit=>unit.kingdom===kingdom&&unit.name===group.units[0].name));
+  return group.units[0].name;
+ }).sort();
+ assert.deepEqual(namesIn('sun-tomb'),[
+  'Black Plague','Brass Scarab','Carrion Bird','Evilmass Dagger','Larva Leech','Relic Cantor',
+  'Shrouded Revenant','Sun-Tomb Regent','Worm Lightning','Worm Poison'
+ ]);
+ assert.deepEqual(namesIn('plant'),[
+  'Flower Tulip','Iron Golem','Mushroom Walker','Pitcher Plant','Red Plant',
+  'Spiky Plant','Stump Walker','Thorn Warden','Tree Golem'
+ ]);
+ assert(rows.filter(unit=>unit.kingdom==='plant').every(unit=>Catalog.matches(unit,'nature kingdom deep forest')));
+ assert.deepEqual(namesIn('skeleton'),[
+  'Reaper Death','Skeleton Bat','Skeleton Bird','Skeleton Haunt','Skeleton King',
+  'Skeleton Rhino','Skeleton Soldier','Skeleton Warlord','Skeleton Warrior'
+ ]);
+ assert.deepEqual(namesIn('orc'),[
+  'Orc Crimson Guard','Orc Shaman','Orc Siege Chief','Orc Smasher Berserker','Orc Smasher Red',
+  'Orc Smasher Warlord','Orc Sword Butcher','Orc Sword Rookie','Orc Sword Veteran','Orc War Beast','Orc War Raptor','Orc Wyvern'
+ ]);
+ assert.deepEqual(namesIn('vampire'),[
+  'Blood Beetle','Crimson Vampire Lord','Crypt Ghoul','Feral Ghoul','Reaper Blood',
+  'Scarbrow Vampire','Vampire','Wing Demon Vampire'
+ ]);
+ assert.deepEqual(namesIn('demon'),[
+  'Cinderhorn Demon','Demon Wolf','Devil Bee','Fire Raptor','Hellforge Colossus','Hellgate Behemoth',
+  'Horn Rabbit Demon','Pyre Executioner','Raptor Swamp','Toad Giant','Venom Spider','Wing Demon Eye'
+ ]);
+ const kingdomLabels=new Map(Kingdoms.options(rows).map(({value,label})=>[value,label]));
+ assert.equal(kingdomLabels.get('demon'),'Demon Kingdom · Fire');
+ assert.equal(kingdomLabels.get('vampire'),'Vampire Kingdom · Ice');
+ const slimes=groups.map(group=>group.units[0].name).filter(name=>/\bslime\b/i.test(name)).sort();
+ assert(slimes.includes('Flying Slime'));assert.deepEqual(namesIn('slime'),slimes);
+ for(const [id,name,pack] of [[91010,'Carrion Bird','monster1'],[91071,'Black Plague','monster2']]){
+  for(const profileId of Object.values(profiles.families[id].profiles)){
+   const unit=rows.find(unit=>unit.id===profileId),token=config.SoldierCfg[profileId].Name.slice(6,-2);
+   assert.equal(unit.name,name);assert.equal(unit.assetPack,pack);assert.equal(localization.entries[token].en,name);
+   assert(Catalog.matches(unit,'desert '+name));
+  }
+ }
  const slime=groups.find(group=>group.units.some(unit=>unit.id===91157)),defaultSlime=Catalog.firstProfile(slime.units);
  assert.equal(defaultSlime.unitType,'bruiser');
  const draft=stage(),fighter=slime.units.find(unit=>unit.unitType==='fighter');

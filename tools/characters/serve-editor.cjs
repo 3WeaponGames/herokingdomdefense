@@ -17,6 +17,7 @@ function createServer(root,options){
     for(const name of ['unit-packs','boss-model','animation-defaults','unit-animation-speeds','preview-reference'])modules['./lib/'+name]=fs.readFileSync(path.join(root,'packages/hkd-characters/lib',name+'.js'),'utf8');
     modules['./character-levels']=modules['./lib/character-levels'];
     modules['./unit-packs']=modules['./lib/unit-packs'];
+    modules['../game-data-editor/lib/unit-kingdoms']=modules['../../game-data-editor/lib/unit-kingdoms']=fs.readFileSync(path.join(root,'packages/game-data-editor/lib/unit-kingdoms.js'),'utf8');
     modules['../../game-data-editor/lib/enemy-classes']=fs.readFileSync(path.join(root,'packages/game-data-editor/lib/enemy-classes.js'),'utf8');
     modules['./unit-records']=fs.readFileSync(path.join(root,'packages/game-data-editor/lib/unit-records.js'),'utf8');
     if(projectileMode)for(const name of ['combat-preview','projectile-visuals'])modules['./'+name]=fs.readFileSync(path.join(panel,name+'.js'),'utf8');

@@ -10,6 +10,23 @@ var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
 var nextPosePhase = 0;
 var battleUIModule, depthViewModule;
+function depthView() {
+  return depthViewModule || (depthViewModule = require("KinghtFallDepthView"));
+}
+function healthBounds(bar, actor, game, parent, scratch) {
+  var Depth = depthView();
+  var sources = actor.ctrPlayAni ? Depth.bodyVisuals(actor) : [actor.getSpAni ? actor.getSpAni() : actor.spAni];
+  var nativeHealth = actor.node._combatActor === actor && !actor.ctrPlayAni;
+  var heroMount = game && actor === game.ctrPlay && actor.node._combatActor === actor &&
+    actor.ctrHp === bar && actor.ctrPlayAni && actor.ctrPlayAni.spAniMa;
+  var box = null;
+  sources.forEach(function (renderer) {
+    if (!renderer || !renderer.skeletonData) return;
+    var weightedMount = renderer === heroMount;
+    box = Depth.union(box, Depth.unitBounds(renderer, parent, scratch, nativeHealth || weightedMount, weightedMount));
+  });
+  return box;
+}
 var def_KinghtFallItemHp = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -64,12 +81,18 @@ var def_KinghtFallItemHp = function (t) {
   };
   _ctor.prototype.lateUpdate = function () {
     var actor = this.actor;
-    if (!actor || !actor.node || !this.node.parent || actor.isDead()) return;
+    if (this._battleParent || !actor || !actor.node || !this.node.parent || actor.isDead()) return;
     var parent = this.node.parent;
     var uiModule = battleUIModule || require("KinghtFallUIGame"), UI = uiModule.default;
     if (!battleUIModule && UI) battleUIModule = uiModule;
     var game = UI && UI.instance && UI.instance.ctrGame;
     var data = game && game.gameData;
+    var depth = game && game._depthView;
+    // The foreground pass will adopt this bar before drawing. Avoid reading
+    // every new rig's pose here while its bar still has the authored parent.
+    if (depth && !depth._destroyed && depth._unitHealthLayer && depth._unitHealthLayer.activeInHierarchy &&
+        actor.node.parent === depth.main && (actor.hpctrl || actor.ctrHp) === this &&
+        (actor === game.ctrPlay || actor._combatData === data && !actor._isPooled)) return;
     var population = data && data.enemyList && data.soldierList ? data.enemyList.length + data.soldierList.length : 0;
     var cadence = population >= 64 ? 4 : population >= 32 ? 2 : 1;
     var frame = cc.director && cc.director.getTotalFrames && cc.director.getTotalFrames();
@@ -82,20 +105,10 @@ var def_KinghtFallItemHp = function (t) {
     // All combat units share the hero's GUI Pro bar size, including when the
     // hero bar is hidden at full health. Measuring through the unit's parent
     // cancels inherited model scales for enemies and mounted allies alike.
-    var Depth = depthViewModule || require("KinghtFallDepthView"), scratch = this._hpSizeScratch || (this._hpSizeScratch = {});
+    var Depth = depthView(), scratch = this._hpSizeScratch || (this._hpSizeScratch = {});
     var reference = Depth.unitReferenceSize(heroBar, parent, heroBar ? heroBar.width : 64, heroBar ? heroBar.height : 10, scratch);
-    if (!depthViewModule) depthViewModule = Depth;
     var referenceWidth = reference.width, referenceHeight = reference.height;
-    var sources = actor.ctrPlayAni ? Depth.bodyVisuals(actor) : [actor.getSpAni ? actor.getSpAni() : actor.spAni];
-    var nativeHealth = actor.node._combatActor === actor && !actor.ctrPlayAni;
-    var heroMount = game && actor === game.ctrPlay && actor.node._combatActor === actor &&
-      actor.ctrHp === this && actor.ctrPlayAni && actor.ctrPlayAni.spAniMa;
-    var box = null;
-    sources.forEach(function (renderer) {
-      if (!renderer || !renderer.skeletonData) return;
-      var weightedMount = renderer === heroMount;
-      box = Depth.union(box, Depth.unitBounds(renderer, parent, scratch, nativeHealth || weightedMount, weightedMount));
-    });
+    var box = healthBounds(this, actor, game, parent, scratch);
     if (!box) return;
     var width = this.node.width || this.sprPro && this.sprPro.node.width;
     if (!(width > 0)) return;
@@ -116,6 +129,79 @@ var def_KinghtFallItemHp = function (t) {
     }
     this._poseReady = true;
     this._poseParent = parent;
+  };
+  _ctor.prototype.battleReferenceSize = function (layer) {
+    var saved = this._battleParent, node = this.node;
+    var scratch = this._battleReferenceScratch || (this._battleReferenceScratch = {});
+    return depthView().unitReferenceSize(saved ? saved.parent : node, layer,
+      (node.width || 64) * (saved ? Math.abs(saved.scaleX) : 1),
+      (node.height || 10) * (saved ? Math.abs(saved.scaleY) : 1), scratch);
+  };
+  _ctor.prototype.moveToBattleLayer = function (layer) {
+    var node = this.node;
+    this._battleParent = { parent: node.parent, x: node.x, y: node.y, angle: node.angle,
+      scaleX: node.scaleX, scaleY: node.scaleY, zIndex: node.zIndex };
+    node.setParent(layer);
+    node.angle = 0;
+    node.zIndex = 0;
+    this.setHp(this.actor.hp, this.actor.hpMax);
+  };
+  _ctor.prototype.syncBattlePosition = function (game, reference, frame, cadence, projection) {
+    var saved = this._battleParent, actor = this.actor, node = this.node, layer = node.parent;
+    if (!saved || !layer) return;
+    if (!cc.isValid(saved.parent, true) || !saved.parent.activeInHierarchy) {
+      node.active = false;
+      return;
+    }
+    if (!node.active) this.setHp(actor.hp, actor.hpMax);
+    var originX, originY;
+    if (projection) {
+      // Combat roots share the map-to-layer transform even when their own
+      // poses and positions are different. Nested actors use their own origin.
+      var x = actor.node.x, y = actor.node.y;
+      originX = projection.x + projection.a * x + projection.c * y;
+      originY = projection.y + projection.b * x + projection.d * y;
+    } else {
+      var origin = layer.convertToNodeSpaceAR(actor.node.convertToWorldSpaceAR(cc.Vec2.ZERO));
+      originX = origin.x;
+      originY = origin.y;
+    }
+    var generation = actor.node._combatGeneration;
+    var firstPose = saved.offsetX === undefined;
+    var poseDue = actor === game.ctrPlay || (frame + this._posePhase) % cadence === 0 ||
+      (firstPose ? cadence < 4 : saved.generation !== generation);
+    if (poseDue || firstPose) {
+      // Large groups can show every bar immediately from its original anchor.
+      // Sample the new rigs on their assigned frames instead of all at once.
+      var box = poseDue && healthBounds(this, actor, game, layer, this._hpSizeScratch || (this._hpSizeScratch = {}));
+      var anchor = box ? null : layer.convertToNodeSpaceAR(saved.parent.convertToWorldSpaceAR(cc.v2(saved.x, saved.y)));
+      saved.offsetX = (box ? (box.minX + box.maxX) / 2 : anchor.x) - originX;
+      saved.offsetY = (box ? box.maxY + reference.height * (node.anchorY + .4) : anchor.y) - originY;
+      saved.generation = generation;
+    }
+    var barX = originX + saved.offsetX, barY = originY + saved.offsetY;
+    if (node.x !== barX || node.y !== barY) node.setPosition(barX, barY);
+    var sx = reference.width / (node.width || 64), sy = reference.height / (node.height || 10);
+    if (node.scaleX !== sx) node.scaleX = sx;
+    if (node.scaleY !== sy) node.scaleY = sy;
+  };
+  _ctor.prototype.restoreBattleParent = function () {
+    var saved = this._battleParent, node = this.node, actor = this.actor;
+    this._battleParent = null;
+    this._poseReady = false;
+    if (!saved || !cc.isValid(node, true)) return;
+    if (!cc.isValid(saved.parent, true)) {
+      node.active = false;
+      node.destroy();
+      return;
+    }
+    node.setParent(saved.parent);
+    node.setPosition(saved.x, saved.y);
+    node.angle = saved.angle;
+    node.scaleX = saved.scaleX;
+    node.scaleY = saved.scaleY;
+    node.zIndex = saved.zIndex;
+    this.setHp(actor && !actor._isPooled && !actor.isDead() ? actor.hp : 0, actor ? actor.hpMax : 0);
   };
   _ctor.prototype.setFillProgress = function (sprite, progress) {
     sprite.fillRange = progress;
@@ -140,11 +226,11 @@ var def_KinghtFallItemHp = function (t) {
   };
   _ctor.prototype.setHp = function (t, e) {
     if (this.sprPro) {
-      if (t >= e || t <= 0) {
+      if (t <= 0 || e <= 0 || (t >= e && !this._battleParent)) {
         this.node.active = false;
       } else {
         this.node.active = true;
-        this.setFillProgress(this.sprPro, t / e);
+        this.setFillProgress(this.sprPro, Math.min(1, t / e));
         this.labPro && (this.labPro.string = t.toFixed(2) + "/" + e.toFixed(2));
       }
     }

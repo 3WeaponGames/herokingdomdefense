@@ -4,6 +4,7 @@ const StageBiome=require('./stage-biome');
 const fs=require('fs'),path=require('path'),os=require('os'),crypto=require('crypto'),url=require('url');
 const UnitCatalog=require('./unit-catalog');
 const WaveCounts=require('./wave-counts');
+const {activeStages}=require('../lib/campaign-stages');
 const UnitLibrary=require('../../hkd-characters/lib/unit-library');
 const M=require('./model'),L=require('./legacy'),P=require('./prefab'),B=require('./baker'),JSONDoc=require('../lib/json-document'),History=require('./history'),Library=require('./library'),Groups=require('./groups'),StageReplace=require('./stage-replace');
 const campaignFile=L.configFile('A');
@@ -53,7 +54,7 @@ class Service{
  }
  constructor(root,options){this.root=path.resolve(root);L.invalidateScripts(this.root);this.options=options||{};this.artifacts=this.options.artifacts||path.join(os.homedir(),'Documents','Codex Artifacts','HeroKingdomDefense','world-builder',L.hash(this.root.toLowerCase()).slice(0,16));if(path.relative(this.root,this.artifacts).split(path.sep)[0]!=='..'&&!path.isAbsolute(path.relative(this.root,this.artifacts)))throw Error('Backups must be outside project');this.version=1;this.docs={};this.stagedAssets=new Map();this.undo=[];this.redo=[];this.busy=false;this.indexData=null;this.images={};this.sources={};this.recovery=path.join(this.artifacts,'drafts.json');this.hadRecovery=fs.existsSync(this.recovery);this.recoveryRevision=fingerprint(this.recovery);this.recoveryBackup=null;this.stageValidation=null;this.stageClipboard=null;}
  index(){if(!this.indexData){this.stageValidation=null;this.indexData=L.index(this.root);this.images=this.indexData.images||{};const folder=path.join(this.root,'authoring/worlds/maps');if(fs.existsSync(folder))for(const file of fs.readdirSync(folder).filter(f=>f.endsWith('.json'))){const value=L.read(this.root,path.relative(this.root,path.join(folder,file)));const old=this.indexData.maps.find(m=>m.id===value.id),metadata={name:value.name,biome:value.biome,archived:value.archived===true};if(old)Object.assign(old,metadata);else this.indexData.maps.push({id:value.id,...metadata,path:null,images:{}});}for(const doc of Object.values(this.docs))if(doc.key.startsWith('map:')&&doc.original===null&&!this.indexData.maps.some(m=>m.id===doc.data.id))this.indexData.maps.push({id:doc.data.id,name:doc.data.name,biome:doc.data.biome,path:null,images:{}});this.indexData.library=L.loadLibrary(this.root).concat(require('./animated-objects').catalog(this.root,this.images));for(const a of this.stagedAssets.values())if(!this.indexData.library.some(existing=>existing.id===a.id))this.indexData.library.push(a);}return this.indexData;}
- stageCatalog(){return this.index().stages.map(row=>{
+ stageCatalog(){const index=this.index();return index.stages.slice(0,activeStages(index.documents.A).length).map(row=>{
   const doc=this.docs['stage:'+row.id],file='authoring/worlds/stages/'+row.id+'.json',layout=doc?doc.data:/^A-\d+$/.test(row.id)&&fs.existsSync(path.join(this.root,file))?L.read(this.root,file):null;
   // Match loadStage's current layout without loading every stage, creating a
   // draft, or persisting anything while the map editor browses its usage.
@@ -67,7 +68,15 @@ class Service{
   const waveCountTargets=WaveCounts.referenceTotals(index.documents.A.LevelCfg,interval);
   return {version:this.version,buildingLooks,maps:this.mapCatalog(),stages:this.stageCatalog().map(s=>Object.assign({},s,{name:text(s.name)})),library:index.library,units,battleTasks,interval,waveCountTargets,recovery:this.hadRecovery||this.recoveries().length>0,recoveries:this.recoveries(),images:this.images,collections:Library.summary(this)};}
  availableMaps(){return this.index().maps.filter(map=>map.archived!==true);}
- mapCatalog(){return this.availableMaps().map(map=>{const doc=this.docs['map:'+map.id],value=doc?doc.data:map;return {id:map.id,name:value.name,biome:value.biome,thumbnail:this.thumbnail(map.id)};});}
+ mapCatalog(){
+  const index=this.index(),stages=index.stages||[],count=activeStages(index.documents?.A).length;
+  const mapId=row=>this.docs['stage:'+row.id]?.data.mapId||row.mapId;
+  const active=new Set(stages.slice(0,count).map(mapId)),disabled=new Set(stages.slice(count).map(mapId));
+  return this.availableMaps().filter(map=>!disabled.has(map.id)||active.has(map.id)).map(map=>{
+   const value=this.docs['map:'+map.id]?.data||map;
+   return {id:map.id,name:value.name,biome:value.biome,thumbnail:this.thumbnail(map.id)};
+  });
+ }
  unitPreview(request){const id=Number(request&&request.id),config=this.index().documents.A,unit=(config.SoldierCfg||{})[id];if(!Number.isSafeInteger(id)||!unit||!unit.prefab||[90011,90012].includes(id))throw Error('Choose a spawnable unit.');const data=require('../lib/unit-assets').describe(this.root,{type:'enemy',id,documents:{A:{data:config}},noShared:true});data.visual=clone((config.GameTools&&config.GameTools.visuals||{})[data.key]||{});return data;}
  thumbnail(mapId){const file='assets/KinghtFallIconMap/Generated/Maps/'+mapId+'/thumbnail.png';return fs.existsSync(path.join(this.root,file))?url.pathToFileURL(path.join(this.root,file)).href:null;}
  shadowSettings(){const c=this.previewConfig('A');return require('../../../assets/_script/BuildingDropShadow').settings(c.GameTools&&c.GameTools.buildingShadows&&c.GameTools.buildingShadows.global);}

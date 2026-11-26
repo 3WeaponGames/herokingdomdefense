@@ -224,6 +224,51 @@ NavigationGrid.prototype.isWalkable=function(value,radius) {
   }
   return true;
 };
+// A bounded best-first search used only when a flight spawn has no clear sample.
+// Return only points accepted by isWalkable, including for narrow slivers of
+// the requested disk that may not contain a navigation cell center.
+NavigationGrid.prototype.nearestSpawnPoint = function (origin, radius, maximumDistance) {
+  var grid = this, b = this.bounds, r = radiusValue(radius), p = readPoint(origin);
+  var limit = maximumDistance === undefined ? Infinity : radiusValue(maximumDistance);
+  var limitSquared = limit * limit, bestDistance = Infinity, best = null, nextId = 0;
+  var queue = new Heap(byDistance), tolerance = 1 / 64;
+  function enqueue(x0, y0, x1, y1) {
+    if (x0 > x1 || y0 > y1) return;
+    var closest = { x: Math.max(x0, Math.min(x1, p.x)), y: Math.max(y0, Math.min(y1, p.y)) };
+    var f = distance2(p, closest);
+    if (f <= limitSquared && f < bestDistance) queue.push({ x0: x0, y0: y0, x1: x1, y1: y1, f: f, id: nextId++, closest: closest });
+  }
+  function consider(candidate, d2) {
+    if (d2 > limitSquared || d2 >= bestDistance || !grid.isWalkable(candidate, r)) return false;
+    best = candidate;
+    bestDistance = d2;
+    return true;
+  }
+  enqueue(Math.max(b.minX + r, p.x - limit), Math.max(b.minY + r, p.y - limit),
+    Math.min(b.maxX - r, p.x + limit), Math.min(b.maxY - r, p.y + limit));
+  for (var work = 0; queue.items.length && work < 2048; work++) {
+    var area = queue.pop();
+    if (area.f >= bestDistance) break;
+    if (consider(area.closest, area.f)) continue;
+    var width = area.x1 - area.x0, height = area.y1 - area.y0;
+    var mid = { x: area.x0 + width / 2, y: area.y0 + height / 2 };
+    consider(mid, distance2(p, mid));
+    if (Math.max(width, height) <= tolerance) continue;
+    var diagonal = Math.hypot(width, height) / 2, extent = r + diagonal;
+    var nearby = grid._query(mid.x - extent, mid.y - extent, mid.x + extent, mid.y + extent);
+    // Signed distance can change by at most the half diagonal across a box.
+    // A box wholly inside one inflated contour cannot contain a free point.
+    if (nearby.some(function (index) { return clearance(mid, grid.polygons[index].vertices) + diagonal < r - EPS; })) continue;
+    if (width >= height) {
+      enqueue(area.x0, area.y0, mid.x, area.y1);
+      enqueue(mid.x, area.y0, area.x1, area.y1);
+    } else {
+      enqueue(area.x0, area.y0, area.x1, mid.y);
+      enqueue(area.x0, mid.y, area.x1, area.y1);
+    }
+  }
+  return best;
+};
 NavigationGrid.prototype._hitsPolygon=function(a,b,r,vertices) {
   if(inside(a,vertices)||inside(b,vertices))return true;
   var threshold=(r+EPS)*(r+EPS);

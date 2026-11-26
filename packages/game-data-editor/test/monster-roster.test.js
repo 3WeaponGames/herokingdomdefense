@@ -69,7 +69,7 @@ test('every imported monster is an independent spawnable Units record with its a
     assert.equal(store.changes().length, 0);
 });
 
-test('pack filters, Custom Units, search and wave choices leave drafts and files untouched', () => {
+test('pack and kingdom filters, search and wave choices leave drafts and files untouched', () => {
     const f = panelFixture(), before = f.store.draftState(), configFile = path.join(root, 'assets/KinghtFallConfig/GameJsonCfg.json'), bytes = fs.readFileSync(configFile);
     const options = ['custom', 'monster3', 'fantasy-monsters', 'fantasy-bosses'].map(value => {
         const option = new f.panel.$unitPack.constructor('option');
@@ -136,6 +136,13 @@ test('pack filters, Custom Units, search and wave choices leave drafts and files
     f.panel._renderList();
     assert.equal(f.panel.$count.textContent, '0 models · 0 profiles');
     assert.match(f.panel.$list.children[0].textContent, /No units match/);
+    f.panel.$search.value = '';
+    f.panel._unitPack = 'all'; f.panel._unitKingdom = 'sun-tomb'; f.panel._renderList();
+    assert.equal(f.panel.$count.textContent, '10 models · 60 profiles');
+    const visibleNames = () => Array.from(f.panel.$list.children, button => button.children[1].children[0].textContent);
+    assert(visibleNames().includes('Carrion Bird')); assert(visibleNames().includes('Black Plague'));
+    f.panel._unitPack = 'monster1'; f.panel.$search.value = 'desert bird'; f.panel._renderList();
+    assert.deepEqual(visibleNames(), ['Carrion Bird']);
     const choices = f.panel._unitOptions(false);
     for (const row of monsters) {
         const choice = choices.find(option => option.value === Number(row.unitID));

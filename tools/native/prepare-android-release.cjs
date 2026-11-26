@@ -4,8 +4,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 const { parseArgs } = require('node:util');
+const { activeStages } = require('../../packages/game-data-editor/lib/campaign-stages');
 
 const projectRoot = path.resolve(__dirname, '../..');
+const campaignFile = 'KinghtFallConfig/GameJsonCfg.json';
 const iconLibraryFolders = ['resources/icons/2d-minimal/', 'resources/icons/Pictograms/'];
 // These libraries also serve the Creator panels. Keep entries reached from the
 // shipped scenes, prefabs, game data, and appearance catalogs.
@@ -109,6 +111,13 @@ function indexAssets(assetRoot) {
 
 function planRelease(assetRoot) {
   const { allFiles, assets, byUuid, byPath } = indexAssets(assetRoot);
+  const campaign = assets.has(campaignFile) ? readJson(path.join(assetRoot, campaignFile)) : null;
+  const active = activeStages(campaign);
+  const disabled = campaign?.LevelCfg?.slice(active.length) || [];
+  const prefabPaths = stages => stages.filter(stage => stage.prefab).map(stage => 'KinghtFallIconMap/' + stage.prefab + '.prefab');
+  const activePrefabs = new Set(prefabPaths(active));
+  const disabledPrefabs = new Set(prefabPaths(disabled).filter(file => !activePrefabs.has(file)));
+  const releaseCampaign = disabled.length ? { ...campaign, LevelCfg: active } : null;
   const projectileCatalog = 'resources/projectiles/catalog.json';
   if (assets.has(projectileCatalog)) {
     const { trails } = readJson(path.join(assetRoot, projectileCatalog));
@@ -127,11 +136,13 @@ function planRelease(assetRoot) {
   const pending = [];
   function include(file) {
     if (assets.has(file) && !included.has(file)) {
+      if (disabledPrefabs.has(file)) throw new Error('An active release asset references a disabled stage prefab: ' + file);
       included.add(file);
       pending.push(file);
     }
   }
   for (const file of assets.keys()) {
+    if (disabledPrefabs.has(file)) continue;
     if (!optionalFolders.some(prefix => file.startsWith(prefix)) || file.startsWith(generatedMountIconPrefix)) include(file);
   }
 
@@ -149,6 +160,10 @@ function planRelease(assetRoot) {
       const stem = file.slice(0, -path.posix.extname(file).length);
       include(stem + '.atlas');
       include(stem + '.atlas.txt');
+    }
+    if (file === campaignFile && releaseCampaign) {
+      visitStrings(releaseCampaign, reference);
+      continue;
     }
     if (!textAsset.test(file)) continue;
     const source = path.join(assetRoot, file);
@@ -183,13 +198,14 @@ function planRelease(assetRoot) {
   for (const [file, { bytes }] of assets) {
     sourceBytes += bytes;
     if (included.has(file)) continue;
-    const group = optionalFolders.find(prefix => file.startsWith(prefix));
+    const group = disabledPrefabs.has(file) ? 'Disabled campaign stages' : optionalFolders.find(prefix => file.startsWith(prefix));
     if (!groups[group]) groups[group] = { files: 0, bytes: 0 };
     groups[group].files++;
     groups[group].bytes += bytes;
     removed.push({ file, bytes });
   }
-  return { included, sourceBytes, removed, groups };
+  const campaignStages = { included: active.map(stage => stage.Level), excluded: disabled.map(stage => stage.Level) };
+  return { included, sourceBytes, removed, groups, releaseCampaign, campaignStages };
 }
 
 function retargetAtlas(text, file, conversions) {
@@ -267,7 +283,9 @@ function prepareRelease(root, output, { cwebp, ffmpeg } = {}) {
     const texture = file.endsWith('.meta') && conversions.get(file.slice(0, -5));
     const target = path.join(destination, 'assets', texture ? texture + '.meta' : file);
     fs.mkdirSync(path.dirname(target), { recursive: true });
-    if (conversions.size && /\.(?:atlas(?:\.txt)?|plist)$/i.test(file)) {
+    if (file === campaignFile && plan.releaseCampaign) {
+      fs.writeFileSync(target, JSON.stringify(plan.releaseCampaign, null, 2) + '\n', { flag: 'wx' });
+    } else if (conversions.size && /\.(?:atlas(?:\.txt)?|plist)$/i.test(file)) {
       const text = fs.readFileSync(original, 'utf8');
       fs.writeFileSync(target, retargetAtlas(text, file, conversions), { flag: 'wx' });
     } else if (ffmpeg && /^KinghtFallAudio\/music\/[^/]+\.ogg$/.test(file)) {
@@ -283,10 +301,12 @@ function prepareRelease(root, output, { cwebp, ffmpeg } = {}) {
   const removedBytes = plan.removed.reduce((sum, entry) => sum + entry.bytes, 0);
   const textureBytesSaved = textures.reduce((sum, entry) => sum + entry.before - entry.after, 0);
   const musicBytesSaved = music.reduce((sum, entry) => sum + entry.before - entry.after, 0);
-  const report = { sourceBytes: plan.sourceBytes, stagedBytes: plan.sourceBytes - removedBytes - textureBytesSaved - musicBytesSaved,
-    removedBytes, textureBytesSaved, musicBytesSaved, groups: plan.groups, textures, music, removed: plan.removed };
+  const campaignBytesSaved = plan.releaseCampaign
+    ? fs.statSync(path.join(root, 'assets', campaignFile)).size - fs.statSync(path.join(destination, 'assets', campaignFile)).size : 0;
+  const report = { sourceBytes: plan.sourceBytes, stagedBytes: plan.sourceBytes - removedBytes - textureBytesSaved - musicBytesSaved - campaignBytesSaved,
+    removedBytes, textureBytesSaved, musicBytesSaved, campaignBytesSaved, campaignStages: plan.campaignStages, groups: plan.groups, textures, music, removed: plan.removed };
   fs.writeFileSync(path.join(destination, 'android-asset-report.json'), JSON.stringify(report, null, 2) + '\n', { flag: 'wx' });
-  return { destination, removedFiles: plan.removed.length, removedBytes, textures: textures.length, textureBytesSaved,
+  return { destination, campaignStages: plan.campaignStages, removedFiles: plan.removed.length, removedBytes, textures: textures.length, textureBytesSaved,
     tracks: music.length, musicBytesSaved };
 }
 
@@ -299,6 +319,7 @@ if (require.main === module) {
     } else {
       const result = prepareRelease(fs.realpathSync(projectRoot), values.out, values);
       console.log(`Prepared ${result.destination}\nExcluded ${result.removedFiles} files (${(result.removedBytes / 1e6).toFixed(1)} MB of source assets).`);
+      if (result.campaignStages.excluded.length) console.log('Included campaign stages: ' + result.campaignStages.included.join(', ') + '.');
       if (result.textures) console.log(`Encoded ${result.textures} textures as WebP (saved ${(result.textureBytesSaved / 1e6).toFixed(1)} MB).`);
       if (result.tracks) console.log(`Re-encoded ${result.tracks} music tracks as Vorbis (saved ${(result.musicBytesSaved / 1e6).toFixed(1)} MB).`);
     }

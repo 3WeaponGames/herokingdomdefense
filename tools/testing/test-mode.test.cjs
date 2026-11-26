@@ -49,7 +49,11 @@ function environment(options = {}) {
   const document = { activeElement: null };
   const context = {
     cc, exports: {}, performance: { now: () => now }, CC_PREVIEW: !!options.preview, CC_DEBUG: !!options.debug, CC_EDITOR: !!options.editor,
-    require(id) { if (id === 'UnitTestPanel' && options.panel) return options.panel; assert.equal(id, 'LanguageMgr'); return { LanguageMgr: { getInstance: () => ({
+    require(id) {
+      if (id === 'UnitTestPanel' && options.panel) return options.panel;
+      if (id === 'WaveTestPanel' && options.wave) return options.wave;
+      if (id === 'RewardTestPanel' && options.rewards) return options.rewards;
+      assert.equal(id, 'LanguageMgr'); return { LanguageMgr: { getInstance: () => ({
       bindLabel(label, key) { calls.bindings++; label.key = key; label.string = 'localized badge'; },
       t(key, values) { assert.equal(key, 'testing.fps'); return '\u00b7 ' + values[0] + ' FPS'; }
     }) } }; }
@@ -295,5 +299,36 @@ test('Native F7 releases correctly and a release build cannot open the panel', (
   release.service.init(); release.service.setGameplayTarget(target);
   release.service._keyDown({ key: 'F7' });
   assert.equal(toggles, 2);
+});
+test('F5 opens in the lobby while F6 requires an active battle, and neither changes the F8 preference', () => {
+  let waves = 0, rewards = 0, closed = 0;
+  const wave = { toggle(target) {
+    waves++;
+    target._waveTestPanel = { close() { closed++; target._waveTestPanel = null; } };
+    return true;
+  } };
+  const reward = { toggle(mode) {
+    rewards++;
+    mode._rewardTestPanel = { close() { closed++; mode._rewardTestPanel = null; } };
+    return true;
+  } };
+  const env = environment({ preview: true, wave, rewards: reward });
+  env.service.init();
+  down(env, 'F6'); up(env, 'F6');
+  down(env, 'F5'); down(env, 'F5', { repeat: true }); up(env, 'F5');
+  assert.equal(rewards, 1);
+  assert.equal(waves, 0);
+  down(env, 'Escape'); up(env, 'Escape');
+  const target = { node: { active: true } };
+  env.service.setGameplayTarget(target);
+  down(env, 'F6'); down(env, 'F6', { repeat: true }); up(env, 'F6');
+  assert.equal(waves, 1);
+  env.service.removeGameplayTarget(target);
+  assert.equal(closed, 2);
+  assert.equal(env.calls.writes, 0);
+  const release = environment({ wave, rewards: reward });
+  release.service._keyDown({ keyCode: 116 }); release.service._keyDown({ keyCode: 117 });
+  assert.equal(rewards, 1);
+  assert.equal(waves, 1);
 });
 console.log(passed + ' TestMode checks passed; no SDK calls, rewards, or files written.');

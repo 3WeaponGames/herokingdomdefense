@@ -242,7 +242,7 @@ function bridge() {
     api && api.version === 1 && typeof api.track === "function" && typeof api.release === "function" ? api : null;
 }
 
-function create(view, stockCandidate, point, overlaps) {
+function create(view, stockCandidate, point, overlaps, seedGroundReader) {
   var api = bridge();
   if (!api || typeof Node !== "function" || typeof Sprite !== "function" || typeof Scene !== "function") return null;
 
@@ -289,14 +289,16 @@ function create(view, stockCandidate, point, overlaps) {
     var pending = { main: main, scene: scene, game: game, data: game.gameData, epoch: game._combatEpoch,
       objects: objects, length: length, members: tracked, ticket: ticket, generation: ticket.value, dynamic: dynamic };
     try {
-      // Publish the real stock result for each row during enrollment.
+      // A depth-only view enrolls static geometry for the painter.
+      // Other views also publish the stock candidates during enrollment.
       objects.forEach(function (object, order) {
         var source = owners.get(order), row = null;
         if (source && pending.ticket.value === pending.generation && !cache.bounds.has(source)) {
           row = { order: order, object: object, source: source, anchor: object.node._depthGround, box: null, ground: null };
         } else dynamic.push(order);
+        if (!row && !candidates) return;
         var candidate = stockCandidate(view, object, cache, visible, row);
-        pushCandidate(candidate, candidates, byObject);
+        if (candidates) pushCandidate(candidate, candidates, byObject);
         if (row) {
           var receipt = view._staticOcclusionBounds && view._staticOcclusionBounds.get(row.source);
           if (row.box && receipt && receipt.box === row.box) {
@@ -312,10 +314,11 @@ function create(view, stockCandidate, point, overlaps) {
       // retained value after stock callbacks, using only private scratch.
       if (samePass(pending)) {
         var scratch = {};
+        var readGround = typeof seedGroundReader === "function" && stockSurface() && seedGroundReader(main, scratch);
         rows.forEach(function (row) {
           if (row.ground === null) {
-            var node = row.object.node;
-            row.ground = point(node._depthGround || node, main, 0, 0, scratch).y;
+            var node = row.object.node, ground = node._depthGround || node;
+            row.ground = readGround ? readGround(ground, node) : point(ground, main, 0, 0, scratch).y;
           }
         });
       }
@@ -389,6 +392,24 @@ function create(view, stockCandidate, point, overlaps) {
     return true;
   }
 
+  function collect(cache, visible, candidates, byObject) {
+    if (busy || disposed || view._destroyed || api !== bridge()) return false;
+    draw++;
+    if (state && (!samePass(state) || !numericRowsAgree(state))) release();
+    // The first native draw can settle clean-looking Sprite matrix words.
+    // Let it draw once before retaining those values.
+    if (!state && (draw === 1 || draw < nextSeed)) return false;
+    busy = true;
+    try {
+      if (!stockSurface()) { release(); nextSeed = draw + 16; return false; }
+      if (state) return !candidates || serve(cache, visible, candidates, byObject);
+      nextSeed = draw + 16;
+      return seed(cache, visible, candidates, byObject);
+    } finally {
+      busy = false;
+    }
+  }
+
   return {
     painter: function () {
       var current = state;
@@ -408,21 +429,8 @@ function create(view, stockCandidate, point, overlaps) {
       }
       return current.painter;
     },
-    collect: function (cache, visible, candidates, byObject) {
-      if (busy || disposed || view._destroyed || api !== bridge()) return false;
-      draw++;
-      if (state && (!samePass(state) || !numericRowsAgree(state))) release();
-      if (!state && draw < nextSeed) return false;
-      busy = true;
-      try {
-        if (!stockSurface()) { release(); nextSeed = draw + 16; return false; }
-        if (state) return serve(cache, visible, candidates, byObject);
-        nextSeed = draw + 16;
-        return seed(cache, visible, candidates, byObject);
-      } finally {
-        busy = false;
-      }
-    },
+    collect: collect,
+    preparePainter: function (cache) { collect(cache, null, null, null); },
     dispose: function () { disposed = true; release(); }
   };
 }

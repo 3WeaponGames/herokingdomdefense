@@ -10,6 +10,8 @@ function TestMode() {
   this._initialized = false;
   this._enabled = false;
   this._startupActive = false;
+  this._f5Down = false;
+  this._f6Down = false;
   this._f7Down = false;
   this._f8Down = false;
   this._badge = null;
@@ -75,6 +77,14 @@ TestMode.prototype.setStartupActive = function (active) {
   this._refreshBadge();
 };
 
+TestMode.prototype._isF5 = function (event) {
+  return !!event && (event.code === "F5" || event.key === "F5" || event.keyCode === 116);
+};
+
+TestMode.prototype._isF6 = function (event) {
+  return !!event && (event.code === "F6" || event.key === "F6" || event.keyCode === 117);
+};
+
 TestMode.prototype._isF7 = function (event) {
   return !!event && (event.code === "F7" || event.key === "F7" || event.keyCode === 118);
 };
@@ -108,13 +118,28 @@ TestMode.prototype._isEditing = function (event) {
 
 TestMode.prototype._keyDown = function (event) {
   if (!event || !this.isAvailable()) return;
-  if (this._isF7(event)) {
-    if (this._f7Down) return;
-    this._f7Down = true;
+  if (this._isF5(event)) {
+    if (this._f5Down) return;
+    this._f5Down = true;
+    if (event.repeat || event.isComposing || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey ||
+        this._startupActive || !this._rewardTestPanel && this._isEditing(event)) return;
+    if (require("RewardTestPanel").toggle(this)) {
+      if (event.preventDefault) event.preventDefault();
+      this.clearGameplayInput(true);
+    }
+    return;
+  }
+  var wave = this._isF6(event);
+  if (wave || this._isF7(event)) {
+    var latch = wave ? "_f6Down" : "_f7Down";
+    if (this[latch]) return;
+    this[latch] = true;
     var target = this._gameplayTarget;
     if (event.repeat || event.isComposing || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey ||
-        !this._hasGameplayTarget() || !target._unitTestPanel && this._isEditing(event)) return;
-    if (require("UnitTestPanel").toggle(target)) {
+        this._rewardTestPanel || !this._hasGameplayTarget() ||
+        !(wave ? target._waveTestPanel : target._unitTestPanel) && this._isEditing(event)) return;
+    var panelModule = wave ? require("WaveTestPanel") : require("UnitTestPanel");
+    if (panelModule.toggle(target)) {
       if (event.preventDefault) event.preventDefault();
       this.clearGameplayInput(true);
     }
@@ -132,7 +157,8 @@ TestMode.prototype._keyDown = function (event) {
   var key = this._gameplayKey(event);
   if (!key || this._held[key]) return;
   this._held[key] = true;
-  var panel = this._gameplayTarget && this._gameplayTarget._unitTestPanel;
+  var activeTarget = this._gameplayTarget;
+  var panel = this._rewardTestPanel || activeTarget && (activeTarget._waveTestPanel || activeTarget._unitTestPanel);
   if (panel) {
     if (key === "pause" && !event.repeat && !event.isComposing) {
       panel.close();
@@ -148,13 +174,15 @@ TestMode.prototype._keyDown = function (event) {
 };
 
 TestMode.prototype._keyUp = function (event) {
+  if (this._isF5(event)) this._f5Down = false;
+  if (this._isF6(event)) this._f6Down = false;
   if (this._isF7(event)) this._f7Down = false;
   if (this._isF8(event)) this._f8Down = false;
   var key = this._gameplayKey(event);
   if (key) { delete this._held[key]; delete this._movement[key]; }
 };
 
-TestMode.prototype._releaseKey = function () { this._f7Down = this._f8Down = false; this.clearGameplayInput(); };
+TestMode.prototype._releaseKey = function () { this._f5Down = this._f6Down = this._f7Down = this._f8Down = false; this.clearGameplayInput(); };
 
 TestMode.prototype._gameplayKey = function (event) {
   if (!event) return null;
@@ -170,6 +198,7 @@ TestMode.prototype.clearGameplayInput = function (preserveHeld) {
 };
 TestMode.prototype.setGameplayTarget = function (target) {
   if (this._gameplayTarget !== target) {
+    if (this._rewardTestPanel) this._rewardTestPanel.close();
     if (this._gameplayTarget) this.removeGameplayTarget(this._gameplayTarget);
     this.clearGameplayInput();
   }
@@ -179,6 +208,8 @@ TestMode.prototype.removeGameplayTarget = function (target) {
   if (this._gameplayTarget !== target) return;
   this._gameplayTarget = null;
   this.clearGameplayInput();
+  if (this._rewardTestPanel && this._rewardTestPanel.battle === target) this._rewardTestPanel.close();
+  if (target._waveTestPanel) target._waveTestPanel.close();
   if (target._unitTestPanel) target._unitTestPanel.close();
   if (target.ctrGame && target.ctrGame._unitTest) target.ctrGame._unitTest.dispose();
 };
@@ -189,7 +220,7 @@ TestMode.prototype._hasGameplayTarget = function () {
 };
 TestMode.prototype.readGameplayInput = function (target) {
   if (!this.isEnabled() || target !== this._gameplayTarget || !this._hasGameplayTarget()) return null;
-  if (target._unitTestPanel) return null;
+  if (this._rewardTestPanel || target._waveTestPanel || target._unitTestPanel) return null;
   // Idle frames have no input to suppress. Keep a fresh focus query whenever
   // any key/action is present, including opposing movement keys that sum to 0.
   if ((this._movement.w || this._movement.a || this._movement.s || this._movement.d ||

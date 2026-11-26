@@ -80,29 +80,6 @@ test('slow crowded fights retain important silhouettes and restore full detail a
   assert.equal(f.step(.021), f.crowd);
 });
 
-test('the adaptive draw still sends every living actor to the gate renderer', () => {
-  const f = fixture();
-  for (let frame = 0; frame < 24; frame++) f.step(.021);
-  f.view.game.ctrPlay = f.crowd[0].actor;
-  f.gameData.getSoldierList = () => [f.crowd[1].actor];
-  f.gameData.getEnemyList = () => f.crowd.slice(2).map(entry => entry.actor);
-  let gateActors;
-  Object.assign(f.view, {
-    main: { activeInHierarchy: true },
-    sort() {}, objects: [],
-    gateOcclusion: { update(entries) { gateActors = Array.from(entries, entry => entry.actor); } }
-  });
-  vm.runInContext(`
-    actorGroundPoint = function () { return { x: 0, y: 0 }; };
-    matchOcclusion = function (_view, entries, _candidates, _visible, _cache, _footprints, priority) {
-      ordinaryActors = entries.filter(function(entry) { return priority.has(entry); }).map(function(entry) { return entry.actor; });
-    };
-  `, f.context);
-  f.api.DepthView.prototype.update.call(f.view);
-  assert.deepEqual(Array.from(f.context.ordinaryActors), f.priority.map(entry => entry.actor));
-  assert.deepEqual(gateActors, f.crowd.map(entry => entry.actor));
-});
-
 test('adaptive detail retains foreground corrections and skips optional tints behind scenery', () => {
   const f = fixture();
   const box = { minX: 0, maxX: 20, minY: 0, maxY: 80 };

@@ -25,7 +25,7 @@ function battle() {
   h.ui.setConf(Object.fromEntries(Object.values(ids).map(id => [id, { bundleName: 'ui', prefab: id, name: id, zIndex: 10 }])));
   const Battle = h.load('KinghtFallUIGame').default, u = new Battle();
   Battle.instance = u; u.node = new h.cc.Node('Battle'); u.uid = 'game'; u.canBreak = true;
-  u.btnBuildInfo = {}; u._stopTestMovement = u.initView = u.initBtnView = noop;
+  u.btnBuildInfo = {}; u._stopTestMovement = u.initView = u.initBtnView = u.startGuide = noop;
   u.ctrUI = { setRevive: noop, ndLight: {} };
   u.ctrGame = { _combatEpoch: 2, gameStatus: stages.Fight, ndBg: { children: [] },
     gameData: { round: 6, levelCfg: { Level: 1 }, _roundCompleted: true, obstacles: [], addTime: {},
@@ -68,6 +68,22 @@ test('a mandatory perk survives repeated failure and Cancel, then grants and adv
   panel.finishDecision(choice, [123]); choice([999]); h.flush();
   assert.deepEqual(h.outcome.perks, [123]); assert.equal(h.outcome.rounds, 1); assert.equal(h.outcome.checkpoints, 1);
   assert.equal(h.u.isPauset, false); assert.equal(h.u.canBreak, true); assert.equal(h.blocked(), false);
+});
+
+test('hero recovery starts after wave cleanup retires the old combat epoch', () => {
+  const h = battle(), game = h.u.ctrGame, observed = [];
+  const end = game.endRoundGame;
+  game.endRoundGame = function () {
+    end.call(this);
+    this._combatEpoch++;
+  };
+  game.ctrPlay.endRoundGame = () => observed.push([game._combatEpoch, game.gameData.round]);
+  h.u.endRoundGame(); h.flush();
+  assert.deepEqual(observed, []);
+  h.requests[0].done(null, h.assetFor('perk'));
+  const panel = h.ui.uistatck.get('perk');
+  panel.finishDecision(panel.callBack, [123]); h.flush();
+  assert.deepEqual(observed, [[3, 7]]);
 });
 
 for (const win of [false, true]) test((win ? 'victory' : 'defeat') + ' recovery reaches one settlement only after a successful required open', () => {

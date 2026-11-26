@@ -107,15 +107,6 @@ test('the production renderNative standalone batch settles once and quiets later
  const f=fixture(7);Object.assign(f.owner,{cameraNode:new (f.scene.constructor)('camera'),camera:{render:root=>f.pass(root)}});const before=f.snapshot();f.DepthView.prototype.renderNative.call(f.owner,f.renderers.map(r=>({enabled:true,node:r.node})),{x:0,y:0},100,{});assert.equal(f.passes.length,7);assert.equal(f.renderers.reduce((n,r)=>n+r.state.meshes,0),7+6);assert.deepEqual(f.snapshot(),before);assert.equal(f.owner._nativeCaptureScope,null);assert.equal(f.owner.camera.targetTexture,null);
 });
 
-test('production update shares its scope across object and actor captures then restores scene inheritance',()=>{
- const f=fixture(6),occluder=f.add('occluder'),actors=f.renderers.slice(0,6).map(r=>({node:r.node,spAni:r,hp:100}));occluder.node.zIndex=100;
- occluder.node._depthBuilding=true;actors.forEach(actor=>{actor.node.y=1;}); // Actors stand behind this building capture stub.
- f.context.bounds=()=>({minX:0,minY:0,maxX:10,maxY:10});f.context.point=()=>({x:0,y:0});
- const object={node:occluder.node,sources:[occluder],masks:new Map(),center:{x:0,y:0},size:{width:10,height:10},frame:{}};
- const view=Object.assign(Object.create(f.DepthView.prototype),f.owner,{captureSupported:true,objects:[object],nativeActors:new Map(),game:{ctrPlay:actors[0],gameData:{getSoldierList:()=>actors.slice(1),getEnemyList:()=>[]}},cameraNode:new (f.scene.constructor)('camera'),camera:{render:root=>f.pass(root)},sort(){},snapshot(){this.renderNative([occluder],{x:0,y:0},50,{});},makeMask(object,actor){const mask={node:new (f.scene.constructor)('mask'),sprite:{}};object.overlay={node:new (f.scene.constructor)('overlay'),mask:{}};object.masks.set(actor,mask);return mask;},syncNativeMask(mask,entry){this.renderNative([entry.actor.spAni],{x:0,y:0},50,{});}});
- view.update();assert.equal(f.passes.length,7);assert.equal(f.renderers.reduce((n,r)=>n+r.state.meshes,0),7+6);assert(f.renderers.every(r=>r.state.alpha===1&&!r.state.nativePaused));assert.equal(view._nativeCaptureScope,null);assert.equal(f.scene._renderFlag,40);
-});
-
 test('destroy finishes an active scope and releases cached native references',()=>{
  const f=fixture(3),view=Object.assign(Object.create(f.DepthView.prototype),f.owner,{objects:[],nativeActors:new Map()});view._nativeCaptureScope=new f.Scope(view);view._nativeCaptureScope.capture(f.renderers[0].node,()=>f.pass(f.renderers[0].node));view._nativeCaptureScope.capture(f.renderers[1].node,()=>f.pass(f.renderers[1].node));assert(f.renderers.some(r=>r.state.alpha===0));view.destroy();assert(f.renderers.every(r=>r.state.alpha===1&&!r.state.nativePaused));assert.equal(view._nativeCaptureScope,null);assert.equal(view._nativeCaptureRefs,null);
 });

@@ -6,6 +6,7 @@ const Levels=require('./lib/character-levels');
 const Catalog=require('./lib/character-catalog');
 const OriginalMounts=require('./lib/original-mounts');
 const UnitPacks=require('./lib/unit-packs'),BossModel=require('./lib/boss-model');
+const Kingdoms=require('../game-data-editor/lib/unit-kingdoms');
 const AnimationDefaults=require('./lib/animation-defaults');
 const UnitAnimationSpeeds=require('./lib/unit-animation-speeds');
 const Reference=require('./lib/preview-reference');
@@ -28,14 +29,16 @@ function mount(host,api){
   el('h2',itemMode?'HERO ITEMS':'CHARACTERS',library);const unitFilter=el('select',undefined,library);unitFilter.className='wide';unitFilter.setAttribute('aria-label','Character group');for(const group of ['All characters','Hero','Allies','Enemies']){const option=el('option',group,unitFilter);option.value=group==='All characters'?'':group;}const unitList=el('div',undefined,library,'look-list');unitList.style.marginTop='7px';
   const unitSearch=itemMode?null:el('input',undefined,undefined,'wide character-search');
   if(unitSearch){
-    unitSearch.type='search';unitSearch.placeholder='Search character names…';
-    unitSearch.setAttribute('aria-label','Search character names');
+    unitSearch.type='search';unitSearch.placeholder='Search names or kingdoms…';
+    unitSearch.setAttribute('aria-label','Search character names or kingdoms');
     library.insertBefore(unitSearch,unitFilter);
     unitList.setAttribute('role','group');unitList.setAttribute('aria-label','Character results');
     unitList.setAttribute('aria-keyshortcuts','Shift+Q Shift+E');
     unitList.title='Shift+Q: previous character · Shift+E: next character';
   }
-  const packageFilter=el('select',undefined,library),classFilter=el('select',undefined,library),unitSort=el('select',undefined,library);for(const control of [packageFilter,classFilter,unitSort]){control.className='wide';control.style.marginBottom='7px';control.hidden=itemMode;library.insertBefore(control,unitList);}packageFilter.setAttribute('aria-label','Character package');classFilter.setAttribute('aria-label','Enemy class');unitSort.setAttribute('aria-label','Sort characters');
+  const packageFilter=el('select',undefined,library),kingdomFilter=el('select',undefined,library),classFilter=el('select',undefined,library),unitSort=el('select',undefined,library);
+  for(const control of [packageFilter,kingdomFilter,classFilter,unitSort]){control.className='wide';control.style.marginBottom='7px';control.hidden=itemMode;library.insertBefore(control,unitList);}
+  packageFilter.setAttribute('aria-label','Character package');kingdomFilter.setAttribute('aria-label','Character kingdom');classFilter.setAttribute('aria-label','Enemy class');unitSort.setAttribute('aria-label','Sort characters');
   for(const option of [{id:'',label:'All packages'},UnitPacks.custom,...UnitPacks.packs]){const entry=el('option',option.label,packageFilter);entry.value=option.id;}
   for(const option of [{value:'',label:'All enemy classes'},...UnitPacks.enemyClasses]){const entry=el('option',option.label,classFilter);entry.value=option.value;}
   for(const [value,label]of [['name','Sort by name'],['package','Sort by package'],['enemy-class','Sort by class: Normal → Boss'],['enemy-class-desc','Sort by class: Boss → Normal']]){const entry=el('option',label,unitSort);entry.value=value;}
@@ -158,7 +161,7 @@ function mount(host,api){
         const target=pendingFocus;pendingFocus=null;const unit=units.find(unit=>unit.type===target.type&&unit.id===target.id);
         if(!unit)throw Error('Choose an existing character unit.');
         if(target.level!==undefined&&(!Number.isInteger(target.level)||!Levels.levels(unit).includes(target.level)))throw Error('Choose an existing character level.');
-        unitSearch.value=unitFilter.value=packageFilter.value=classFilter.value='';await selectUnit(unit,target.level);applied=true;
+        unitSearch.value=unitFilter.value=packageFilter.value=classFilter.value='';kingdomFilter.value='all';await selectUnit(unit,target.level);applied=true;
       }
       return applied;
     }).catch(error=>{if(!disposed)message(error.message,true);return false;}).finally(()=>{focusTask=null;if(pendingFocus&&!busy&&!creator&&!disposed)applyFocus();});
@@ -188,7 +191,7 @@ function mount(host,api){
     const actions=el('div',undefined,dialog,'row'),close=()=>{creator.remove();creator=null;Promise.resolve().then(applyFocus);};button(actions,'Cancel',close);button(actions,'Create character',()=>{
       if(!name.value.trim())throw Error('Enter a character name.');if(Catalog.listed(data,units).some(unit=>unit.name.toLowerCase()===name.value.trim().toLowerCase()))throw Error('A character with this name already exists.');const baseUnit=kind.value==='maker'?units.find(unit=>unit.type==='ally'):units.find(unit=>unit.key===model.value);if(!baseUnit)throw Error('Choose a unit model.');
       const id=unique('character-'+name.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40),data.profiles),base=kind.value==='maker'?{...Catalog.defaults(baseUnit),source:Catalog.maker}:UnitPacks.forUnit(baseUnit).mode==='modular'?Catalog.defaults(baseUnit):{type:baseUnit.type,id:baseUnit.id,currentModel:true};
-      data.profiles[id]={name:name.value.trim().slice(0,100),base,scale:1,parts:[],...(kind.value==='maker'?{faceless:true,skinTint:CharacterOptions.skinTones[0].value}:{})};data.characters=data.characters||{};data.characters[id]={levels:{}};close();unitSearch.value=unitFilter.value=packageFilter.value=classFilter.value='';selectProfile(id);changed();
+      data.profiles[id]={name:name.value.trim().slice(0,100),base,scale:1,parts:[],...(kind.value==='maker'?{faceless:true,skinTint:CharacterOptions.skinTones[0].value}:{})};data.characters=data.characters||{};data.characters[id]={levels:{}};close();unitSearch.value=unitFilter.value=packageFilter.value=classFilter.value='';kingdomFilter.value='all';selectProfile(id);changed();
     },'primary');name.focus();
   }
   async function save(){
@@ -272,7 +275,6 @@ function mount(host,api){
   function renderLooks(){
     if(!data)return;
     const allListed=itemMode?units:Catalog.listed(data,units);
-    const listed=itemMode?units:Catalog.listed(data,units,{enemyClass:classFilter.value,search:unitSearch.value});
     const filter=unitFilter.value;
     unitFilter.innerHTML='';
     for(const group of [itemMode?'All equipment':'All characters',...new Set(allListed.map(unit=>unit.group))]){
@@ -283,7 +285,12 @@ function mount(host,api){
       const available=new Set(allListed.map(unit=>UnitPacks.collectionFor(unit).id));
       for(const option of packageFilter.children)option.hidden=option.disabled=!!option.value&&!available.has(option.value);
       if(!available.has(packageFilter.value))packageFilter.value='';
+      const kingdom=kingdomFilter.value,kingdoms=Kingdoms.options(units);
+      kingdomFilter.innerHTML='';
+      for(const {value,label} of kingdoms){const option=el('option',label,kingdomFilter);option.value=value;}
+      kingdomFilter.value=kingdoms.some(option=>option.value===kingdom)?kingdom:'all';
     }
+    const listed=itemMode?units:Catalog.listed(data,units,{enemyClass:classFilter.value,kingdom:kingdomFilter.value,search:unitSearch.value});
     const active=profile()&&(speedSelection?speedSelection.unit:unitFor(profile()));
     const scroll=unitList.scrollTop||0;
     const visible=itemMode?listed.filter(unit=>!unitFilter.value||unit.group===unitFilter.value):
@@ -298,8 +305,9 @@ function mount(host,api){
         continue;
       }
       const row=button(unitList,undefined,()=>selectRosterUnit(unit),'character-card');
-      row.title=UnitPacks.collectionFor(unit).label;
-      row.setAttribute('aria-label',UnitPacks.caption(unit));
+      const affiliation=Kingdoms.info(unit.kingdom),kingdomLabel=affiliation?.biome?affiliation.label:'';
+      row.title=[UnitPacks.collectionFor(unit).label,kingdomLabel].filter(Boolean).join(' · ');
+      row.setAttribute('aria-label',[UnitPacks.caption(unit),kingdomLabel].filter(Boolean).join(' · '));
       row.setAttribute('aria-current',String(isActive));row.classList.toggle('selected',isActive);
       const portrait=el('span',undefined,row,'character-card-portrait');
       portrait.setAttribute('aria-hidden','true');
@@ -311,7 +319,7 @@ function mount(host,api){
       const labels=el('span',undefined,row,'character-card-labels');
       el('strong',unit.name,labels,'character-card-name');
       const classOption=UnitPacks.enemyClasses.find(option=>option.value===UnitPacks.enemyClass(unit));
-      const detail=[unit.character?'Created':'',classOption&&classOption.label].filter(Boolean).join(' · ');
+      const detail=[unit.character?'Created':'',classOption&&classOption.label,kingdomLabel].filter(Boolean).join(' · ');
       if(detail)el('small',detail,labels,'character-card-detail');
       rosterRows.push({unit,button:row});
     }
@@ -338,6 +346,7 @@ function mount(host,api){
     };
   }
   unitFilter.onchange=renderLooks;
+  kingdomFilter.onchange=()=>{unitList.scrollTop=0;renderLooks();};
   packageFilter.onchange=classFilter.onchange=unitSort.onchange=renderLooks;
   async function selectUnit(unit,level){
     finishGestures();const exact=Catalog.profileId(data,unit,level);if(exact)return selectProfile(exact,undefined,{unit,level});speedSelection={unit,level};

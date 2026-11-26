@@ -1,11 +1,13 @@
 'use strict';
 const UnitRecords=require('../lib/unit-records');
 const UnitPacks=require('../../hkd-characters/lib/unit-packs');
+const Kingdoms=require('../lib/unit-kingdoms');
 const UnitLibrary=require('../../hkd-characters/lib/unit-library');
 const UnitLevelStats=require('../../../assets/_script/UnitLevelStats');
 const AllyAwareness=require('../../../assets/_script/AllyAwareness');
 const AttackRate=require('./attack-rate');
 const MapCatalog=require('../lib/map-catalog');
+const {activeStages}=require('../lib/campaign-stages');
 const fs=require('fs'),path=require('path');
 const Schema=require('../lib/schema');
 const HeroEquipmentStats=require('../../../assets/_script/HeroEquipmentStats');
@@ -42,9 +44,9 @@ function display(value){if(value===undefined)return '(not set)';if(value===null)
 function create(kind){
   return Editor.Panel.extend({
     template:fs.readFileSync(path.join(__dirname,'panel.html'),'utf8'),style:require('./control-theme')(fs.readFileSync(path.join(__dirname,'panel.css'),'utf8')+(kind==='buildings'?Buildings.style:kind==='units'?fs.readFileSync(path.join(__dirname,'../units/sidebar.css'),'utf8'):'')),
-    $:{root:'#root',title:'#title',toolbar:'#toolbar',language:'#language',status:'#status',workspace:'#workspace',sidebar:'#sidebar',unitPack:'#unitPack',searchLabel:'#searchLabel',search:'#search',count:'#count',list:'#list',detail:'#detail',preview:'#preview',undo:'#undo',redo:'#redo',reload:'#reload',discard:'#discard',review:'#review',save:'#save',issues:'#issues',footer:'#footer',modal:'#modal',modalTitle:'#modalTitle',modalBody:'#modalBody',modalActions:'#modalActions'},
+    $:{root:'#root',title:'#title',toolbar:'#toolbar',language:'#language',status:'#status',workspace:'#workspace',sidebar:'#sidebar',unitPack:'#unitPack',unitKingdom:'#unitKingdom',searchLabel:'#searchLabel',search:'#search',count:'#count',list:'#list',detail:'#detail',preview:'#preview',undo:'#undo',redo:'#redo',reload:'#reload',discard:'#discard',review:'#review',save:'#save',issues:'#issues',footer:'#footer',modal:'#modal',modalTitle:'#modalTitle',modalBody:'#modalBody',modalActions:'#modalActions'},
     ready(){
-      this._kind=kind;this._selected=null;this._wave=0;this._level=0;this._talentLevel=0;this._unitLevel=0;this._unitPack='all';this._language='en';this._queue=Promise.resolve();this._assets={images:[],prefabs:[],animations:[]};this._closed=false;
+      this._kind=kind;this._selected=null;this._wave=0;this._level=0;this._talentLevel=0;this._unitLevel=0;this._unitPack=this._unitKingdom='all';this._language='en';this._queue=Promise.resolve();this._assets={images:[],prefabs:[],animations:[]};this._closed=false;
       this.$title.textContent=TITLES[kind]||kind;
       if(kind==='maps'||kind==='stages'){
         this.$toolbar.style.display='none';this.$sidebar.style.display='none';this.$preview.style.display='none';this.$issues.hidden=true;this.$root.querySelector('.gt-header').style.display='none';this.$status.style.display='none';this.$footer.style.display='none';
@@ -69,7 +71,7 @@ function create(kind){
             return {...data,visual:(this._data('overrides').visuals||{})[data.key]||{}};
           }});
         this.$searchLabel.hidden=false;
-        this.$search.placeholder='Name or ID…';
+        this.$search.placeholder='Name, kingdom, or ID…';
         this.$search.removeAttribute('aria-label');
         this.$search.onkeydown=event=>{
           if(event.key!=='Enter'||event.isComposing||!this.$search.value.trim())return;
@@ -78,6 +80,7 @@ function create(kind){
         };
       }
       this.$unitPack.hidden=kind!=='units';this.$unitPack.onchange=()=>{this._unitPack=this.$unitPack.value;this._selected=null;this.$list.scrollTop=0;this._render();};
+      this.$unitKingdom.hidden=kind!=='units';this.$unitKingdom.onchange=()=>{this._unitKingdom=this.$unitKingdom.value;this._selected=null;this.$list.scrollTop=0;this._render();};
       this.$undo.onclick=()=>this._action('undo');this.$redo.onclick=()=>this._action('redo');
       this.$reload.onclick=()=>this._load(true);this.$review.onclick=()=>this._review(false);this.$save.onclick=()=>this._review(true);
       this.$discard.onclick=()=>this._confirm('Discard all panel drafts?','This discards unsaved edits shared by every game-tools panel. Saved game files remain unchanged.',()=>this._action('discard'),'Discard drafts');
@@ -94,7 +97,7 @@ function create(kind){
       await this._load(false);
       if(this._closed)return;
       if(!this._rows().some(row=>row.key===argv.unitKey)){this._status('The selected unit is no longer available.',true);return;}
-      this.$search.value='';this._unitPack='all';this.$unitPack.value='all';
+      this.$search.value='';this._unitPack=this._unitKingdom=this.$unitPack.value=this.$unitKingdom.value='all';
       this._selectRow(argv.unitKey);
       this._unitSidebar.reveal(argv.unitKey);
     },
@@ -177,7 +180,7 @@ function create(kind){
     _rows(){
       const data=this._data('A'),rows=[];
       const add=(key,label,subtitle,record,keys,extra)=>rows.push(Object.assign({key:String(key),label,subtitle,record,path:keys,doc:'A'},extra||{}));
-      if(kind==='stages')(this._data("A").LevelCfg||[]).forEach((r,i)=>{const name=this._text(r.Name),label=/^\s*\d+[.)]\s*/.test(name)?name:r.Level+'. '+name;add(i,label,r.prefab+' · '+r.WaveCfg.length+' waves',r,['LevelCfg',i],{doc:"A",icon:r.Map});});
+      if(kind==='stages')activeStages(this._data("A")).forEach((r,i)=>{const name=this._text(r.Name),label=/^\s*\d+[.)]\s*/.test(name)?name:r.Level+'. '+name;add(i,label,r.prefab+' · '+r.WaveCfg.length+' waves',r,['LevelCfg',i],{doc:"A",icon:r.Map});});
       if(kind==='perks')(data.BuffCfg||[]).forEach((r,i)=>add(r.ID,this._text(r.Name),r.ID+' · '+Schema.RARITIES[r.Quality-1],r,['BuffCfg',i],{icon:r.Image}));
       if(kind==='buildings')rows.push(...Buildings.rows(this));
       if(kind==='equipment'){
@@ -188,7 +191,7 @@ function create(kind){
       if(kind==='relics')(data.TreasureCfg||[]).forEach((r,i)=>{const good=(data.GoodsCfg||{})[r.goodID]||{};add(r.ID,this._text(good.name)||String(r.ID),r.ID+' · '+Schema.RARITIES[r.Quality-1]+' · '+r.levelInfo.length+' levels',r,['TreasureCfg',i],{icon:good.icon});});
       if(kind==='talents')Object.keys(data.TalentCfg||{}).forEach(id=>{const r=data.TalentCfg[id],count=(data.TalentLevelCfg||[]).filter(l=>l.kindID===Number(id)).length;add(id,this._text(r.Name),id+' · '+count+' progression records',r,['TalentCfg',id],{icon:r.Image});});
       if(kind==='units'){
-        const profileTable=this._data('overrides').unitProfiles||{},profiles=profileTable.entries||{};
+        const overrides=this._data('overrides'),profileTable=overrides.unitProfiles||{},profiles=profileTable.entries||{};
         const customSources=this._snapshot.root?UnitLibrary.customSources(this._snapshot.root):new Set();
         add('hero','Hero','Base stats are linked to Equipment',{},[],{unitType:'hero'});
         Object.keys(data.SoldierCfg||{}).forEach(id=>{
@@ -197,8 +200,9 @@ function create(kind){
           const collection=custom?UnitPacks.custom.id:r.MonsterPack;
           const info=custom?UnitPacks.custom:UnitPacks.info(collection),role=this._unitRole('enemy',id);
           const pack=info?info.label:r.CampaignBaseUnit?'Campaign profile':r.prefab?'Enemy':'Boss form';
-          const subtitle=[pack,role,profiles[id]?.name,id].filter(Boolean).join(' · ');
-          add('enemy:'+id,this._text(r.Name),subtitle,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'enemy',unitID:id,collection});
+          const kingdom=Kingdoms.resolve(id,data.SoldierCfg,overrides),affiliation=Kingdoms.info(kingdom);
+          const subtitle=[pack,affiliation?.biome&&affiliation.label,role,profiles[id]?.name,id].filter(Boolean).join(' · ');
+          add('enemy:'+id,this._text(r.Name),subtitle,r,['SoldierCfg',id],{icon:r.loadIcon,unitType:'enemy',unitID:id,collection,kingdom});
         });
         Object.keys(data.SoldierCfg||{}).filter(id=>Number(id)>=90001&&Number(id)<=90004).forEach(id=>{const r=(data.AllyCfg||data.SoldierCfg)[id];add('ally:'+id,this._text(r.Name)+' · Ally','Allied unit - independent stats',r,[data.AllyCfg?'AllyCfg':'SoldierCfg',id],{icon:r.loadIcon,unitType:'ally',unitID:id});});
       }
@@ -212,7 +216,7 @@ function create(kind){
     _selectRow(key){this._selected=key;this._wave=0;this._level=0;this._talentLevel=0;this._unitLevel=0;if(kind!=='buildings')this.$detail.scrollTop=0;this._render();},
     _renderList(){
       const all=this._rows();
-      let pack=this._unitPack||'all';
+      let pack=this._unitPack||'all',kingdom=this._unitKingdom||'all';
       if(kind==='units'){
         const available=new Set(all.map(row=>row.collection));
         const isCollection=value=>value===UnitPacks.custom.id||UnitPacks.info(value);
@@ -223,12 +227,18 @@ function create(kind){
           pack=this._unitPack='all';
           this.$unitPack.value=pack;
         }
+        const options=Kingdoms.options(all);
+        if(!options.some(option=>option.value===kingdom))kingdom=this._unitKingdom='all';
+        clear(this.$unitKingdom);
+        for(const {value,label} of options){const option=node('option',label);option.value=value;this.$unitKingdom.appendChild(option);}
+        this.$unitKingdom.value=kingdom;
       }
-      const scoped=kind!=='units'||pack==='all'?all:all.filter(r=>pack==='allies'?r.unitType!=='enemy':r.unitType==='enemy'&&(pack==='campaign'?!r.collection:r.collection===pack));
+      const byPack=kind!=='units'||pack==='all'?all:all.filter(r=>pack==='allies'?r.unitType!=='enemy':r.unitType==='enemy'&&(pack==='campaign'?!r.collection:r.collection===pack));
+      const scoped=kind!=='units'||kingdom==='all'?byPack:byPack.filter(row=>row.kingdom===kingdom);
       const query=this.$search.value.trim().toLowerCase();
       const rows=query?scoped.filter(row=>{
         const details=row.subtitle+' '+(row.record.MonsterSource||'');
-        return kind==='units'?UnitCatalog.matches({name:stripRich(row.label),description:details},query):(row.label+' '+details).toLowerCase().includes(query);
+        return kind==='units'?UnitCatalog.matches({name:stripRich(row.label),description:details,kingdom:row.kingdom},query):(row.label+' '+details).toLowerCase().includes(query);
       }):scoped;
       if(kind==='units'&&query){
         const exactName=row=>Number(stripRich(row.label).toLowerCase()===query);
@@ -471,6 +481,16 @@ function create(kind){
         fields.appendChild(button('Open Equipment panel',()=>openPanel('equipment').catch(e=>this._status(e.message,true))));return;
       }
       const id=Number(row.unitID);this._note(row.unitType==='ally'?'Allied unit: Barracks uses the selected level’s stats and the matching appearance from Characters. Changes apply after Save.':'Enemy unit: its name, model, stats and timing are independent of allies.');
+      if(row.unitType==='enemy'){
+        const {value,fallback}=Kingdoms.assignment(id,this._data('A').SoldierCfg,this._data('overrides'));
+        const input=this._field(this._section('Classification'),'Kingdom',value,next=>this._change(()=>
+          Kingdoms.edits(id,this._data('A').SoldierCfg,this._data('overrides'),next),{skipEmpty:true})
+          .catch(()=>{input.value=value;}),{
+          options:[{value:'',label:'Default ('+Kingdoms.info(fallback).label+')'},...Kingdoms.CHOICES],
+          commitUnchanged:true,
+          help:'Shared by all fighting profiles for this unit. Save to update the Waves filter.'
+        });
+      }
       if(row.unitType==='ally')this._unitLevelStats(row);
       if(row.unitType==='enemy'&&Skills.supported(row.record,this._data('overrides')))this._enemySkillFields(row);
       else this._unitAttackFields(row);
@@ -513,7 +533,7 @@ function create(kind){
         fields.appendChild(iconField);
         this._field(fields,'Ground or flight unit',row.record.BuildingCross?1:0,value=>this._set('A',row.path.concat('BuildingCross'),value),{
           options:[{value:1,label:'Ground'},{value:0,label:'Flight'}],
-          help:'Ground units respect blockers. Flight units can travel over them.'
+          help:'Flight units can cross walls and gates. Terrain and other buildings still block them.'
         });
         this._enemyTargetFields(row);
       }

@@ -247,57 +247,39 @@ var def_KinghtFallGameCtrlData = function () {
     this._advisorFinalClaimPending = false;
     this.round = round;
     this.videoCoin = t.CommerceSliver;
-    this.enemyQueue = {};
-    this.authoredTimeline = Array.isArray(t.SpawnTimeline) ? new (require('AuthoredSpawnPlan').Timeline)(t.SpawnTimeline) : null;
-    // Timed schedules replace the legacy queue completely. Do not parse stale
-    // or absent compatibility strings before constructing the effective queue.
-    if (!this.authoredTimeline) for (var e = 0; e < t.RefreshSoldierKind.length; e++) {
-      var n = t.RefreshSoldierKind[e];
-      if (n) {
-        var i = n.split("#");
-        var a = parseInt(i[0]);
-        this.enemyQueue[a] = [];
-        var o = i[1].split(";");
-        for (var r = 0; r < o.length; r++) {
-          var s = o[r].split(",");
-          this.enemyQueue[a].push({
-            id: parseInt(s[0]),
-            num: parseInt(s[1])
-          });
-        }
-      }
-    }
+    this.resetEnemyWave(this.getEnemyWave());
     this.coin = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().getCoin(this.levelCfg.Level);
-    if (this.authoredTimeline) this.enemyQueue = this.authoredTimeline.queue();
   };
   _ctor.prototype.loadMonster = function (restoring) {
     this._roundCompleted = false;
     this._advisorFinalClaimPending = false;
     this.round++;
+    if (this._waveTest && this._waveTest.round !== this.round) this._waveTest = null;
     var t = this.levelCfg.WaveCfg[this.round - 1];
     if (!restoring) this.coin += t.StartSliver;
     if (!restoring && t.StartSliver > 0 && BattleSounds.effect) BattleSounds.effect("battle-silver-reward", null, { game: this.ctrPar });
     this.videoCoin = t.CommerceSliver;
     if (!restoring) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, t.StartSliver);
-    this.authoredTimeline = Array.isArray(t.SpawnTimeline) ? new (require('AuthoredSpawnPlan').Timeline)(t.SpawnTimeline) : null;
-    this.enemyQueue = {};
-    if (!this.authoredTimeline) for (var e = 0; e < t.RefreshSoldierKind.length; e++) {
-      var n = t.RefreshSoldierKind[e];
-      if (n) {
-        var i = n.split("#");
-        var a = parseInt(i[0]);
-        this.enemyQueue[a] = [];
-        var o = i[1].split(";");
-        for (var r = 0; r < o.length; r++) {
-          var s = o[r].split(",");
-          this.enemyQueue[a].push({
-            id: parseInt(s[0]),
-            num: parseInt(s[1])
-          });
-        }
-      }
-    }
-    if (this.authoredTimeline) this.enemyQueue = this.authoredTimeline.queue();
+    this.resetEnemyWave(this.getEnemyWave());
+  };
+  _ctor.prototype.getEnemyWave = function () {
+    var test = this._waveTest;
+    return test && test.round === this.round && test.stage === this.levelCfg.Level
+      ? test.wave : this.levelCfg.WaveCfg[this.round - 1];
+  };
+  _ctor.prototype.resetEnemyWave = function (wave) {
+    var plan = require("AuthoredSpawnPlan");
+    var timeline = Array.isArray(wave.SpawnTimeline) ? new plan.Timeline(wave.SpawnTimeline) : null;
+    var queue = timeline ? timeline.queue() : plan.legacyQueue(wave.RefreshSoldierKind);
+    this.authoredTimeline = timeline;
+    this.enemyQueue = queue;
+  };
+  _ctor.prototype.setWaveTest = function (test) {
+    if (test && (test.round !== this.round || test.stage !== this.levelCfg.Level)) return false;
+    if ((this._waveTest || null) === test) return true;
+    this.resetEnemyWave(test ? test.wave : this.levelCfg.WaveCfg[this.round - 1]);
+    this._waveTest = test;
+    return true;
   };
   _ctor.prototype.onRestart = function (t) {
     delete this._millIncomeSnapshot;
@@ -305,7 +287,7 @@ var def_KinghtFallGameCtrlData = function () {
     var restoring = !t && this._restoringCheckpoint;
     this._restoringCheckpoint = false;
     this.pendingEnemySpawns = 0;
-    if (t) { this.addTime = {}; require("RelicRuntime").restore(this, null); }
+    if (t) { this._waveTest = null; this.addTime = {}; require("RelicRuntime").restore(this, null); }
     var e = this.getBulidList();
     for (var n = 0; n < e.length; n++) {
       e[n].reset(t);
@@ -458,7 +440,7 @@ var def_KinghtFallGameCtrlData = function () {
     return t;
   };
   _ctor.prototype.getHpAdd = function (t) {
-    var e = this.levelCfg.WaveCfg[this.round - 1].HealthCoefficient;
+    var wave = this.getEnemyWave(), e = wave.HealthCoefficient;
     var cfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(t);
     if (1 == (cfg.UnitAttack ? require("UnitAttackRules").attackType(cfg) : cfg.AttackType)) {
       var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff25);
@@ -466,10 +448,11 @@ var def_KinghtFallGameCtrlData = function () {
       var i = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff38);
       i && (e -= i.Pamer[0]);
     }
-    return e;
+    // A deliberately low test setting can be smaller than flat perk reductions.
+    return this._waveTest && wave === this._waveTest.wave && e <= 0 ? Math.min(.01, wave.HealthCoefficient) : e;
   };
   _ctor.prototype.getAttAdd = function () {
-    return this.levelCfg.WaveCfg[this.round - 1].AttackCoefficient;
+    return this.getEnemyWave().AttackCoefficient;
   };
   _ctor.prototype.initMap = function () {
     for (var t = 0; t < this.ctrPar.ndMain.children.length; t++) {

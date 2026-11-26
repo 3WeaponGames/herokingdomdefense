@@ -2,6 +2,7 @@
 // Event-driven friendly assistance. No scene-wide searches run on idle frames.
 var FlightTargeting = require("./FlightTargeting");
 var DEFAULT_SIGHT = 240;
+var battleUIModule, battleModelModule;
 function valid(value) { return !!value && (typeof cc === "undefined" || !cc.isValid || cc.isValid(value, true)); }
 function alive(actor) { return valid(actor) && valid(actor.node) && actor.node.activeInHierarchy !== false && !actor._isPooled && !(typeof actor.hp === "number" && actor.hp <= 0) && (!actor.isDead || !actor.isDead()); }
 function generation(actor) { return actor && actor.node && actor.node._combatGeneration; }
@@ -9,10 +10,19 @@ function soldiers(game) { return game.gameData.getSoldierList ? game.gameData.ge
 function enemies(game) { return game.gameData.getEnemyList ? game.gameData.getEnemyList() : game.gameData.enemyList || game.gameData.enemies || []; }
 function enemy(game, actor, expectedGeneration, list) { return !!game && !!game.gameData && alive(actor) && (expectedGeneration === undefined || generation(actor) === expectedGeneration) && (list || enemies(game)).indexOf(actor) >= 0; }
 function sightFromConfig(cfg) { var value = cfg && cfg.SightRange; return typeof value === "number" && isFinite(value) && value >= 0 ? value : DEFAULT_SIGHT; }
-function point(actor, game) { var node = actor.node; return game.ndMain && node.convertToWorldSpaceAR ? game.ndMain.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, 0))) : node.getPosition(); }
+function point(actor, game) {
+  var node = actor.node, main = game.ndMain;
+  if (main && node.parent === main) return node;
+  return main && node.convertToWorldSpaceAR ? main.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, 0))) : node.getPosition();
+}
 function currentGame(game) {
-  var ui = require("KinghtFallUIGame").default.instance;
-  return valid(game) && game.gameData && ui && ui.ctrGame === game && !ui.isclose && !ui.isPauset && (!ui.node || ui.node.activeInHierarchy !== false) && game.gameStatus === require("KinghtFallModle").KinghtFallGameStage.Fight;
+  var uiModule = battleUIModule || require("KinghtFallUIGame"), UI = uiModule.default;
+  if (UI) battleUIModule = uiModule;
+  var ui = UI && UI.instance;
+  if (!(valid(game) && game.gameData && ui && ui.ctrGame === game && !ui.isclose && !ui.isPauset && (!ui.node || ui.node.activeInHierarchy !== false))) return false;
+  var model = battleModelModule || require("KinghtFallModle");
+  battleModelModule = model;
+  return game.gameStatus === model.KinghtFallGameStage.Fight;
 }
 function capture(victim, attacker, game) {
   if (!currentGame(game) || !alive(victim) || !enemy(game, attacker) || victim !== game.ctrPlay && soldiers(game).indexOf(victim) < 0) return null;

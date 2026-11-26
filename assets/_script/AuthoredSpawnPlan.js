@@ -68,5 +68,18 @@ function offers(existing, added) {
   Object.defineProperty(proxy.node, 'active', { get: function () { return list.some(function (offer) { return offer.node.active; }); }, set: function (value) { list.forEach(function (offer) { offer.node.active = value; }); } });
   return proxy;
 }
+function legacyQueue(lines) {
+  var queue = {};
+  lines.forEach(function (line) {
+    if (!line) return;
+    var parts = line.split("#");
+    // The last definition of a lane owns its queue, including old delay rows.
+    queue[parseInt(parts[0])] = parts[1].split(";").map(function (entry) {
+      var pair = entry.split(",");
+      return { id: parseInt(pair[0]), num: parseInt(pair[1]) };
+    });
+  });
+  return queue;
+}
 function pointName(graphId, nodeId) { var graph = encodeURIComponent(graphId); return 'point-' + graph.length + '-' + graph + '-' + encodeURIComponent(nodeId); }
-exports.Timeline = Timeline; exports.route = route; exports.offers = offers; exports.pointName = pointName;
+exports.Timeline = Timeline; exports.route = route; exports.offers = offers; exports.pointName = pointName; exports.legacyQueue = legacyQueue;

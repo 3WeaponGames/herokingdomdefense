@@ -56,14 +56,18 @@ var exp_KinghtFallDailyData = function (t) {
       this.data.vesion = this.vesion;
       t = true;
     }
-    if (!$z1KinghtFallModle.default.getInstance().compareIsToday(this.data.time)) {
-      this.initDailyData();
+    var now = this.calendarTime();
+    if (!$z1KinghtFallModle.default.getInstance().compareIsToday(this.data.time, now)) {
+      this.initDailyData(now);
       t = true;
     }
     t && this.saveData();
   };
-  _ctor.prototype.initDailyData = function () {
-    this.data.time = Date.now();
+  _ctor.prototype.calendarTime = function () {
+    return this._rewardTestClock ? this._rewardTestClock() : Date.now();
+  };
+  _ctor.prototype.initDailyData = function (now) {
+    this.data.time = now === undefined ? this.calendarTime() : now;
     if (this.data.signReward > 0) {
       this.data.signDay++;
       this.data.signReward = 0;
@@ -72,8 +76,9 @@ var exp_KinghtFallDailyData = function (t) {
     this.data.onlineTimeReward = [];
   };
   _ctor.prototype.ensureCurrentDay = function () {
-    if ($z1KinghtFallModle.default.getInstance().compareIsToday(this.data.time)) return false;
-    this.initDailyData();
+    var now = this.calendarTime();
+    if ($z1KinghtFallModle.default.getInstance().compareIsToday(this.data.time, now)) return false;
+    this.initDailyData(now);
     this.saveData();
     return true;
   };

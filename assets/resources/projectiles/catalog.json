@@ -14250,6 +14250,19 @@
       },
       "thumbnailTime": 3.8289823001684042,
       "thumbnailSha256": "57c12206700ff1273b9bae1ae9b6bdb5e8349603a3f8e19048d8df7224bd3c7e"
+    },
+    {
+      "id": "monster:hellforge-fist",
+      "name": "Hellforge molten fist",
+      "category": "Custom monsters",
+      "role": "flight",
+      "kind": "sprite",
+      "bundle": "resources",
+      "resource": "unit-library/monster3/Units/DemonVariants/HellforgeFist",
+      "image": "assets/resources/unit-library/monster3/Units/DemonVariants/HellforgeFist.png",
+      "uuid": "3210ddb6-ec7e-5cdc-a319-e1d116b40fca",
+      "size": 42,
+      "rotation": 0
     }
   ],
   "sets": [
@@ -15172,6 +15185,13 @@
       "name": "Spine Projectile 67",
       "category": "Spine Projectiles",
       "flight": "spine-projectile:fly_67"
+    },
+    {
+      "id": "monster:hellforge-fist",
+      "name": "Hellforge molten fist",
+      "category": "Custom monsters",
+      "flight": "monster:hellforge-fist",
+      "impact": "fantasy:fire-impact"
     }
   ],
   "trails": [
@@ -15519,6 +15539,120 @@
       "impact": "",
       "trail": "trail:08d16b37-823a-4fef-ba8d-95eefb2d3b04",
       "scale": 0.8
+    },
+    "enemy:91086": {
+      "set": "fantasy:venom-flight",
+      "size": 34,
+      "launchOffsetX": 0,
+      "launchOffsetY": 0,
+      "flight": "fantasy:venom-flight",
+      "launch": "fantasy:venom-impact",
+      "impact": "fantasy:venom-impact"
+    },
+    "enemy:91112": {
+      "set": "toon:projectile-12-forest",
+      "size": 45,
+      "launchOffsetX": 0,
+      "launchOffsetY": 0,
+      "flight": "toon:projectile-12-forest",
+      "launch": "toon:flash-12",
+      "impact": "toon:hit-12"
+    },
+    "enemy:91165": {
+      "set": "toon:projectile-6-magic-stone",
+      "size": 38,
+      "launchOffsetX": 15,
+      "launchOffsetY": 8,
+      "tint": "#ebdfcc",
+      "flight": "toon:projectile-6-magic-stone",
+      "launch": "toon:flash-6",
+      "impact": "toon:hit-6"
+    },
+    "enemy:91135": {
+      "set": "toon:projectile-8-twist",
+      "size": 44,
+      "launchOffsetX": 22,
+      "launchOffsetY": 17,
+      "tint": "#c0b7ec",
+      "flight": "toon:projectile-8-twist",
+      "launch": "toon:flash-8",
+      "impact": "toon:hit-8"
+    },
+    "enemy:91174": {
+      "set": "toon:projectile-7-wind",
+      "size": 46,
+      "launchOffsetX": 22,
+      "launchOffsetY": 11,
+      "tint": "#bad9b9",
+      "flight": "toon:projectile-7-wind",
+      "launch": "toon:flash-7",
+      "impact": "toon:hit-7"
+    },
+    "enemy:91160": {
+      "set": "fantasy:arcane-flight",
+      "size": 39,
+      "launchOffsetX": 15,
+      "launchOffsetY": 23,
+      "tint": "#a9dfb0",
+      "flight": "fantasy:arcane-flight",
+      "launch": "fantasy:arcane-impact",
+      "impact": "fantasy:arcane-impact"
+    },
+    "enemy:91134": {
+      "set": "toon:projectile-15-red",
+      "size": 39,
+      "launchOffsetX": 22,
+      "launchOffsetY": 15,
+      "flight": "toon:projectile-15-red",
+      "launch": "toon:flash-15",
+      "impact": "toon:hit-15"
+    },
+    "enemy:91145": {
+      "set": "toon:projectile-2-energy-orb",
+      "size": 43,
+      "launchOffsetX": 15,
+      "launchOffsetY": 7,
+      "tint": "#ff8bb5",
+      "flight": "toon:projectile-2-energy-orb",
+      "launch": "toon:flash-2",
+      "impact": "toon:hit-2"
+    },
+    "enemy:91171": {
+      "set": "toon:projectile-9-cosmic",
+      "size": 54,
+      "launchOffsetX": 21,
+      "launchOffsetY": 20,
+      "tint": "#ff637a",
+      "flight": "toon:projectile-9-cosmic",
+      "launch": "toon:flash-9",
+      "impact": "toon:hit-9"
+    },
+    "enemy:91096": {
+      "set": "spine-projectile:fly_30",
+      "size": 40,
+      "launchOffsetX": 0,
+      "launchOffsetY": 0,
+      "flight": "spine-projectile:fly_30",
+      "launch": "",
+      "impact": ""
+    },
+    "enemy:91144": {
+      "set": "toon:projectile-4-red-star",
+      "size": 35,
+      "launchOffsetX": 17,
+      "launchOffsetY": 7,
+      "flight": "toon:projectile-4-red-star",
+      "launch": "toon:flash-4",
+      "impact": "toon:hit-4"
+    },
+    "enemy:91184": {
+      "set": "monster:hellforge-fist",
+      "size": 42,
+      "launchOffsetX": 0,
+      "launchOffsetY": 0,
+      "flight": "monster:hellforge-fist",
+      "launch": "",
+      "impact": "fantasy:fire-impact"
     }
   },
   "heroArrowTiers": [

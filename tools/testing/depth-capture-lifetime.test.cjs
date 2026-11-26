@@ -229,29 +229,6 @@ test('gate disposal does not destroy a borrowed frame assigned over an owned cap
   assert.ok(borrowed._eventTarget, 'Only generated capture assets belong to the compositor');
 });
 
-test('ordinary object and actor captures survive resize, actor retirement and deferred view teardown', () => {
-  const f = fixture(), main = new f.Node('main'), obstacle = new f.Node('obstacle', main), actorNode = new f.Node('unit', main);
-  actorNode.y = 10; actorNode.width = 20; actorNode.height = 40; actorNode.zIndex = -1;
-  const actor = { node: actorNode, hp: 10, spAni: { enabled: true, node: actorNode } };
-  const borrowed = new f.Frame({ borrowed: true }), source = { enabled: true, node: obstacle, spriteFrame: borrowed };
-  const overlayNode = new f.Node('ObjectStencil', main), object = { node: obstacle, sources: [source], masks: new Map(),
-    overlay: { node: overlayNode, mask: overlayNode.addComponent(f.Mask) } };
-  const view = Object.assign(Object.create(f.DepthView.prototype), { main, nativeCapture: true, captureSupported: true, nativeActors: new Map(), objects: [object],
-    game: { ctrPlay: actor, gameData: { getSoldierList: () => [], getEnemyList: () => [] } }, sort() {}, renderNative() {},
-    makeMask(object, actor) { const node = new f.Node('ObjectActor', object.overlay.node), mask = { node, sprite: node.addComponent(f.Sprite) }; object.masks.set(actor, mask); return mask; } });
-  view.update();
-  const oldObject = object.frame, oldActor = view.nativeActors.get(actor).frame;
-  obstacle.width = actorNode.width = 100; source.spriteFrame = new f.Frame({ anotherBorrowed: true });
-  view.update();
-  assert.equal(oldObject._eventTarget, null); assert.equal(oldActor._eventTarget, null);
-  assert.ok(object.overlay.mask.spriteFrame._eventTarget);
-  assert.ok(object.masks.get(actor).sprite.spriteFrame._eventTarget);
-  actor.hp = 0; view.update();
-  assert.equal(view.nativeActors.size, 0); assert.equal(object.masks.size, 0);
-  f.flush(); view.destroy(); f.flush(); f.assertSafeReleases();
-  assert.ok(borrowed._eventTarget); assert.ok(source.spriteFrame._eventTarget);
-});
-
 test('animated actor bounds reuse capacity over 240 frames while capture centers follow the live pose', () => {
   const f = fixture(), calls = [], record = {};
   const view = { renderNative(sources, center, height, texture) { calls.push({ center, height, texture }); } };

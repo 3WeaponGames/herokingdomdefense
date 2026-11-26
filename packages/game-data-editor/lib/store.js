@@ -94,7 +94,7 @@ class Store {
         });
         const profileEdit=request.edits.some(edit=>{
             if(edit.doc.startsWith('map:'))return false;
-            if(edit.doc==='overrides'&&edit.path[0]==='projectileSpeeds')return false;
+            if(edit.doc==='overrides'&&['projectileSpeeds','unitKingdoms'].includes(edit.path[0]))return false;
             if(edit.doc==='overrides'&&edit.path.length===4&&edit.path[0]==='unitProfiles'&&edit.path[1]==='families'&&edit.path[3]==='defaultProfileId')return false;
             if(edit.doc==='A'&&['SoldierCfg','AllyCfg'].includes(edit.path[0])&&edit.path[2]==='UnitAttack')return false;
             if(edit.doc==='A'&&edit.path[0]==='SoldierCfg'&&['TransformSkill','EnemySkills'].includes(edit.path[2]))return false;

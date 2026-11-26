@@ -7,6 +7,7 @@ const Levels=require('./character-levels');
 const Catalog=require('./character-catalog');
 const UnitAnimationSpeeds=require('./unit-animation-speeds');
 const EnemyClasses=require('../../game-data-editor/lib/enemy-classes');
+const Kingdoms=require('../../game-data-editor/lib/unit-kingdoms');
 const AssetValidation=require('../../game-data-editor/lib/asset-validation');
 const Packs=require('./unit-packs'),Boss=require('./boss-model');
 const clone=value=>JSON.parse(JSON.stringify(value)),hash=text=>crypto.createHash('sha256').update(text).digest('hex');
@@ -42,7 +43,7 @@ class Service{
       const levels=type==='ally'?[...new Set(Object.values(cfg.BuildEnum||{}).flatMap(build=>(build.levelList||[]).filter(level=>level.Data&&Number(level.Data[1])===Number(row.ID)&&Number.isInteger(level.level)&&level.level>0).map(level=>level.level)))].sort((a,b)=>a-b):[];
       const key=type+':'+row.ID+':'+form,p=this.original.profiles[this.original.assignments[key]],source=type==='enemy'&&(row.MonsterSource||row.AppearanceSourceUnit&&cfg.SoldierCfg[row.AppearanceSourceUnit]&&cfg.SoldierCfg[row.AppearanceSourceUnit].MonsterSource||p&&(p.base.appearance||p.base.source||p.baked&&p.baked.source));
       const customUnit=type==='enemy'&&Packs.isCustomEnemy(row.ID,cfg.SoldierCfg,profiles,customSources);
-      result.push({type,id:String(row.ID),key,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies',sourcePack:type==='ally'?'character-maker':row.MonsterPack||source&&source.split('/')[0]||'original',...(customUnit?{customUnit}:{}),...(type==='enemy'?{enemyClass:EnemyClasses.resolve(cfg.GameTools,row.ID)}:{}),...(type==='ally'?{levels:levels.length?levels:[1]}:{}),...(source?{appearance:source}:{}),...portrait(row.loadIcon)});
+      result.push({type,id:String(row.ID),key,name:text(row.Name||row.name)||row.prefab||'Boss form '+form,group:type==='ally'?'Allies':'Enemies',sourcePack:type==='ally'?'character-maker':row.MonsterPack||source&&source.split('/')[0]||'original',...(customUnit?{customUnit}:{}),...(type==='enemy'?{enemyClass:EnemyClasses.resolve(cfg.GameTools,row.ID),kingdom:Kingdoms.resolve(row.ID,cfg.SoldierCfg,cfg.GameTools)}:{}),...(type==='ally'?{levels:levels.length?levels:[1]}:{}),...(source?{appearance:source}:{}),...portrait(row.loadIcon)});
     }
     return result;
   }

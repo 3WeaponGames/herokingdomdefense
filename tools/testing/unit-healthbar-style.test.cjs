@@ -17,6 +17,8 @@ function fixture(width = 48, runtime) {
     require: name => name === 'KinghtFallModle' ? { KinghtFallGameArmy: army } : runtime && runtime.modules[name] || {},
     cc: {
       Component: function () {}, Label: function () {}, Sprite: function () {}, director: runtime && runtime.director,
+      Vec2: { ZERO: { x: 0, y: 0 } },
+      v2: (x, y) => ({ x, y }),
       isValid: node => !!node,
       _decorator: { ccclass: value => value, property: () => () => {} }
     },
@@ -155,7 +157,8 @@ test('health pose resolves its modules lazily and reads the current UI export an
 
 test('large battles spread troop health-bar pose reads and refresh bars immediately when shown or reparented', () => {
   let frame = 0, reads = 0, height = 40;
-  const actor = { node: {}, spAni: { skeletonData: {} }, isDead: () => false };
+  const main = {}, layer = { activeInHierarchy: true };
+  const actor = { node: { parent: main }, spAni: { skeletonData: {} }, isDead: () => false };
   const game = { gameData: { enemyList: Array(90), soldierList: Array(9) } };
   const hp = fixture(48, {
     director: { getTotalFrames: () => frame },
@@ -171,6 +174,12 @@ test('large battles spread troop health-bar pose reads and refresh bars immediat
   hp.node.parent = {};
   hp.node.setPosition = function (x, y) { this.x = x; this.y = y; };
   hp.setType(army.Enemy, actor);
+  actor.hpctrl = hp;
+  actor._combatData = game.gameData;
+  game._depthView = { main, _unitHealthLayer: layer };
+  hp.lateUpdate();
+  assert.equal(reads, 0, 'the foreground pass will adopt this bar before drawing');
+  layer.activeInHierarchy = false;
   hp.lateUpdate();
   assert.equal(hp.node.y, 49);
   for (frame = 1; frame <= 8; frame++) hp.lateUpdate();
@@ -187,6 +196,50 @@ test('large battles spread troop health-bar pose reads and refresh bars immediat
   height = 70;
   hp.lateUpdate();
   assert.equal(hp.node.y, 79);
+});
+
+test('foreground unit bars track movement between pose samples and return to their pooled owner', () => {
+  let reads = 0;
+  const actor = { hp: 100, hpMax: 100, spAni: { skeletonData: {} }, isDead: () => false,
+    node: { x: 80, y: 110, _combatGeneration: 1,
+      convertToWorldSpaceAR() { return { x: this.x, y: this.y }; } } };
+  const hp = fixture(48, { modules: {
+    KinghtFallDepthView: {
+      unitBounds() { reads++; return { minX: actor.node.x - 10, maxX: actor.node.x + 10, maxY: actor.node.y + 40 }; },
+      union: (_before, box) => box
+    }
+  } });
+  const anchor = { activeInHierarchy: true,
+    convertToWorldSpaceAR: point => ({ x: actor.node.x + point.x, y: actor.node.y + point.y }) };
+  const layer = { convertToNodeSpaceAR: point => point };
+  Object.assign(hp.node, { parent: anchor, angle: 7, zIndex: 2, anchorY: .5,
+    setParent(parent) { this.parent = parent; }, setPosition(x, y) { this.x = x; this.y = y; } });
+  hp.setType(army.Enemy, actor);
+  hp.setHp(actor.hp, actor.hpMax);
+  assert.equal(hp.node.active, false);
+  hp.moveToBattleLayer(layer);
+  assert.equal(hp.node.active, true);
+  assert.equal(hp.sprPro.fillRange, 1);
+  const reference = { width: 64, height: 10 };
+  const projection = { x: 0, y: 0, a: 1, b: 0, c: 0, d: 1 };
+  hp.syncBattlePosition({}, reference, 1, 4, projection);
+  assert.deepEqual([hp.node.x, hp.node.y, hp.node.active, reads], [97, 141, true, 0]);
+  hp.syncBattlePosition({}, reference, 4, 4, projection);
+  assert.deepEqual([hp.node.x, hp.node.y], [80, 159]);
+  actor.node.x += 12;
+  actor.node.y -= 8;
+  hp.syncBattlePosition({}, reference, 5, 4, projection);
+  assert.deepEqual([hp.node.x, hp.node.y, reads], [92, 151, 1]);
+  actor.node._combatGeneration++;
+  hp.syncBattlePosition({}, reference, 5, 4, projection);
+  assert.equal(reads, 2, 'a reused actor does not keep the old pose sample');
+
+  actor._isPooled = true;
+  hp.restoreBattleParent();
+  assert.equal(hp.node.parent, anchor);
+  assert.equal(hp.node.active, false);
+  assert.deepEqual([hp.node.x, hp.node.y, hp.node.angle, hp.node.scaleX, hp.node.scaleY, hp.node.zIndex],
+    [17, 31, 7, 2.25, .75, 2]);
 });
 
 function bar(file) {

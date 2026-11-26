@@ -88,10 +88,12 @@ var exp_KinghtFallDataMgr = function () {
     return this.data.EquipCfg;
   };
   _ctor.prototype.getLevelCfgList = function () {
-    return this.data.LevelCfg;
+    var levels = this.data.LevelCfg;
+    var limit = this.data.GameTools && this.data.GameTools.campaignStageLimit;
+    return Number.isSafeInteger(limit) && limit > 0 && limit < levels.length ? levels.slice(0, limit) : levels;
   };
   _ctor.prototype.getLevelCfgById = function (t) {
-    return this.data.LevelCfg[t - 1];
+    return this.getLevelCfgList()[t - 1];
   };
   _ctor.prototype.getLevelCfgById2 = function (t) {
     if (t >= this.data.LevelCfg.length) {

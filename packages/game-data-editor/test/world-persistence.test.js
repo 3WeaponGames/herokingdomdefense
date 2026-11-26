@@ -390,6 +390,25 @@ function fixture(){
 }
 function rename(s,key,name){const value=clone(s.snapshot(key).value);value.name=name;return s.change({key,version:s.version,value});}
 
+test('campaign limit hides disabled stages and maps exclusive to them without writing editor data',()=>{
+ const f=fixture(),s=f.service;
+ const campaign={GameTools:{campaignStageLimit:1},LevelCfg:[
+  {Level:1,Name:'Active',EnvironmentMapId:'map-test',prefab:'Map01',WaveCfg:[]},
+  {Level:2,Name:'Parked',EnvironmentMapId:'map-other',prefab:'Map01',WaveCfg:[]},
+  {Level:3,Name:'Shared map',EnvironmentMapId:'map-test',prefab:'Map01',WaveCfg:[]}
+ ]};
+ const file=f.write(L.configFile('A'),campaign),before=fingerprint(file);
+ f.write('authoring/worlds/maps/map-unused.json',M.createMap('map-unused','Unused','forest'));
+ assert.deepEqual(s.stageCatalog().map(stage=>stage.id),['A-1']);
+ assert(s.mapCatalog().some(map=>map.id==='map-test'));
+ assert(s.mapCatalog().some(map=>map.id==='map-unused'));
+ assert(!s.mapCatalog().some(map=>map.id==='map-other'));
+ assert(s.availableMaps().some(map=>map.id==='map-other'));
+ assert.deepEqual(s.affected('map-other'),['A-2']);
+ assert.equal(fingerprint(file),before);
+ assert(!fs.existsSync(s.recovery));
+});
+
 test('world persistence: map renames change only the name and the catalog follows undo, redo and discard',()=>{
  const f=fixture(),s=f.service,key='map:map-test',file='authoring/worlds/maps/map-test.json',original=L.read(f.root,file);
  original.futureField={keep:['unchanged']};f.write(file,original);const before=fingerprint(path.join(f.root,file));

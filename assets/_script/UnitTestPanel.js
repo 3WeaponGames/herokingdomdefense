@@ -455,3 +455,4 @@ exports.toggle = function (ui) {
   if (ui._unitTestPanel) { ui._unitTestPanel.close(); return true; }
   return open(ui);
 };
+exports.controls = { node: node, paint: paint, label: label, button: button, input: input, colors: COLORS };

@@ -32,7 +32,7 @@ function harness(saved = {}) {
   modules.ServerDataMgr = { ServerdataMgr: { getDataByKey: () => null, getNeedSaveServer: () => false } };
   modules.Utils = { Utils: { restoreObjectKeys: value => value, renameObjectKeys: value => value, weight_rand: rows => rows.find(row => row.id === state.selected) || rows[0] } };
   modules.EventMgr = { EventMgr: singleton({ on() {}, emit: (...args) => state.events.push(args) }) };
-  modules.KinghtFallModle = { default: singleton({ compareIsToday: time => new Date(time).toDateString() === new Date().toDateString() }) };
+  modules.KinghtFallModle = { default: singleton({ compareIsToday: (time, now = Date.now()) => new Date(time).toDateString() === new Date(now).toDateString() }) };
   modules.KinghtFallDataMgr = { KinghtFallDataMgr: singleton({
     data: config,
     getGoodsCfgById: id => config.GoodsCfg[id],

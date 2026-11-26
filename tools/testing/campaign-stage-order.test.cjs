@@ -5,7 +5,7 @@ const Art=require('../../assets/_script/StageLoadingArt'),Lobby=require('../../a
 const biomes=['forest','forest','desert','desert','deep-forest','deep-forest','snow','snow','autumn','autumn','ice','ice','fire','fire','lava','lava','forest','desert','deep-forest','snow','autumn','ice','fire','lava'];
 const campaign=read('assets/KinghtFallConfig/GameJsonCfg.json');
 
-test('campaign: the main campaign exposes 24 named stages in the authored biome order',()=>{
+test('campaign: the main campaign retains 24 named stages in the authored biome order',()=>{
  const catalog=read('assets/resources/localization/catalog.json'),names=new Set();
  assert.equal(campaign.LevelCfg.length,24);
  assert(!Object.hasOwn(read('assets/configs/GameJsonCfg.json'),'LevelCfg'));
@@ -35,7 +35,7 @@ test('campaign: all stages resolve to their current maps and distinct runtime la
  assert.equal(prefabs.size,24);
 });
 
-test('campaign: every existing experiment assignment loads the same stage table',()=>{
+test('campaign: every experiment uses the same beta stage limit and preserves the full table',()=>{
  const source=fs.readFileSync(path.join(root,'assets/_script/KinghtFallDataMgr.js'),'utf8');
  for(const assignment of ['A','B','C','D']){
   let finished=0,released=0;
@@ -52,6 +52,14 @@ test('campaign: every existing experiment assignment loads the same stage table'
   vm.runInNewContext(source,{exports,cc,require:name=>dependencies[name]});
   const manager=exports.KinghtFallDataMgr.getInstance();
   manager.preload(()=>{assert.equal(manager.data.LevelCfg,campaign.LevelCfg);finished++;});
+  assert.equal(campaign.GameTools.campaignStageLimit,14);
+  assert.deepEqual(manager.getLevelCfgList(),campaign.LevelCfg.slice(0,14));
+  assert.equal(manager.getLevelCfgById(14),campaign.LevelCfg[13]);
+  for(let stage=15;stage<=26;stage++)assert.equal(manager.getLevelCfgById(stage),undefined);
+  manager.data={...campaign,GameTools:{...campaign.GameTools}};
+  delete manager.data.GameTools.campaignStageLimit;
+  assert.equal(manager.getLevelCfgList(),campaign.LevelCfg);
+  assert.equal(manager.getLevelCfgById(24),campaign.LevelCfg[23]);
   assert.deepEqual(loads,[['KinghtFallConfig','GameJsonCfg',cc.JsonAsset]]);
   assert.equal(finished,1);assert.equal(released,1);
  }

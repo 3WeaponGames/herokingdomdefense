@@ -346,6 +346,56 @@ test('the Unit Editor saves a chosen default for the model and new waves without
   assert.equal(f.input('Profile').value, String(newDefault));
 });
 
+test('the Unit Editor saves kingdom changes for every fighting profile in the Waves catalog', async () => {
+  const { store, config } = isolatedProject(), f = panelFixture(store), baseId = 91153;
+  const Catalog = require('../worlds/unit-catalog');
+  const bytes = fs.readFileSync(config), before = JSON.parse(bytes);
+  const profileIds = Object.values(before.GameTools.unitProfiles.families[baseId].profiles);
+  const read = () => JSON.parse(fs.readFileSync(config));
+  const family = () => Catalog.rows(read(), store.documents.catalog.data).filter(unit => profileIds.includes(unit.id));
+  const save = () => assert(store.save({ version: store.version }).result.saved);
+
+  f.render('ally:90001');
+  assert.equal(f.input('Kingdom'), undefined);
+  f.render('enemy:' + profileIds.find(id => id !== baseId));
+  const dropdown = f.input('Kingdom');
+  assert.equal(dropdown.value, '');
+  assert.equal(dropdown.children[0].textContent, 'Default (Slime Kingdom)');
+  assert(dropdown.children.some(option => option.value === 'plant' && option.textContent.startsWith('Nature Kingdom')));
+  assert.equal(store.changes().length, 0);
+
+  dropdown.value = 'plant';
+  dropdown.onchange();
+  dropdown.value = '';
+  dropdown.onchange();
+  await f.panel._queue;
+  assert.equal(store.changes().length, 0);
+
+  await f.edit('Kingdom', 'plant');
+  assert.deepEqual(store.draftState().overrides.unitKingdoms, { [baseId]: 'plant' });
+  assert.deepEqual(fs.readFileSync(config), bytes);
+  assert(family().every(unit => unit.kingdom === 'slime'));
+  f.render('enemy:' + baseId);
+  assert.equal(f.input('Kingdom').value, 'plant');
+  save();
+
+  const saved = read(), { unitKingdoms, ...gameTools } = saved.GameTools;
+  assert.deepEqual(unitKingdoms, { [baseId]: 'plant' });
+  assert.deepEqual({ ...saved, GameTools: gameTools }, before);
+  assert.equal(family().length, 6);
+  assert(family().every(unit => unit.kingdom === 'plant' && Catalog.matches(unit, 'nature kingdom deep forest')));
+
+  await f.panel._load(false);
+  await f.edit('Kingdom', 'unassigned');
+  save();
+  assert(family().every(unit => unit.kingdom === 'unassigned'));
+  await f.panel._load(false);
+  await f.edit('Kingdom', '');
+  save();
+  assert.deepEqual(read(), before);
+  assert(family().every(unit => unit.kingdom === 'slime'));
+});
+
 test('projectile focus opens the panel and delivers the selected unit once', async () => {
   const f = isolatedProject(), plugin = require('../../hkd-projectiles/main');
   const previous = global.Editor, notifications = [];

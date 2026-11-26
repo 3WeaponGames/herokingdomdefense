@@ -57,15 +57,16 @@ var exp_KinghtFallMissionData = function (t) {
       };
       t = true;
     }
-    if (!$z1KinghtFallModle.default.getInstance().compareIsToday(this.data.time)) {
-      this.initDailyData();
+    var now = this._rewardTestClock ? this._rewardTestClock() : Date.now();
+    if (!$z1KinghtFallModle.default.getInstance().compareIsToday(this.data.time, now)) {
+      this.initDailyData(now);
       t = true;
     }
     if (QuestBoard.initialize(this.data, this.questConfig)) t = true;
     t && this.saveData();
   };
-  _ctor.prototype.initDailyData = function () {
-    this.data.time = Date.now();
+  _ctor.prototype.initDailyData = function (now) {
+    this.data.time = now === undefined ? Date.now() : now;
     this.addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.LoginDays, 1);
   };
   _ctor.prototype.validateSaveRecord = function (data) {

@@ -30,13 +30,14 @@ function fixture(saved, { native = false } = {}) {
     instantiate(prefab) { if (prefab.map) return node(); const viewNode = node(); mounted = openBattleView(viewNode); viewNode.getComponent = () => mounted; return viewNode; } };
   const enums = disk.load('KinghtFallEnum'), ids = { UIGame: 'UIGame', UIHome: 'UIHome', UINewGame: 'UINewGame', UIAddStrength: 'UIAddStrength' };
   const data = disk.load('KinghtFallDataMgr').KinghtFallDataMgr.getInstance();
-  Object.assign(data, { getLevelCfgById: id => config.LevelCfg[id - 1], getGameTask: id => config.InGameTaskCfg[id - 1],
+  Object.assign(data, { getLevelCfgById: id => id <= config.GameTools.campaignStageLimit ? config.LevelCfg[id - 1] : undefined, getGameTask: id => config.InGameTaskCfg[id - 1],
     getParamsCfgById: id => config.ParameterCfg[id].Value, getTreasureCfg: () => config.TreasureCfg });
   const gameConfig = { KinghtFallUIID: ids, KinghtFallBundelName: { IconMap: 'maps' }, KinghtFallParameter: { FollowMode: 0, InitGold: 0 }, KinghtFallAudioId: {}, KinghtFallEventName: {} };
   Object.assign(modules, { RelicEligibility: require("../../assets/_script/RelicEligibility"), RelicRuntime, AuthoredSpawnPlan, KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton(player) }, KinghtFallDataMgr: { KinghtFallDataMgr: singleton(data) },
     KinghtFallEnum: enums, KinghtFallConfig: gameConfig, Config: { UIID: { UINONE: 'none', UITouch: 'touch' } }, Appcfg: { BaseEventName: { ShowTransition: 'transition', blocktouch: 'input', OpenUI: 'open' } },
     EventMgr: { EventMgr: singleton({ emit: (...args) => events.push(args) }) }, KinghtFallModle: { default: singleton({ randomArray: (list, count) => list.slice(0, count) }), KinghtFallGameStage: {} },
     TestMode: { TestMode: singleton({ setGameplayTarget() {}, removeGameplayTarget() {}, readGameplayInput: () => ({ pause: true, x: 1 }) }) },
+    BattleHud: { layoutFooter() {} },
     AudioMgr: { AudioMgr: singleton({ playMusic() {}, playEffectFree() {}, setChannelGain() {}, stopOwnedEffects() {} }) }, GameToolsOverrides: { clear() {} },
     PlayerMgr: { PlayerMgr: singleton({ getTrackData: () => ({ youmengTrack() {} }) }) }, GameTrackDataEvent: { TrackId: {} },
     LogMgr: { LogMgr: singleton({ error() {} }) }, TimeUtils: { TimeUtils: { GetTimeBySecond: () => 0 } },
@@ -138,6 +139,22 @@ test('asset retries deliver one admission and a continued checkpoint never purch
   f.requests.at(-1).done(Error('first map attempt')); f.errors.shift().retry(); f.mapReady();
   const saved = f.disk.persist(), resumed = fixture(saved); resumed.manager.openUIOfCallback('UIGame','none',()=>{},stage); resumed.prefabReady(); resumed.mapReady();
   assert.equal(resumed.user.getPowerNum(), 100 - cost); assert.equal(resumed.earnedSilver(), f.earnedSilver());
+});
+
+test('an old unlock cannot start a disabled beta stage or charge stamina', () => {
+  const f = fixture(), disabledStage = config.GameTools.campaignStageLimit + 1;
+  f.user.setMaxStage(disabledStage);
+  f.home.selectStage = disabledStage;
+  f.begin();
+  f.prefabReady();
+  assert.equal(f.view().isclose, true);
+  assert.equal(f.homeView.node.active, true);
+  assert.equal(f.requests.length, 1, 'the disabled stage never loads its map');
+  assert.equal(f.user.getPowerNum(), 100);
+  assert.equal(f.user.getMaxStage(), disabledStage);
+  assert.equal(f.user.getStage(), 1);
+  assert.equal(f.player.gameData.hasSave(disabledStage), false);
+  assert.equal(f.earnedSilver(), 0);
 });
 
 test('native Stage 2 entry waits for a slow battle screen and retries a stall without a prompt', () => {

@@ -55,12 +55,6 @@ for(const page of [1,2])test('page'+page+' GPU failure restores each leaf before
  const f=fixture(true),before=f.snapshot();f.failAt(page);assert.equal(f.atlas.capture(f.items,1),page===1?0:f.items.filter(i=>i.record.draw===1).length);assert(f.atlas.disabled);assert.deepEqual(f.snapshot(),before);assert.equal(f.sceneWrites(),0);f.repair();f.renderMain();for(const item of f.items){const n=item.sources[0].node,o=n.convertToWorldSpaceAR({x:0,y:0});near(n.world.x,o.x);near(n.world.y,o.y);}assert.equal(f.sceneWrites(),1);f.atlas.dispose();
 });
 
-for(const failure of [false,true])test('actual Depth.update owns the defer marker and repairs scene inheritance exactly once, GPUfailure='+failure,()=>{
- const f=makeDepth(3),Depth=f.DepthView,actor={node:f.renderers[0].node,spAni:f.renderers[0],hp:100},view=Object.assign(Object.create(Depth.prototype),f.owner,{captureSupported:true,objects:[],nativeActors:new Map(),game:{ctrPlay:actor,gameData:{getSoldierList:()=>[],getEnemyList:()=>[]}},sort(){}});let current=null,repairs=0,flags=0;Object.defineProperty(f.scene,'_renderFlag',{get(){return flags;},set(value){flags=value;if((value&40)===40)repairs++;}});
- view.gateOcclusion={update(){current=view._nativeCaptureScope;assert.equal(current._sceneRepairOwner,view);view._nativeRendered=true;current.capture(f.renderers[0].node,()=>{f.pass(f.renderers[0].node);if(failure)throw Error('controlled GPU failure');});}};
- if(failure)assert.throws(()=>view.update(),/GPU failure/);else view.update();assert.equal(current._sceneRepairOwner,null);assert(current.finished);assert.equal(view._nativeCaptureScope,null);assert.equal(repairs,1);assert(f.renderers.every(r=>r.state.alpha===1&&!r.state.nativePaused));
-});
-
 test('a finished actual native scope revokes deferred repair ownership before later standalone work',()=>{
  const f=makeDepth(2),scope=new f.Scope(f.owner);scope._sceneRepairOwner=f.owner;scope.finish();assert.equal(scope._sceneRepairOwner,null);scope.finish();assert.equal(scope._sceneRepairOwner,null);
 });

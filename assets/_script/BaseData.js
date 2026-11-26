@@ -8,6 +8,10 @@ Object.defineProperty(exports, "__esModule", {
 
 exports.BaseData = undefined;
 var $z1CacheUtils = require("CacheUtils");
+function previewProgress(key) {
+  var cache = $z1CacheUtils.CacheUtils;
+  return cache && cache.isPreviewProgress && cache.isPreviewProgress(key);
+}
 var $z1Config = require("Config");
 var $z1EventMgr = require("EventMgr");
 var $z1PlatformManager = require("PlatformManager");
@@ -51,7 +55,7 @@ var exp_BaseData = function () {
           t.UpdateData();
         }
       }, this);
-      var e = $z1ServerDataMgr.ServerdataMgr.getDataByKey(this.gameKey);
+      var e = previewProgress(this.gameKey) ? null : $z1ServerDataMgr.ServerdataMgr.getDataByKey(this.gameKey);
       return this.loaddata(e, this.gameKey);
     }
     return this.data;
@@ -187,14 +191,14 @@ var exp_BaseData = function () {
         this.saveFailureReported = false;
         if ($z1EventMgr.EventMgr) $z1EventMgr.EventMgr.getInstance().emit("SaveRecovered", { key: this.gameKey });
       }
-      $z1ServerDataMgr.ServerdataMgr.getNeedSaveServer() && this.UpdateData();
+      if (!previewProgress(this.gameKey) && $z1ServerDataMgr.ServerdataMgr.getNeedSaveServer()) this.UpdateData();
       return true;
     }
     this.reportSaveFailure();
     return false;
   };
   _ctor.prototype.UpdateData = function () {
-    if (this.pause || this.saveBlockedByRecovery || this.localSavePending || this.deferSave || this.clearPending) return;
+    if (this.pause || this.saveBlockedByRecovery || this.localSavePending || this.deferSave || this.clearPending || previewProgress(this.gameKey)) return;
     if (!$z1ServerDataMgr.ServerdataMgr.getNeedSaveServer()) return;
     this.isneedSave = true;
     if (this._cloudRequest) return;

@@ -104,7 +104,10 @@ function fixture(options = {}) {
     return { object, box, ground: object.node._depthGround.y, hidden: [] };
   }
   const {create} = load(cc, {});
-  const controller = create(view, stock, node => ({ y: node.y }), overlaps);
+  const controller = create(view, stock, node => ({ y: node.y }), overlaps, options.seedGroundReader);
+  if (controller && !options.includeFirstDraw) {
+    assert.equal(controller.collect({bounds: new Map()}, visible, [], new Map()), false);
+  }
   function draw(bounds = new Map(), viewport = visible) {
     const cache = { bounds }, candidates = [], byObject = new Map();
     const handled = controller && controller.collect(cache, viewport, candidates, byObject);
@@ -127,6 +130,20 @@ test('unsupported or missing bridge leaves stock candidate scan active', () => {
   }
 });
 
+test('the first draw uses the original scan and the second draw can seed', () => {
+  const f = fixture({includeFirstDraw: true});
+  const first = f.draw();
+  assert.equal(first.handled, false);
+  assert.deepEqual(first.calls, [0, 1, 2, 3, 4]);
+  assert.equal(f.activeTickets.size, 0);
+
+  const seeded = f.draw();
+  assert.equal(seeded.handled, true);
+  assert.deepEqual(seeded.candidates, first.candidates);
+  assert(f.activeTickets.size > 0);
+  assert.deepEqual(f.draw().calls, [2]);
+});
+
 test('seed publishes original rows and warm scan preserves strict overlaps, order and empty per-draw hidden lists', () => {
   const f = fixture();
   const cold = f.draw();
@@ -144,6 +161,51 @@ test('seed publishes original rows and warm scan preserves strict overlaps, orde
   const fromNewViewport = f.draw(undefined, {minX: 599, minY: 0, maxX: 710, maxY: 101});
   assert.deepEqual(fromNewViewport.ids, [0]);
   assert.equal(fromNewViewport.candidates[0].ground, 1);
+});
+
+test('painter-only enrollment retains static geometry and skips dynamic candidates', () => {
+  const f = fixture();
+  const enrolled = [];
+  f.onStock = object => enrolled.push(object.id);
+  f.controller.preparePainter({ bounds: new Map() });
+  assert.deepEqual(enrolled, [0, 1, 3, 4]);
+  assert(f.controller.painter()(f.objects[1].node));
+  assert(f.controller.painter()(f.objects[3].node));
+  assert.equal(f.controller.painter()(f.objects[2].node), null);
+  f.controller.preparePainter({ bounds: new Map() });
+  assert.deepEqual(enrolled, [0, 1, 3, 4]);
+  assert.deepEqual(f.draw().ids, [1, 2, 3]);
+});
+
+test('cold seed reads only culled anchors after the original candidate callbacks', () => {
+  const events = [];
+  const f = fixture({seedGroundReader(main) {
+    assert.equal(main, f.view.main);
+    return (ground, owner) => {
+      assert.equal(ground.parent, owner);
+      events.push(['ground', ground.y]);
+      return ground.y;
+    };
+  }});
+  f.onStock = object => {
+    events.push(['stock', object.id]);
+    if (object.id === 4) f.objects[0].node._depthGround.y = 12;
+  };
+  assert.deepEqual(f.draw().ids, [1, 2, 3]);
+  assert.deepEqual(events, [['stock', 0], ['stock', 1], ['stock', 2], ['stock', 3], ['stock', 4],
+    ['ground', 12], ['ground', 5]]);
+  const warm = f.draw(undefined, {minX: 599, minY: 0, maxX: 710, maxY: 101});
+  assert.equal(warm.candidates[0].ground, 12);
+  assert.deepEqual(events.at(-1), ['stock', 2]);
+});
+
+test('a stock callback replacing a public geometry reader leaves the cold ground sweep on the original path', () => {
+  const f = fixture({seedGroundReader() { assert.fail('Modified public reader reached the shortcut'); }});
+  f.onStock = object => {
+    if (object.id === 4) f.cc.Node.prototype.getWorldMatrix = function () {};
+  };
+  assert.deepEqual(f.draw().ids, [1, 2, 3]);
+  assert.deepEqual(f.draw(undefined, {minX: 599, minY: 0, maxX: 710, maxY: 101}).ids, [0]);
 });
 
 test('stock callback invalidates a later cached row and resumes once in original order', () => {

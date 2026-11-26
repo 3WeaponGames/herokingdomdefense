@@ -76,7 +76,8 @@ function battle(data, config, forceBoss) {
   var level = data.levelCfg || {}, waves = level.WaveCfg || [], round = positive(data.round);
   var stages = config && config.LevelCfg || [], finalStage = stages[stages.length - 1];
   if (round === waves.length && finalStage && Number(level.Level) === Number(finalStage.Level)) return "final_wave_bgm";
-  if (forceBoss || waveHasBossOrElite(waves[round - 1], config, level)) return "boss_fight_bgm";
+  var wave = data.getEnemyWave ? data.getEnemyWave() : waves[round - 1];
+  if (forceBoss || waveHasBossOrElite(wave, config, level)) return "boss_fight_bgm";
   var index = (positive(level.Level) + round - 2) % 3;
   return index ? "fight_bgm_" + (index + 1) : "fight_bgm";
 }

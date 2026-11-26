@@ -218,12 +218,14 @@ test('battle entry and rally cues cannot finish loading into a later menu',()=>{
 });
 
 test('tutorial pause steps immediately suspend presentation without scheduling actor physics or retiring new paused feedback twice',()=>{
- const f=adFixture(),suspended=[],game={node:{activeInHierarchy:true},_combatEpoch:1,gameData:{baseBuild:{ndLockList:[{}],getLevel:()=>0}},_unitVoices:{},camera:{},onPauseGame(){throw Error('tutorial must preserve its actor physics behavior');}};
+ let step=0;
+ const f=adFixture(),suspended=[],game={node:{activeInHierarchy:true},_combatEpoch:1,gameData:{baseBuild:{ndLockList:[{}],getLevel:()=>step<2?0:1}},_unitVoices:{},camera:{},onPauseGame(){throw Error('tutorial must preserve its actor physics behavior');}};
  f.modules.UnitVoices={suspend(_game,paused){suspended.push(['voices',paused]);}};
  game.setAudioPaused=method('KinghtFallGameCtrl','setAudioPaused',{BattleSounds:{suspend(_game,paused){suspended.push(['battle',paused]);}},require:name=>f.modules[name]});
  f.modules.KinghtFallUIGame={default:{instance:{ctrGame:game}}};const named=f.load('KinghtFallAudioMgr').KinghtFallAudioMgr.getInstance(),actor={node:{activeInHierarchy:true}};
- let step=0;const guide={getGroupId:()=>2,getStepId:()=>step},single=value=>({getInstance:()=>value});
- const start=method('KinghtFallUIGame','startGuide',{$z1PlatformSetting:{PlatformSetting:{currentPlatform:'editor'}},$z1BasePlatform:{Platform:{WEB_LINK:'web'}},$z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single({getGuideData:()=>guide})},$z1KinghtFallDataMgr:{KinghtFallDataMgr:single({getGuideCfgById:()=>[{},{},{},{}]})},$z1UIGuide:{GuildCfg:function(){}},$z1PlayerMgr:{PlayerMgr:single({getTrackData:()=>({youmengTrack(){}})})},$z1GameTrackDataEvent:{TrackId:{}},$z1Config:{UIID:{UIGuide:'guide'}},cc:{v2:(x,y)=>({x,y}),Size:function(w,h){this.width=w;this.height=h;}}});
+ const guide={getGroupId:()=>2,getStepId:()=>step},single=value=>({getInstance:()=>value});
+ const tutorial={active:()=>true,config:()=>({}),visible:node=>!!node,present:()=>true};
+ const start=method('KinghtFallUIGame','startGuide',{require(name){assert.equal(name,'TutorialFlow');return tutorial;},$z1PlatformSetting:{PlatformSetting:{currentPlatform:'editor'}},$z1BasePlatform:{Platform:{WEB_LINK:'web'}},$z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single({getGuideData:()=>guide})},$z1KinghtFallDataMgr:{KinghtFallDataMgr:single({getGuideCfgById:()=>[{},{},{},{}]})},$z1PlayerMgr:{PlayerMgr:single({getTrackData:()=>({youmengTrack(){}})})},$z1GameTrackDataEvent:{TrackId:{}},cc:{Size:function(w,h){this.width=w;this.height=h;}}});
  const ui={ctrGame:game,isPauset:false,ndCoin:{},btnStartFight:{},enemyIconInfo:{},openUICallBack(){}};
  named.playEffectFree('hit',actor);const sound=f.audio.getAudioSource('effect1');assert.equal(sound.isPlaying,true);
  start.call(ui);assert.equal(ui.isPauset,true);assert.equal(sound.isPlaying,false,'the tutorial must retire active actor cues before suppressing updates');
@@ -245,6 +247,7 @@ function perkAnnouncementFixture(mode='normal'){
  const f=adFixture(),order=[],scheduled=[];f.cc.resources={};f.cc.isValid=value=>!!value&&!value.destroyed;
  const game={node:{activeInHierarchy:true},_combatEpoch:1,gameStatus:1,ndPlayArr2:[],ndEnemyArr:[],ndSoldArr:[],ndBuildArr2:[],ctrPlay:{ndRange:{},endRoundGame(){},ctrPlayAni:{setLevelUp(){order.push('level');}}}},dialog={isCurrent:()=>true};
  const ui={node:{activeInHierarchy:true},_resourceGeneration:1,ctrGame:game,isPauset:false,beginBattleDialog:()=>dialog,finishBattleDialog(){order.push('unpause');this.isPauset=false;},onPauseGame(paused){this.isPauset=paused;},playPlanningMusic(){},scheduleOnce:callback=>scheduled.push(callback),openBattleDialog(_dialog,_id,_opened,choice){this.choice=choice;},btnBuildInfo:{},ctrUI:{},initView(){order.push('view');},initBtnView(){order.push('buttons');}};
+ ui.startGuide=()=>{};
  f.modules.KinghtFallUIGame={default:{instance:ui}};f.modules.KinghtFallModle={KinghtFallGameStage:{End:3,Prepare:0,Transition:2}};
  const voices=f.load('UnitVoices');f.modules.UnitVoices=voices;
  const building={node:{activeInHierarchy:true},index:2,buildCfg:{enumValue:3},buildInfo:{cfg:{Data:[4,90003,8],level:2}},getBranchCfg(){return this.buildInfo.cfg;}};

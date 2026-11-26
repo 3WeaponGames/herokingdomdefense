@@ -12,6 +12,7 @@ var $z1PlatformManager = require("PlatformManager");
 var $z1ServerDataMgr = require("ServerDataMgr");
 var $z1Utils = require("Utils");
 var progressGeneration, generationRead = false;
+var previewSaves;
 function currentProgressGeneration() {
   try {
     var value = localStorage.getItem("project-cocos.progress-generation");
@@ -22,7 +23,18 @@ function currentProgressGeneration() {
 currentProgressGeneration();
 var exp_CacheUtils = function () {
   function _ctor() {}
+  _ctor.previewProgress = function (keys) {
+    if (previewSaves) return false;
+    var snapshot = new Map(), cache = this;
+    keys.forEach(function (key) { snapshot.set(key, cache.getData(key)); });
+    previewSaves = snapshot;
+    return true;
+  };
+  _ctor.isPreviewProgress = function (key) {
+    return !!previewSaves && previewSaves.has(key);
+  };
   _ctor.saveData = function (key, value) {
+    if (previewSaves && previewSaves.has(key)) { previewSaves.set(key, value); return true; }
     if (!currentProgressGeneration()) return false;
     var platform = $z1PlatformManager.PlatformManager.currentPlatform;
     var nativeFile = platform == $z1BasePlatform.Platform.BYTEDANCE || platform == $z1BasePlatform.Platform.WECHAT;
@@ -79,6 +91,7 @@ var exp_CacheUtils = function () {
     }
   };
   _ctor.getData = function (t) {
+    if (previewSaves && previewSaves.has(t)) return previewSaves.get(t) || null;
     if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE) {
       if (typeof tt !== "undefined" && tt.sffile && Object.prototype.hasOwnProperty.call(tt.sffile, t)) return tt.sffile[t] || null;
     } else if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT) {
@@ -87,6 +100,7 @@ var exp_CacheUtils = function () {
     return localStorage.getItem(t);
   };
   _ctor.removeData = function (key) {
+    if (previewSaves && previewSaves.has(key)) { previewSaves.set(key, null); return true; }
     // Persist an empty tombstone in mini-app files before clearing the mirror.
     // A stale localStorage value must not resurrect a successfully removed file key.
     if (this.saveData(key, "") === false) return false;

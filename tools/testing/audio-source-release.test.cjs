@@ -49,6 +49,7 @@ test('selecting perks across repeated waves completes cleanup, unpauses, saves o
  g.ctrPlay.ndRange={active:true};g.ctrPlay.ctrPlayAni={setLevelUp(){}};g.ctrPlay.endRoundGame=()=>{};
  g.cleanMap=f.method('cleanMap');g.endRoundGame=f.method('endRoundGame');
  Object.assign(ui,{ndCoin:coinRoot,uid:'KinghtFallUIGame',btnBuildInfo:{active:false},ctrUI:{ndLight:{},node:{convertToNodeSpaceAR:identity}},scheduleOnce:fn=>scheduled.push(fn),playPlanningMusic(){},initView(){},initBtnView(){},onPauseGame(paused){g.paused=paused;f.sounds.suspend(g,paused);}});
+ ui.startGuide=()=>{};
  ui.beginBattleDialog=f.method('beginBattleDialog','KinghtFallUIGame');ui.finishBattleDialog=f.method('finishBattleDialog','KinghtFallUIGame');ui.cancelBattleDialog=()=>{};
  let choose;ui.openBattleDialog=(dialog,id,opened,selection)=>{opened();choose=selection;};
  const endWave=f.method('endRoundGame','KinghtFallUIGame',{$z1KinghtFallConfig:{KinghtFallParameter:{BattleNightStrength:0},KinghtFallUIID:{UIBuff:'perk'}},$z1KinghtFallModle:f.modules.KinghtFallModle,$z1KinghtFallGameCtrlData:{KinghtFallTimeType:{KillSoldier2:'soldier'}},$z1KinghtFallEnum:{KinghtFallEnumBuffCfg:{Buff04:'bonus'}}});

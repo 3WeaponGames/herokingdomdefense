@@ -98,10 +98,18 @@ function spatialEffect(owner, position, prefab, pool, parent, options) {
     if (options.duration === undefined) skeleton.setCompleteListener(function () { releaseEffect(record); });
   }
   var node = manager.getNode(pool);
-  if (node) start(node);
-  else owner.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.Effect, prefab, function (asset) {
+  if (node) return start(node);
+  var bundle = $z1KinghtFallConfig.KinghtFallBundelName.Effect;
+  if (options.impact) {
+    // Use the stage's prepared impact prefab and grow its pool with demand.
+    // Reserving spare copies during the first hit blocks the combat frame.
+    var warmup = scope.ui && scope.ui._stageAssets;
+    var prepared = warmup && warmup.assets[bundle + "/" + prefab + ":prefab"];
+    if (live(prepared)) return start(manager.getNodeFromPrefab(pool, prepared, 0));
+  }
+  owner.loadPrefab(bundle, prefab, function (asset) {
     // The same controller may serve another map before this load completes.
-    if (scopeCurrent(scope)) start(manager.getNodeFromPrefab(pool, asset, 10));
+    if (scopeCurrent(scope)) start(manager.getNodeFromPrefab(pool, asset, options.impact ? 0 : 10));
   });
 }
 var def_KinghtFallGameEffect = function (t) {

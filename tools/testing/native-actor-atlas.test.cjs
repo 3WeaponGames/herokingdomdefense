@@ -320,3 +320,9 @@ test('a callback arrival word equal to the temporary native word is still preser
  f.view.camera.render=function(root){const result=render.call(this,root);callbackWord=word[0];node._localZOrder=callbackWord;return result;};
  assert.equal(f.atlas.capture(f.items,1),0);assert.equal(node._localZOrder,callbackWord);assert.equal(word[0],callbackWord);assert(f.atlas.disabled);assert(f.items.every(item=>!item.record.frame));f.atlas.dispose();
 });
+
+test('fixed-detail API validates finite bounded scalar and bypasses physical camera reads while default Gate sampling stays4x',()=>{
+ const f=fixture(4);f.view.game={get camera(){throw Error('ordinary fixed sampling must not read game camera');}};assert.equal(f.atlas.capture(f.items,1,1),4);assert(f.items.every(i=>i.record.frame.rect.width===96));f.atlas.dispose();
+ const gate=fixture(4);assert.equal(gate.atlas.capture(gate.items,1),4);assert(gate.items.every(i=>i.record.frame.rect.width===384));gate.atlas.dispose();
+ for(const value of [NaN,Infinity,-Infinity,0,-1,4.01,'1',null]){const x=fixture(4),before=x.snapshot();assert.equal(x.atlas.capture(x.items,1,value),0);assert.equal(x.draws.length,0);assert.deepEqual(x.snapshot(),before);x.atlas.dispose();}
+});

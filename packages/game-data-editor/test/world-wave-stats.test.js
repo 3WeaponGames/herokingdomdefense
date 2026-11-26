@@ -76,15 +76,15 @@ test('unit chooser shows scaled stats on every model and refreshes them for prof
  }finally{if(dispose)dispose();if(oldRequest===undefined)delete global.requestAnimationFrame;else global.requestAnimationFrame=oldRequest;if(oldCancel===undefined)delete global.cancelAnimationFrame;else global.cancelAnimationFrame=oldCancel;}
 });
 
-test('enemy class filtering switches displayed profiles while preserving selections, model groups and source data',t=>{
+test('class, fighting type, pack and kingdom filters preserve selections, model groups and source data',t=>{
  t.mock.method(Gallery,'create',()=>({watch(){},setUnit(){},destroy(){}}));
  const oldRequest=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
  const el=(tag,text,cls)=>new Element(tag,text,cls),dialog=el('section'),units=[
-  {id:1,name:'Slime',modelKey:'slime',enemyClass:'normal',enemyClassName:'Normal',unitType:'fighter',health:40,damage:10},
-  {id:2,name:'Slime',modelKey:'slime',enemyClass:'elite',enemyClassName:'Elite',unitType:'fighter',health:60,damage:15},
-  {id:3,name:'Slime',modelKey:'slime',enemyClass:'boss',enemyClassName:'Boss',unitType:'mystic',health:200,damage:30},
+  {id:1,name:'Slime',modelKey:'slime',assetPack:'monster1',kingdom:'slime',enemyClass:'normal',enemyClassName:'Normal',unitType:'fighter',health:40,damage:10},
+  {id:2,name:'Slime',modelKey:'slime',assetPack:'monster1',kingdom:'slime',enemyClass:'elite',enemyClassName:'Elite',unitType:'fighter',health:60,damage:15},
+  {id:3,name:'Slime',modelKey:'slime',assetPack:'monster1',kingdom:'slime',enemyClass:'boss',enemyClassName:'Boss',unitType:'mystic',health:200,damage:30},
   {id:4,name:'Solo',health:20,damage:5},
-  {id:5,name:'Dragon',enemyClass:'boss',enemyClassName:'Boss',unitType:'mystic',health:500,damage:50}
+  {id:5,name:'Dragon',assetPack:'monster2',kingdom:'sun-tomb',enemyClass:'boss',enemyClassName:'Boss',unitType:'mystic',health:500,damage:50}
  ],selected=new Set([1]),wave={HealthCoefficient:2,AttackCoefficient:1.5},before=JSON.stringify({units,wave});
  const button=(parent,text,handler)=>{const input=el('button',text);input.onclick=handler;parent.appendChild(input);return input;},field=(parent,name,value,change,choices)=>{const label=el('label'),input=el('select');input.value=value;input.change=change;input.fieldName=name;input.choices=choices;label.appendChild(input);parent.appendChild(label);return input;};
  let dispose;
@@ -99,7 +99,14 @@ test('enemy class filtering switches displayed profiles while preserving selecti
   filter('Enemy class').change('boss');assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[3,5]);assert(visible().every(entry=>entry.querySelector('.world-unit-enemy-class').textContent==='Boss'));assert.deepEqual([...selected],[1,2]);
   filter('Fighting type').change('fighter');assert.equal(visible().length,0);assert.equal(dialog.querySelector('.world-unit-picker-empty').hidden,false);assert.deepEqual([...selected],[1,2]);
   filter('Fighting type').change('all');filter('Enemy class').change('all');const search=dialog.querySelector('.world-unit-picker-search');search.value='slime elite';search.oninput();assert.equal(visible().length,1);assert.equal(card(visible()[0]).dataset.unitId,2);
-  assert.equal(JSON.stringify({units,wave}),before,'browsing class filters only changes chooser state');
+  assert.deepEqual(filter('Kingdom').choices.map(choice=>choice.value),['all','slime','sun-tomb']);
+  search.value='desert';search.oninput();filter('Kingdom').change('sun-tomb');
+  assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[5]);
+  assert.equal(visible()[0].querySelector('.world-unit-kingdom').textContent,'Sun-Tomb Empire');
+  filter('Asset pack').change('monster1');assert.equal(visible().length,0);
+  filter('Asset pack').change('monster2');assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[5]);
+  assert.deepEqual([...selected],[1,2]);
+  assert.equal(JSON.stringify({units,wave}),before,'browsing filters only changes chooser state');
   dispose.reload(units.map(unit=>unit.id===4?Object.assign({},unit,{enemyClass:'elite',enemyClassName:'Elite'}):unit));assert.equal(entries()[1].querySelector('.world-unit-enemy-class').textContent,'Elite','a fresh saved catalog updates class badges');
  }finally{if(dispose)dispose();if(oldRequest===undefined)delete global.requestAnimationFrame;else global.requestAnimationFrame=oldRequest;if(oldCancel===undefined)delete global.cancelAnimationFrame;else global.cancelAnimationFrame=oldCancel;}
 });

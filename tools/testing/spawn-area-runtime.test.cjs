@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),vm=require(
 function fixture(radius=55){
  let seed=9,randoms=0,resets=0,navCalls=0;const math=Object.create(Math);math.random=()=>{randoms++;seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
  const grid=new Grid([],{minX:-500,minY:-500,maxX:500,maxY:500},16),nav={grid,refresh(){},radius(unit,sleeping){assert(unit.node);return 12;}};
- const Navigation={get(){navCalls++;return nav;},positionOf(n){return n.position;},reset(){resets++;},prepareTerrainExit(){}},spec={id:1,radius,FutureField:{keep:1}},paths={spawnSpec:()=>spec},center={position:{x:-150,y:0}},game={ndPath:{getChildByName(name){return name==='Authored routes'?{getComponent:()=>paths}:center;}},ndMain:{convertToWorldSpaceAR:p=>p}};
+ const Navigation={get(){navCalls++;return nav;},positionOf(n){return n.position;},reset(){resets++;},prepareTerrainExit(){},usesFlightGrid(){return false;}},spec={id:1,radius,FutureField:{keep:1}},paths={spawnSpec:()=>spec},center={position:{x:-150,y:0}},game={ndPath:{getChildByName(name){return name==='Authored routes'?{getComponent:()=>paths}:center;}},ndMain:{convertToWorldSpaceAR:p=>p}};
  const points=[{position:{x:-50,y:0}},{position:{x:80,y:0}},{position:{x:200,y:40}}],unit={node:{position:{x:-150,y:0},setPosition(x,y){this.position={x,y};}},rigidBody:{active:true},bornInfo:{pathList:points,nodeIndex:0}};
  const context={exports:{},require(name){assert.equal(name,'KinghtFallNavigation');return Navigation;},Math:math,cc:{v2:(x,y)=>({x,y})}};vm.runInNewContext(fs.readFileSync(require.resolve('../../assets/_script/SpawnArea'),'utf8'),context);return {area:context.exports,game,unit,grid,spec,points,counts:()=>({randoms,resets,navCalls})};
 }
@@ -16,10 +16,10 @@ test('point spawns preserve RNG and route node identities; blocked terrain does 
  const f=fixture(0);assert.equal(f.area.prepare(f.unit,f.game,1,true),undefined);assert(f.area.apply(f.unit,f.game,1));assert.equal(f.unit.bornInfo.pathList,f.points);assert.deepEqual(f.counts(),{randoms:0,resets:0,navCalls:0});
  f.spec.radius=40;f.grid.isWalkable=()=>false;const prepared=f.area.prepare(f.unit,f.game,1,true);assert(prepared);assert(Math.hypot(prepared.start.x+150,prepared.start.y)<=40);assert(f.area.apply(f.unit,f.game,1,prepared));assert.equal(f.unit.node.position.x,prepared.start.x);assert.equal(f.unit.node.position.y,prepared.start.y);assert.equal(f.counts().resets,1);
 });
-test('custom zero-width routes still randomize an area spawn, and flying units retain terrain crossing',()=>{
+test('custom zero-width routes still randomize an area spawn and unclassified inactive bodies skip navigation',()=>{
  const f=fixture();f.unit.bornInfo.pathList.routeSpread=0;const prepared=f.area.prepare(f.unit,f.game,1,true);assert(f.area.apply(f.unit,f.game,1,prepared));assert.equal(f.unit.bornInfo.pathList,f.points);
- const flying=fixture();flying.grid.isWalkable=()=>{throw Error('Flying unit should retain terrain crossing');};flying.grid.segmentClear=()=>{throw Error('Flying lane should retain terrain crossing');};flying.unit.rigidBody.active=false;const point=flying.area.prepare(flying.unit,flying.game,1,false);assert(point);assert(flying.area.apply(flying.unit,flying.game,1,point));
- assert.equal(flying.counts().navCalls,0,'Flying-only waves must not build or refresh an unused ground planner');
+ const inactive=fixture();inactive.unit.rigidBody.active=false;const point=inactive.area.prepare(inactive.unit,inactive.game,1,false);assert(point);assert(inactive.area.apply(inactive.unit,inactive.game,1,point));
+ assert.equal(inactive.counts().navCalls,0);
 });
 
 test('direct area application stays in body bounds and wholly off-map circles retain their wave actor',()=>{
@@ -45,7 +45,7 @@ test('noncolliding off-map circles spawn inside the map and missing radii retain
  assert.deepEqual(point.counts(),{randoms:0,resets:0,navCalls:0});
 });
 
-test('ground and flying legacy point spawns outside each map edge stay inside without randomizing',()=>{
+test('legacy point spawns outside each map edge stay inside without randomizing',()=>{
  for(const collides of [true,false])for(const center of [{x:-900,y:0},{x:900,y:0},{x:0,y:-900},{x:0,y:900}])for(const prepared of [true,false]){
   const f=fixture(0);f.game.mapSize={width:1000,height:1000};f.game.ndPath.getChildByName('ndEnemy1').position=center;f.unit.rigidBody.active=collides;
   const sample=prepared?f.area.prepare(f.unit,f.game,1,collides):undefined;assert(f.area.apply(f.unit,f.game,1,sample));

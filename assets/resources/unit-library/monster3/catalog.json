@@ -1215,6 +1215,63 @@
       "bones": 20,
       "slots": 9,
       "variantOf": "monster3/Raptor_Swamp"
+    },
+    {
+      "id": "monster3/Rhino_OrcWarBeast",
+      "name": "Orc War Beast",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Rhino/Rhino_Armor.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/OrcVariants/Rhino_OrcWarBeast.json",
+      "uuid": "0c59ab38-91e6-5e62-adbe-41e75d56939d",
+      "resource": "unit-library/monster3/Units/OrcVariants/Rhino_OrcWarBeast",
+      "animations": [
+        "move",
+        "hit",
+        "die",
+        "attack",
+        "idle"
+      ],
+      "bones": 24,
+      "slots": 12,
+      "variantOf": "monster3/Rhino_Armor"
+    },
+    {
+      "id": "monster3/Winter_HellforgeColossus",
+      "name": "Hellforge Colossus",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Winter/Winter_Ice.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/DemonVariants/Winter_HellforgeColossus.json",
+      "uuid": "b033bcba-d317-53dc-a7c6-3e37b9f01b8b",
+      "resource": "unit-library/monster3/Units/DemonVariants/Winter_HellforgeColossus",
+      "animations": [
+        "idle",
+        "hit",
+        "attack",
+        "move",
+        "die"
+      ],
+      "bones": 24,
+      "slots": 9,
+      "variantOf": "monster3/Winter_Ice"
+    },
+    {
+      "id": "monster3/OrcSmasher_PyreExecutioner",
+      "name": "Pyre Executioner",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSmasher_Red.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/DemonVariants/OrcSmasher_PyreExecutioner.json",
+      "uuid": "1824db28-1c2f-5832-a635-2bc4cbedfc9a",
+      "resource": "unit-library/monster3/Units/DemonVariants/OrcSmasher_PyreExecutioner",
+      "animations": [
+        "die",
+        "move",
+        "idle",
+        "hit",
+        "attack"
+      ],
+      "bones": 35,
+      "slots": 15,
+      "variantOf": "monster3/OrcSmasher_Red"
     }
   ],
   "parts": [

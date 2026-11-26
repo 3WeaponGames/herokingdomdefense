@@ -17,7 +17,7 @@ function scenario() {
   h.cc.director.once = (_event, fn) => afterDraw.push(fn);
   const Base = h.load('BaseUI').default, opened = [];
   class Game extends Base {
-    init(level, freshEntry, setup) {this.levelId=level; this.admission=freshEntry; this.setup=setup; opened.push(this);}
+    init(level, freshEntry, setup, testWave) {this.levelId=level; this.admission=freshEntry; this.setup=setup; this.testWave=testWave; opened.push(this);}
     onClose() {home.node.active=true;}
   }
   const old = new Game(); old.node = new h.cc.Node('Old Game'); old.node.ui = old; old.node.parent = h.ui.uiRoot;
@@ -34,7 +34,7 @@ function scenario() {
   });
   const dialog={paused:true, isCurrent:()=>!old.isclose};
   return {...h,disk,record,home,old,opened,previous,wave,stage,dialog,
-    restart:mode=>restart.call(old,dialog,mode), frame(){const callbacks=afterDraw.splice(0); callbacks.forEach(fn=>fn());},
+    restart:(mode, testWave)=>restart.call(old,dialog,mode,testWave), frame(){const callbacks=afterDraw.splice(0); callbacks.forEach(fn=>fn());},
     success(index){h.requests[index].done(null,{addRef(){}});}};
 }
 
@@ -53,6 +53,16 @@ test('replacement resource Retry opens one fresh battle and keeps the confirmed 
   assert.equal(f.home.node.active,false); assert.equal(f.blocked(),false); assert.equal(f.paused(),false);
   assert.equal(f.ui._openingInputCount,0); assert.equal(f.dialog.paused,false);
   assert.equal(JSON.stringify(f.disk.player.getUserData().data),permanent); assert.deepEqual(f.record.getCheckpoint(3),other);
+});
+
+test('wave restart hands test settings to the new view outside the durable checkpoint', () => {
+  const f = scenario();
+  const testWave = { stage: 5, round: 7, counts: [9], wave: { HealthCoefficient: 1.3, AttackCoefficient: .8 } };
+  assert.equal(f.restart('wave', testWave), true);
+  f.frame();
+  f.success(0);
+  assert.equal(f.opened[0].testWave, testWave);
+  assert.equal(JSON.stringify(f.record.getCheckpoint(5)).includes('HealthCoefficient'), false);
 });
 
 test('canceling a failed replacement returns to Home with a resumable wave and preserves unrelated input ownership',()=>{

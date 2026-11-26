@@ -33,19 +33,6 @@ function fixture(){
   function sort(){context.exports.DepthView.prototype.sort.call(view);}
   return{main,hero,horse,prop,sort,view,Sprite,DepthView:context.exports.DepthView};
 }
-function captureFixture(height=100){
-  const h=fixture(),prop=h.prop('Scenery',100,height,0,99),created=[];let captures=0;
-  h.horse.node.width=100;h.horse.node.height=128;h.horse.node.anchorY=0;
-  const node=()=>({active:false,destroyed:false,setPosition(){},setContentSize(){},destroy(){this.destroyed=true;}});
-  const object={node:prop.root,sources:[prop.sprite],masks:new Map(),overlay:{node:node(),mask:{}},center:{x:0,y:0},size:{width:100,height},frame:{}};
-  Object.assign(h.view,{nativeCapture:false,captureSupported:true,nativeActors:new Map(),objects:[object],
-    sort(){prop.root.zIndex=100;h.hero.node.zIndex=0;},
-    snapshot(){captures++;},
-    makeMask(record,actor){const mask={node:node(),visuals:[]};created.push(mask);record.masks.set(actor,mask);return mask;}
-  });
-  h.view.game.gameData={getSoldierList:()=>[],getEnemyList:()=>[]};
-  return{...h,prop,object,created,get captures(){return captures;},get activeMasks(){return [...object.masks.values()].filter(mask=>mask.node.active).length;},update(){h.DepthView.prototype.update.call(h.view);}};
-}
 test('25 map world units is the exact small-scenery cutoff, independent of layer or width',()=>{
   const h=fixture(),plant=h.prop('Wide low plant',500,25,0,99),rock=h.prop('Narrow tall rock',12,25.001,0,1);h.sort();
   assert(plant.root.zIndex<h.hero.node.zIndex,'a low plant stays under the hero even in a high object layer');
@@ -68,65 +55,6 @@ test('objects in the same layer use ground Y regardless of size, row order, or a
 test('large props switch immediately at the authored ground pivot, including ties and subpixel crossings',()=>{
   const h=fixture(),tree=h.prop('Tree',90,150,0,11);tree.root._depthGround=new Node('Ground',tree.root,0,25);
   for(const [y,behind]of [[25.01,true],[25,false],[24.99,false],[25.001,true]]){h.hero.node.y=y;h.sort();assert.equal(h.hero.node.zIndex<tree.root.zIndex,behind);}
-});
-
-for(const native of [false,true])for(const building of [false,true])test('a foreground layer cannot suppress a rear '+(building?'building':'tree')+' silhouette ('+(native?'native':'web')+')',()=>{
-  const h=fixture(),occluder=h.prop(building?'Tower':'Tree',120,180,0,1),stone=h.prop('Rock',100,90,40,9);
-  occluder.root._depthGround=new Node('Ground pivot',occluder.root,0,12);
-  if(building){occluder.root._depthBuilding=true;occluder.root._depthBuildingOrder=1;}
-  const other=new Node('Enemy',h.main,0,70);
-  const actor={node:other,spAni:other.addComponent(h.Sprite)};
-  other._combatActor=actor;
-  for(const node of [h.horse.node,other]){
-    node.width=40;node.height=100;node.anchorY=0;
-    node.getAnchorPoint=()=>({x:node.anchorX,y:node.anchorY});
-  }
-  h.hero.spAni=h.horse.node.addComponent(h.Sprite);
-  h.hero.spAni.enabled=actor.spAni.enabled=true;
-  const object={node:occluder.root,sources:[occluder.sprite],masks:new Map()};
-  let actorCaptures=0;
-  Object.setPrototypeOf(h.view,h.DepthView.prototype);
-  Object.assign(h.view,{nativeCapture:native,captureSupported:true,nativeActors:new Map(),objects:[object],
-    snapshot(object){
-      object.center={x:0,y:90};object.size={width:120,height:180};object.frame=object.frame||{};
-    },
-    snapshotActor(record,sources,box){
-      actorCaptures++;
-      record.center={x:box.minX,y:box.minY};record.size={width:40,height:100};record.frame={destroy(){}};
-    }
-  });
-  h.view.game.gameData={getSoldierList:()=>[],getEnemyList:()=>[actor]};
-  h.hero.node.y=20;
-  h.view.update();
-  assert(occluder.root.zIndex<stone.root.zIndex&&stone.root.zIndex<h.hero.node.zIndex,'authored layering creates the original conflict');
-  const mask=object.masks.get(h.hero),shared=object.masks.get(actor);
-  assert(mask,'rear units receive a silhouette even when a foreground layer lifts their draw order');
-  const overlay=mask.foreground;
-  assert.equal(overlay.mask.spriteFrame,object.frame,'the higher stencil uses the exact occluder artwork');
-  assert.equal(overlay.node.zIndex,h.hero.node.zIndex+1);
-  assert.equal(mask.node.parent,overlay.node);
-  assert.equal(native?mask.node.opacity:mask.visuals[0].node.opacity,255,'the correction covers the full-color pixels behind the occluder');
-  assert.equal(shared.node.parent,object.overlay.node,'a second rear actor retains the shared lower stencil');
-  assert.equal(native?shared.node.opacity:shared.visuals[0].node.opacity,204);
-  if(native)assert.equal(actorCaptures,2);
-
-  for(const y of [12,11.99]){
-    h.hero.node.y=y;h.view.update();
-    assert.equal(mask.node.active,false,'at or in front of the ground pivot there is no occlusion');
-    assert.equal(overlay.node.active,false);
-    assert(shared.node.active,'another rear actor stays covered');
-  }
-  h.hero.node.y=20;h.view.update();
-  assert.equal(mask.foreground,overlay,'crossing the root reuses the same stencil');
-  assert(overlay.node.active);
-  stone.root.x=600;
-  if(building)stone.root.active=false;
-  h.view.update();
-  assert.equal(mask.node.parent,object.overlay.node,'once the layer conflict clears, use the ordinary silhouette');
-  assert.equal(overlay.node.active,false);
-  h.hero.node.active=false;h.view.update();
-  assert(mask.node.destroyed&&overlay.node.destroyed);
-  assert.equal(overlay.mask.spriteFrame,null,'retiring the actor detaches its reference to the capture');
 });
 
 test('draw order uses the authored hero ground or stable horse origin independently of body bounds',()=>{
@@ -196,55 +124,6 @@ test('contradictory contacts across actors retain foot order, all static roots a
   }
 });
 
-test('strict ground Y controls tint at ties and subpixels even when a stale layer puts scenery above the hero',()=>{
-  const h=captureFixture();h.hero.node.y=.001;h.update();assert.equal(h.activeMasks,1);const previous=h.created[0];
-  for(const y of[0,-.001]){h.hero.node.y=y;h.update();assert.equal(h.activeMasks,0);assert.equal(h.object.overlay.node.active,false);}
-  assert.equal(previous.node.active,false,'the previous tint is hidden immediately on crossing to the front');
-  assert.equal(previous.node.destroyed,false,'crossings retain the inactive render component for reuse');
-  assert.equal(h.captures,1,'front and equal-ground actors create no capture');
-  h.hero.node.y=.0001;h.update();assert.equal(h.activeMasks,1);assert.equal(h.captures,2);
-});
-
-test('a flat decoration in a front layer never captures a unit even when its art is tall',()=>{
-  const h=captureFixture(80);h.prop.root._depthMapFlat=true;
-  h.hero.node.y=10;h.update();
-  assert.equal(h.captures,0);assert.equal(h.activeMasks,0);
-});
-
-test('the authored ground marker wins, otherwise the horse origin supplies the hero ground',()=>{
-  const h=captureFixture();h.hero.node.y=-10;h.horse.node.y=20;h.update();assert.equal(h.activeMasks,1,'horse origin is behind despite a lower hero root');
-  h.hero.node._depthGround=new Node('Authored ground',h.hero.node,0,0);h.update();assert.equal(h.activeMasks,0,'explicit authored ground overrides the horse visual origin');
-  h.hero.node._depthGround.y=10;h.update();assert.equal(h.activeMasks,0,'equal ground does not tint');
-  h.hero.node._depthGround.y=10.001;h.update();assert.equal(h.activeMasks,1);
-  h.horse.skeletonData.skeletonJson.skeleton.height=5000;h.hero.node._depthGround.y=10;h.update();assert.equal(h.activeMasks,0,'animated/setup body bounds never supply the ground point');
-});
-
-test('25-world-unit flowers and stones never capture, including unflagged legacy obstacles and scaled heroes',()=>{
-  const h=captureFixture(25);delete h.prop.root._depthMapObject;
-  for(const scale of[.5,1,3]){h.hero.node.scaleY=scale;h.update();assert.equal(h.activeMasks,0);}
-  assert.equal(h.captures,0);assert.equal(h.created.length,0);
-  h.prop.art.height=25.001;h.update();assert.equal(h.activeMasks,1);assert.equal(h.captures,1);
-  h.prop.art.height=25;h.update();assert.equal(h.activeMasks,0);assert.equal(h.created[0].node.active,false);
-});
-
-test('visible Sprite trim and object world scale determine the small-scenery capture cutoff',()=>{
-  const h=captureFixture(100);h.prop.sprite.trim=false;
-  h.prop.sprite.spriteFrame={getOriginalSize:()=>({width:100,height:100}),getRect:()=>({width:40,height:25}),getOffset:()=>({x:0,y:0})};
-  h.update();assert.equal(h.activeMasks,0);
-  h.prop.root.scaleY=1.001;h.update();assert.equal(h.activeMasks,1);
-  h.prop.root.scaleY=1;h.update();assert.equal(h.activeMasks,0);
-  h.prop.sprite.trim=true;h.update();assert.equal(h.activeMasks,1,'trim=true fills the full100-world-unit node');
-});
-
-test('ground visuals never capture while a known building retains its existing occlusion behavior',()=>{
-  const h=captureFixture(20);h.prop.root._depthBuilding=true;h.update();assert.equal(h.activeMasks,1,'building geometry is not reclassified as a flower');
-  h.prop.root._depthGroundVisual=true;h.update();assert.equal(h.activeMasks,0);assert.equal(h.object.overlay.node.active,false);
-});
-
-test('a nested legacy building obstacle retains the building exemption without direct scenery flags',()=>{
-  const h=captureFixture(20),building=new Node('Building owner',h.main);building._depthBuilding=true;
-  delete h.prop.root._depthMapObject;h.prop.root.setParent(building);h.update();assert.equal(h.activeMasks,1);
-});
 test('transparent padding is excluded and a changed sprite fit invalidates cached height',()=>{
   const h=fixture(),plant=h.prop('Padded plant',100,100);plant.sprite.trim=false;
   plant.sprite.spriteFrame={getOriginalSize:()=>({width:100,height:100}),getRect:()=>({width:30,height:20}),getOffset:()=>({x:0,y:0})};h.sort();assert(plant.root.zIndex<h.hero.node.zIndex);

@@ -109,7 +109,16 @@ test('every imported monster spawns through the shipped enemy factory with its o
 function actorFixture(row) {
   const e = environment();
   e.stubs.UnitAttackRules = AttackRules;
-  e.stubs.EnemySkills = require('../../assets/_script/EnemySkills');
+  const loadCombatRule = name => {
+    const exports = {};
+    const file = path.join(root, 'assets/_script', name + '.js');
+    vm.runInNewContext(fs.readFileSync(file, 'utf8'), { exports, require: e.load, cc: e.cc }, { filename: file });
+    e.stubs[name] = exports;
+    return exports;
+  };
+  const skills = row.EnemySkills ? loadCombatRule('EnemySkills') : require('../../assets/_script/EnemySkills');
+  e.stubs.EnemySkills = skills;
+  e.game.node = new Node('battle');
   e.game.gameStatus = e.stubs.KinghtFallModle.KinghtFallGameStage.Fight; e.game._combatEpoch = 1;
   e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById = () => row;
   Object.assign(e.stubs.KinghtFallModle.KinghtFallSoldierAniEnum, { Attack: 'attack', Idle: 'idle', Move: 'move' });
@@ -117,16 +126,20 @@ function actorFixture(row) {
   const actor = e.actor(classFor[row.BehaviorTemplate], 0, 0);
   actor.uuid = 'source';
   actor.initData(row.ID, 1);
+  delete actor.getFind;
   const effects = [], received = [], projectile = [];
   const target = {
     uuid: 'target', node: new Node('target', e.game.ndMain, 1, 0), hp: 50, hpMax: 100, isDead: () => false,
     onAttacked(amount) { received.push(amount); return amount; },
-    addBuff(type, value) { received.push({ type, value }); },
+    addBuff(type, value, skill) { received.push({ type, value, skill }); },
     addHpPro(amount) { received.push(amount); }
   };
   e.game.ctrPlay = target;
   e.game.gameData.enemies = [actor, target];
-  if (row.EnemyTargeting?.mode === 'castle') {
+  const targeting = row.EnemyTargeting;
+  const seeksBuildings = targeting?.mode === 'castle' ||
+    targeting?.mode === 'priority' && !targeting.order.some(type => type === 'hero' || type === 'troops');
+  if (seeksBuildings) {
     installIntersection(e.cc);
     const collider = e.box(18, 0, 10, 10, true);
     const castle = e.game.gameData.buildings.at(-1);
@@ -148,7 +161,33 @@ function actorFixture(row) {
     setParent(owner) { assert.equal(owner, actor); },
     setTag(position, node, done) { projectile.push({ position, node, done }); }
   } });
-  return { e, actor, target, received, projectile, effects };
+  return { e, actor, target, received, projectile, effects, skills, seeksBuildings, loadCombatRule };
+}
+
+function checkConfiguredAttack(f, attack) {
+  const { e, actor, target, received, seeksBuildings } = f;
+  const combat = f.loadCombatRule('UnitAttackCombat'), shots = [];
+  const selected = actor.getFind();
+  assert(selected?.canAtt, actor.cfg.MonsterSource);
+  if (seeksBuildings) assert.equal(selected.building, e.game.gameData.baseBuild);
+  else assert.equal(selected.actor, target);
+  e.game.onShotUnit = (owner, side) => {
+    assert.equal(owner, actor);
+    assert.equal(side, 'enemy');
+    const shot = {
+      node: new Node('projectile', e.game.ndMain), bullet: new Node('projectile art'), speed: 500,
+      freeNode() { this.state = 1; }, onDie() { this.state = 1; }
+    };
+    shots.push(shot);
+    return shot;
+  };
+  actor.doAttackStart();
+  if (attack.delivery === 'ranged') {
+    assert.equal(shots.length, 1, actor.cfg.MonsterSource);
+    assert.equal(received.length, 0, 'Configured ranged damage waits for impact');
+    combat.advance(shots[0], 1);
+  } else assert.equal(shots.length, 0);
+  assert.equal(received[0], actor.getAttack(), actor.cfg.MonsterSource);
 }
 
 test('all added monsters initialize their real melee, ranged, buff or healing controller and perform that behavior', () => {
@@ -165,6 +204,19 @@ test('all added monsters initialize their real melee, ranged, buff or healing co
       assert(Number.isFinite(actor.getAttack()) && (passive?actor.getAttack()===0:actor.getAttack()>0),row.MonsterSource);
     }
     assert.equal(actor.rigidBody.active, !!row.BuildingCross);
+    const attack = AttackRules.active(row), casts = f.skills.begin(row.EnemySkills || {});
+    if (attack || !f.skills.originalEnabled(row)) {
+      if (attack) checkConfiguredAttack(f, attack);
+      if (casts.length) {
+        const prior = f.received.length;
+        actor.updateCombatTimers(Math.max(...casts.map(cast => cast.setting.interval)));
+        for (const cast of casts) {
+          const expected = cast.id === 'heal' ? cast.setting.percent / 100 : undefined;
+          assert(f.received.slice(prior).some(event => expected === undefined ? event.skill === cast.id : event === expected), row.MonsterSource + '/' + cast.id);
+        }
+      }
+      continue;
+    }
     actor.doAttack();
     if (row.BehaviorTemplate === 90003) {
       assert.equal(f.projectile.length, 1, row.MonsterSource);
@@ -186,20 +238,35 @@ test('all added monsters initialize their real melee, ranged, buff or healing co
   assert.deepEqual([...behaviors].sort(), [90001, 90002, 90003, 90006, 90009]);
 });
 
-test('flying imported monsters retain their obstacle-crossing behavior and reach the next objective', () => {
+test('flying imported monsters cross walls but stop at red terrain that blocks the route', () => {
   const flying = monsters.filter(row => !row.BuildingCross);
   assert(flying.length > 0);
   for (const row of flying) {
     const f = actorFixture(row), actor = f.actor;
-    // Completely block the ordinary ground corridor.
-    f.e.box(0, 0, 30, 400);
+    const { gameData } = f.e.game;
+    f.e.box(0, 0, 30, 400, true);
+    const wall = gameData.buildings.at(-1);
+    wall.getNavigationGateShapes = () => [];
     actor.node.setPosition(-100, 0);
-    const movement = f.e.nav.moveTo(actor, f.e.game, { x: 100, y: 0 }, 10);
-    assert.equal(movement.arrived, true, row.MonsterSource);
-    assert.equal(movement.blocked, false);
+    const target = { x: 100, y: 0 };
+    let movement;
+    for (let i = 0; i < 12 && !movement?.arrived; i++) {
+      f.e.nav.beginFrame(f.e.game);
+      movement = f.e.nav.moveTo(actor, f.e.game, target, 10);
+    }
+    assert.equal(movement.reached, true, row.MonsterSource);
     assert.equal(actor.node.x, 100);
     assert.equal(actor.node.y, 0);
-    assert.equal(actor._navigationState, null);
+
+    gameData.obstacles.push(gameData.buildings.pop());
+    f.e.nav.invalidate(f.e.game);
+    f.e.nav.reset(actor);
+    actor.node.setPosition(-100, 0);
+    f.e.nav.beginFrame(f.e.game);
+    movement = f.e.nav.moveTo(actor, f.e.game, target, 10);
+    assert.equal(movement.reached, false, row.MonsterSource);
+    assert(actor.node.x < -15, row.MonsterSource);
+    assert.equal(actor.rigidBody.active, false);
   }
 });
 
