@@ -20434,6 +20434,116 @@
         "concept": "orange-cliffs",
         "castShadow": false
       }
+    },
+    {
+      "id": "crossed-heights-border-north-escarpment",
+      "name": "North basalt escarpment",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/border-fire/north-escarpment.png",
+      "width": 1872,
+      "height": 322,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "nativeScale": 1,
+      "depth": "world",
+      "sha256": "51b5e48694d18d3b9b8e57a055ddbb1196188d7ac22e7dccd0471446eda56a8d",
+      "source": {
+        "kind": "authored-stage-terrain",
+        "mapId": "map-concept-13-crossed-heights"
+      }
+    },
+    {
+      "id": "crossed-heights-border-west-shoulder",
+      "name": "West basalt shoulder",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/border-fire/west-shoulder.png",
+      "width": 157,
+      "height": 605,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "nativeScale": 1,
+      "depth": "world",
+      "sha256": "6d629380168168485f45b816ba5f9f10738364848b5d5ad1c779b41b6cff5ca9",
+      "source": {
+        "kind": "authored-stage-terrain",
+        "mapId": "map-concept-13-crossed-heights"
+      }
+    },
+    {
+      "id": "crossed-heights-border-east-shoulder",
+      "name": "East basalt shoulder",
+      "category": "cliffs",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/border-fire/east-shoulder.png",
+      "width": 190,
+      "height": 597,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "nativeScale": 1,
+      "depth": "world",
+      "sha256": "b37efad89763b8d9fcaf6ef7579d984a5c99f456dfe701d457d0d1e71b6e34c7",
+      "source": {
+        "kind": "authored-stage-terrain",
+        "mapId": "map-concept-13-crossed-heights"
+      }
+    },
+    {
+      "id": "crossed-heights-border-southwest-boulders",
+      "name": "Southwest basalt boulders",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/border-fire/southwest-boulders.png",
+      "width": 499,
+      "height": 435,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "nativeScale": 1,
+      "depth": "world",
+      "sha256": "e6d2178a839176cf4d1f205453cfc1b34696f682d62067d6028a3a2908570286",
+      "source": {
+        "kind": "authored-stage-terrain",
+        "mapId": "map-concept-13-crossed-heights"
+      }
+    },
+    {
+      "id": "crossed-heights-border-southeast-boulders",
+      "name": "Southeast basalt boulders",
+      "category": "rocks",
+      "biomes": [
+        "fire"
+      ],
+      "file": "authoring/worlds/library/images/concept-terrain-objects/13-crossed-heights/border-fire/southeast-boulders.png",
+      "width": 449,
+      "height": 436,
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "nativeScale": 1,
+      "depth": "world",
+      "sha256": "c8bf4d104fc05482a3551627fb97fbb580446f331236790340da4e6293c3f3b7",
+      "source": {
+        "kind": "authored-stage-terrain",
+        "mapId": "map-concept-13-crossed-heights"
+      }
     }
   ],
   "biomes": [
