@@ -4,14 +4,14 @@
   "importer": "sprite-atlas",
   "rawTextureUuid": "f92585a8-3215-42fa-ad26-94d3be650617",
   "size": {
-    "width": 592,
-    "height": 804
+    "width": 730,
+    "height": 688
   },
   "type": "Texture Packer",
   "subMetas": {
-    "native-orange-stage-15-hill-4-0-0": {
+    "masked-object-129-0-0": {
       "ver": "1.0.6",
-      "uuid": "e99edf67-8192-4542-a9db-c407a20e2ec9",
+      "uuid": "a4086cdc-4d86-49d5-a1bf-7e0321c00959",
       "importer": "sprite-frame",
       "rawTextureUuid": "f92585a8-3215-42fa-ad26-94d3be650617",
       "trimType": "custom",
@@ -21,10 +21,10 @@
       "offsetY": 0,
       "trimX": 2,
       "trimY": 2,
-      "width": 588,
-      "height": 800,
-      "rawWidth": 588,
-      "rawHeight": 800,
+      "width": 726,
+      "height": 684,
+      "rawWidth": 726,
+      "rawHeight": 684,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,
