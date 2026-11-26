@@ -40,6 +40,10 @@
       [
         3,
         8
+      ],
+      [
+        2,
+        3
       ]
     ],
     "HomeLevel2Unlock": [
@@ -906,8 +910,8 @@
         "x": -134.682,
         "y": 170.84
       },
-      "x": -134.682,
-      "y": 170.84,
+      "x": -291.7520977403319,
+      "y": 279.4523016289529,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -1143,14 +1147,14 @@
     },
     {
       "id": 2,
-      "name": "Tower 2",
+      "name": "Tower 1",
       "kind": 2,
       "origin": {
         "x": 274.834,
         "y": 973.362
       },
-      "x": 274.834,
-      "y": 973.362,
+      "x": 325.5869362078951,
+      "y": 689.8882831315125,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -1338,18 +1342,18 @@
     },
     {
       "id": 3,
-      "name": "Tower 3",
+      "name": "Tower 2",
       "kind": 2,
       "origin": {
         "x": -65.079,
         "y": 773.701
       },
-      "x": -65.079,
-      "y": 773.701,
+      "x": 122.06835049911888,
+      "y": -532.9885365206334,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
-      "enabled": false,
+      "enabled": true,
       "template": {
         "prefab": "Map01",
         "node": 983,
@@ -1529,18 +1533,19 @@
           "active": false
         }
       ],
-      "purchaseSide": "default"
+      "purchaseSide": "default",
+      "renderAfter": "legacy-layer-1023"
     },
     {
       "id": 4,
-      "name": "Tower 4",
+      "name": "Tower 3",
       "kind": 2,
       "origin": {
         "x": -447.249,
         "y": 554.687
       },
-      "x": -447.249,
-      "y": 554.687,
+      "x": -472.5009813395295,
+      "y": 680.3910857273319,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -1728,14 +1733,14 @@
     },
     {
       "id": 5,
-      "name": "Tower 5",
+      "name": "Tower 4",
       "kind": 2,
       "origin": {
         "x": -524.948,
         "y": -434.481
       },
-      "x": -524.948,
-      "y": -434.481,
+      "x": -62.68561267589486,
+      "y": 805.7875742824547,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -1919,18 +1924,23 @@
           "active": false
         }
       ],
-      "purchaseSide": "default"
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "x": -14.189999999999996,
+        "y": 21.530000000000005
+      },
+      "purchaseOverride": true
     },
     {
       "id": 6,
-      "name": "Tower 6",
+      "name": "Tower 5",
       "kind": 2,
       "origin": {
         "x": 293.925,
         "y": -949.032
       },
-      "x": 293.925,
-      "y": -949.032,
+      "x": -123.91193601300108,
+      "y": -372.0993173226477,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -2118,14 +2128,14 @@
     },
     {
       "id": 7,
-      "name": "Barracks 7",
+      "name": "Barracks 1",
       "kind": 3,
       "origin": {
         "x": 294.098,
         "y": 331.29
       },
-      "x": 294.098,
-      "y": 331.29,
+      "x": -115.15131677678758,
+      "y": 495.7031055094562,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -2477,18 +2487,22 @@
           "active": true
         }
       ],
-      "purchaseSide": "flip"
+      "purchaseSide": "flip",
+      "spawnPosition": {
+        "x": 182.78331248417516,
+        "y": -36.05383630223599
+      }
     },
     {
       "id": 8,
-      "name": "Barracks 8",
+      "name": "Barracks 2",
       "kind": 3,
       "origin": {
         "x": -278.24,
         "y": -247.923
       },
-      "x": -278.24,
-      "y": -247.923,
+      "x": 229.7313799261798,
+      "y": 169.81662164981896,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -2844,14 +2858,14 @@
     },
     {
       "id": 9,
-      "name": "House 9",
+      "name": "House 1",
       "kind": 4,
       "origin": {
         "x": -79.896,
         "y": 525.515
       },
-      "x": -79.896,
-      "y": 525.515,
+      "x": -459.1201010128771,
+      "y": 184.20159236312372,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -3039,14 +3053,14 @@
     },
     {
       "id": 10,
-      "name": "House 10",
+      "name": "House 2",
       "kind": 4,
       "origin": {
         "x": -126.164,
         "y": -377.297
       },
-      "x": -126.164,
-      "y": -377.297,
+      "x": -270.66163559288896,
+      "y": 90.8364448295809,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -3234,14 +3248,14 @@
     },
     {
       "id": 11,
-      "name": "House 11",
+      "name": "House 3",
       "kind": 4,
       "origin": {
         "x": 103.854,
         "y": -354.671
       },
-      "x": 103.854,
-      "y": -354.671,
+      "x": -393.9188212177439,
+      "y": 14.259353062236087,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -3429,14 +3443,14 @@
     },
     {
       "id": 12,
-      "name": "House 12",
+      "name": "House 4",
       "kind": 4,
       "origin": {
         "x": 368.849,
         "y": -424.355
       },
-      "x": 368.849,
-      "y": -424.355,
+      "x": 118.20522701010862,
+      "y": 33.487625328201545,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -3624,14 +3638,14 @@
     },
     {
       "id": 13,
-      "name": "House 13",
+      "name": "House 5",
       "kind": 4,
       "origin": {
         "x": 556.257,
         "y": -396.953
       },
-      "x": 556.257,
-      "y": -396.953,
+      "x": 288.9036421441159,
+      "y": -91.16759695233253,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -3819,14 +3833,14 @@
     },
     {
       "id": 14,
-      "name": "House 14",
+      "name": "House 6",
       "kind": 4,
       "origin": {
         "x": -672.58,
         "y": -799.85
       },
-      "x": -672.58,
-      "y": -799.85,
+      "x": 103.89875176797383,
+      "y": -141.80135160059433,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -4014,14 +4028,14 @@
     },
     {
       "id": 15,
-      "name": "Mill 15",
+      "name": "Mill 1",
       "kind": 5,
       "origin": {
         "x": -60.323,
         "y": -61.635
       },
-      "x": -60.323,
-      "y": -61.635,
+      "x": 313.07055855081717,
+      "y": -345.0998557153928,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -4206,18 +4220,19 @@
           "active": false
         }
       ],
-      "purchaseSide": "flip"
+      "purchaseSide": "flip",
+      "renderAfter": "legacy-layer-1023"
     },
     {
       "id": 16,
-      "name": "Mill 16",
+      "name": "Mill 2",
       "kind": 5,
       "origin": {
         "x": 543.219,
         "y": -1096.795
       },
-      "x": 543.219,
-      "y": -1096.795,
+      "x": 341.8021770880332,
+      "y": 504.11378725542363,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -4402,18 +4417,19 @@
           "active": false
         }
       ],
-      "purchaseSide": "flip"
+      "purchaseSide": "flip",
+      "renderAfter": "legacy-layer-1041"
     },
     {
       "id": 17,
-      "name": "Wall / Gate 17",
+      "name": "Wall / Gate 1",
       "kind": 6,
       "origin": {
         "x": -453.39,
         "y": 703.474
       },
-      "x": -453.39,
-      "y": 703.474,
+      "x": -431.4729444823636,
+      "y": 844.0939731301337,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -4601,18 +4617,19 @@
         }
       ],
       "wallFacing": "NW",
-      "purchaseSide": "default"
+      "purchaseSide": "default",
+      "renderAfter": "legacy-layer-1041"
     },
     {
       "id": 18,
-      "name": "Wall / Gate 18",
+      "name": "Wall / Gate 2",
       "kind": 6,
       "origin": {
         "x": 427.945,
         "y": 618.805
       },
-      "x": 427.945,
-      "y": 618.805,
+      "x": 249.44530707274575,
+      "y": 846.5742746890904,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -4800,18 +4817,19 @@
         }
       ],
       "wallFacing": "NE",
-      "purchaseSide": "flip"
+      "purchaseSide": "flip",
+      "renderAfter": "legacy-layer-1041"
     },
     {
       "id": 19,
-      "name": "Wall / Gate 19",
+      "name": "Wall / Gate 3",
       "kind": 6,
       "origin": {
         "x": -515.181,
         "y": -555.963
       },
-      "x": -515.181,
-      "y": -555.963,
+      "x": -58.232206279519815,
+      "y": -522.0013448562627,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -4998,107 +5016,17 @@
           "active": false
         }
       ],
-      "wallFacing": "NE",
-      "purchaseSide": "flip"
+      "wallFacing": "SW",
+      "purchaseSide": "flip",
+      "purchaseOffset": {
+        "x": 28.42990225966807,
+        "y": 33.584279558657215
+      },
+      "purchaseOverride": true,
+      "renderAfter": "legacy-layer-1023"
     }
   ],
   "specials": [
-    {
-      "id": "offer-1",
-      "name": "Horse offer",
-      "kind": 2,
-      "origin": {
-        "x": -473.076,
-        "y": 439.999
-      },
-      "x": -473.076,
-      "y": 439.999,
-      "scale": 1,
-      "angle": 0,
-      "enabled": true,
-      "template": {
-        "prefab": "Map01",
-        "node": 1455,
-        "roots": [
-          1455
-        ],
-        "revision": "0eb0047c26ff772dab1722c60e55ef2cb4da012b33abeccb227989b8e86029b2"
-      },
-      "sprites": [
-        {
-          "frame": "a4a468ad-1d70-4997-91d1-293c8c54fe90",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            -473.076,
-            380.18600000000004
-          ],
-          "width": 95,
-          "height": 60,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "00e7e20b-8fdf-4d8d-84bd-14bdd70ac9da",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            -473.076,
-            380.18600000000004
-          ],
-          "width": 95,
-          "height": 60,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "483baacd-6c97-4c7b-9248-139f4a8b852e",
-          "matrix": [
-            0.6,
-            0,
-            0,
-            0.6,
-            -450.391,
-            372.409
-          ],
-          "width": 50,
-          "height": 39,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        }
-      ]
-    },
     {
       "id": "offer-2",
       "name": "Silver offer",
@@ -5107,8 +5035,8 @@
         "x": -298.147,
         "y": 83.1
       },
-      "x": -298.147,
-      "y": 83.1,
+      "x": -183.10490373890383,
+      "y": -66.41318038634078,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -5194,102 +5122,6 @@
           "active": true
         }
       ]
-    },
-    {
-      "id": "offer-6",
-      "name": "Weapon offer",
-      "kind": 1,
-      "origin": {
-        "x": -407.277,
-        "y": 1.273
-      },
-      "x": -407.277,
-      "y": 1.273,
-      "scale": 1,
-      "angle": 0,
-      "enabled": true,
-      "template": {
-        "prefab": "Map01",
-        "node": 1530,
-        "roots": [
-          1530
-        ],
-        "revision": "0eb0047c26ff772dab1722c60e55ef2cb4da012b33abeccb227989b8e86029b2"
-      },
-      "sprites": [
-        {
-          "frame": "a4a468ad-1d70-4997-91d1-293c8c54fe90",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            -407.277,
-            -58.270999999999994
-          ],
-          "width": 95,
-          "height": 60,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "00e7e20b-8fdf-4d8d-84bd-14bdd70ac9da",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            -407.277,
-            -58.270999999999994
-          ],
-          "width": 95,
-          "height": 60,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "483baacd-6c97-4c7b-9248-139f4a8b852e",
-          "matrix": [
-            0.6,
-            0,
-            0,
-            0.6,
-            -384.592,
-            -66.048
-          ],
-          "width": 50,
-          "height": 39,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        }
-      ]
     }
   ],
   "spawns": [
@@ -5344,24 +5176,24 @@
     {
       "id": 7,
       "name": "Spawn 7",
-      "x": -503.628,
-      "y": -1255.97,
+      "x": -20.93858153080106,
+      "y": -1364,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 8,
       "name": "Spawn 8",
-      "x": -411.781,
-      "y": -1198.9,
+      "x": 70.90841846919892,
+      "y": -1364,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 9,
       "name": "Spawn 9",
-      "x": -503.574,
-      "y": -1146.421,
+      "x": -20.884581530801086,
+      "y": -1338.1434325695418,
       "enabled": true,
       "radius": 150
     }
@@ -5879,7 +5711,7 @@
   "nextBuilding": 20,
   "nextSpawn": 10,
   "nextSpecial": 7,
-  "sourceRevision": "0bf915d5bfb608598877e8cc915040b055345d5221b1f83c7d2362df99c7b35a",
+  "sourceRevision": "8712f370bc4a97e06f942ad5207a5170ba7bc9869ea1e07d6f3e19a5057afe3c",
   "templates": {
     "Map01": [
       {
