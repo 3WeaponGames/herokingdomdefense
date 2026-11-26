@@ -17,6 +17,7 @@ exports.create = function (player, dataMgr, options) {
   var now = options.now || function () { return Date.now(); };
   var random = options.rng || Math.random;
   var payments = options.payments || require("ShopPayments").getInstance();
+  var isTestProfile = options.isTestProfile || function () { return false; };
   var catalog, catalogError, busy = false;
   try { catalog = Catalog.create(dataMgr); } catch (error) { catalogError = error; }
 
@@ -120,7 +121,7 @@ exports.create = function (player, dataMgr, options) {
     if (offer.payment) {
       var store = payments.describe(offer.payment);
       result.payment = copy(offer.payment);
-      result.payment.available = !!store.available;
+      result.payment.available = !!store.available && !isTestProfile();
       result.payment.formattedPrice = store.formattedPrice || null;
       result.payment.code = store.code || null;
       result.payment.error = store.error || null;
@@ -275,9 +276,15 @@ exports.create = function (player, dataMgr, options) {
     } finally { busy = false; }
   }
 
-  function deliverPaid(entitlement) { return payments.consumeVerifiedEntitlement(entitlement, fulfill); }
+  function previewPaymentUnavailable() { return failure("paymentUnavailable", "Store payments require a saved profile."); }
+
+  function deliverPaid(entitlement) {
+    if (isTestProfile()) return previewPaymentUnavailable();
+    return payments.consumeVerifiedEntitlement(entitlement, fulfill);
+  }
 
   function paidPurchase(offer) {
+    if (isTestProfile()) return previewPaymentUnavailable();
     var store = payments.describe(offer.payment);
     if (commerce().accountId && commerce().accountId !== store.accountId) return failure("accountMismatch", "The store account does not match this game profile.");
     if (!store.available || store.pending || player.shopPaymentPending) return failure(store.pending || player.shopPaymentPending ? "pending" : "paymentUnavailable", "Store payments are unavailable or another purchase is still pending.");
@@ -361,7 +368,10 @@ exports.create = function (player, dataMgr, options) {
 
     deliverPaid: deliverPaid,
 
-    restorePurchases: function () { return payments.restorePending(deliverPaid); },
+    restorePurchases: function () {
+      if (isTestProfile()) return Promise.resolve(previewPaymentUnavailable());
+      return payments.restorePending(deliverPaid);
+    },
 
     loadProducts: function () {
       if (!catalog || catalogError) return Promise.resolve(failure("unavailable", "The shop catalog is unavailable."));

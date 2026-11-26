@@ -15653,6 +15653,16 @@
       "flight": "monster:hellforge-fist",
       "launch": "",
       "impact": "fantasy:fire-impact"
+    },
+    "enemy:91051": {
+      "set": "toon:projectile-2-energy-orb",
+      "size": 34,
+      "launchOffsetX": 13,
+      "launchOffsetY": 16,
+      "tint": "#e284a7",
+      "flight": "toon:projectile-2-energy-orb",
+      "launch": "toon:flash-2",
+      "impact": "toon:hit-2"
     }
   },
   "heroArrowTiers": [

@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const test = require('node:test');
 const root = path.resolve(__dirname, '../..');
-function fixture() {
+function fixture(resumeSavedProgress = false) {
   const requests = [], listeners = [], imports = [];
   let pulseStopped = 0, size = { width: 750, height: 1334 };
   const language = { setCatalog(data) { this.catalog = data; }, t: key => key };
@@ -19,6 +19,7 @@ function fixture() {
     imports.push(name);
     if(name==='StartupPresentation')return{fit:presentation.exports.fit,start(){},carry(){}};
     if(name==='ProgressReset')return require('../../assets/_script/ProgressReset');
+    if(name==='RewardTestProgress')return{prepareStartup:() => resumeSavedProgress};
     assert.equal(name, 'LanguageMgr', 'title screen initializes only language and its presentation');
     return { LanguageMgr: { getInstance: () => language } };
   }, cc: { Component: function () {}, Node: {}, Label: {}, JsonAsset: {},
@@ -34,6 +35,7 @@ function fixture() {
   const owner = new context.module.exports();
   Object.assign(owner, { node: eventTarget, prompt: { node: {} }, catalog: { json: { entries: {} } }, content: { setScale(value) { this.scale = value; }, getChildByName() {} } });
   owner.onLoad();
+  owner.start();
   return { owner, context, requests, listeners, imports, resize(width, height) { size = { width, height }; owner.fitContent(); }, get pulseStopped() { return pulseStopped; } };
 }
 test('title screen waits indefinitely for input; touch, Enter and Space open loading only once', () => {
@@ -45,6 +47,13 @@ test('title screen waits indefinitely for input; touch, Enter and Space open loa
     h.owner.beginLoading(); h.owner.onKeyDown({ keyCode: 13 });
     assert.equal(h.requests.length, 1); assert.equal(h.requests[0].scene, 'loading'); assert(h.pulseStopped > 0);
   }
+});
+test('returning to saved progress loads it from the title screen without another Start press', () => {
+  const h = fixture(true);
+  assert.equal(h.requests.length, 1);
+  assert.equal(h.requests[0].scene, 'loading');
+  h.owner.beginLoading();
+  assert.equal(h.requests.length, 1);
 });
 test('failed scene transitions can retry and stale callbacks cannot affect a later attempt', () => {
   const h = fixture(); h.owner.beginLoading(); h.requests[0].callback(Error('offline'));

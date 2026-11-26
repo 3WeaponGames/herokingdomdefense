@@ -3,7 +3,7 @@
 var Progress = require("RewardTestProgress");
 var controls = require("UnitTestPanel").controls;
 var node = controls.node, paint = controls.paint, label = controls.label, button = controls.button, colors = controls.colors;
-var WIDTH = 704, HEIGHT = 478;
+var WIDTH = 704, HEIGHT = 538;
 
 exports.toggle = function (mode) {
   if (!mode.isAvailable()) return false;
@@ -25,7 +25,7 @@ exports.toggle = function (mode) {
   paint(panel, colors.panel, colors.border);
   var state = mode._rewardTestPanel = { close: close, battle: battle };
   var config = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance();
-  var viewport;
+  var viewport, confirmReset = false, restarting = false;
 
   function current() {
     return mode._rewardTestPanel === state && cc.isValid(root, true) && cc.director.getScene() === scene &&
@@ -65,16 +65,50 @@ exports.toggle = function (mode) {
     calendar.string = date.toDateString() + "  ·  " + sign;
     var data = battle && battle.ctrGame && battle.ctrGame.gameData, task = data && data.taskInfo;
     advisor.setEnabled(!!(task && task.index < task.list.length));
-    profile.string = Progress.active() ? "Temporary progress active until reload." : "Test actions use a temporary copy of your progress.";
+    var testActive = Progress.active();
+    profile.string = testActive ? "Temporary test profile is active." : "Test actions use a temporary profile.";
+    restore.setEnabled(testActive);
   }
 
   function run(action) {
     return function () {
-      if (!current()) return;
+      if (!current() || restarting) return;
+      confirmReset = false;
+      reset.caption.string = "Reset all progress";
       try { message.string = Progress.run(action, player, config, main, battle); }
       catch (error) { message.string = error.message; }
       if (current()) refresh();
     };
+  }
+
+  function restart(action) {
+    restarting = true;
+    reset.setEnabled(false);
+    restore.setEnabled(false);
+    try { action(); }
+    catch (error) {
+      restarting = false;
+      reset.setEnabled(true);
+      message.string = error.message;
+      refresh();
+    }
+  }
+
+  function resetProgress() {
+    if (!current() || restarting) return;
+    if (!confirmReset) {
+      confirmReset = true;
+      reset.caption.string = "Confirm reset";
+      message.string = "Return to the Start screen with a fresh test profile.";
+      return;
+    }
+    restart(function () { Progress.requestNewPlayer(player); });
+  }
+
+  function returnToSaved() {
+    if (!current() || restarting || !Progress.active()) return;
+    message.string = "Loading your saved profile…";
+    restart(Progress.returnToSavedProgress);
   }
 
   label(panel, "Title", "Reward Testing", 24, 17, 500, 50, 36, colors.text, true).enableBold = true;
@@ -88,6 +122,8 @@ exports.toggle = function (mode) {
   button(panel, "Battle Pass", "Complete next Battle Pass tier", 24, 306, 322, 48, run("pass"));
   button(panel, "Playtime", "Unlock next playtime reward", 358, 306, 322, 48, run("playtime"));
   var message = label(panel, "Message", "Claim rewards in their usual screens.", 24, 383, 656, 58, 23, colors.muted, true);
+  var reset = button(panel, "Reset all progress", "Reset all progress", 24, 457, 322, 48, resetProgress);
+  var restore = button(panel, "Return to saved progress", "Return to saved progress", 358, 457, 322, 48, returnToSaved, true);
   if (battle) battle.onPauseGame(true, state);
   cc.director.on(cc.Director.EVENT_AFTER_UPDATE, layout, state);
   layout();

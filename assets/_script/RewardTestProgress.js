@@ -1,16 +1,71 @@
 "use strict";
 
-var session;
+var PROFILE_RESTART_KEY = "project-cocos.preview.new-player";
+var FRESH_PROFILE_REQUEST = "1";
+var session, freshProfile = false;
+
+function savePrefixes() {
+  var config = require("Config").GameConfig;
+  return [config.AppCacheName, config.WebCacheName];
+}
+
+function recordsReady(player) {
+  var cache = require("CacheUtils").CacheUtils;
+  var records = player.rewardRecords();
+  if (player.claimingRewardTransaction || player.pendingRewardJournal || player.rewardStorageCheckPending ||
+      player.shopPaymentPending || cache.getData(player.rewardJournalKey()) || records.some(function (record) {
+        return record.pause || record.deferSave || record.saveBlockedByRecovery || record.localSavePending || record.clearPending;
+      })) throw Error("Finish the pending save or reward claim before testing.");
+  return records;
+}
+
+function restartStorage() {
+  return cc.sys.isNative ? cc.sys.localStorage : window.sessionStorage;
+}
+
+function restartWithProfile(profile) {
+  var storage = restartStorage();
+  storage.setItem(PROFILE_RESTART_KEY, profile);
+  try {
+    if (storage.getItem(PROFILE_RESTART_KEY) !== profile) throw Error("Could not switch profiles.");
+    // Keep the old profile's writes isolated until its managers are gone.
+    if (cc.sys.isNative) cc.game.restart();
+    else window.location.reload();
+  } catch (error) {
+    storage.removeItem(PROFILE_RESTART_KEY);
+    throw error;
+  }
+}
+
+function requestNewPlayer(player) {
+  if (!require("TestMode").TestMode.getInstance().isAvailable()) return;
+  recordsReady(player);
+  restartWithProfile(FRESH_PROFILE_REQUEST);
+}
+
+function active() { return !!session || freshProfile; }
+
+function returnToSavedProgress() {
+  if (!active() || !require("TestMode").TestMode.getInstance().isAvailable()) return;
+  restartWithProfile("saved");
+}
+
+function prepareStartup() {
+  if (!require("TestMode").TestMode.getInstance().isAvailable()) return false;
+  var profile;
+  try {
+    var storage = restartStorage();
+    profile = storage && storage.getItem(PROFILE_RESTART_KEY);
+    if (profile) storage.removeItem(PROFILE_RESTART_KEY);
+  } catch (error) { return false; }
+  if (profile === FRESH_PROFILE_REQUEST) freshProfile = require("CacheUtils").CacheUtils.previewProgress(savePrefixes(), true);
+  return profile === "saved";
+}
 
 function start(player) {
   if (session && session.player === player) return;
-  var cache = require("CacheUtils").CacheUtils;
-  var records = player.rewardRecords(), journal = player.rewardJournalKey();
-  if (player.claimingRewardTransaction || player.pendingRewardJournal || player.rewardStorageCheckPending ||
-      cache.getData(journal) || records.some(function (record) {
-        return record.pause || record.deferSave || record.saveBlockedByRecovery || record.localSavePending || record.clearPending;
-      })) throw Error("Finish the pending save or reward claim before testing.");
-  if (!cache.previewProgress(records.map(function (record) { return record.gameKey; }).concat(journal))) {
+  var records = recordsReady(player);
+  if (!freshProfile && !require("CacheUtils").CacheUtils.previewProgress(savePrefixes())) {
     throw Error("Reload the preview to start a new reward test session.");
   }
   records.forEach(function (record) { record.invalidateCloudSaves(); });
@@ -97,4 +152,7 @@ function run(action, player, config, main, battle) {
 
 exports.run = run;
 exports.start = start;
-exports.active = function () { return !!session; };
+exports.active = active;
+exports.requestNewPlayer = requestNewPlayer;
+exports.returnToSavedProgress = returnToSavedProgress;
+exports.prepareStartup = prepareStartup;

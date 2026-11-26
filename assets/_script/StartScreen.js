@@ -13,6 +13,7 @@ var StartScreen = cc.Class({
   onLoad: function () {
     this._resetProgressPage = require("ProgressReset").openIfRequested();
     if (this._resetProgressPage) return;
+    this._resumeSavedProgress = require("RewardTestProgress").prepareStartup();
     this._starting = false;
     Startup.start(this, cc);
     this._requestGeneration = 0;
@@ -29,6 +30,10 @@ var StartScreen = cc.Class({
       .to(.9, { opacity: 175 }, { easing: "sineInOut" })
       .to(.9, { opacity: 255 }, { easing: "sineInOut" })
       .union().repeatForever().start();
+  },
+
+  start: function () {
+    if (this._resumeSavedProgress) this.beginLoading();
   },
 
   fitContent: function () {

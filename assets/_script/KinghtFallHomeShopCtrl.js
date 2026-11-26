@@ -45,7 +45,12 @@ var Shop = cc.Class({
   extends: Base,
   onLoad: function () {
     this._shopGeneration = 0; this._visibilityGeneration = 0; this._iconCache = Object.create(null); this._frameParts = Object.create(null); this._iconPending = Object.create(null); this._offsets = Object.create(null); this.tab = "bundles";
-    this._language = Language.getInstance(); this.service = require("ShopRuntime").create(Player.getInstance(), Data.getInstance());
+    var player = Player.getInstance();
+    this._language = Language.getInstance();
+    this.service = require("ShopRuntime").create(player, Data.getInstance(), {
+      now: function () { return player.getDailyData().calendarTime(); },
+      isTestProfile: function () { return require("RewardTestProgress").active(); }
+    });
     this.build(); this.node.on(cc.Node.EventType.SIZE_CHANGED, this.relayout, this);
     this.addEvent(Config.KinghtFallEventName.RefreshGold, this.refresh);
     this.addEvent(Config.KinghtFallEventName.RefreshDiamond, this.refresh);

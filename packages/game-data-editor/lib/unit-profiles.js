@@ -5,7 +5,7 @@ const fs=require('fs'),path=require('path'),Catalog=require('../worlds/unit-cata
 const clone=value=>value===undefined?undefined:JSON.parse(JSON.stringify(value));
 const own=(value,key)=>Object.prototype.hasOwnProperty.call(value||{},key);
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
-const STATS={Health:'Health',AttackDamage:'Damage',AttackInterval:'Attack rate',AttackRange:'Attack range',SearchRange:'Search range',Speed:'Movement speed',CounterType:'Countered type',BuildingCross:'Ground or flight unit',DeathAni:'Death animation duration',Data:'Behavior parameters',EnemyTargeting:'Target priority'};
+const STATS={Health:'Health',HealthRegenPercent:'HP regeneration per second',AttackDamage:'Damage',AttackInterval:'Attack rate',AttackRange:'Attack range',SearchRange:'Search range',Speed:'Movement speed',CounterType:'Countered type',BuildingCross:'Ground or flight unit',DeathAni:'Death animation duration',Data:'Behavior parameters',EnemyTargeting:'Target priority'};
 const VISUAL={x:0,y:0,scaleX:1,scaleY:1,rotation:0,tint:'#ffffff',mirrorX:false};
 const key=id=>'enemy:'+id+':'+Records.form('enemy',id);
 function characters(root){const file=path.join(root,'assets/resources/characters/catalog.json');return fs.existsSync(file)?JSON.parse(fs.readFileSync(file,'utf8')):null;}

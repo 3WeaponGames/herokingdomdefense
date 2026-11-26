@@ -105,6 +105,10 @@ function descriptor(key, context) {
   if(key==='SightRange'){result.min=0;result.help='Absolute allied awareness radius in world units, independent of hero weapon range. Missing values use 240. A longer attack range is preserved for direct attacks.';}
   if(key==='SearchRange'&&context.side==='ally'){result.label='Additional search range (legacy)';result.help='Preserved legacy metadata. Allies now use Sight range for awareness; enemy search settings keep their existing behavior.';}
   if (key==='AttackInterval') {result.min=0.000001;result.help='Runtime attack rate: higher values attack more frequently. Animation playback speed is separate.';}
+  if (key==='HealthRegenPercent') {
+    result.label='HP regeneration per second (%)';result.percent=true;result.min=0;
+    result.help='Percentage of maximum HP restored each second during battle.';
+  }
   if (['Health','Hp','Zoom'].indexOf(key)>=0) result.min=0.000001;
   if (['Weight','AttackDamage','AttackRange','SearchRange','Speed','DeathAni','GoldCost','lockCose','BuildSliverCost','VedioCount','vedioCount','StartSliver','CommerceSliver','EquipLevelCap','MissionNumber','MissionType'].indexOf(key)>=0) result.min=0;
   if(context.table==='BuildEnum'){
@@ -267,6 +271,7 @@ function validate(documents, changes) {
       if(problem)issue('A',p.concat('EnemySkills'),problem);
     }
     ['Health','AttackInterval'].forEach(k=>number('A',p.concat(k),unit[k],Number.MIN_VALUE,false));
+    if(own(unit,'HealthRegenPercent'))number('A',p.concat('HealthRegenPercent'),unit.HealthRegenPercent,0,false);
     ['AttackDamage','AttackRange','SearchRange','Speed','DeathAni'].forEach(k=>{if(own(unit,k))number('A',p.concat(k),unit[k],0,false);});
     if(table==='AllyCfg'&&own(unit,'SightRange'))number('A',p.concat('SightRange'),unit.SightRange,0,false);
     if(unit.CounterType===undefined&&unit.Suppressed&&!opponents[unit.Suppressed])issue('A',p.concat('Suppressed'),'Opposing unit does not exist.');
