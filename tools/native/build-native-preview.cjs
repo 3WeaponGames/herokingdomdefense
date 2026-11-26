@@ -14,6 +14,8 @@ const captureFramebufferStatus = require('./capture-framebuffer-status.cjs');
 const nvidiaOptimus = require('./nvidia-optimus.cjs');
 const terrainGeometryRevision = require('./terrain-geometry-revision.cjs');
 const targetlessActorCaptures = require('./targetless-actor-captures.cjs');
+const targetlessLeafMatrices = require('./targetless-leaf-matrices.cjs');
+const v8InlineBudget = require('./v8-inline-budget.cjs');
 
 const SOURCE_PATCHES = {
   spineInlineColorCleanup: { directory: 'spine-inline-color-cleanup', patchSource: spineCleanup.patchSource },
@@ -24,7 +26,9 @@ const SOURCE_PATCHES = {
   captureFramebufferStatus: { directory: 'capture-framebuffer-status', patchSource: captureFramebufferStatus.patchSource },
   nvidiaOptimusPreference: { directory: 'nvidia-optimus-preference', patchSource: nvidiaOptimus.patchSource },
   terrainGeometryRevision: { directory: terrainGeometryRevision.DIRECTORY, patchSource: terrainGeometryRevision.patchSource, kind: 'resource' },
-  targetlessActorCaptures: { directory: targetlessActorCaptures.DIRECTORY, patchSource: targetlessActorCaptures.patchSource }
+  targetlessActorCaptures: { directory: targetlessActorCaptures.DIRECTORY, patchSource: targetlessActorCaptures.patchSource },
+  targetlessLeafMatrices: { directory: targetlessLeafMatrices.DIRECTORY, patchSource: targetlessLeafMatrices.patchSource },
+  v8InlineBudget: { directory: v8InlineBudget.DIRECTORY, patchSource: v8InlineBudget.patchSource }
 };
 
 const PROJECTS = [
@@ -280,15 +284,19 @@ function parseArgs(args) {
     if(arg==='--prefer-nvidia'){result.preferNvidia=true;continue;}
     if(arg==='--terrain-geometry-revision'){result.terrainGeometryRevision=true;continue;}
     if(arg==='--targetless-actor-captures'){result.targetlessActorCaptures=true;continue;}
+    if(arg==='--targetless-leaf-matrices'){result.targetlessLeafMatrices=true;continue;}
+    if(arg==='--v8-inline-budget'){result.v8InlineBudget=true;continue;}
     requireThat(keys[arg] && args[i+1] && !args[i+1].startsWith('--'),'Unknown/missing argument: '+arg);result[keys[arg]]=args[++i];
   }
   requireThat(result.help||!result.targetlessActorCaptures||result.captureFramebufferStatus&&result.terrainGeometryRevision,
     '--targetless-actor-captures requires --capture-framebuffer-status and --terrain-geometry-revision');
+  requireThat(result.help||!result.targetlessLeafMatrices||result.targetlessActorCaptures&&result.manualCameraMatrices,
+    '--targetless-leaf-matrices requires --targetless-actor-captures and --manual-camera-matrices');
   return result;
 }
 function main(args) {
   const options=parseArgs(args);
-  if(options.help){console.log('node tools/native/build-native-preview.cjs --sdk-root <Creator2.4.13/resources/cocos2d-x> --output-root <fresh external directory> [--project-root <project>] [--vs-root <VS2022>] [--windows-sdk-root <Windows Kits/10>] [--windows-sdk-version <10.0.x.0>] [--spine-inline-color-cleanup] [--unit-region-bounds] [--manual-camera-matrices] [--foreground-stencil-reuse] [--capture-renderer-inventory] [--capture-framebuffer-status] [--prefer-nvidia] [--terrain-geometry-revision] [--targetless-actor-captures]');return;}
+  if(options.help){console.log('node tools/native/build-native-preview.cjs --sdk-root <Creator2.4.13/resources/cocos2d-x> --output-root <fresh external directory> [--project-root <project>] [--vs-root <VS2022>] [--windows-sdk-root <Windows Kits/10>] [--windows-sdk-version <10.0.x.0>] [--spine-inline-color-cleanup] [--unit-region-bounds] [--manual-camera-matrices] [--foreground-stencil-reuse] [--capture-renderer-inventory] [--capture-framebuffer-status] [--prefer-nvidia] [--terrain-geometry-revision] [--targetless-actor-captures] [--targetless-leaf-matrices] [--v8-inline-budget]');return;}
   requireThat(process.platform==='win32','This build tool supports Windows only');requireThat(options.sdkRoot&&options.outputRoot,'--sdk-root and --output-root are required');
   const sdk=fs.realpathSync.native(options.sdkRoot),project=fs.realpathSync.native(options.projectRoot||path.resolve(__dirname,'../..')),output=validateOutput(options.outputRoot,project,sdk);
   requireThat(JSON.parse(fs.readFileSync(path.join(project,'project.json'),'utf8')).version==='2.4.13','Project must use Creator2.4.13; supply --project-root if this tool is outside tools/native');
@@ -311,7 +319,12 @@ function main(args) {
   const precedingPatches=cleanupPatches.concat(regionPatches,matrixPatches,stencilPatches,inventoryPatches,framebufferStatusPatches,nvidiaPatches);
   const targetlessPatches=options.targetlessActorCaptures?
     prepareSourcePatches(clone,true,targetlessActorCaptures.definitions(options),targetlessActorCaptures.FEATURE,precedingPatches):[];
-  const sourcePatches=precedingPatches.concat(targetlessPatches);
+  const targetlessSourcePatches=precedingPatches.concat(targetlessPatches);
+  const leafPatches=options.targetlessLeafMatrices?
+    prepareSourcePatches(clone,true,targetlessLeafMatrices.definitions(options),targetlessLeafMatrices.FEATURE,targetlessSourcePatches):[];
+  const inlinePatches=options.v8InlineBudget?
+    prepareSourcePatches(clone,true,v8InlineBudget.definitions(),v8InlineBudget.FEATURE):[];
+  const sourcePatches=targetlessSourcePatches.concat(leafPatches,inlinePatches);
   const features={highResolutionPacing:false,spineInlineColorCleanup:!!options.spineInlineColorCleanup};
   const copiedExpected=implementationDigest(expectedImplementation(sourceFiles,sourcePatches));
   const sourceDiff=writeSourcePatchArtifacts(output,clone,cleanupPatches);
@@ -323,6 +336,8 @@ function main(args) {
   const nvidiaDiff=writeSourcePatchArtifacts(output,clone,nvidiaPatches);
   const terrainDiff=writeSourcePatchArtifacts(output,clone,terrainPatches);
   const targetlessDiff=writeSourcePatchArtifacts(output,clone,targetlessPatches);
+  const leafDiff=writeSourcePatchArtifacts(output,clone,leafPatches);
+  const inlineDiff=writeSourcePatchArtifacts(output,clone,inlinePatches);
   const extraSourceDiffs={};
   if(regionDiff){features.unitRegionBounds=true;extraSourceDiffs.unitRegionBoundsDiff=regionDiff;}
   if(matrixDiff){features.manualCameraMatrices=true;extraSourceDiffs.manualCameraMatricesDiff=matrixDiff;}
@@ -332,6 +347,8 @@ function main(args) {
   if(nvidiaDiff){features.nvidiaOptimusPreference=true;extraSourceDiffs.nvidiaOptimusPreferenceDiff=nvidiaDiff;}
   if(terrainDiff){features.terrainGeometryRevision=true;extraSourceDiffs.terrainGeometryRevisionDiff=terrainDiff;}
   if(targetlessDiff){features.targetlessActorCaptures=true;extraSourceDiffs.targetlessActorCapturesDiff=targetlessDiff;}
+  if(leafDiff){features.targetlessLeafMatrices=true;extraSourceDiffs.targetlessLeafMatricesDiff=leafDiff;}
+  if(inlineDiff){features.v8InlineBudget=true;extraSourceDiffs.v8InlineBudgetDiff=inlineDiff;}
   const patches=[];
   for(const item of PROJECTS){const file=path.join(clone,item.file),before=fs.readFileSync(file,'utf8'),after=patchProject(before,item,output);fs.writeFileSync(file,after);patches.push({file:item.file,beforeSha256:item.sha256,afterSha256:sha(Buffer.from(after))});fs.mkdirSync(path.join(output,'obj',path.basename(file,'.vcxproj'),'objects'),{recursive:true});}
   verifyProjects(clone);
@@ -356,6 +373,8 @@ function main(args) {
   verifySourcePatchArtifacts(output,nvidiaPatches,nvidiaDiff);
   verifySourcePatchArtifacts(output,terrainPatches,terrainDiff);
   verifySourcePatchArtifacts(output,targetlessPatches,targetlessDiff);
+  verifySourcePatchArtifacts(output,leafPatches,leafDiff);
+  verifySourcePatchArtifacts(output,inlinePatches,inlineDiff);
   verifyResourceFiles(sdk,clone,terrainPatches);
   if(inventoryDiff)requireThat(fs.readFileSync(executable).includes(Buffer.from('_hkdCaptureRealtimeInventory\0')),'Release simulator omitted capture renderer inventory binding');
   requireThat(copiedImplementation.sha256===copiedExpected.sha256&&copiedImplementation.count===copiedExpected.count,'Copied SDK implementation digest changed');
@@ -365,15 +384,18 @@ function main(args) {
     options.foregroundStencilReuse && /^foreground-stencil-reuse(?:-.*)?\.inc$/.test(item.file) ||
     options.captureRendererInventory && /^capture-renderer-inventory-(?:native|binding|clear)\.inc$/.test(item.file) ||
     options.captureFramebufferStatus && /^framebuffer-status-reuse-(?:native\.inc|binding\.inc|specs\.json)$/.test(item.file) ||
-    options.targetlessActorCaptures && /^targetless-actor-captures-(?:api|native|binding)\.inc$/.test(item.file));
+    options.targetlessActorCaptures && /^targetless-actor-captures-(?:api|native|binding)\.inc$/.test(item.file) ||
+    options.targetlessLeafMatrices && /^targetless-leaf-matrices-[a-z-]+\.inc$/.test(item.file));
   const executableBytes=fs.readFileSync(executable),executableSha256=sha(executableBytes);
   if(framebufferStatusDiff)requireThat(executableBytes.includes(Buffer.from('_hkdArmCaptureFramebufferStatus\0')),'Release simulator omitted capture framebuffer status binding');
   if(targetlessDiff)for(const name of ['_hkdTargetlessLeaf','_hkdTargetlessLeafStats'])
     requireThat(executableBytes.includes(Buffer.from(name+'\0')),'Release simulator omitted targetless actor capture binding: '+name);
-  if(nvidiaDiff){
+  if(leafDiff||nvidiaDiff||inlineDiff){
     requireThat(runtime.files.some(file=>file.relativePath==='simulator.exe'&&file.sha256===executableSha256),'Release simulator changed during export verification');
-    runtime.nvidiaOptimusPreference=nvidiaOptimus.verifyExport(executableBytes);
   }
+  if(nvidiaDiff)runtime.nvidiaOptimusPreference=nvidiaOptimus.verifyExport(executableBytes);
+  if(leafDiff)runtime.targetlessLeafMatrices=targetlessLeafMatrices.verifyExport(executableBytes);
+  if(inlineDiff)runtime.v8InlineBudget=v8InlineBudget.verifyExport(executableBytes);
   const manifest={kind:'hkd-native-preview-release',manifestVersion:1,createdAt:new Date().toISOString(),creatorVersion:'2.4.13',sdk:{sourceRoot:sdk,cloneRoot:clone,sharedResourceRoot:path.join(clone,'simulator/win32'),implementation:digest,copiedImplementation},build:{configuration:'Release',platform:'Win32',architecture:'x86',outputRoot:output,compileFlags:flags},features,sourceDiff,...extraSourceDiffs,runtime:{directory:bin,executable,executableSha256,...runtime},toolchain:tools,abi:{CC_STATIC:1,COCOS2D_DEBUG:0,USE_V8_DEBUGGER:0,NDEBUG:1},patches,tooling,launched:false};
   const manifestFile=path.join(output,'build-manifest.json');fs.writeFileSync(manifestFile,JSON.stringify(manifest,null,2)+'\n');console.log('Release simulator built without launching. Manifest: '+manifestFile);
 }

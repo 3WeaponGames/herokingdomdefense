@@ -316,6 +316,39 @@ function linkedStage(f,embedded){
  if(embedded)stage.templates={Map01:clone(source)};
  f.write(L.configFile('A'),{LevelCfg:[cfg],SoldierCfg:{},ParameterCfg:{}});const stageFile=f.write('authoring/worlds/stages/A-1.json',stage);return {source,sourceFile,stage,stageFile};
 }
+test('a numeric wave draft returns compact data and keeps revision checks, recovery and undo',()=>{
+ const f=fixture(),s=f.service,{stage,stageFile}=linkedStage(f,true),key='stage:A-1';
+ const first={id:1,Wave:1,SpawnTimeline:[{id:'one',unitId:99,spawnId:1,count:2,startSeconds:1,intervalSeconds:.5,future:{keep:true}}]};
+ const second={id:1,Wave:2,RefreshSoldierKind:['1#99,1'],future:'preserved'};
+ stage.config.WaveCfg=[first,second];
+ const campaign=f.write(L.configFile('A'),{LevelCfg:[stage.config],SoldierCfg:{},ParameterCfg:{}}),before=fingerprint(campaign);
+ const version=s.version;
+ s.stageIssues=value=>value.config.WaveCfg[0].SpawnTimeline[0].startSeconds===2?['Wave draft issue']:[];
+ s.options.previewConfig=()=>{throw Error('Numeric edits cannot read building artwork or full asset snapshots');};
+ const wave=clone(first);wave.SpawnTimeline[0].startSeconds=2;
+ const changed=s.changeWave({key,version,waveIndex:0,wave});
+ assert.equal(changed.version,version+1);
+ assert.equal(changed.waveIndex,0);
+ assert.deepEqual(changed.wave,wave);
+ assert.deepEqual(changed.issues,['Wave draft issue']);
+ assert.equal(changed.value,undefined);
+ assert.equal(changed.buildingPreview,undefined);
+ assert(changed.dirty&&changed.canUndo);
+ assert.deepEqual(s.doc(key).data.config.WaveCfg,[wave,second]);
+ assert.deepEqual(s.doc(key).data.FutureStage,stage.FutureStage);
+ assert.equal(fingerprint(campaign),before);
+ assert.deepEqual(JSON.parse(fs.readFileSync(stageFile,'utf8')).config.WaveCfg,[]);
+ assert(fs.existsSync(s.recovery));
+ const recovery=fingerprint(s.recovery);
+ assert.equal(s.changeWave({key,version:s.version,waveIndex:0,wave}).version,changed.version);
+ assert.equal(fingerprint(s.recovery),recovery);
+ assert.throws(()=>s.changeWave({key,version,waveIndex:0,wave:first}),/Another panel changed/);
+ assert.throws(()=>s.changeWave({key,version:s.version,waveIndex:1,wave}),/wave changed/);
+ delete s.options.previewConfig;
+ assert.deepEqual(s.history({key,version:s.version},false).value.config.WaveCfg,[first,second]);
+ assert.deepEqual(s.history({key,version:s.version},true).value.config.WaveCfg,[wave,second]);
+});
+
 test('world persistence: map save rejects a linked legacy building source changed during asynchronous baking',async()=>{
  const f=fixture(),s=f.service,linked=linkedStage(f),key='map:map-test',mapFile=path.join(f.root,'authoring/worlds/maps/map-test.json'),before=fingerprint(mapFile),stageBefore=fingerprint(linked.stageFile);
  s.options.render=async()=>{const changed=clone(linked.source);changed[1]._name='External changed source';f.write('assets/KinghtFallIconMap/Map01.prefab',changed);return {files:[],ground:[],assets:{}};};

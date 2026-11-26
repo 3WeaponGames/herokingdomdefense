@@ -176,7 +176,13 @@ function deferUpdate(record) {
     if (queue && Object.getPrototypeOf(mask) === cc.Mask.prototype &&
         (mask.node.name === "ForegroundOcclusion" || mask.node.name === "ObjectOcclusion") && observeGroupedMask(record, queue)) {
       record.queue = queue;
-      wrapper._hkdCarryDirtyMask = function () { return !record.materialExposed && eligible(); };
+      Object.defineProperty(wrapper, "_hkdCarryDirtyMask", {
+        value: function () { return !record.materialExposed && eligible(); }
+      });
+      var adapter = cc.RenderFlow._hkdTargetlessAdapter;
+      if (adapter && typeof adapter.registerMaskWrapper === "function") {
+        adapter.registerMaskWrapper(assembler, wrapper, original);
+      }
     }
   } catch (_) {}
 }

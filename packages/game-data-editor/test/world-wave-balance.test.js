@@ -3,6 +3,7 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const Balance=require('../worlds/wave-balance');
+const Counts=require('../worlds/wave-counts');
 const Pacing=require('../worlds/wave-pacing');
 const Pressure=require('../worlds/wave-pressure');
 const Waves=require('../worlds/wave-editor');
@@ -25,6 +26,76 @@ const roleThreats=new Map([
 test('suggests the same cap by wave number and holds at 50 starting at wave 10',()=>{
  const caps=Array.from({length:12},(_,index)=>Balance.suggestedPeakCap(index+1));
  assert.deepEqual(caps,[5,9,14,18,22,27,33,39,45,50,50,50]);
+});
+
+test('suggested unit totals use each wave in stages 15–20, including legacy schedules',()=>{
+ const stages=[
+  {Level:14,WaveCfg:[wave(row('outside',1,99,0,.5))]},
+  {Level:15,WaveCfg:[{RefreshSoldierKind:['1#99,4']},wave(row('later',1,8,0,.5))]},
+  {Level:17,WaveCfg:[wave(row('one',1,9,0,.5)),{},wave(row('extra',1,3,0,.5))]},
+  {Level:20,WaveCfg:[wave(row('one',1,7,0,.5)),wave(row('later',1,11,0,.5))]},
+  {Level:21,WaveCfg:[wave(row('outside',1,99,0,.5))]}
+ ];
+ assert.deepEqual(Counts.referenceTotals(stages,.5),[7,10,3]);
+});
+
+test('balances the new counts and timings together with fixed Manual, elite, and boss quantities',()=>{
+ const source=wave(
+  row('west',1,2,.5,.5,{unitId:1,unitGroupId:'front'}),
+  row('east',2,1,1,0,{unitId:1,unitGroupId:'front',routeGraphId:'one',future:{keep:true}}),
+  row('ranged',3,1,1.5,.5,{unitId:5}),
+  row('manual',4,2,2,.5,{unitId:5,editorManualTiming:true}),
+  row('elite',5,1,2.5,0,{unitId:4}),
+  row('boss',6,1,3,0,{unitId:3})
+ );
+ const original=structuredClone(source),options={totalUnits:16,unitThreats:roleThreats,peakCap:6,defeatSeconds:.5};
+ const result=plan(source,options);
+ assert.equal(result.ok,true,result.message);
+ const after=result.afterWave.SpawnTimeline;
+ assert.deepEqual(after.map(row=>row.count),[6,3,3,2,1,1]);
+ assert.equal(result.before.peak,Pressure.build(source,[],.5,.5).peaks.units.value);
+ assert(result.after.peak<=6);
+ assert(after[1].intervalSeconds>=Balance.TIMING_STEP);
+ assert.equal(after[1].unitGroupId,'front');
+ assert.equal(after[1].routeGraphId,'one');
+ assert.deepEqual(after[1].future,{keep:true});
+ assert.deepEqual(after[3],original.SpawnTimeline[3]);
+ const timingEdits=after.filter(row=>!Waves.isTimingManual(row)).map(({id,startSeconds,intervalSeconds})=>({id,startSeconds,intervalSeconds}));
+ assert.deepEqual(plan(source,{...options,timingEdits}).afterWave,result.afterWave);
+ const draft={config:{WaveCfg:[structuredClone(source)]}};
+ assert(Waves.applyBalancedTiming(draft,0,result.changes,.5));
+ assert.deepEqual(draft.config.WaveCfg[0],result.afterWave);
+ assert.deepEqual(source,original);
+});
+
+test('reduces the adjustable rows proportionally and keeps at least one enemy at each authored spawn',()=>{
+ const source=wave(
+  row('main',1,20,0,.5,{inheritSpawnTiming:['intervalSeconds'],future:true}),
+  row('rare',2,1,1,.5),
+  row('other',3,2,1.5,.5),
+  row('boss',4,1,2,0,{unitId:3})
+ );
+ const options={unitThreats:new Map([[3,roleThreats.get(3)]])};
+ assert.deepEqual(plan(source,{...options,totalUnits:12}).afterWave.SpawnTimeline.map(row=>row.count),[9,1,1,1]);
+ assert.deepEqual(plan(source,{...options,totalUnits:2}).afterWave.SpawnTimeline.map(row=>row.count),[1,1,1,1]);
+ const countsOnly=plan(source,{totalUnits:12});
+ assert(countsOnly.changes.every(change=>!Object.hasOwn(change,'startSeconds')));
+ assert.deepEqual(countsOnly.afterWave.SpawnTimeline[0].inheritSpawnTiming,['intervalSeconds']);
+ const same=plan(source,{totalUnits:24});
+ assert.equal(same.afterWave,source);
+ assert.deepEqual(same.changes,[]);
+});
+
+test('increased quantities must fit the same cap and deadline as the reviewed timings',()=>{
+ const source=wave(row('normal',1,2,0,.5));
+ const options={totalUnits:8,peakCap:2,defeatSeconds:2,lastSpawnLimit:10};
+ const result=plan(source,options);
+ assert.equal(result.reason,'deadline-too-short');
+ assert.equal(result.minimumLastSpawn,12);
+ assert.deepEqual(result.changes,[]);
+ const invalid=plan(source,{totalUnits:8,timingEdits:[{id:'normal',startSeconds:0,intervalSeconds:0}]});
+ assert.equal(invalid.reason,'invalid-timing');
+ assert.equal(source.SpawnTimeline[0].count,2);
 });
 
 test('suggests one to four pushes by stage and calculates their peak times',()=>{

@@ -74,6 +74,20 @@ Add `--targetless-actor-captures` to both the Windows x86 Release build and its 
 
 In crowded scenes, the preview can skip preparing a render target when it proves that an ordinary enemy's scenery capture has no reader. The original animation update, middleware render and actor order still run at that capture position. When an observer needs the target, the preview binds the original texture and completes the physical render in the same pass. The build emits `targetless-actor-captures-diff.json` for the native source changes. The isolated preview records the deployed resources in `preview-proof.json`.
 
+### Optional sparse matrices for targetless captures
+
+Add `--targetless-leaf-matrices` to a fresh Windows x86 Release build with `--manual-camera-matrices`, `--targetless-actor-captures`, `--capture-framebuffer-status` and `--terrain-geometry-revision`. Launch the resulting manifest with the existing `--targetless-actor-captures` option.
+
+The native solver updates only the necessary world matrices when it can verify that the dirty rows have no dependents and the original level and pool registrations agree. Other passes use the original solver. The builder saves the exact changes in `targetless-leaf-matrices-diff.json` and checks the matching executable export. The launcher's `preview-proof.json` records the selected build and whether its targetless route is active.
+
+Paired Stage 10 tests measured a lower matrix cost in dense captures. Separate whole-battle Release runs averaged higher frame times with this option, so it remains off by default.
+
+### Optional V8 inlining budget
+
+Add `--v8-inline-budget` to a fresh Creator 2.4.13 Windows x86 Release build. This raises TurboFan’s single, cumulative, and small-function inlining budgets for the embedded JavaScript runtime. Supply the resulting manifest to the usual preview launcher. The builder records the native source patch and checks the linked export. The launcher records both in `preview-proof.json`.
+
+A same-executable Stage 10 test with 100 active actors measured a reduction from 26.50 ms to 23.72 ms. Separate comparisons of the clean Release build reversed direction with launch order and averaged 24.52 ms for the existing build and 23.90 ms with the setting. The setting remains experimental and off by default.
+
 ### Launch a Release preview
 
 Keep Creator open on this project and let it finish compiling/importing. The launcher consumes Creator's existing native-preview files; it does not generate them. Its checks require the generated `simulator/win32/main.js`, `preview-scene.json` for the normal Start scene, and current `temp/quick-scripts/dst` source maps. Refresh those files through Creator's native preview when needed, then close the stock simulator before launching:

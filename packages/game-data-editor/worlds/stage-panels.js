@@ -2,7 +2,7 @@
 // Contextual authoring UI. All content changes go through the shared draft API.
 const Waves=require('./wave-editor'),Paths=require('./path-editor'),Stats=require('./wave-stats'),Model=require('./model'),StageCards=require('./stage-cards-client'),StageProfiles=require('./stage-profile-editor');
 const Names=require('./stage-names'),CardOrder=require('./stage-card-order'),CardDrag=require('./stage-card-drag');
-const WaveOverview=require('./wave-overview');
+const WaveOverview=require('./wave-overview'),WaveCounts=require('./wave-counts');
 const WaveBalance=require('./wave-balance-panel'),SpawnGroups=require('./spawn-groups'),SpawnGroupsPanel=require('./spawn-groups-panel');
 const TaskPosition=require('../../../assets/_script/StageTaskPosition');
 const STAGE_SECTIONS=[
@@ -21,7 +21,7 @@ function create(c){
  const {state,el,button,field,select,note,section,edit,render,draw}=c;
  const waveOverview=WaveOverview.create(el);
  const stage=()=>state.snap.value,catalog=()=>state.catalog,unitRows=()=>StageProfiles.rows(stage().config,catalog().units),summary=wave=>Waves.summary(wave,catalog().interval),wave=()=>stage().config.WaveCfg[state.wave],stageCards=StageCards.create(c);
- let waveModels,modelCatalog;
+ let waveModels,modelCatalog,waveView,validation;
  function destroy(){
   if(waveModels)waveModels.destroy();
   waveModels=modelCatalog=null;
@@ -38,10 +38,24 @@ function create(c){
  function rememberWave(target,fingerprint){target.known.add(fingerprint);while(target.known.size>8)target.known.delete(target.known.values().next().value);}
  function waveTarget(index){const stageId=stage().id,key=stageId+'\u0000'+index,row=stage().config.WaveCfg&&stage().config.WaveCfg[index],fingerprint=JSON.stringify(row);let target=waveTargets.get(key);if(!target||!target.known.has(fingerprint)){target={key,stageId,index,latest:fingerprint,known:new Set([fingerprint]),pending:0};waveTargets.set(key,target);}else if(!target.pending)target.latest=fingerprint;return target;}
  function invalidateWaves(stageId,start){for(const [key,target]of waveTargets)if(target.stageId===stageId&&target.index>=start)waveTargets.delete(key);}
- function waveEdit(target,mutate,strict){
+ function waveEdit(target,mutate,strict,numberEdit=false){
   target.pending++;
   const settle=()=>{target.pending--;if(!target.pending&&stage().id===target.stageId&&waveTargets.get(target.key)===target){target.latest=JSON.stringify(stage().config.WaveCfg&&stage().config.WaveCfg[target.index]);rememberWave(target,target.latest);}};
-  try{const result=edit(s=>{const list=s.config&&s.config.WaveCfg,row=Array.isArray(list)&&list[target.index];if(s.id!==target.stageId||waveTargets.get(target.key)!==target||JSON.stringify(row)!==target.latest)throw Error('This wave changed or moved while the edit was waiting. Select the latest wave and try again.');mutate(s,target.index,row);if(waveTargets.get(target.key)===target){target.latest=JSON.stringify(s.config.WaveCfg[target.index]);rememberWave(target,target.latest);}},strict);if(result&&typeof result.then==='function')return result.finally(settle);settle();return result;}catch(error){settle();throw error;}
+  const change=s=>{
+   const list=s.config&&s.config.WaveCfg,row=Array.isArray(list)&&list[target.index];
+   if(s.id!==target.stageId||waveTargets.get(target.key)!==target||JSON.stringify(row)!==target.latest){
+    throw Error('This wave changed or moved while the edit was waiting. Select the latest wave and try again.');
+   }
+   mutate(s,target.index,row);
+   if(waveTargets.get(target.key)===target){
+    target.latest=JSON.stringify(s.config.WaveCfg[target.index]);rememberWave(target,target.latest);
+   }
+  };
+  try{
+   const result=numberEdit&&c.editWave?c.editWave(target.index,change,strict):edit(change,strict);
+   if(result&&typeof result.then==='function')return result.finally(settle);
+   settle();return result;
+  }catch(error){settle();throw error;}
  }
  function unitName(unit){const name=unit&&unit.name;return(typeof name==='string'||typeof name==='number')&&String(name).trim()?String(name):'Unit '+(unit&&unit.id);}
  const detailContext=key=>stage().id+'\u0000'+state.tab+'\u0000'+key;
@@ -121,7 +135,11 @@ function create(c){
    section(parent,'Add a building');note(parent,'Choose a type, then click the map to place it.');c.buildingPalette(parent);return;
   }
   if(state.tab==='Waves'){
-   section(parent,'Waves');const waves=stage().config.WaveCfg;if(!Array.isArray(waves)||!waves.length){note(parent,'This stage needs a valid list of waves.',true);button(parent,'Repair waves JSON…',()=>c.jsonField('WaveCfg'));return;}const rows=el('div',undefined,'world-wave-list');parent.appendChild(rows);waves.forEach((w,index)=>{let count,error;try{count=summary(w);}catch(problem){error=problem;}const b=button(rows,'',()=>{c.cancelDrag();state.wave=index;state.waveSpawnFilter='all';state.selection=[];render();},state.wave===index);b.dataset.waveIndex=index;b.setAttribute('aria-current',String(state.wave===index));b.appendChild(el('strong','Wave '+(w&&w.Wave||index+1)));b.appendChild(el('small',error?'Invalid schedule':count.units+' units · '+count.spawnIds.length+' spawn points'));b.appendChild(el('small',Stats.multipliers(w),'world-wave-multipliers'));if(error)b.title=error.message;});
+   section(parent,'Waves');
+   const {id:stageId,config}=stage(),waves=config.WaveCfg;
+   if(!Array.isArray(waves)||!waves.length){note(parent,'This stage needs a valid list of waves.',true);button(parent,'Repair waves JSON…',()=>c.jsonField('WaveCfg'));return;}
+   button(parent,'Balance All Waves…',()=>balanceAllWaves(stageId));
+   const rows=el('div',undefined,'world-wave-list');parent.appendChild(rows);waves.forEach((w,index)=>{let count,error;try{count=summary(w);}catch(problem){error=problem;}const b=button(rows,'',()=>{c.cancelDrag();state.wave=index;state.waveSpawnFilter='all';state.selection=[];render();},state.wave===index);b.dataset.waveIndex=index;b.setAttribute('aria-current',String(state.wave===index));b.appendChild(el('strong','Wave '+(w&&w.Wave||index+1)));b.appendChild(el('small',error?'Invalid schedule':count.units+' units · '+count.spawnIds.length+' spawn points'));b.appendChild(el('small',Stats.multipliers(w),'world-wave-multipliers'));if(error)b.title=error.message;});
    const actions=el('div',undefined,'world-actions');parent.appendChild(actions);const target=waveTarget(state.wave);button(actions,'Add wave',()=>{c.cancelDrag();return waveEdit(target,(s,index)=>{state.wave=Waves.addWave(s,index);state.waveSpawnFilter='all';});});button(actions,'Duplicate wave',()=>{c.cancelDrag();return waveEdit(target,(s,index)=>{state.wave=Waves.duplicateWave(s,index);state.waveSpawnFilter='all';});});button(actions,'Remove wave',()=>{c.cancelDrag();return waveEdit(target,(s,index)=>{invalidateWaves(s.id,index);state.wave=Waves.removeWave(s,index);state.waveSpawnFilter='all';});}).disabled=stage().config.WaveCfg.length<=1;return;
   }
   if(state.tab==='Paths'){
@@ -358,10 +376,41 @@ function create(c){
  }
  function numericValue(value){return value===null||value===undefined||value===''?NaN:Number(value);}
  function numericEntry(parent,name,value,onchange,integer){const input=field(parent,name,numericValue(value),next=>onchange(Number(next)));input.min=integer?'1':'0';input.step=integer?'1':'0.1';return input;}
+ function waveNumber(input){
+  const commit=input.onchange;
+  let pending=0;
+  input.onfocus=input.onclick=()=>input.select();
+  if(commit){
+   input.onchange=()=>{
+    if(input.value===input.dataset.modelValue&&!input.validity?.badInput)return;
+    const result=commit();
+    if(result===false){
+     if(!input.dataset.invalidNumeric)input.value=input.dataset.modelValue;
+     return false;
+    }
+    input.dataset.modelValue=input.value;
+    if(!result||typeof result.then!=='function')return result;
+    pending++;
+    return result.finally(()=>pending--);
+   };
+   input.onkeydown=event=>{
+    if(event.key!=='Enter'||event.isComposing)return;
+    event.preventDefault();
+    input.onchange();
+    input.select();
+   };
+  }
+  return value=>{
+   if(pending||input.value!==input.dataset.modelValue)return;
+   const text=String(value);
+   if(input.value!==text)input.value=input.dataset.modelValue=text;
+  };
+ }
  function timingEntry(parent,name,value,change,positive=()=>false){
   const row=el('div',undefined,'world-timing-row');
   const input=field(row,name,numericValue(value),next=>change(Number(next)));
   input.step='any';input.setAttribute('aria-label',name);
+  const sync=state.tab==='Waves'?waveNumber(input):null;
   parent.appendChild(row);
   function stepped(delta){
    const current=numericValue(input.value),adjusted=current+delta;
@@ -381,7 +430,7 @@ function create(c){
      if(next===null)return;
      input.value=String(next);
      refresh();
-     return change(next);
+     return sync&&input.onchange?input.onchange():change(next);
     });
     const title=(decrease?'Decrease ':'Increase ')+(name==='Interval (s)'?'interval':'start time')+' by '+amount+' seconds';
     step.type='button';step.title=title;step.setAttribute('aria-label',title);
@@ -396,7 +445,7 @@ function create(c){
   const oninput=input.oninput;
   input.oninput=()=>{if(oninput)oninput();refresh();};
   refresh();
-  return {input,refresh,set(next){
+  return {input,refresh,sync,set(next){
    input.value=String(next);input.dataset.modelValue=input.value;delete input.dataset.invalidNumeric;refresh();
   }};
  }
@@ -459,7 +508,7 @@ function create(c){
   if(existing&&!units.some(unit=>unit.id===existing.unitId))units.unshift({id:existing.unitId,name:'Missing unit: '+existing.unitId});
   c.modal((existing?'Switch units in Wave ':'Add units to Wave ')+wave().Wave,dialog=>{
    const controls=el('div',undefined,'world-wave-picker-settings');
-   numericEntry(controls,'Count',count,value=>{count=value;timingFields.intervalSeconds.refresh();},true);
+   waveNumber(numericEntry(controls,'Count',count,value=>{count=value;timingFields.intervalSeconds.refresh();},true));
    field(controls,'Spawn',spawnId,value=>{
     spawnId=Number(value);
     const next=defaults();
@@ -475,7 +524,7 @@ function create(c){
    return Waves.chooseGroups(s,index,unitIds,settings,catalog().interval,existing?existing.id:undefined);
   },true);},existing?'Apply selection':'Add group');
  }
- function waveUnitCard(parent,w,target,{group,visible},units,sortable,timingSection){
+ function waveUnitCard(parent,w,target,{group,visible},units,sortable,timingSection,refreshRows){
   const entry=visible[0],interval=catalog().interval,unit=units.find(unit=>unit.id===entry.unitId);
   const card=el('div',undefined,'world-wave-unit-card'),heading=el('div',undefined,'world-wave-unit-heading');
   card.dataset.entryId=entry.id;parent.appendChild(card);card.appendChild(heading);
@@ -497,7 +546,8 @@ function create(c){
   heading.appendChild(el('strong',name));
   const remove=button(heading,'Remove',()=>waveEdit(target,(s,index)=>Waves.removeGroup(s,index,entry.id,interval,{allSpawns:true})));
   if(group.length>1){card.classList.add('world-wave-unit-card-multi');remove.title='Remove this unit and all its spawn rows';}
-  const change=(row,key,value)=>waveEdit(target,(s,index)=>Waves.editGroup(s,index,row.id,{[key]:value},interval));
+  const change=(row,key,value)=>waveEdit(target,(s,index)=>Waves.editGroup(s,index,row.id,{[key]:value},interval),undefined,
+   key==='count'||key==='startSeconds'||key==='intervalSeconds');
   const changeUnit=value=>change(entry,'unitId',Number(value));
   if(c.unitField)c.unitField(card,units,entry.unitId,changeUnit,()=>{
    if(stage().id!==target.stageId||state.wave!==target.index||waveTargets.get(target.key)!==target||JSON.stringify(wave())!==target.latest)throw Error('This wave changed. Select the current group before switching units.');
@@ -517,7 +567,7 @@ function create(c){
   for(const row of visible){
    const counts=el('div',undefined,'world-wave-counts');card.appendChild(counts);
    if(row!==entry)counts.dataset.entryId=row.id;
-   numericEntry(counts,'Count',row.count,value=>change(row,'count',value),true);
+   refreshRows.set(row.id,{count:waveNumber(numericEntry(counts,'Count',row.count,value=>change(row,'count',value),true))});
    const spawnId=String(row.spawnId),choices=spawns.filter(spawn=>String(spawn.id)===spawnId||free.has(String(spawn.id)))
     .map(spawn=>({value:spawn.id,label:spawn.name+(spawn.enabled===false?' (disabled)':'')}));
    if(!choices.some(choice=>String(choice.value)===spawnId))choices.unshift({value:row.spawnId,label:'Unavailable spawn: '+row.spawnId});
@@ -549,8 +599,8 @@ function create(c){
   for(const row of visible){
    const lane=spawns.find(spawn=>String(spawn.id)===String(row.spawnId))?.name||'Spawn '+row.spawnId;
    const manual=Waves.isTimingManual(row);
-   const title='Timing & route · '+(group.length>1?lane+' · ':'')+row.startSeconds+' s / every '+row.intervalSeconds+' s'+(manual?' · Manual':'');
-   const timing=timingSection(title,row.id);card.appendChild(timing);
+   const title=entry=>'Timing & route · '+(group.length>1?lane+' · ':'')+entry.startSeconds+' s / every '+entry.intervalSeconds+' s'+(Waves.isTimingManual(entry)?' · Manual':'');
+   const timing=timingSection(title(row),row.id);card.appendChild(timing);
    if(row!==entry)timing.dataset.entryId=row.id;
    const mode=field(timing,'Timing mode',manual?'manual':'auto',value=>waveEdit(target,(s,index)=>
     Waves.setTimingMode(s,index,row.id,value,interval)),[{value:'auto',label:'Auto'},{value:'manual',label:'Manual (locked)'}]);
@@ -563,10 +613,27 @@ function create(c){
    if(row.routeGraphId&&!routes.some(choice=>choice.value===row.routeGraphId))routes.push({value:row.routeGraphId,label:'Unavailable route: '+row.routeGraphId});
    field(timing,'Route override',row.routeGraphId||'',value=>change(row,'routeGraphId',value||null),routes);
    const defaults=Waves.spawnTiming(spawns.find(spawn=>spawn.id===row.spawnId),interval);
-   if(!Waves.usesSpawnDefaults(row,defaults)){
-    button(timing,'Use spawn defaults',()=>waveEdit(target,(s,index)=>
-     Waves.editGroup(s,index,row.id,{},interval,{useSpawnDefaults:true}))).title='Use this spawn’s defaults and switch to Auto timing';
+   let reset;
+   function showReset(entry){
+    const visible=!Waves.usesSpawnDefaults(entry,defaults);
+    if(!reset&&visible){
+     reset=button(timing,'Use spawn defaults',()=>waveEdit(target,(s,index)=>
+      Waves.editGroup(s,index,row.id,{},interval,{useSpawnDefaults:true})));
+     reset.title='Use this spawn’s defaults and switch to Auto timing';
+    }
+    if(reset)reset.hidden=!visible;
    }
+   showReset(row);
+   const controls=refreshRows.get(row.id);
+   controls.refresh=next=>{
+    row.count=next.count;row.startSeconds=next.startSeconds;row.intervalSeconds=next.intervalSeconds;
+    row.editorManualTiming=next.editorManualTiming;row.inheritSpawnTiming=next.inheritSpawnTiming;
+    controls.count(row.count);start.sync(row.startSeconds);gap.sync(row.intervalSeconds);
+    start.refresh();gap.refresh();
+    mode.value=Waves.isTimingManual(row)?'manual':'auto';
+    start.input.title=timingTitle('startSeconds');gap.input.title=timingTitle('intervalSeconds');
+    timing.children[0].textContent=title(row);showReset(row);
+   };
   }
   return {id:group[0].id,node:card,handle};
  }
@@ -581,20 +648,55 @@ function create(c){
   const source=current.config.WaveCfg[index],fingerprint=JSON.stringify(source),revision=state.snap.version;
   const unitRevision=state.snap.unitCatalogRevision||0;
   const interval=catalog().interval,defeatSeconds=waveOverview.defeatSeconds,spawnGroups=SpawnGroups.list(current);
+  const referenceTotal=()=>WaveCounts.suggestedTotal(catalog().waveCountTargets||[],index);
+  const suggestedTotal=referenceTotal();
   const assertCurrent=(draft=stage())=>{
    if(state.closed||state.active===false||state.loading||draft.id!==target.stageId||state.tab!=='Waves'||state.wave!==index||
      state.snap.version!==revision||(state.snap.unitCatalogRevision||0)!==unitRevision||JSON.stringify(draft.config.WaveCfg?.[index])!==fingerprint||
-      waveOverview.defeatSeconds!==defeatSeconds||catalog().interval!==interval||JSON.stringify(SpawnGroups.list(draft))!==JSON.stringify(spawnGroups)){
-    throw Error('The wave, unit stats, or timing inputs changed. Reopen Balance wave timing to review the latest values.');
+      waveOverview.defeatSeconds!==defeatSeconds||catalog().interval!==interval||referenceTotal()!==suggestedTotal||
+      JSON.stringify(SpawnGroups.list(draft))!==JSON.stringify(spawnGroups)){
+    throw Error('The wave, unit stats, or balance inputs changed. Reopen Balance wave to review the latest values.');
    }
   };
-  return WaveBalance.open(c,{label:waveLabel(source,index),wave:source,waveIndex:index,stage:current,units:unitRows(),interval,defeatSeconds,spawnGroups,assertCurrent,
+  return WaveBalance.open(c,{label:waveLabel(source,index),wave:source,waveIndex:index,stage:current,units:unitRows(),interval,defeatSeconds,spawnGroups,suggestedTotal,assertCurrent,
    apply:({limits,changes,manualRows})=>waveEdit(target,(draft,at)=>{
     assertCurrent(draft);
     Waves.applyBalancedTiming(draft,at,changes,interval);
     for(const id of manualRows)Waves.setTimingMode(draft,at,id,'manual',interval);
     const updated=draft.config.WaveCfg[at];
     updated.editorTimingBalance={...updated.editorTimingBalance,...limits};
+   },true)
+  });
+ }
+ async function balanceAllWaves(stageId){
+  const failures=state.editFailures||0;
+  await state.pending;
+  if(failures!==(state.editFailures||0))throw Error('Correct the last wave edit before opening the balance preview.');
+  const current=state.snap?.value;
+  if(state.closed||state.active===false||state.loading||state.tab!=='Waves'||current?.id!==stageId){
+   throw Error('Select the current stage before balancing its waves.');
+  }
+  if(!Array.isArray(current.config.WaveCfg)||!current.config.WaveCfg.length)throw Error('Add a wave before balancing the stage.');
+  const {version,unitCatalogRevision}=state.snap;
+  const interval=catalog().interval,referenceCounts=catalog().waveCountTargets||[],spawnGroups=SpawnGroups.list(current);
+  const inputs=draft=>JSON.stringify([draft.config.WaveCfg,draft.config.EnemyProfiles,draft.spawns.map(spawn=>spawn.id),
+   SpawnGroups.list(draft),catalog().interval,catalog().waveCountTargets]);
+  const fingerprint=inputs(current);
+  const assertCurrent=(draft=stage())=>{
+   if(state.closed||state.active===false||state.loading||state.tab!=='Waves'||draft?.id!==stageId||
+      state.snap.version!==version||state.snap.unitCatalogRevision!==unitCatalogRevision||inputs(draft)!==fingerprint){
+    throw Error('The stage waves, unit stats, or balance inputs changed. Reopen Balance All Waves to review the latest values.');
+   }
+  };
+  return WaveBalance.openAll(c,{stage:current,units:unitRows(),interval,spawnGroups,referenceCounts,assertCurrent,
+   apply:proposals=>edit(draft=>{
+    assertCurrent(draft);
+    for(const {index,target,changes} of proposals){
+     if(Waves.applyBalancedTiming(draft,index,changes,interval)){
+      const wave=draft.config.WaveCfg[index];
+      wave.editorTimingBalance={...wave.editorTimingBalance,totalUnits:target};
+     }
+    }
    },true)
   });
  }
@@ -620,11 +722,19 @@ function create(c){
   if(state.waveSpawnFilter!=='all'&&!allEntries.some(entry=>String(entry.spawnId)===String(state.waveSpawnFilter)))state.waveSpawnFilter='all';
   c.right.appendChild(parent);
   section(parent,waveLabel(w,index));
-  note(parent,total.units+' units · '+groups.length+(groups.length===1?' group':' groups')+' · last spawn at '+Number(total.duration.toFixed(2))+' s');
+  const summaryText=total=>total.units+' units · '+groups.length+(groups.length===1?' group':' groups')+' · last spawn at '+Number(total.duration.toFixed(2))+' s';
+  const waveSummary=el('p',summaryText(total),'world-note');parent.appendChild(waveSummary);
+  const refreshRows=new Map();
+  let displayedWave=w;
+  waveView={index,stageId:target.stageId,update(next){
+   displayedWave=next;
+   const schedule=summary(next);waveSummary.textContent=summaryText(schedule);
+   for(const row of Waves.entries(next,interval))refreshRows.get(row.id)?.refresh(row);
+  }};
   const actions=el('div',undefined,'world-wave-actions');parent.appendChild(actions);
   const add=button(actions,'Add units',addUnits,true);add.disabled=!units.length||!stage().spawns.some(spawn=>spawn.enabled!==false);
   copyWaveButton(actions,waves,target);
-  const balance=button(actions,'Balance wave timing…',()=>balanceTiming(target));
+  const balance=button(actions,'Balance wave…',()=>balanceTiming(target));
   balance.classList.add('world-wave-balance-button');balance.disabled=!total.units;
   const scaling=el('div',undefined,'world-wave-scaling');parent.appendChild(scaling);for(const [key,label]of [['HealthCoefficient','Enemy health ×'],['AttackCoefficient','Enemy attack ×']])numericEntry(scaling,label,w[key],value=>waveEdit(target,(s,index,row)=>row[key]=value));note(scaling,'Applied to every enemy in this wave. HP and damage below are per unit, before battle buffs.');
   if(total.spawnIds.length>1)field(parent,'Show spawns',state.waveSpawnFilter,value=>{state.waveSpawnFilter=value;render();},[{value:'all',label:'All spawn points'}].concat(stage().spawns.map(s=>({value:String(s.id),label:s.name}))));
@@ -656,19 +766,19 @@ function create(c){
     return panel;
    };
    parent.appendChild(list);
-   const cards=shown.map(item=>waveUnitCard(list,w,target,item,units,sortable,timingSection));
+   const cards=shown.map(item=>waveUnitCard(list,w,target,item,units,sortable,timingSection,refreshRows));
    updateTimingButton();
    if(sortable){
     const items=value=>{
      const current=value.config.WaveCfg[index];
-     if(current===w)return cards;
+     if(current===displayedWave)return cards;
      return Waves.unitGroups(Waves.entries(current,interval),current.editorUnitOrder)
       .filter(group=>Waves.visibleRows(group,filter).length)
       .map(group=>({id:group[0].id}));
     };
     draggable(list,cards,items,{
      grid:true,
-     busy:()=>list.isConnected===false||!isCurrentView()||stage().config.WaveCfg?.[index]!==w,
+     busy:()=>list.isConnected===false||!isCurrentView()||stage().config.WaveCfg?.[index]!==displayedWave,
      edit:change=>waveEdit(target,value=>{
       if(!isCurrentView())throw Error('The wave or spawn filter changed while the cards were being moved.');
       change(value);
@@ -678,15 +788,29 @@ function create(c){
    }
   }
   if(!groups.length)note(parent,'This wave has no units yet. Use Add units to create its first group.');
-  const settings=details('Wave settings & rewards','wave:'+index+':settings');parent.appendChild(settings);for(const [key,label]of [['StartSliver','Starting silver'],['CommerceSliver','Merchant silver']]){const input=numericEntry(settings,label,w[key],value=>waveEdit(target,(s,index,row)=>row[key]=value),true);input.min='0';}button(settings,'Rewards…',()=>c.jsonField('WaveReward',index));button(settings,'Edit schedule JSON…',()=>c.jsonField(w.SpawnTimeline!==undefined?'SpawnTimeline':'RefreshSoldierKind',index));
+  const settings=details('Wave settings & rewards','wave:'+index+':settings');parent.appendChild(settings);for(const [key,label]of [['StartSliver','Starting silver'],['CommerceSliver','Merchant silver']]){const input=numericEntry(settings,label,w[key],value=>waveEdit(target,(s,index,row)=>row[key]=value),true);input.min='0';}button(settings,'Rewards…',()=>c.jsonField('WaveReward',index));button(settings,'Edit schedule JSON…', ()=>c.jsonField(displayedWave.SpawnTimeline!==undefined?'SpawnTimeline':'RefreshSoldierKind',index));
+ }
+ function renderValidation(){
+  if(!validation){validation=el('div');c.right.appendChild(validation);}
+  validation.textContent='';
+  validation.hidden=!state.snap.issues.length;
+  if(state.snap.issues.length){section(validation,'Validation');state.snap.issues.slice(0,12).forEach(issue=>note(validation,issue,true));}
+ }
+ function refreshWave(index){
+  if(state.tab!=='Waves')return;
+  if(waveView?.index===index&&waveView.stageId===stage().id&&state.wave===index)waveView.update(stage().config.WaveCfg[index]);
+  renderValidation();
  }
  function right(){
+  waveView=validation=null;
   if(waveModels){
    if(state.tab==='Waves'&&modelCatalog===catalog())waveModels.clear();
    else destroy();
   }
-  if(state.tab==='Stage')stageInspector();else if(state.tab==='Waves')waveInspector();else if(state.tab==='Paths')pathInspector();else if(state.tab==='Spawns')spawnInspector();else c.buildingInspector();if(state.snap.issues.length){section(c.right,'Validation');state.snap.issues.slice(0,12).forEach(issue=>note(c.right,issue,true));}
+  if(state.tab==='Stage')stageInspector();else if(state.tab==='Waves')waveInspector();else if(state.tab==='Paths')pathInspector();
+  else if(state.tab==='Spawns')spawnInspector();else c.buildingInspector();
+  renderValidation();
  }
- return {top,tabs,left,right,title,destroy};
+ return {top,tabs,left,right,title,destroy,refreshWave};
 }
 module.exports={create,STAGE_SECTIONS,pathTitle,pathSubtitle,spawnRanges};

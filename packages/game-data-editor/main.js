@@ -4,8 +4,8 @@ const Store=require('./lib/store').Store;
 const panels={stages:'Stages & Waves',perks:'Battle Perks',buildings:'Buildings','wall-adjustments':'Wall adjustments',equipment:'Equipment',relics:'Relics',talents:'Talents',units:'Units','unit-types':'Fighting Types',maps:'Maps',settings:'Battle Settings',testing:'Testing','progress-reset':'Reset All Progress'};
 let store=null,assets=null,restoreMetadataSave=null,restoreSpineLibrarySave=null,restoreSpineAtlasRefresh=null,worlds=null;
 function getWorlds(){const root=project();if(!worlds||worlds.root!==path.resolve(root))worlds=new(require('./worlds/service').Service)(root,{previewConfig:()=>{const docs=getStore().snapshot().documents;return Object.assign({},docs.A.data,{GameTools:docs.overrides?docs.overrides.data:docs.A.data.GameTools});}});return worlds;}
-function worldBroadcast(snapshot){
-    Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:snapshot.version});
+function worldBroadcast(snapshot,origin){
+    Editor.Ipc.sendToAll('game-data-editor:world-changed',{version:snapshot.version,...(origin?{origin}:{})});
     if(snapshot.result&&snapshot.result.saved)Editor.Ipc.sendToAll('game-data-editor:changed');
     return snapshot;
 }
@@ -65,6 +65,7 @@ const messages={
     'world-paste-stage'(event,request){reply(event,()=>worldBroadcast(getWorlds().pasteStage(request)));},
     'world-replace-stage'(event,request){reply(event,()=>worldBroadcast(getWorlds().replaceStage(request)));},
     'world-change'(event,request){reply(event,()=>worldBroadcast(getWorlds().change(request)));},
+    'world-wave-change'(event,request){reply(event,()=>worldBroadcast(getWorlds().changeWave(request),request.origin));},
     'world-create'(event,request){reply(event,()=>worldBroadcast(getWorlds().create(request)));},
     'world-undo'(event,request){reply(event,()=>worldBroadcast(getWorlds().history(request,false)));},
     'world-redo'(event,request){reply(event,()=>worldBroadcast(getWorlds().history(request,true)));},

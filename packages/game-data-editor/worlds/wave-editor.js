@@ -299,18 +299,22 @@ function setTimingMode(stage,index,id,mode,interval){
 }
 function applyBalancedTiming(stage,index,changes,interval){
  const wave=waveAt(stage,index);
- if(!Array.isArray(changes))throw Error('Supply the proposed timing changes.');
+ if(!Array.isArray(changes))throw Error('Supply the proposed wave changes.');
  if(!changes.length)return false;
  const original=schedule(wave,interval),display=uniqueEntries(original);
  const positions=new Map(display.map((entry,at)=>[entry.id,at])),seen=new Set(),updates=new Map();
- for(const {id,startSeconds,intervalSeconds} of changes){
+ for(const change of changes){
+  const {id}=change;
   const at=positions.get(id),entry=original[at];
   if(!entry||seen.has(id)||isTimingManual(entry))throw Error('A proposed spawn row changed or is locked. Rebalance this wave before applying.');
   seen.add(id);
-  if(startSeconds===entry.startSeconds&&intervalSeconds===entry.intervalSeconds)continue;
-  const updated={...entry,startSeconds,intervalSeconds};
+  const updated={...entry};
+  for(const field of ['count',...TIMING_FIELDS])if(own(change,field))updated[field]=change[field];
+  const timingChanged=TIMING_FIELDS.some(field=>updated[field]!==entry[field]);
+  if(!timingChanged&&updated.count===entry.count)continue;
+  if(!Number.isSafeInteger(updated.count)||updated.count<1)throw Error('Unit count must be a positive whole number.');
   validTiming(updated);
-  freezeTiming(updated);
+  if(timingChanged)freezeTiming(updated);
   updates.set(at,updated);
  }
  if(!updates.size)return false;

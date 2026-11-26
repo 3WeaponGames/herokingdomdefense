@@ -60,6 +60,13 @@ test('slow crowded frames preserve all detail when few optional silhouettes draw
   assert.deepEqual(Array.from(f.current()), f.priority);
 });
 
+test('a medium crowd keeps its optional silhouettes even when rendering slows down', () => {
+  const f = fixture();
+  const actors = f.crowd.slice(0, 50);
+  for (let frame = 0; frame < 48; frame++) assert.equal(f.step(.03, actors), actors);
+  assert.equal(f.view._silhouetteBudget, null);
+});
+
 test('slow crowded fights retain important silhouettes and restore full detail as crowds or waves change', () => {
   const f = fixture();
   for (let frame = 0; frame < 24; frame++) f.step(.021);

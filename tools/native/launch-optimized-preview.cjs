@@ -51,10 +51,12 @@ function verifyRelease(manifestFile,revisions){
   check(manifest.runtime&&path.isAbsolute(manifest.runtime.directory)&&path.isAbsolute(manifest.runtime.executable)&&Array.isArray(manifest.runtime.files),'Release manifest is missing runtime files');
   const directory=resolved(manifest.runtime.directory),seen=new Set();
   for(const record of manifest.runtime.files){check(typeof record.relativePath==='string'&&!path.isAbsolute(record.relativePath),'Runtime file must be relative');const file=resolved(path.join(directory,record.relativePath));check(inside(file,directory)&&!seen.has(file),'Invalid/duplicate Release runtime file: '+record.relativePath);seen.add(file);const bytes=readRevision(file,revisions);check(bytes.length===record.bytes&&hash(bytes)===record.sha256,'Release runtime hash mismatch: '+record.relativePath);}
-  const executable=resolved(manifest.runtime.executable);check(inside(executable,directory)&&seen.has(executable),'Release executable is absent from runtime file manifest');check(hash(readRevision(executable,revisions))===manifest.runtime.executableSha256,'Release executable hash mismatch');
+  const executable=resolved(manifest.runtime.executable);check(inside(executable,directory)&&seen.has(executable),'Release executable is absent from runtime file manifest');
+  const executableBytes=readRevision(executable,revisions);
+  check(hash(executableBytes)===manifest.runtime.executableSha256,'Release executable hash mismatch');
   check(manifest.sdk&&path.isAbsolute(manifest.sdk.sourceRoot)&&path.isAbsolute(manifest.sdk.cloneRoot)&&path.isAbsolute(manifest.sdk.sharedResourceRoot),'Release manifest is missing SDK resources');
   const buildRoot=resolved(manifest.build.outputRoot),cloneRoot=resolved(manifest.sdk.cloneRoot);check(inside(directory,buildRoot)&&inside(cloneRoot,buildRoot)&&inside(resolved(manifest.sdk.sharedResourceRoot),cloneRoot),'Release runtime/SDK clone must belong to the declared build root');
-  return{manifest,directory,executable,buildRoot,cloneRoot,sharedResourceRoot:resolved(manifest.sdk.sharedResourceRoot)};
+  return{manifest,directory,executable,executableBytes,buildRoot,cloneRoot,sharedResourceRoot:resolved(manifest.sdk.sharedResourceRoot)};
 }
 function verifyTerrainResources(release,revisions){
   const diff=release.manifest.terrainGeometryRevisionDiff;
@@ -89,32 +91,82 @@ function verifyTerrainResources(release,revisions){
   }
   return {terrain,core:files.get(terrain.CORE),adapter:files.get(terrain.ADAPTER)};
 }
-function verifyTargetlessRelease(release,terrain,revisions){
-  const {features,targetlessActorCapturesDiff:diff}=release.manifest;
+function verifyNativePatchReceipt(release,patchModule,description,revisions,nextSources){
+  const {sourcePatchDiff}=require('./build-native-preview.cjs');
+  const {DIRECTORY:directory,FEATURE:feature}=patchModule;
+  const diff=release.manifest[feature+'Diff'];
+  const file=path.join(release.buildRoot,directory+'-diff.json');
+  check(diff&&diff.format==='exact-replacement-v1'&&typeof diff.file==='string'&&path.isAbsolute(diff.file)&&resolved(diff.file)===resolved(file),
+    'Missing or invalid '+description+' build receipt');
+  function ownedRead(source,root){
+    check(fs.existsSync(source)&&inside(resolved(source),root)&&fs.lstatSync(source).isFile(),
+      description+' file is missing or outside its build: '+source);
+    return readRevision(source,revisions);
+  }
+  const patchRecords=patchModule.definitions(release.manifest.features).map(patch=>({...patch,feature}));
+  const receipt=ownedRead(file,release.buildRoot);
+  check(hash(receipt)===diff.sha256&&receipt.equals(sourcePatchDiff(patchRecords)),
+    description+' build receipt does not match the pinned native changes');
+  const beforeSources=new Map();
+  for(const patch of patchRecords){
+    const before=ownedRead(path.join(release.buildRoot,'source-patch-backups',directory,patch.file),release.buildRoot);
+    // A later native feature may have replaced the final cloned source.
+    // Its verified backup must then be the exact output of this patch.
+    const after=nextSources?.get(patch.file)||ownedRead(path.join(release.cloneRoot,patch.file),release.cloneRoot);
+    check(hash(before)===patch.beforeSha256&&hash(after)===patch.afterSha256,
+      description+' native source hash mismatch: '+patch.file);
+    check(patchModule.patchSource(before,patch).equals(after),description+' native source patch mismatch: '+patch.file);
+    beforeSources.set(patch.file,before);
+  }
+  return {nativeDiffSha256:diff.sha256,beforeSources};
+}
+function verifyTargetlessRelease(release,terrain,revisions,nextSources){
+  const {features}=release.manifest;
   check(features.targetlessActorCaptures===true&&features.captureFramebufferStatus===true&&terrain,
     '--targetless-actor-captures requires a targetless Release build with terrain geometry revisions and capture framebuffer status');
   const targetless=require('./targetless-actor-captures.cjs');
-  const {sourcePatchDiff}=require('./build-native-preview.cjs');
-  const directory=targetless.DIRECTORY;
-  const file=path.join(release.buildRoot,directory+'-diff.json');
-  check(diff&&diff.format==='exact-replacement-v1'&&typeof diff.file==='string'&&path.isAbsolute(diff.file)&&resolved(diff.file)===resolved(file),
-    'Missing or invalid targetless actor captures build receipt');
-  function ownedRead(source,root){
-    check(inside(resolved(source),root)&&fs.lstatSync(source).isFile(),'Targetless actor captures file is outside its build: '+source);
-    return readRevision(source,revisions);
-  }
-  const patchRecords=targetless.definitions(features).map(patch=>({...patch,feature:targetless.FEATURE}));
-  const receipt=ownedRead(file,release.buildRoot);
-  check(hash(receipt)===diff.sha256&&receipt.equals(sourcePatchDiff(patchRecords)),
-    'Targetless actor captures build receipt does not match the pinned native changes');
-  for(const patch of patchRecords){
-    const before=ownedRead(path.join(release.buildRoot,'source-patch-backups',directory,patch.file),release.buildRoot);
-    const after=ownedRead(path.join(release.cloneRoot,patch.file),release.cloneRoot);
-    check(hash(before)===patch.beforeSha256&&hash(after)===patch.afterSha256,'Targetless actor captures native source hash mismatch: '+patch.file);
-  }
-  check(readRevision(release.executable,revisions).includes(Buffer.from('_hkdTargetlessLeaf\0')),
+  const {nativeDiffSha256}=verifyNativePatchReceipt(release,targetless,'Targetless actor captures',revisions,nextSources);
+  check(release.executableBytes.includes(Buffer.from('_hkdTargetlessLeaf\0')),
     'Targetless actor captures Release executable is missing the native binding');
-  return {resources:require('./targetless-actor-captures-resources.cjs'),nativeDiffSha256:diff.sha256};
+  return {resources:require('./targetless-actor-captures-resources.cjs'),nativeDiffSha256};
+}
+function sameExportReceipt(actual,expected){
+  return !!actual&&typeof actual==='object'&&Object.keys(actual).length===Object.keys(expected).length&&
+    Object.entries(expected).every(([key,value])=>Object.hasOwn(actual,key)&&actual[key]===value);
+}
+function verifyV8InlineBudget(release,revisions){
+  const {features,v8InlineBudgetDiff:diff,runtime:{v8InlineBudget:declaredExport}}=release.manifest;
+  const enabled=features.v8InlineBudget;
+  check(enabled===undefined||typeof enabled==='boolean','Invalid V8 inline budget feature flag');
+  if(!enabled){
+    check(diff===undefined&&declaredExport===undefined&&
+      !release.executableBytes.includes(Buffer.from('HKDV8InlineBudget\0')),
+      'Unexpected V8 inline budget receipt or export in the Release build');
+    return null;
+  }
+  const budget=require('./v8-inline-budget.cjs');
+  const {nativeDiffSha256}=verifyNativePatchReceipt(release,budget,'V8 inline budget',revisions);
+  const nativeExport=budget.verifyExport(release.executableBytes);
+  check(sameExportReceipt(declaredExport,nativeExport),'V8 inline budget export receipt does not match the Release executable');
+  return {nativeDiffSha256,nativeExport};
+}
+function verifyTargetlessLeafMatrices(release,revisions){
+  const {features,targetlessLeafMatricesDiff:diff,runtime:{targetlessLeafMatrices:declaredExport}}=release.manifest;
+  const enabled=features.targetlessLeafMatrices;
+  check(enabled===undefined||typeof enabled==='boolean','Invalid targetless leaf matrices feature flag');
+  if(!enabled){
+    check(diff===undefined&&declaredExport===undefined&&
+      !release.executableBytes.includes(Buffer.from('HKDTargetlessLeafMatrices\0')),
+      'Unexpected targetless leaf matrices receipt or export in the Release build');
+    return null;
+  }
+  check(features.targetlessActorCaptures===true&&features.manualCameraMatrices===true,
+    'Targetless leaf matrices require targetless actor captures and manual camera matrices');
+  const matrices=require('./targetless-leaf-matrices.cjs');
+  const native=verifyNativePatchReceipt(release,matrices,'Targetless leaf matrices',revisions);
+  const nativeExport=matrices.verifyExport(release.executableBytes);
+  check(sameExportReceipt(declaredExport,nativeExport),'Targetless leaf matrices export receipt does not match the Release executable');
+  return {...native,nativeExport};
 }
 function verifyCompiled(project,quick,revisions){
   const boot=readRevision(path.join(quick,'__quick_compile__.js'),revisions).toString('utf8'),declarations=[...boot.matchAll(/(?:^|\n)[ \t]*var scripts\s*=\s*(\[[^\r\n]*\]);/g)];check(declarations.length===1,'Unknown Creator quick-compile bootstrap');const scripts=json(Buffer.from(declarations[0][1]),'Creator script registry');check(Array.isArray(scripts),'Creator script registry must be an array');
@@ -154,7 +206,11 @@ async function prepare(options){
   check(options&&options.creatorProjectRoot&&options.creatorSDKRoot&&options.releaseManifest&&options.outputRoot,'Required options: creatorProjectRoot, creatorSDKRoot, releaseManifest, outputRoot');
   const revisions=new Map(),project=resolved(options.creatorProjectRoot),sdk=sdkRuntime(options.creatorSDKRoot),release=verifyRelease(resolved(options.releaseManifest),revisions);check(resolved(release.manifest.sdk.sourceRoot)===resolved(sdk.root),'Release SDK source does not match creatorSDKRoot');
   const terrain=verifyTerrainResources(release,revisions);
-  const targetless=options.targetlessActorCaptures===true?verifyTargetlessRelease(release,terrain,revisions):null;
+  const matrices=verifyTargetlessLeafMatrices(release,revisions);
+  const v8InlineBudget=verifyV8InlineBudget(release,revisions);
+  const useTargetless=options.targetlessActorCaptures===true;
+  const targetlessRelease=useTargetless||matrices?verifyTargetlessRelease(release,terrain,revisions,matrices?.beforeSources):null;
+  const targetless=useTargetless?targetlessRelease:null;
   const groupedMaskQueue=!!targetless||options.groupedMaskQueue===true;
   const protectedRoots=[project,resolved(sdk.root),release.buildRoot,release.cloneRoot,release.directory,release.sharedResourceRoot],output=external(options.outputRoot,protectedRoots),quick=path.join(project,'temp/quick-scripts/dst'),imports=path.join(project,'library/imports');
   const scripts=verifyCompiled(project,quick,revisions),sceneFile=path.join(sdk.runtime,'preview-scene.json'),sceneBytes=readRevision(sceneFile,revisions),scene=json(sceneBytes,sceneFile);check(Array.isArray(scene)&&scene[0]&&scene[0]._name==='Start','Prepare the normal Start scene in Creator native preview before launching');
@@ -215,6 +271,9 @@ async function prepare(options){
       core:{...core,sourceSha256:targetless.resources.CORE_INPUT},
       adapter:{...adapter,sourceSha256:targetless.resources.ADAPTER_INPUT}};
   }
+  if(matrices)patches.targetlessLeafMatrices={nativeDiffSha256:matrices.nativeDiffSha256,
+    nativeExport:matrices.nativeExport,active:useTargetless};
+  if(v8InlineBudget)patches.v8InlineBudget=v8InlineBudget;
   fs.writeFileSync(path.join(run,'app-main.js'),appEntry,{flag:'wx'});
   const entry="jsb.AudioEngine.stopAll();jsb.AudioEngine.play2d=function(){return -1;};jsb.AudioEngine.play2d.__hkdPreviewMuted=true;\nif(!jsb.fileUtils)require('jsb-adapter/jsb-builtin.js');\njsb.fileUtils.setWritablePath("+JSON.stringify(posix(save)+'/')+");\njsb.fileUtils.addSearchPath("+JSON.stringify(posix(release.sharedResourceRoot))+");\nrequire("+JSON.stringify(posix(path.join(run,'app-main.js')))+");\n";fs.writeFileSync(path.join(run,'main.js'),entry);
   assertRevisions(revisions);for(const snapshot of snapshots)check(JSON.stringify(walk(snapshot.source))===JSON.stringify(snapshot.files.map(file=>({path:file.path.split('/').join(path.sep),bytes:file.sourceBytes??file.bytes,mtimeMs:file.sourceMtimeMs,ctimeMs:file.sourceCtimeMs}))),'Snapshot source changed after copy: '+snapshot.source);
@@ -222,18 +281,32 @@ async function prepare(options){
 }
 function launch(prepared){
   const release=verifyRelease(prepared.proof.releaseManifest);
+  check(prepared.executable===release.executable&&prepared.proof.executable===release.executable&&
+    prepared.proof.executableSha256===release.manifest.runtime.executableSha256,
+    'Prepared Release executable path or hash changed after preparation');
+  const v8InlineBudget=verifyV8InlineBudget(release),budgetPatch=prepared.proof.patches?.v8InlineBudget;
+  check(v8InlineBudget?budgetPatch?.nativeDiffSha256===v8InlineBudget.nativeDiffSha256&&
+    sameExportReceipt(budgetPatch.nativeExport,v8InlineBudget.nativeExport):budgetPatch===undefined,
+    'Prepared V8 inline budget receipt does not match the verified Release');
   const terrain=verifyTerrainResources(release);
   const terrainPatch=prepared.proof.patches?.terrainGeometryRevision;
   check(!!terrain===!!terrainPatch,'Prepared terrain geometry revision does not match the Release manifest');
   const adapterPatch=prepared.proof.patches?.groupedMaskQueue;
   const targetlessPatch=prepared.proof.patches?.targetlessActorCaptures;
+  const matrices=verifyTargetlessLeafMatrices(release);
+  const matrixPatch=prepared.proof.patches?.targetlessLeafMatrices;
+  check(!!matrices===!!matrixPatch,'Prepared targetless leaf matrices do not match the Release manifest');
+  if(matrices){
+    check(matrixPatch.nativeDiffSha256===matrices.nativeDiffSha256&&matrixPatch.active===!!targetlessPatch&&
+      sameExportReceipt(matrixPatch.nativeExport,matrices.nativeExport),
+      'Prepared targetless leaf matrices receipt does not match the verified Release');
+  }
+  const targetless=targetlessPatch||matrices?verifyTargetlessRelease(release,terrain,undefined,matrices?.beforeSources):null;
   if(terrainPatch&&!targetlessPatch)check(terrainPatch.core?.sha256===hash(terrain.core.bytes),
     'Prepared Creator core does not match the stock terrain route');
   if(targetlessPatch){
-    const targetless=verifyTargetlessRelease(release,terrain);
     const resources=targetless.resources;
-    check(prepared.executable===release.executable&&prepared.proof.executableSha256===release.manifest.runtime.executableSha256&&
-      targetlessPatch.nativeDiffSha256===targetless.nativeDiffSha256&&adapterPatch&&
+    check(targetlessPatch.nativeDiffSha256===targetless.nativeDiffSha256&&adapterPatch&&
       targetlessPatch.core?.sourceSha256===resources.CORE_INPUT&&targetlessPatch.core.sha256===resources.CORE_OUTPUT&&
       targetlessPatch.adapter?.sourceSha256===resources.ADAPTER_INPUT&&targetlessPatch.adapter.sha256===resources.ADAPTER_OUTPUT&&
       terrainPatch.core?.sha256===resources.CORE_OUTPUT&&terrainPatch.adapter?.sha256===resources.ADAPTER_OUTPUT&&
@@ -260,6 +333,8 @@ function launch(prepared){
     check(inside(resolved(entry),root)&&hash(readRevision(entry))===terrainPatch.entrySha256,
       'Terrain geometry revision Start entry changed after preparation');
   }
+  if(matrices)check(hash(readRevision(release.executable))===prepared.proof.executableSha256,
+    'Prepared Release executable hash changed before launch');
   const logPath=path.join(prepared.run,'simulator.log'),log=fs.openSync(logPath,'w');let child;try{child=cp.spawn(prepared.executable,['-workdir',prepared.run,'-writable-path',posix(prepared.save)+'/','-entry','main.js','-resolution','750x1334','-position','550,20','-console','disable'],{cwd:prepared.run,windowsHide:false,stdio:['ignore',log,log]});}finally{fs.closeSync(log);}
   const info={pid:child.pid,executable:prepared.executable,run:prepared.run,save:prepared.save,startedAt:new Date().toISOString(),muted:true,normalStart:true};const processFile=path.join(prepared.run,'process.json');fs.writeFileSync(processFile,JSON.stringify(info,null,2));
   child.once('error',error=>{info.endedAt=new Date().toISOString();info.error=error.message;fs.writeFileSync(processFile,JSON.stringify(info,null,2));});

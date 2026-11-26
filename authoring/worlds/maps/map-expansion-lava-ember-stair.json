@@ -16,27 +16,7 @@
       "baseAsset": "env-a0f44bee72b22dc4cbb928ba7e8a257a",
       "nativeSize": true,
       "strokes": [],
-      "tiles": [
-        {
-          "id": "object-451",
-          "assetId": "stage15-lava-sheet",
-          "name": "Molten field",
-          "x": 0,
-          "y": -1514,
-          "scale": 1,
-          "angle": 0,
-          "opacity": 1,
-          "depth": "ground",
-          "nativeSize": true,
-          "flipX": false,
-          "globalShadow": false,
-          "ground": {
-            "x": 0,
-            "y": 0
-          },
-          "mask": []
-        }
-      ]
+      "tiles": []
     },
     "roads": {
       "strokes": [
