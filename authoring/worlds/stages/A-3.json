@@ -5773,20 +5773,32 @@
         {
           "id": "legacy-route-827-0",
           "goal": false,
-          "x": -481.854969824809,
-          "y": -552.4989876444947
+          "x": -496.32398811521585,
+          "y": -674.0387412839124
         },
         {
           "id": "legacy-route-827-1",
           "goal": false,
-          "x": -558.6760483516628,
-          "y": -92.81982465089231
+          "x": -422.66727642183815,
+          "y": -356.1559575362973
+        },
+        {
+          "id": "node-1",
+          "x": -536.0318621147753,
+          "y": -40.71874297582832,
+          "goal": false
         },
         {
           "id": "legacy-route-827-2",
           "goal": false,
-          "x": -585.7327673299224,
-          "y": 512.0103715473133
+          "x": -637.8212331753871,
+          "y": 245.78043500382688
+        },
+        {
+          "id": "node-2",
+          "x": -460.2502993530427,
+          "y": 635.3526914608972,
+          "goal": false
         },
         {
           "id": "legacy-route-827-3",
@@ -5805,19 +5817,32 @@
         {
           "id": "legacy-route-827-edge-1",
           "from": "legacy-route-827-1",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "legacy-route-827-2",
           "weight": 1
         },
         {
           "id": "legacy-route-827-edge-2",
           "from": "legacy-route-827-2",
+          "to": "node-2",
+          "weight": 1
+        },
+        {
+          "id": "edge-2",
+          "from": "node-2",
           "to": "legacy-route-827-3",
           "weight": 1
         }
       ],
       "requiresAnyBuilding": [],
       "legacy": true,
-      "nameFromSpawns": true
+      "nameFromSpawns": true,
+      "editorOrder": 0
     },
     {
       "id": "legacy-route-842",
@@ -5844,20 +5869,32 @@
         {
           "id": "legacy-route-842-2",
           "goal": false,
-          "x": -628.5425860409193,
-          "y": 369.21824769820887
+          "x": -631.4363896990008,
+          "y": 192.69622455524507
+        },
+        {
+          "id": "node-1",
+          "x": -556.1624914358115,
+          "y": 341.14529521755435,
+          "goal": false
+        },
+        {
+          "id": "node-2",
+          "x": -156.8000850440451,
+          "y": 337.2371317805119,
+          "goal": false
         },
         {
           "id": "legacy-route-842-3",
           "goal": false,
-          "x": 401.72152254219685,
-          "y": 451.9749183248058
+          "x": 204.94287379266345,
+          "y": 388.3112378470156
         },
         {
           "id": "legacy-route-842-5",
           "goal": false,
-          "x": 458.9275135728895,
-          "y": 892.9362747250591
+          "x": 108.77727094504323,
+          "y": 638.2815528138983
         },
         {
           "id": "legacy-route-842-6",
@@ -5882,6 +5919,18 @@
         {
           "id": "legacy-route-842-edge-2",
           "from": "legacy-route-842-2",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
+          "to": "node-2",
+          "weight": 1
+        },
+        {
+          "id": "edge-2",
+          "from": "node-2",
           "to": "legacy-route-842-3",
           "weight": 1
         },
@@ -5900,7 +5949,8 @@
       ],
       "requiresAnyBuilding": [],
       "legacy": true,
-      "nameFromSpawns": true
+      "nameFromSpawns": true,
+      "editorOrder": 1
     },
     {
       "id": "legacy-route-866",
@@ -5915,8 +5965,8 @@
         {
           "id": "legacy-route-866-0",
           "goal": false,
-          "x": 491.851873002555,
-          "y": -387.7879060882294
+          "x": 596.0288046934845,
+          "y": -329.91183292660196
         },
         {
           "id": "legacy-route-866-1",
@@ -5927,8 +5977,14 @@
         {
           "id": "legacy-route-866-2",
           "goal": false,
-          "x": 617.6898881496148,
-          "y": 662.770818710997
+          "x": 620.5836918076961,
+          "y": 280.78873584425565
+        },
+        {
+          "id": "node-1",
+          "x": 221.42301631615013,
+          "y": 417.1639661289502,
+          "goal": false
         },
         {
           "id": "legacy-route-866-3",
@@ -5953,13 +6009,20 @@
         {
           "id": "legacy-route-866-edge-2",
           "from": "legacy-route-866-2",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "legacy-route-866-3",
           "weight": 1
         }
       ],
       "requiresAnyBuilding": [],
       "legacy": true,
-      "nameFromSpawns": true
+      "nameFromSpawns": true,
+      "editorOrder": 2
     },
     {
       "id": "legacy-route-881",
@@ -5974,8 +6037,8 @@
         {
           "id": "legacy-route-881-0",
           "goal": false,
-          "x": 478.98917814066243,
-          "y": -374.92521122633684
+          "x": 632.3607720189752,
+          "y": -354.66858561976727
         },
         {
           "id": "legacy-route-881-1",
@@ -5986,13 +6049,19 @@
         {
           "id": "legacy-route-881-2",
           "goal": false,
-          "x": 613.5687703593343,
+          "x": 625.1439849916599,
           "y": 265.94636257800613
         },
         {
           "id": "node-1",
-          "x": -148.67901654283713,
-          "y": 502.8999909117641,
+          "x": 716.5682772234936,
+          "y": 450.8115250662994,
+          "goal": false
+        },
+        {
+          "id": "node-2",
+          "x": 448.5166314890554,
+          "y": 735.2037847744365,
           "goal": false
         },
         {
@@ -6024,13 +6093,20 @@
         {
           "id": "edge-1",
           "from": "node-1",
+          "to": "node-2",
+          "weight": 1
+        },
+        {
+          "id": "edge-2",
+          "from": "node-2",
           "to": "legacy-route-881-3",
           "weight": 1
         }
       ],
       "requiresAnyBuilding": [],
       "legacy": true,
-      "nameFromSpawns": true
+      "nameFromSpawns": true,
+      "editorOrder": 3
     },
     {
       "id": "legacy-route-896",
@@ -6045,14 +6121,14 @@
         {
           "id": "legacy-route-896-0",
           "goal": false,
-          "x": -529.713888030686,
-          "y": 520.8826345115106
+          "x": -630.9970160635341,
+          "y": 532.457849143836
         },
         {
           "id": "legacy-route-896-1",
           "goal": false,
-          "x": 16.60724175831359,
-          "y": 484.43273412531937
+          "x": -243.83508746901003,
+          "y": 753.5564743268872
         },
         {
           "id": "legacy-route-896-2",
@@ -6077,14 +6153,16 @@
       ],
       "requiresAnyBuilding": [],
       "legacy": true,
-      "nameFromSpawns": true
+      "nameFromSpawns": true,
+      "editorOrder": 5
     },
     {
       "id": "legacy-route-908",
-      "name": "Spawns 8–9 · Route 1",
+      "name": "Spawns 7–9 · Route 2",
       "spawnIds": [
         9,
-        8
+        8,
+        7
       ],
       "entry": "legacy-route-908-0",
       "nodes": [
@@ -6097,20 +6175,26 @@
         {
           "id": "legacy-route-908-1",
           "goal": false,
-          "x": -483.01693032352495,
-          "y": 1081.8990510242888
+          "x": -619.0257022533496,
+          "y": 885.1204022747554
+        },
+        {
+          "id": "node-1",
+          "x": -466.32642821689444,
+          "y": 1022.4800485410431,
+          "goal": false
         },
         {
           "id": "legacy-route-908-2",
           "goal": false,
-          "x": -32.928199346546194,
-          "y": 1139.5830692007605
+          "x": 120.44339453176661,
+          "y": 1206.1405533366321
         },
         {
           "id": "legacy-route-908-3",
           "goal": true,
           "x": 46.64418431841497,
-          "y": 789.8560421739102
+          "y": 827.475489728968
         }
       ],
       "edges": [
@@ -6123,6 +6207,12 @@
         {
           "id": "legacy-route-908-edge-1",
           "from": "legacy-route-908-1",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "legacy-route-908-2",
           "weight": 1
         },
@@ -6133,38 +6223,259 @@
           "weight": 1
         }
       ],
-      "requiresAnyBuilding": [],
+      "requiresAnyBuilding": [
+        27
+      ],
       "legacy": true,
-      "nameFromSpawns": true
+      "nameFromSpawns": true,
+      "editorOrder": 7
     },
     {
-      "id": "route-13",
-      "name": "Unassigned spawns · Route 1",
-      "nameFromSpawns": true,
-      "spawnIds": [],
-      "entry": "entry-13",
+      "id": "path-1",
+      "name": "Spawns 7–9 · Route 3",
+      "spawnIds": [
+        9,
+        8,
+        7
+      ],
+      "entry": "legacy-route-908-0",
       "nodes": [
         {
-          "id": "entry-13",
-          "x": 186.61581025342505,
-          "y": -1219.931023204032
+          "id": "legacy-route-908-0",
+          "goal": false,
+          "x": -581.2062989603548,
+          "y": 551.8022867237783
         },
         {
-          "id": "goal-13",
-          "x": 104.14839986359218,
-          "y": 887.0445514437223,
-          "goal": true
+          "id": "legacy-route-908-1",
+          "goal": false,
+          "x": -627.7071132275937,
+          "y": 963.2531010429525
+        },
+        {
+          "id": "node-1",
+          "x": -472.1140355330572,
+          "y": 1103.5065509673211,
+          "goal": false
+        },
+        {
+          "id": "legacy-route-908-2",
+          "goal": false,
+          "x": -32.928199346546194,
+          "y": 1139.5830692007605
+        },
+        {
+          "id": "legacy-route-908-3",
+          "goal": true,
+          "x": 46.64418431841497,
+          "y": 827.475489728968
         }
       ],
       "edges": [
         {
-          "id": "edge-13",
-          "from": "entry-13",
-          "to": "goal-13",
+          "id": "legacy-route-908-edge-0",
+          "from": "legacy-route-908-0",
+          "to": "legacy-route-908-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-908-edge-1",
+          "from": "legacy-route-908-1",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
+          "to": "legacy-route-908-2",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-908-edge-2",
+          "from": "legacy-route-908-2",
+          "to": "legacy-route-908-3",
           "weight": 1
         }
       ],
-      "legacy": false
+      "requiresAnyBuilding": [
+        24,
+        14,
+        25,
+        26
+      ],
+      "legacy": true,
+      "nameFromSpawns": true,
+      "editorOrder": 8
+    },
+    {
+      "id": "path-2",
+      "name": "Spawns 7–9 · Route 4",
+      "spawnIds": [
+        7,
+        8,
+        9
+      ],
+      "entry": "legacy-route-896-0",
+      "nodes": [
+        {
+          "id": "legacy-route-896-0",
+          "goal": false,
+          "x": -593.3775685084762,
+          "y": 515.0950271953478
+        },
+        {
+          "id": "legacy-route-896-1",
+          "goal": false,
+          "x": -576.6225081483681,
+          "y": 359.99917682782035
+        },
+        {
+          "id": "node-1",
+          "x": -131.5905622899588,
+          "y": 332.59838776310374,
+          "goal": false
+        },
+        {
+          "id": "node-2",
+          "x": 193.65544050113465,
+          "y": 405.7121029731867,
+          "goal": false
+        },
+        {
+          "id": "legacy-route-896-2",
+          "goal": true,
+          "x": 58.78666165728964,
+          "y": 785.5690059398953
+        }
+      ],
+      "edges": [
+        {
+          "id": "legacy-route-896-edge-0",
+          "from": "legacy-route-896-0",
+          "to": "legacy-route-896-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-896-edge-1",
+          "from": "legacy-route-896-1",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
+          "to": "node-2",
+          "weight": 1
+        },
+        {
+          "id": "edge-2",
+          "from": "node-2",
+          "to": "legacy-route-896-2",
+          "weight": 1
+        }
+      ],
+      "requiresAnyBuilding": [],
+      "legacy": true,
+      "nameFromSpawns": true,
+      "editorOrder": 6
+    },
+    {
+      "id": "path-3",
+      "name": "Spawns 4–6 · Route 3",
+      "spawnIds": [
+        4,
+        5,
+        6
+      ],
+      "entry": "legacy-route-881-0",
+      "nodes": [
+        {
+          "id": "legacy-route-881-0",
+          "goal": false,
+          "x": 632.3607720189752,
+          "y": -354.66858561976727
+        },
+        {
+          "id": "legacy-route-881-1",
+          "goal": false,
+          "x": 501.94023255114905,
+          "y": -103.06464336188913
+        },
+        {
+          "id": "legacy-route-881-2",
+          "goal": false,
+          "x": 625.1439849916599,
+          "y": 265.94636257800613
+        },
+        {
+          "id": "node-3",
+          "x": 342.40941591534084,
+          "y": 404.6798023514548,
+          "goal": false
+        },
+        {
+          "id": "node-1",
+          "x": 482.1701809189024,
+          "y": 641.8025664996701,
+          "goal": false
+        },
+        {
+          "id": "node-2",
+          "x": 483.2422753860319,
+          "y": 952.2390591305395,
+          "goal": false
+        },
+        {
+          "id": "legacy-route-881-3",
+          "goal": true,
+          "x": 105.22609064450151,
+          "y": 817.0297884168774
+        }
+      ],
+      "edges": [
+        {
+          "id": "legacy-route-881-edge-0",
+          "from": "legacy-route-881-0",
+          "to": "legacy-route-881-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-881-edge-1",
+          "from": "legacy-route-881-1",
+          "to": "legacy-route-881-2",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-881-edge-2",
+          "from": "legacy-route-881-2",
+          "to": "node-3",
+          "weight": 1
+        },
+        {
+          "id": "edge-3",
+          "from": "node-3",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
+          "to": "node-2",
+          "weight": 1
+        },
+        {
+          "id": "edge-2",
+          "from": "node-2",
+          "to": "legacy-route-881-3",
+          "weight": 1
+        }
+      ],
+      "requiresAnyBuilding": [
+        11
+      ],
+      "legacy": true,
+      "nameFromSpawns": true,
+      "editorOrder": 4
     }
   ],
   "hero": {
@@ -84591,5 +84902,9 @@
         9
       ]
     }
-  ]
+  ],
+  "tasksPosition": {
+    "x": 261.1095616870896,
+    "y": 918.7030185263071
+  }
 }

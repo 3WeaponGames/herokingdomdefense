@@ -52425,7 +52425,7 @@
       "prefab": "Monster2_Skeleton_ShroudedRevenant",
       "loadIcon": "@icon/icons/monster-roster/monster2/skeleton-shroudedrevenant",
       "AttackType": 1,
-      "Health": 55,
+      "Health": 50,
       "AttackDamage": 6.1,
       "AttackInterval": 0.82,
       "AttackRange": 53,
@@ -53724,7 +53724,8 @@
         "description": "[[loc:data.unitguide.90009.description]]",
         "lore": "[[loc:data.unitguide.90009.lore]]"
       },
-      "BehaviorTemplate": 90009
+      "BehaviorTemplate": 90009,
+      "AttackDamage": 3
     },
     "100041": {
       "ID": 100041,
@@ -53748,7 +53749,8 @@
         "description": "[[loc:data.unitguide.90009.description]]",
         "lore": "[[loc:data.unitguide.90009.lore]]"
       },
-      "BehaviorTemplate": 90009
+      "BehaviorTemplate": 90009,
+      "AttackDamage": 2.7
     },
     "100042": {
       "ID": 100042,
@@ -53772,7 +53774,8 @@
         "description": "[[loc:data.unitguide.90009.description]]",
         "lore": "[[loc:data.unitguide.90009.lore]]"
       },
-      "BehaviorTemplate": 90009
+      "BehaviorTemplate": 90009,
+      "AttackDamage": 2.85
     },
     "100043": {
       "ID": 100043,
@@ -53796,7 +53799,8 @@
         "description": "[[loc:data.unitguide.90009.description]]",
         "lore": "[[loc:data.unitguide.90009.lore]]"
       },
-      "BehaviorTemplate": 90009
+      "BehaviorTemplate": 90009,
+      "AttackDamage": 2.7
     },
     "100044": {
       "ID": 100044,
@@ -53820,7 +53824,8 @@
         "description": "[[loc:data.unitguide.90009.description]]",
         "lore": "[[loc:data.unitguide.90009.lore]]"
       },
-      "BehaviorTemplate": 90009
+      "BehaviorTemplate": 90009,
+      "AttackDamage": 3.6
     },
     "100045": {
       "ID": 100045,
@@ -76286,8 +76291,8 @@
       "prefab": "Monster3_Worm_Poison",
       "loadIcon": "@icon/icons/monster-roster/monster3/worm-poison",
       "AttackType": 1,
-      "Health": 18,
-      "AttackDamage": 15.5,
+      "Health": 28,
+      "AttackDamage": 11,
       "AttackInterval": 0.3,
       "AttackRange": 330,
       "SearchRange": 0,
@@ -111030,15 +111035,16 @@
           "created": true,
           "role": "skirmisher",
           "stats": {
-            "Health": 18,
-            "AttackDamage": 15.5,
+            "Health": 28,
+            "AttackDamage": 11,
             "AttackInterval": 0.3,
             "Speed": 96,
             "AttackRange": 330,
             "SearchRange": 0
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "100808": {
           "baseId": 91150,
