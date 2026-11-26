@@ -544,8 +544,7 @@
           "1#91007,5",
           "2#100788,3",
           "3#100391,5",
-          "10#-1,10;91005,6",
-          "14#-1,10;100798,6"
+          "10#-1,10;91005,6"
         ],
         "WaveReward": [
           [
@@ -613,14 +612,6 @@
             "count": 6,
             "startSeconds": 5.5,
             "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-14-1",
-            "spawnId": 14,
-            "unitId": 100798,
-            "count": 6,
-            "startSeconds": 5.5,
-            "intervalSeconds": 0.5
           }
         ]
       },
@@ -638,8 +629,7 @@
           "1#100788,5",
           "2#100391,8",
           "3#100798,3",
-          "10#-1,10;100798,8",
-          "14#-1,10;100391,8"
+          "10#-1,10;100798,8"
         ],
         "WaveReward": [
           [
@@ -707,14 +697,6 @@
             "count": 8,
             "startSeconds": 5.5,
             "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-14-1",
-            "spawnId": 14,
-            "unitId": 100391,
-            "count": 8,
-            "startSeconds": 5.5,
-            "intervalSeconds": 0.5
           }
         ]
       },
@@ -732,9 +714,7 @@
           "4#91005,10",
           "5#100798,5",
           "10#-1,10;100391,5",
-          "11#-1,10;100130,5",
-          "13#-1,10;91007,5",
-          "14#-1,10;100788,5"
+          "11#-1,10;100130,5"
         ],
         "WaveReward": [
           [
@@ -802,22 +782,6 @@
             "count": 5,
             "startSeconds": 5.5,
             "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-13-1",
-            "spawnId": 13,
-            "unitId": 91007,
-            "count": 5,
-            "startSeconds": 5.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-14-1",
-            "spawnId": 14,
-            "unitId": 100788,
-            "count": 5,
-            "startSeconds": 5.5,
-            "intervalSeconds": 0.5
           }
         ]
       },
@@ -834,8 +798,6 @@
           "3#100788,2",
           "4#91067,1",
           "5#100391,4",
-          "14#100798,3",
-          "13#91005,5",
           "10#-1,15;100798,3",
           "11#-1,15;100788,3"
         ],
@@ -904,22 +866,6 @@
             "unitId": 100788,
             "count": 3,
             "startSeconds": 8,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-13-0",
-            "spawnId": 13,
-            "unitId": 91005,
-            "count": 5,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-14-0",
-            "spawnId": 14,
-            "unitId": 100798,
-            "count": 3,
-            "startSeconds": 0.5,
             "intervalSeconds": 0.5
           }
         ]
@@ -7075,72 +7021,72 @@
     {
       "id": 1,
       "name": "Spawn 1",
-      "x": -668.558,
-      "y": 1167.758,
+      "x": -780,
+      "y": 102.80204134657924,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 2,
       "name": "Spawn 2",
-      "x": -641.456,
-      "y": 1268.666,
+      "x": -780,
+      "y": 203.71004134657915,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 3,
       "name": "Spawn 3",
-      "x": -743.736,
-      "y": 1241.186,
+      "x": -780,
+      "y": 176.23004134657913,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 4,
       "name": "Spawn 4",
-      "x": -51.31015979080837,
-      "y": 1311.0280905619204,
+      "x": 780,
+      "y": 101.119793091784,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 5,
       "name": "Spawn 5",
-      "x": 23.689840209191637,
-      "y": 1286.0280905619204,
+      "x": 780,
+      "y": 76.119793091784,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 6,
       "name": "Spawn 6",
-      "x": -81.57915979080836,
-      "y": 1243.0300905619204,
+      "x": 780,
+      "y": 33.12179309178396,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 7,
       "name": "Spawn 7",
-      "x": 530.8358402091916,
-      "y": 1229.3930905619204,
+      "x": 672.8299680296476,
+      "y": 1253.0587785319963,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 8,
       "name": "Spawn 8",
-      "x": 624.2558402091917,
-      "y": 1270.7190905619204,
+      "x": 766.2499680296477,
+      "y": 1294.3847785319963,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 9,
       "name": "Spawn 9",
-      "x": 532.0758402091916,
-      "y": 1315.3530905619205,
+      "x": 674.0699680296476,
+      "y": 1321,
       "enabled": true,
       "radius": 150
     },
@@ -7165,22 +7111,6 @@
       "name": "Spawn 12",
       "x": -745.598399477021,
       "y": -1207.2358854901518,
-      "enabled": true,
-      "radius": 150
-    },
-    {
-      "id": 14,
-      "name": "Spawn 14",
-      "x": 362.476,
-      "y": -1358.515,
-      "enabled": true,
-      "radius": 150
-    },
-    {
-      "id": 13,
-      "name": "Spawn 13",
-      "x": 427.206,
-      "y": -1441.059,
       "enabled": true,
       "radius": 150
     }
@@ -7673,11 +7603,8 @@
     },
     {
       "id": "legacy-route-927",
-      "name": "Spawns 13–14 · Route 1",
-      "spawnIds": [
-        13,
-        14
-      ],
+      "name": "Unassigned spawns · Route 1",
+      "spawnIds": [],
       "entry": "legacy-route-927-0",
       "nodes": [
         {
@@ -7719,13 +7646,13 @@
     }
   ],
   "hero": {
-    "x": 119.347,
-    "y": -144.617
+    "x": 141.3820615938492,
+    "y": 153.59083357009237
   },
   "nextBuilding": 50,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "78949bd5e75bfa7e0e2c8a007dc9e0ab3414f1c52d2ee3bbea15fe0302d17e1c",
+  "sourceRevision": "e6f29cef9d5891a0cb4b562f9f9deb5ec998632243965bbfe5c9879342fbe0b9",
   "templates": {
     "Map03": [
       {
@@ -86150,5 +86077,9 @@
         12
       ]
     }
-  ]
+  ],
+  "tasksPosition": {
+    "x": -216.5255559767442,
+    "y": 252.0813172391649
+  }
 }

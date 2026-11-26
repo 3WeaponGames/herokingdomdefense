@@ -831,76 +831,88 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
+            "count": 1,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
             "spawnId": 1,
-            "unitId": 91034,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91175,
+            "id": "entry-1"
+          },
+          {
             "count": 1,
             "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91176,
+            "id": "entry-2"
           },
           {
-            "id": "legacy-2-0",
-            "spawnId": 2,
-            "unitId": 91015,
-            "count": 9,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 100788,
-            "count": 2,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-7-0",
-            "spawnId": 7,
-            "unitId": 91067,
             "count": 1,
             "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91145,
+            "id": "entry-3"
           },
           {
-            "id": "legacy-8-0",
-            "spawnId": 8,
-            "unitId": 100131,
-            "count": 4,
+            "count": 1,
             "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91051,
+            "id": "entry-4"
           },
           {
-            "id": "legacy-9-0",
-            "spawnId": 9,
-            "unitId": 100798,
-            "count": 3,
+            "count": 1,
             "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91006,
+            "id": "entry-5"
           },
           {
-            "id": "legacy-10-1",
-            "spawnId": 10,
-            "unitId": 91015,
-            "count": 5,
-            "startSeconds": 8,
-            "intervalSeconds": 0.5
+            "count": 1,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91179,
+            "id": "entry-6"
           },
           {
-            "id": "legacy-11-1",
-            "spawnId": 11,
-            "unitId": 100788,
-            "count": 3,
-            "startSeconds": 8,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-12-1",
-            "spawnId": 12,
-            "unitId": 100798,
-            "count": 3,
-            "startSeconds": 8,
-            "intervalSeconds": 0.5
+            "count": 1,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91171,
+            "id": "entry-7"
           }
         ]
       }
@@ -5989,96 +6001,96 @@
     {
       "id": 1,
       "name": "Spawn 1",
-      "x": -668.558,
-      "y": 1167.758,
+      "x": 780,
+      "y": 484.1465778275476,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 2,
       "name": "Spawn 2",
-      "x": -641.456,
-      "y": 1268.666,
+      "x": 780,
+      "y": 585.0545778275475,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 3,
       "name": "Spawn 3",
-      "x": -743.736,
-      "y": 1241.186,
+      "x": 780,
+      "y": 557.5745778275475,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 4,
       "name": "Spawn 4",
-      "x": -51.31015979080837,
-      "y": 1311.0280905619204,
+      "x": -780,
+      "y": -292.3015100353175,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 5,
       "name": "Spawn 5",
-      "x": 23.689840209191637,
-      "y": 1286.0280905619204,
+      "x": -780,
+      "y": -317.3015100353175,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 6,
       "name": "Spawn 6",
-      "x": -81.57915979080836,
-      "y": 1243.0300905619204,
+      "x": -780,
+      "y": -360.29951003531755,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 7,
       "name": "Spawn 7",
-      "x": 530.8358402091916,
-      "y": 1229.3930905619204,
+      "x": 626.9257991490945,
+      "y": 1276.0653563327303,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 8,
       "name": "Spawn 8",
-      "x": 624.2558402091917,
-      "y": 1270.7190905619204,
+      "x": 720.3457991490945,
+      "y": 1317.3913563327303,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 9,
       "name": "Spawn 9",
-      "x": 532.0758402091916,
-      "y": 1315.3530905619205,
+      "x": 628.1657991490945,
+      "y": 1321,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 10,
       "name": "Spawn 10",
-      "x": -780,
-      "y": -1166.287885490152,
+      "x": -74.42515864128404,
+      "y": -1321,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 11,
       "name": "Spawn 11",
-      "x": -780,
-      "y": -1258.150885490152,
+      "x": -74.42515864128404,
+      "y": -1321,
       "enabled": true,
       "radius": 150
     },
     {
       "id": 12,
       "name": "Spawn 12",
-      "x": -745.598399477021,
-      "y": -1207.2358854901518,
+      "x": -40.023558118305004,
+      "y": -1321,
       "enabled": true,
       "radius": 150
     }
@@ -6571,13 +6583,13 @@
     }
   ],
   "hero": {
-    "x": 119.347,
-    "y": -144.617
+    "x": -259.521980963046,
+    "y": 904.1362661440837
   },
   "nextBuilding": 43,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "e37a3d688231f2762a2ce12fdbbed5e4482bc3cc3e31b6e5547b35d243d79eb9",
+  "sourceRevision": "56c89f9a85203cd6d192894c0ab013745acb5828775b739dbf030db4f8cfda71",
   "templates": {
     "Map03": [
       {
@@ -85002,5 +85014,9 @@
         12
       ]
     }
-  ]
+  ],
+  "tasksPosition": {
+    "x": -346.1378824188131,
+    "y": 1071.680499066816
+  }
 }

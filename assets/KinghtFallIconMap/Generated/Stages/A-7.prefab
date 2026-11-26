@@ -261,46 +261,49 @@
     },
     "_children": [
       {
-        "__id__": 3332
+        "__id__": 3302
       },
       {
-        "__id__": 3333
+        "__id__": 3303
       },
       {
-        "__id__": 3334
+        "__id__": 3304
       },
       {
-        "__id__": 3335
+        "__id__": 3305
       },
       {
-        "__id__": 3336
+        "__id__": 3306
       },
       {
-        "__id__": 3337
+        "__id__": 3307
       },
       {
-        "__id__": 3338
+        "__id__": 3308
       },
       {
-        "__id__": 3339
+        "__id__": 3309
       },
       {
-        "__id__": 3340
+        "__id__": 3310
       },
       {
-        "__id__": 3341
+        "__id__": 3311
       },
       {
-        "__id__": 3342
+        "__id__": 3312
       },
       {
-        "__id__": 3343
+        "__id__": 3313
       },
       {
-        "__id__": 3344
+        "__id__": 3314
       },
       {
-        "__id__": 3345
+        "__id__": 3315
+      },
+      {
+        "__id__": 3316
       }
     ],
     "_components": [],
@@ -92450,8 +92453,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -207.41487581234196,
-        18.120174403309363,
+        -214.29487581234196,
+        22.710174403309395,
         0,
         0,
         0,
@@ -94565,8 +94568,8 @@
     "purchaseSide": "default",
     "purchaseOffset": {
       "__type__": "cc.Vec2",
-      "x": -13.59,
-      "y": 64.53
+      "x": -20.470000000000002,
+      "y": 69.12000000000002
     },
     "purchaseOverride": false,
     "renderAfter": "top",
@@ -94603,8 +94606,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        382.9447736957434,
-        -129.41280136717424,
+        376.0647736957434,
+        -124.82280136717421,
         0,
         0,
         0,
@@ -94845,12 +94848,12 @@
       },
       {
         "y": -3,
-        "x": 81.49999999999994,
+        "x": 81.5,
         "__type__": "cc.Vec2"
       },
       {
         "y": 14,
-        "x": 82.49999999999994,
+        "x": 82.5,
         "__type__": "cc.Vec2"
       }
     ],
@@ -95028,12 +95031,12 @@
       },
       {
         "y": -3,
-        "x": 81.49999999999994,
+        "x": 81.5,
         "__type__": "cc.Vec2"
       },
       {
         "y": 14,
-        "x": 82.49999999999994,
+        "x": 82.5,
         "__type__": "cc.Vec2"
       }
     ],
@@ -95211,12 +95214,12 @@
       },
       {
         "y": -3,
-        "x": 81.49999999999994,
+        "x": 81.5,
         "__type__": "cc.Vec2"
       },
       {
         "y": 14,
-        "x": 82.49999999999994,
+        "x": 82.5,
         "__type__": "cc.Vec2"
       }
     ],
@@ -95394,12 +95397,12 @@
       },
       {
         "y": -3,
-        "x": 81.49999999999994,
+        "x": 81.5,
         "__type__": "cc.Vec2"
       },
       {
         "y": 14,
-        "x": 82.49999999999994,
+        "x": 82.5,
         "__type__": "cc.Vec2"
       }
     ],
@@ -96698,8 +96701,8 @@
     "purchaseSide": "default",
     "purchaseOffset": {
       "__type__": "cc.Vec2",
-      "x": -13.59,
-      "y": 64.53
+      "x": -20.470000000000002,
+      "y": 69.12000000000002
     },
     "purchaseOverride": false,
     "renderAfter": "top",
@@ -99601,7 +99604,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        14.2908073595745,
+        7.520807359574462,
         -268.69719784743165,
         0,
         0,
@@ -99843,12 +99846,12 @@
       },
       {
         "y": -3,
-        "x": 81.50000000000006,
+        "x": 81.5,
         "__type__": "cc.Vec2"
       },
       {
         "y": 13.999999999999972,
-        "x": 82.50000000000006,
+        "x": 82.5,
         "__type__": "cc.Vec2"
       }
     ],
@@ -100026,12 +100029,12 @@
       },
       {
         "y": -3,
-        "x": 81.50000000000006,
+        "x": 81.5,
         "__type__": "cc.Vec2"
       },
       {
         "y": 13.999999999999972,
-        "x": 82.50000000000006,
+        "x": 82.5,
         "__type__": "cc.Vec2"
       }
     ],
@@ -100209,12 +100212,12 @@
       },
       {
         "y": -3,
-        "x": 81.50000000000006,
+        "x": 81.5,
         "__type__": "cc.Vec2"
       },
       {
         "y": 13.999999999999972,
-        "x": 82.50000000000006,
+        "x": 82.5,
         "__type__": "cc.Vec2"
       }
     ],
@@ -100664,7 +100667,7 @@
     "purchaseSide": "default",
     "purchaseOffset": {
       "__type__": "cc.Vec2",
-      "x": -87.58,
+      "x": -94.35,
       "y": -26.810000000000002
     },
     "purchaseOverride": false,
@@ -106078,8 +106081,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        219.31623301331945,
-        839.1780373645769,
+        210.55623301331946,
+        844.4280373645769,
         0,
         0,
         0,
@@ -107099,8 +107102,8 @@
     "purchaseSide": "default",
     "purchaseOffset": {
       "__type__": "cc.Vec2",
-      "x": -5.43,
-      "y": 16.28
+      "x": -14.189999999999996,
+      "y": 21.530000000000005
     },
     "purchaseOverride": false,
     "renderAfter": "top",
@@ -108183,8 +108186,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -13.954793859698896,
-        533.4788693880718,
+        -20.83479385969889,
+        538.0688693880718,
         0,
         0,
         0,
@@ -110252,8 +110255,8 @@
     "purchaseSide": "default",
     "purchaseOffset": {
       "__type__": "cc.Vec2",
-      "x": -13.59,
-      "y": 64.53
+      "x": -20.470000000000002,
+      "y": 69.12000000000002
     },
     "purchaseOverride": false,
     "renderAfter": "top",
@@ -117790,36 +117793,6 @@
       "__id__": 3292
     }
   },
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
   {
     "__type__": "cc.Node",
     "_name": "ndStar",
@@ -117850,8 +117823,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -82.30925737538146,
-        193.0349999999999,
+        -76.65789492670659,
+        68.70502612915257,
         0,
         0,
         0,
@@ -118485,11 +118458,149 @@
   },
   {
     "__type__": "cc.Node",
+    "_name": "ndTasksPosition",
+    "_parent": {
+      "__id__": 4
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        226.05449794699516,
+        288.2194848824188,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
     "_name": "Authored routes",
     "_parent": {
       "__id__": 4
     },
     "_children": [
+      {
+        "__id__": 3318
+      },
+      {
+        "__id__": 3319
+      },
+      {
+        "__id__": 3320
+      },
+      {
+        "__id__": 3321
+      },
+      {
+        "__id__": 3322
+      },
+      {
+        "__id__": 3323
+      },
+      {
+        "__id__": 3324
+      },
+      {
+        "__id__": 3325
+      },
+      {
+        "__id__": 3326
+      },
+      {
+        "__id__": 3327
+      },
+      {
+        "__id__": 3328
+      },
+      {
+        "__id__": 3329
+      },
+      {
+        "__id__": 3330
+      },
+      {
+        "__id__": 3331
+      },
+      {
+        "__id__": 3332
+      },
+      {
+        "__id__": 3333
+      },
+      {
+        "__id__": 3334
+      },
+      {
+        "__id__": 3335
+      },
+      {
+        "__id__": 3336
+      },
+      {
+        "__id__": 3337
+      },
+      {
+        "__id__": 3338
+      },
+      {
+        "__id__": 3339
+      },
+      {
+        "__id__": 3340
+      },
+      {
+        "__id__": 3341
+      },
+      {
+        "__id__": 3342
+      },
+      {
+        "__id__": 3343
+      },
+      {
+        "__id__": 3344
+      },
+      {
+        "__id__": 3345
+      },
+      {
+        "__id__": 3346
+      },
       {
         "__id__": 3347
       },
@@ -118627,98 +118738,11 @@
       },
       {
         "__id__": 3392
-      },
-      {
-        "__id__": 3393
-      },
-      {
-        "__id__": 3394
-      },
-      {
-        "__id__": 3395
-      },
-      {
-        "__id__": 3396
-      },
-      {
-        "__id__": 3397
-      },
-      {
-        "__id__": 3398
-      },
-      {
-        "__id__": 3399
-      },
-      {
-        "__id__": 3400
-      },
-      {
-        "__id__": 3401
-      },
-      {
-        "__id__": 3402
-      },
-      {
-        "__id__": 3403
-      },
-      {
-        "__id__": 3404
-      },
-      {
-        "__id__": 3405
-      },
-      {
-        "__id__": 3406
-      },
-      {
-        "__id__": 3407
-      },
-      {
-        "__id__": 3408
-      },
-      {
-        "__id__": 3409
-      },
-      {
-        "__id__": 3410
-      },
-      {
-        "__id__": 3411
-      },
-      {
-        "__id__": 3412
-      },
-      {
-        "__id__": 3413
-      },
-      {
-        "__id__": 3414
-      },
-      {
-        "__id__": 3415
-      },
-      {
-        "__id__": 3416
-      },
-      {
-        "__id__": 3417
-      },
-      {
-        "__id__": 3418
-      },
-      {
-        "__id__": 3419
-      },
-      {
-        "__id__": 3420
-      },
-      {
-        "__id__": 3421
       }
     ],
     "_components": [
       {
-        "__id__": 3346
+        "__id__": 3317
       }
     ],
     "_active": true,
@@ -118766,17 +118790,17 @@
   },
   {
     "__type__": "ef20dGN+M5C6JKo/CVJ9bIM",
-    "graphs": "[{\"id\":\"legacy-route-792\",\"name\":\"Path_northwest_792\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-792-0\",\"nodes\":[{\"id\":\"legacy-route-792-0\",\"goal\":false,\"x\":-272.6167515695318,\"y\":-1005.6877693626855},{\"id\":\"legacy-route-792-1\",\"goal\":false,\"x\":212.4171500009338,\"y\":-553.5349943975557},{\"id\":\"legacy-route-792-2\",\"goal\":false,\"x\":121.67095253099708,\"y\":-464.6203161203176},{\"id\":\"node-1\",\"x\":528.1271489405124,\"y\":-80.18093950159046,\"goal\":false},{\"id\":\"node-2\",\"x\":264.21282267339905,\"y\":220.94311770305592,\"goal\":false},{\"id\":\"legacy-route-792-3\",\"goal\":true,\"x\":3.164400850898481,\"y\":249.80625266949534}],\"edges\":[{\"id\":\"legacy-route-792-edge-0\",\"from\":\"legacy-route-792-0\",\"to\":\"legacy-route-792-1\",\"weight\":1},{\"id\":\"legacy-route-792-edge-1\",\"from\":\"legacy-route-792-1\",\"to\":\"legacy-route-792-2\",\"weight\":1},{\"id\":\"legacy-route-792-edge-2\",\"from\":\"legacy-route-792-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-792-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true},{\"id\":\"legacy-route-807\",\"name\":\"Path_northwest_807\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-807-0\",\"nodes\":[{\"id\":\"legacy-route-807-0\",\"goal\":false,\"x\":-287.8941482537065,\"y\":-1016.2035126800249},{\"id\":\"legacy-route-807-1\",\"goal\":false,\"x\":-490.5661088816536,\"y\":-779.0244756568486},{\"id\":\"legacy-route-807-2\",\"goal\":false,\"x\":-506.41371999697134,\"y\":-465.55471340955546},{\"id\":\"legacy-route-807-3\",\"goal\":false,\"x\":-265.08897554327257,\"y\":-295.59740894979905},{\"id\":\"legacy-route-807-4\",\"goal\":false,\"x\":-244.43887332475208,\"y\":-99.84696448852866},{\"id\":\"legacy-route-807-5\",\"goal\":false,\"x\":-107.74801998939958,\"y\":14.471671083516405},{\"id\":\"legacy-route-807-6\",\"goal\":true,\"x\":-25.50935110168851,\"y\":209.03563110471714}],\"edges\":[{\"id\":\"legacy-route-807-edge-0\",\"from\":\"legacy-route-807-0\",\"to\":\"legacy-route-807-1\",\"weight\":1},{\"id\":\"legacy-route-807-edge-1\",\"from\":\"legacy-route-807-1\",\"to\":\"legacy-route-807-2\",\"weight\":1},{\"id\":\"legacy-route-807-edge-2\",\"from\":\"legacy-route-807-2\",\"to\":\"legacy-route-807-3\",\"weight\":1},{\"id\":\"legacy-route-807-edge-3\",\"from\":\"legacy-route-807-3\",\"to\":\"legacy-route-807-4\",\"weight\":1},{\"id\":\"legacy-route-807-edge-4\",\"from\":\"legacy-route-807-4\",\"to\":\"legacy-route-807-5\",\"weight\":1},{\"id\":\"legacy-route-807-edge-5\",\"from\":\"legacy-route-807-5\",\"to\":\"legacy-route-807-6\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true},{\"id\":\"legacy-route-831\",\"name\":\"Path_northwest_831\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-831-0\",\"nodes\":[{\"id\":\"legacy-route-831-0\",\"goal\":false,\"x\":-279.8369955326722,\"y\":-1003.6512001211479},{\"id\":\"legacy-route-831-1\",\"goal\":false,\"x\":231.64181116074818,\"y\":-526.8248845309304},{\"id\":\"legacy-route-831-2\",\"goal\":false,\"x\":-262.8118422048914,\"y\":-264.94140228666606},{\"id\":\"legacy-route-831-3\",\"goal\":false,\"x\":-250.17068221397744,\"y\":-114.17648671159213},{\"id\":\"legacy-route-831-4\",\"goal\":false,\"x\":-102.01621110017419,\"y\":8.739862194290993},{\"id\":\"legacy-route-831-5\",\"goal\":true,\"x\":-28.37525554630119,\"y\":217.63334443855527}],\"edges\":[{\"id\":\"legacy-route-831-edge-0\",\"from\":\"legacy-route-831-0\",\"to\":\"legacy-route-831-1\",\"weight\":1},{\"id\":\"legacy-route-831-edge-1\",\"from\":\"legacy-route-831-1\",\"to\":\"legacy-route-831-2\",\"weight\":1},{\"id\":\"legacy-route-831-edge-2\",\"from\":\"legacy-route-831-2\",\"to\":\"legacy-route-831-3\",\"weight\":1},{\"id\":\"legacy-route-831-edge-3\",\"from\":\"legacy-route-831-3\",\"to\":\"legacy-route-831-4\",\"weight\":1},{\"id\":\"legacy-route-831-edge-4\",\"from\":\"legacy-route-831-4\",\"to\":\"legacy-route-831-5\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true},{\"id\":\"legacy-route-852\",\"name\":\"Path_northwest_852\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-852-0\",\"nodes\":[{\"id\":\"legacy-route-852-0\",\"goal\":false,\"x\":-271.2392821988341,\"y\":-1012.2489134549858},{\"id\":\"legacy-route-852-1\",\"goal\":false,\"x\":-464.7729688801393,\"y\":-844.9402778829408},{\"id\":\"legacy-route-852-2\",\"goal\":false,\"x\":-500.68191110774586,\"y\":-499.94556674490786},{\"id\":\"legacy-route-852-3\",\"goal\":false,\"x\":-267.3661088816537,\"y\":-274.66713560990354},{\"id\":\"legacy-route-852-4\",\"goal\":false,\"x\":130.12204891345493,\"y\":-446.9389444991291},{\"id\":\"node-1\",\"x\":516.5828689331414,\"y\":-81.69489891724082,\"goal\":false},{\"id\":\"node-2\",\"x\":268.4639944726281,\"y\":206.9655883243734,\"goal\":false},{\"id\":\"legacy-route-852-5\",\"goal\":true,\"x\":-8.31392443401225,\"y\":243.42648444006957}],\"edges\":[{\"id\":\"legacy-route-852-edge-0\",\"from\":\"legacy-route-852-0\",\"to\":\"legacy-route-852-1\",\"weight\":1},{\"id\":\"legacy-route-852-edge-1\",\"from\":\"legacy-route-852-1\",\"to\":\"legacy-route-852-2\",\"weight\":1},{\"id\":\"legacy-route-852-edge-2\",\"from\":\"legacy-route-852-2\",\"to\":\"legacy-route-852-3\",\"weight\":1},{\"id\":\"legacy-route-852-edge-3\",\"from\":\"legacy-route-852-3\",\"to\":\"legacy-route-852-4\",\"weight\":1},{\"id\":\"legacy-route-852-edge-4\",\"from\":\"legacy-route-852-4\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-852-5\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true},{\"id\":\"legacy-route-873\",\"name\":\"Path_northwest_873\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-873-0\",\"nodes\":[{\"id\":\"legacy-route-873-0\",\"goal\":false,\"x\":-276.97109108805944,\"y\":-1003.6512001211479},{\"id\":\"legacy-route-873-1\",\"goal\":false,\"x\":18.046793367153782,\"y\":-766.4746800938894},{\"id\":\"legacy-route-873-2\",\"goal\":false,\"x\":216.1786371379578,\"y\":-658.3731322354876},{\"id\":\"node-1\",\"x\":361.22157390007214,\"y\":-784.0500355810352,\"goal\":false},{\"id\":\"node-2\",\"x\":385.07179270412854,\"y\":-419.27679454158823,\"goal\":false},{\"id\":\"node-3\",\"x\":350.9330408993525,\"y\":-246.4505980459185,\"goal\":false},{\"id\":\"node-5\",\"x\":521.0044563066165,\"y\":-54.188347092436324,\"goal\":false},{\"id\":\"node-4\",\"x\":268.6789557420527,\"y\":209.34251931308265,\"goal\":false},{\"id\":\"legacy-route-873-3\",\"goal\":true,\"x\":-9.998386636714287,\"y\":261.85956874836336}],\"edges\":[{\"id\":\"legacy-route-873-edge-0\",\"from\":\"legacy-route-873-0\",\"to\":\"legacy-route-873-1\",\"weight\":1},{\"id\":\"legacy-route-873-edge-1\",\"from\":\"legacy-route-873-1\",\"to\":\"legacy-route-873-2\",\"weight\":1},{\"id\":\"legacy-route-873-edge-2\",\"from\":\"legacy-route-873-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"node-5\",\"weight\":1},{\"id\":\"edge-5\",\"from\":\"node-5\",\"to\":\"node-4\",\"weight\":1},{\"id\":\"edge-4\",\"from\":\"node-4\",\"to\":\"legacy-route-873-3\",\"weight\":1}],\"requiresAnyBuilding\":[30],\"legacy\":true},{\"id\":\"legacy-route-888\",\"name\":\"Path_west_888\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-888-0\",\"nodes\":[{\"id\":\"legacy-route-888-0\",\"goal\":false,\"x\":-534.2377363650478,\"y\":-523.972871964722},{\"id\":\"legacy-route-888-1\",\"goal\":false,\"x\":-261.483457601303,\"y\":-276.0728795291182},{\"id\":\"legacy-route-888-2\",\"goal\":false,\"x\":-259.36888709351445,\"y\":-135.67158292862973},{\"id\":\"node-1\",\"x\":-78.76942734371805,\"y\":39.23043220016278,\"goal\":false},{\"id\":\"legacy-route-888-3\",\"goal\":true,\"x\":-20.85162075061075,\"y\":236.15223122887386}],\"edges\":[{\"id\":\"legacy-route-888-edge-0\",\"from\":\"legacy-route-888-0\",\"to\":\"legacy-route-888-1\",\"weight\":1},{\"id\":\"legacy-route-888-edge-1\",\"from\":\"legacy-route-888-1\",\"to\":\"legacy-route-888-2\",\"weight\":1},{\"id\":\"legacy-route-888-edge-2\",\"from\":\"legacy-route-888-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-888-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true},{\"id\":\"legacy-route-900\",\"name\":\"Path_west_900\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-900-0\",\"nodes\":[{\"id\":\"legacy-route-900-0\",\"goal\":false,\"x\":-535.8105780721849,\"y\":-520.8271885504478},{\"id\":\"legacy-route-900-1\",\"goal\":false,\"x\":-329.11565100819564,\"y\":-348.42359805742205},{\"id\":\"legacy-route-900-2\",\"goal\":false,\"x\":-212.1836358794032,\"y\":-456.53129118458594},{\"id\":\"legacy-route-900-3\",\"goal\":false,\"x\":169.73956238393436,\"y\":-412.1751377481678},{\"id\":\"node-1\",\"x\":510.9075445471905,\"y\":-86.43861155250994,\"goal\":false},{\"id\":\"node-2\",\"x\":286.70826713742144,\"y\":194.392779580597,\"goal\":false},{\"id\":\"legacy-route-900-4\",\"goal\":true,\"x\":32.62499729204862,\"y\":247.16212317883313}],\"edges\":[{\"id\":\"legacy-route-900-edge-0\",\"from\":\"legacy-route-900-0\",\"to\":\"legacy-route-900-1\",\"weight\":1},{\"id\":\"legacy-route-900-edge-1\",\"from\":\"legacy-route-900-1\",\"to\":\"legacy-route-900-2\",\"weight\":1},{\"id\":\"legacy-route-900-edge-2\",\"from\":\"legacy-route-900-2\",\"to\":\"legacy-route-900-3\",\"weight\":1},{\"id\":\"legacy-route-900-edge-3\",\"from\":\"legacy-route-900-3\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-900-4\",\"weight\":1}],\"requiresAnyBuilding\":[4],\"legacy\":true},{\"id\":\"legacy-route-918\",\"name\":\"Path_south_918\",\"spawnIds\":[7,8,9],\"entry\":\"legacy-route-918-0\",\"nodes\":[{\"id\":\"legacy-route-918-0\",\"goal\":false,\"x\":565.2996157723906,\"y\":650.4281150681846},{\"id\":\"legacy-route-918-1\",\"goal\":false,\"x\":349.63532226286867,\"y\":869.4632429798953},{\"id\":\"legacy-route-918-2\",\"goal\":false,\"x\":88.36936716534044,\"y\":754.5198250665444},{\"id\":\"legacy-route-918-3\",\"goal\":false,\"x\":104.25980752992744,\"y\":523.7186468639529},{\"id\":\"legacy-route-918-4\",\"goal\":true,\"x\":-1.5769728723329592,\"y\":319.8610731992465}],\"edges\":[{\"id\":\"legacy-route-918-edge-0\",\"from\":\"legacy-route-918-0\",\"to\":\"legacy-route-918-1\",\"weight\":1},{\"id\":\"legacy-route-918-edge-1\",\"from\":\"legacy-route-918-1\",\"to\":\"legacy-route-918-2\",\"weight\":1},{\"id\":\"legacy-route-918-edge-2\",\"from\":\"legacy-route-918-2\",\"to\":\"legacy-route-918-3\",\"weight\":1},{\"id\":\"legacy-route-918-edge-3\",\"from\":\"legacy-route-918-3\",\"to\":\"legacy-route-918-4\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true},{\"id\":\"legacy-route-930\",\"name\":\"Path_south_930\",\"spawnIds\":[7,8,9],\"entry\":\"legacy-route-930-0\",\"nodes\":[{\"id\":\"legacy-route-930-0\",\"goal\":false,\"x\":594.8330825521087,\"y\":645.6558297429751},{\"id\":\"legacy-route-930-1\",\"goal\":false,\"x\":336.187809868143,\"y\":865.6210965814022},{\"id\":\"legacy-route-930-2\",\"goal\":false,\"x\":51.868976379656345,\"y\":735.3090930740791},{\"id\":\"legacy-route-930-3\",\"goal\":false,\"x\":-291.481271514858,\"y\":719.6681131870992},{\"id\":\"node-1\",\"x\":-505.7698104526968,\"y\":617.7393263547458,\"goal\":false},{\"id\":\"node-2\",\"x\":-511.09720036155005,\"y\":457.27376058151685,\"goal\":false},{\"id\":\"node-3\",\"x\":-173.73093904934066,\"y\":459.64712526250327,\"goal\":false},{\"id\":\"legacy-route-930-4\",\"goal\":true,\"x\":-59.209168849728904,\"y\":335.2296587932187}],\"edges\":[{\"id\":\"legacy-route-930-edge-0\",\"from\":\"legacy-route-930-0\",\"to\":\"legacy-route-930-1\",\"weight\":1},{\"id\":\"legacy-route-930-edge-1\",\"from\":\"legacy-route-930-1\",\"to\":\"legacy-route-930-2\",\"weight\":1},{\"id\":\"legacy-route-930-edge-2\",\"from\":\"legacy-route-930-2\",\"to\":\"legacy-route-930-3\",\"weight\":1},{\"id\":\"legacy-route-930-edge-3\",\"from\":\"legacy-route-930-3\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"legacy-route-930-4\",\"weight\":1}],\"requiresAnyBuilding\":[25,26,28,12,13],\"legacy\":true},{\"id\":\"legacy-route-948\",\"name\":\"Path_southeast_948\",\"spawnIds\":[10,11,12],\"entry\":\"legacy-route-948-0\",\"nodes\":[{\"id\":\"legacy-route-948-0\",\"goal\":false,\"x\":109.95696702679409,\"y\":1048.1230505098226},{\"id\":\"legacy-route-948-1\",\"goal\":false,\"x\":249.05131524822195,\"y\":642.7766054688045},{\"id\":\"legacy-route-948-5\",\"goal\":true,\"x\":-32.31414406027747,\"y\":292.96604840979506}],\"edges\":[{\"id\":\"legacy-route-948-edge-0\",\"from\":\"legacy-route-948-0\",\"to\":\"legacy-route-948-1\",\"weight\":1},{\"id\":\"legacy-route-948-edge-1\",\"from\":\"legacy-route-948-1\",\"to\":\"legacy-route-948-5\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true},{\"id\":\"legacy-route-963\",\"name\":\"Path_southeast_963\",\"spawnIds\":[10,11,12],\"entry\":\"legacy-route-963-0\",\"nodes\":[{\"id\":\"legacy-route-963-0\",\"goal\":false,\"x\":104.19374742905458,\"y\":984.7276349346872},{\"id\":\"legacy-route-963-1\",\"goal\":false,\"x\":-519.3779644503904,\"y\":648.5398250665444},{\"id\":\"legacy-route-963-2\",\"goal\":false,\"x\":-451.27444737923366,\"y\":447.3485051418911},{\"id\":\"legacy-route-963-3\",\"goal\":false,\"x\":-324.66137067266374,\"y\":139.77640130765417},{\"id\":\"legacy-route-963-5\",\"goal\":true,\"x\":-49.60380285349626,\"y\":300.65034120678115}],\"edges\":[{\"id\":\"legacy-route-963-edge-0\",\"from\":\"legacy-route-963-0\",\"to\":\"legacy-route-963-1\",\"weight\":1},{\"id\":\"legacy-route-963-edge-1\",\"from\":\"legacy-route-963-1\",\"to\":\"legacy-route-963-2\",\"weight\":1},{\"id\":\"legacy-route-963-edge-2\",\"from\":\"legacy-route-963-2\",\"to\":\"legacy-route-963-3\",\"weight\":1},{\"id\":\"legacy-route-963-edge-3\",\"from\":\"legacy-route-963-3\",\"to\":\"legacy-route-963-5\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true},{\"id\":\"path-1794260517664\",\"name\":\"Spawns 1–3 · Route 6\",\"spawnIds\":[1,2,3],\"entry\":\"entry-13\",\"nodes\":[{\"id\":\"entry-13\",\"x\":-529.0534665722547,\"y\":-501.9310785693217},{\"id\":\"node-1\",\"x\":-265.24141895875414,\"y\":-277.8315912730329,\"goal\":false},{\"id\":\"node-2\",\"x\":-202.49403032487896,\"y\":-62.04389486557581,\"goal\":false},{\"id\":\"node-3\",\"x\":-486.17634068437246,\"y\":113.08751531178136,\"goal\":false},{\"id\":\"node-4\",\"x\":-622.2542762663797,\"y\":-22.191270712137737,\"goal\":false},{\"id\":\"goal-13\",\"x\":-141.66771489025035,\"y\":265.1660470981801,\"goal\":true}],\"edges\":[{\"id\":\"edge-13\",\"from\":\"entry-13\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"node-4\",\"weight\":1},{\"id\":\"edge-4\",\"from\":\"node-4\",\"to\":\"goal-13\",\"weight\":1}],\"legacy\":false,\"nameFromSpawns\":true,\"requiresAnyBuilding\":[6]}]",
+    "graphs": "[{\"id\":\"legacy-route-792\",\"name\":\"Spawns 1–3 · Route 1\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-792-0\",\"nodes\":[{\"id\":\"legacy-route-792-0\",\"goal\":false,\"x\":-272.6167515695318,\"y\":-1005.6877693626855},{\"id\":\"legacy-route-792-1\",\"goal\":false,\"x\":212.4171500009338,\"y\":-553.5349943975557},{\"id\":\"legacy-route-792-2\",\"goal\":false,\"x\":121.67095253099708,\"y\":-464.6203161203176},{\"id\":\"node-1\",\"x\":528.1271489405124,\"y\":-80.18093950159046,\"goal\":false},{\"id\":\"node-2\",\"x\":264.21282267339905,\"y\":220.94311770305592,\"goal\":false},{\"id\":\"legacy-route-792-3\",\"goal\":true,\"x\":3.164400850898481,\"y\":249.80625266949534}],\"edges\":[{\"id\":\"legacy-route-792-edge-0\",\"from\":\"legacy-route-792-0\",\"to\":\"legacy-route-792-1\",\"weight\":1},{\"id\":\"legacy-route-792-edge-1\",\"from\":\"legacy-route-792-1\",\"to\":\"legacy-route-792-2\",\"weight\":1},{\"id\":\"legacy-route-792-edge-2\",\"from\":\"legacy-route-792-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-792-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-807\",\"name\":\"Spawns 1–3 · Route 2\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-807-0\",\"nodes\":[{\"id\":\"legacy-route-807-0\",\"goal\":false,\"x\":-287.8941482537065,\"y\":-1016.2035126800249},{\"id\":\"legacy-route-807-1\",\"goal\":false,\"x\":-490.5661088816536,\"y\":-779.0244756568486},{\"id\":\"legacy-route-807-2\",\"goal\":false,\"x\":-506.41371999697134,\"y\":-465.55471340955546},{\"id\":\"legacy-route-807-3\",\"goal\":false,\"x\":-265.08897554327257,\"y\":-295.59740894979905},{\"id\":\"legacy-route-807-4\",\"goal\":false,\"x\":-244.43887332475208,\"y\":-99.84696448852866},{\"id\":\"legacy-route-807-5\",\"goal\":false,\"x\":-107.74801998939958,\"y\":14.471671083516405},{\"id\":\"legacy-route-807-6\",\"goal\":true,\"x\":-25.50935110168851,\"y\":209.03563110471714}],\"edges\":[{\"id\":\"legacy-route-807-edge-0\",\"from\":\"legacy-route-807-0\",\"to\":\"legacy-route-807-1\",\"weight\":1},{\"id\":\"legacy-route-807-edge-1\",\"from\":\"legacy-route-807-1\",\"to\":\"legacy-route-807-2\",\"weight\":1},{\"id\":\"legacy-route-807-edge-2\",\"from\":\"legacy-route-807-2\",\"to\":\"legacy-route-807-3\",\"weight\":1},{\"id\":\"legacy-route-807-edge-3\",\"from\":\"legacy-route-807-3\",\"to\":\"legacy-route-807-4\",\"weight\":1},{\"id\":\"legacy-route-807-edge-4\",\"from\":\"legacy-route-807-4\",\"to\":\"legacy-route-807-5\",\"weight\":1},{\"id\":\"legacy-route-807-edge-5\",\"from\":\"legacy-route-807-5\",\"to\":\"legacy-route-807-6\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-831\",\"name\":\"Spawns 1–3 · Route 3\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-831-0\",\"nodes\":[{\"id\":\"legacy-route-831-0\",\"goal\":false,\"x\":-279.8369955326722,\"y\":-1003.6512001211479},{\"id\":\"legacy-route-831-1\",\"goal\":false,\"x\":231.64181116074818,\"y\":-526.8248845309304},{\"id\":\"legacy-route-831-2\",\"goal\":false,\"x\":-262.8118422048914,\"y\":-264.94140228666606},{\"id\":\"legacy-route-831-3\",\"goal\":false,\"x\":-250.17068221397744,\"y\":-114.17648671159213},{\"id\":\"legacy-route-831-4\",\"goal\":false,\"x\":-102.01621110017419,\"y\":8.739862194290993},{\"id\":\"legacy-route-831-5\",\"goal\":true,\"x\":-28.37525554630119,\"y\":217.63334443855527}],\"edges\":[{\"id\":\"legacy-route-831-edge-0\",\"from\":\"legacy-route-831-0\",\"to\":\"legacy-route-831-1\",\"weight\":1},{\"id\":\"legacy-route-831-edge-1\",\"from\":\"legacy-route-831-1\",\"to\":\"legacy-route-831-2\",\"weight\":1},{\"id\":\"legacy-route-831-edge-2\",\"from\":\"legacy-route-831-2\",\"to\":\"legacy-route-831-3\",\"weight\":1},{\"id\":\"legacy-route-831-edge-3\",\"from\":\"legacy-route-831-3\",\"to\":\"legacy-route-831-4\",\"weight\":1},{\"id\":\"legacy-route-831-edge-4\",\"from\":\"legacy-route-831-4\",\"to\":\"legacy-route-831-5\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-852\",\"name\":\"Spawns 1–3 · Route 4\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-852-0\",\"nodes\":[{\"id\":\"legacy-route-852-0\",\"goal\":false,\"x\":-271.2392821988341,\"y\":-1012.2489134549858},{\"id\":\"legacy-route-852-1\",\"goal\":false,\"x\":-464.7729688801393,\"y\":-844.9402778829408},{\"id\":\"legacy-route-852-2\",\"goal\":false,\"x\":-500.68191110774586,\"y\":-499.94556674490786},{\"id\":\"legacy-route-852-3\",\"goal\":false,\"x\":-267.3661088816537,\"y\":-274.66713560990354},{\"id\":\"legacy-route-852-4\",\"goal\":false,\"x\":130.12204891345493,\"y\":-446.9389444991291},{\"id\":\"node-1\",\"x\":516.5828689331414,\"y\":-81.69489891724082,\"goal\":false},{\"id\":\"node-2\",\"x\":268.4639944726281,\"y\":206.9655883243734,\"goal\":false},{\"id\":\"legacy-route-852-5\",\"goal\":true,\"x\":-8.31392443401225,\"y\":243.42648444006957}],\"edges\":[{\"id\":\"legacy-route-852-edge-0\",\"from\":\"legacy-route-852-0\",\"to\":\"legacy-route-852-1\",\"weight\":1},{\"id\":\"legacy-route-852-edge-1\",\"from\":\"legacy-route-852-1\",\"to\":\"legacy-route-852-2\",\"weight\":1},{\"id\":\"legacy-route-852-edge-2\",\"from\":\"legacy-route-852-2\",\"to\":\"legacy-route-852-3\",\"weight\":1},{\"id\":\"legacy-route-852-edge-3\",\"from\":\"legacy-route-852-3\",\"to\":\"legacy-route-852-4\",\"weight\":1},{\"id\":\"legacy-route-852-edge-4\",\"from\":\"legacy-route-852-4\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-852-5\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-873\",\"name\":\"Spawns 1–3 · Route 5\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-873-0\",\"nodes\":[{\"id\":\"legacy-route-873-0\",\"goal\":false,\"x\":-276.97109108805944,\"y\":-1003.6512001211479},{\"id\":\"legacy-route-873-1\",\"goal\":false,\"x\":18.046793367153782,\"y\":-766.4746800938894},{\"id\":\"legacy-route-873-2\",\"goal\":false,\"x\":216.1786371379578,\"y\":-658.3731322354876},{\"id\":\"node-1\",\"x\":361.22157390007214,\"y\":-784.0500355810352,\"goal\":false},{\"id\":\"node-2\",\"x\":385.07179270412854,\"y\":-419.27679454158823,\"goal\":false},{\"id\":\"node-3\",\"x\":350.9330408993525,\"y\":-246.4505980459185,\"goal\":false},{\"id\":\"node-5\",\"x\":521.0044563066165,\"y\":-54.188347092436324,\"goal\":false},{\"id\":\"node-4\",\"x\":268.6789557420527,\"y\":209.34251931308265,\"goal\":false},{\"id\":\"legacy-route-873-3\",\"goal\":true,\"x\":-9.998386636714287,\"y\":261.85956874836336}],\"edges\":[{\"id\":\"legacy-route-873-edge-0\",\"from\":\"legacy-route-873-0\",\"to\":\"legacy-route-873-1\",\"weight\":1},{\"id\":\"legacy-route-873-edge-1\",\"from\":\"legacy-route-873-1\",\"to\":\"legacy-route-873-2\",\"weight\":1},{\"id\":\"legacy-route-873-edge-2\",\"from\":\"legacy-route-873-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"node-5\",\"weight\":1},{\"id\":\"edge-5\",\"from\":\"node-5\",\"to\":\"node-4\",\"weight\":1},{\"id\":\"edge-4\",\"from\":\"node-4\",\"to\":\"legacy-route-873-3\",\"weight\":1}],\"requiresAnyBuilding\":[30],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-888\",\"name\":\"Spawns 4–6 · Route 1\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-888-0\",\"nodes\":[{\"id\":\"legacy-route-888-0\",\"goal\":false,\"x\":-534.2377363650478,\"y\":-523.972871964722},{\"id\":\"legacy-route-888-1\",\"goal\":false,\"x\":-261.483457601303,\"y\":-276.0728795291182},{\"id\":\"legacy-route-888-2\",\"goal\":false,\"x\":-259.36888709351445,\"y\":-135.67158292862973},{\"id\":\"node-1\",\"x\":-78.76942734371805,\"y\":39.23043220016278,\"goal\":false},{\"id\":\"legacy-route-888-3\",\"goal\":true,\"x\":-20.85162075061075,\"y\":236.15223122887386}],\"edges\":[{\"id\":\"legacy-route-888-edge-0\",\"from\":\"legacy-route-888-0\",\"to\":\"legacy-route-888-1\",\"weight\":1},{\"id\":\"legacy-route-888-edge-1\",\"from\":\"legacy-route-888-1\",\"to\":\"legacy-route-888-2\",\"weight\":1},{\"id\":\"legacy-route-888-edge-2\",\"from\":\"legacy-route-888-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-888-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-900\",\"name\":\"Spawns 4–6 · Route 2\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-900-0\",\"nodes\":[{\"id\":\"legacy-route-900-0\",\"goal\":false,\"x\":-535.8105780721849,\"y\":-520.8271885504478},{\"id\":\"legacy-route-900-1\",\"goal\":false,\"x\":-329.11565100819564,\"y\":-348.42359805742205},{\"id\":\"legacy-route-900-2\",\"goal\":false,\"x\":-212.1836358794032,\"y\":-456.53129118458594},{\"id\":\"legacy-route-900-3\",\"goal\":false,\"x\":169.73956238393436,\"y\":-412.1751377481678},{\"id\":\"node-1\",\"x\":510.9075445471905,\"y\":-86.43861155250994,\"goal\":false},{\"id\":\"node-2\",\"x\":286.70826713742144,\"y\":194.392779580597,\"goal\":false},{\"id\":\"legacy-route-900-4\",\"goal\":true,\"x\":32.62499729204862,\"y\":247.16212317883313}],\"edges\":[{\"id\":\"legacy-route-900-edge-0\",\"from\":\"legacy-route-900-0\",\"to\":\"legacy-route-900-1\",\"weight\":1},{\"id\":\"legacy-route-900-edge-1\",\"from\":\"legacy-route-900-1\",\"to\":\"legacy-route-900-2\",\"weight\":1},{\"id\":\"legacy-route-900-edge-2\",\"from\":\"legacy-route-900-2\",\"to\":\"legacy-route-900-3\",\"weight\":1},{\"id\":\"legacy-route-900-edge-3\",\"from\":\"legacy-route-900-3\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-900-4\",\"weight\":1}],\"requiresAnyBuilding\":[4],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-918\",\"name\":\"Spawns 7–9 · Route 1\",\"spawnIds\":[7,8,9],\"entry\":\"legacy-route-918-0\",\"nodes\":[{\"id\":\"legacy-route-918-0\",\"goal\":false,\"x\":565.2996157723906,\"y\":650.4281150681846},{\"id\":\"legacy-route-918-1\",\"goal\":false,\"x\":349.63532226286867,\"y\":869.4632429798953},{\"id\":\"legacy-route-918-2\",\"goal\":false,\"x\":88.36936716534044,\"y\":754.5198250665444},{\"id\":\"legacy-route-918-3\",\"goal\":false,\"x\":104.25980752992744,\"y\":523.7186468639529},{\"id\":\"legacy-route-918-4\",\"goal\":true,\"x\":-1.5769728723329592,\"y\":319.8610731992465}],\"edges\":[{\"id\":\"legacy-route-918-edge-0\",\"from\":\"legacy-route-918-0\",\"to\":\"legacy-route-918-1\",\"weight\":1},{\"id\":\"legacy-route-918-edge-1\",\"from\":\"legacy-route-918-1\",\"to\":\"legacy-route-918-2\",\"weight\":1},{\"id\":\"legacy-route-918-edge-2\",\"from\":\"legacy-route-918-2\",\"to\":\"legacy-route-918-3\",\"weight\":1},{\"id\":\"legacy-route-918-edge-3\",\"from\":\"legacy-route-918-3\",\"to\":\"legacy-route-918-4\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-930\",\"name\":\"Spawns 7–9 · Route 2\",\"spawnIds\":[7,8,9],\"entry\":\"legacy-route-930-0\",\"nodes\":[{\"id\":\"legacy-route-930-0\",\"goal\":false,\"x\":594.8330825521087,\"y\":645.6558297429751},{\"id\":\"legacy-route-930-1\",\"goal\":false,\"x\":336.187809868143,\"y\":865.6210965814022},{\"id\":\"legacy-route-930-2\",\"goal\":false,\"x\":51.868976379656345,\"y\":735.3090930740791},{\"id\":\"legacy-route-930-3\",\"goal\":false,\"x\":-291.481271514858,\"y\":719.6681131870992},{\"id\":\"node-1\",\"x\":-505.7698104526968,\"y\":617.7393263547458,\"goal\":false},{\"id\":\"node-2\",\"x\":-511.09720036155005,\"y\":457.27376058151685,\"goal\":false},{\"id\":\"node-3\",\"x\":-173.73093904934066,\"y\":459.64712526250327,\"goal\":false},{\"id\":\"legacy-route-930-4\",\"goal\":true,\"x\":-59.209168849728904,\"y\":335.2296587932187}],\"edges\":[{\"id\":\"legacy-route-930-edge-0\",\"from\":\"legacy-route-930-0\",\"to\":\"legacy-route-930-1\",\"weight\":1},{\"id\":\"legacy-route-930-edge-1\",\"from\":\"legacy-route-930-1\",\"to\":\"legacy-route-930-2\",\"weight\":1},{\"id\":\"legacy-route-930-edge-2\",\"from\":\"legacy-route-930-2\",\"to\":\"legacy-route-930-3\",\"weight\":1},{\"id\":\"legacy-route-930-edge-3\",\"from\":\"legacy-route-930-3\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"legacy-route-930-4\",\"weight\":1}],\"requiresAnyBuilding\":[25,26,28,12,13],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-948\",\"name\":\"Spawns 10–12 · Route 1\",\"spawnIds\":[10,11,12],\"entry\":\"legacy-route-948-0\",\"nodes\":[{\"id\":\"legacy-route-948-0\",\"goal\":false,\"x\":109.95696702679409,\"y\":1048.1230505098226},{\"id\":\"legacy-route-948-1\",\"goal\":false,\"x\":249.05131524822195,\"y\":642.7766054688045},{\"id\":\"legacy-route-948-5\",\"goal\":true,\"x\":-32.31414406027747,\"y\":292.96604840979506}],\"edges\":[{\"id\":\"legacy-route-948-edge-0\",\"from\":\"legacy-route-948-0\",\"to\":\"legacy-route-948-1\",\"weight\":1},{\"id\":\"legacy-route-948-edge-1\",\"from\":\"legacy-route-948-1\",\"to\":\"legacy-route-948-5\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-963\",\"name\":\"Spawns 10–12 · Route 2\",\"spawnIds\":[10,11,12],\"entry\":\"legacy-route-963-0\",\"nodes\":[{\"id\":\"legacy-route-963-0\",\"goal\":false,\"x\":104.19374742905458,\"y\":984.7276349346872},{\"id\":\"legacy-route-963-1\",\"goal\":false,\"x\":-519.3779644503904,\"y\":648.5398250665444},{\"id\":\"legacy-route-963-2\",\"goal\":false,\"x\":-451.27444737923366,\"y\":447.3485051418911},{\"id\":\"legacy-route-963-3\",\"goal\":false,\"x\":-324.66137067266374,\"y\":139.77640130765417},{\"id\":\"legacy-route-963-5\",\"goal\":true,\"x\":-49.60380285349626,\"y\":300.65034120678115}],\"edges\":[{\"id\":\"legacy-route-963-edge-0\",\"from\":\"legacy-route-963-0\",\"to\":\"legacy-route-963-1\",\"weight\":1},{\"id\":\"legacy-route-963-edge-1\",\"from\":\"legacy-route-963-1\",\"to\":\"legacy-route-963-2\",\"weight\":1},{\"id\":\"legacy-route-963-edge-2\",\"from\":\"legacy-route-963-2\",\"to\":\"legacy-route-963-3\",\"weight\":1},{\"id\":\"legacy-route-963-edge-3\",\"from\":\"legacy-route-963-3\",\"to\":\"legacy-route-963-5\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"path-1794260517664\",\"name\":\"Spawns 1–3 · Route 6\",\"spawnIds\":[1,2,3],\"entry\":\"entry-13\",\"nodes\":[{\"id\":\"entry-13\",\"x\":-529.0534665722547,\"y\":-501.9310785693217},{\"id\":\"node-1\",\"x\":-265.24141895875414,\"y\":-277.8315912730329,\"goal\":false},{\"id\":\"node-2\",\"x\":-202.49403032487896,\"y\":-62.04389486557581,\"goal\":false},{\"id\":\"node-3\",\"x\":-486.17634068437246,\"y\":113.08751531178136,\"goal\":false},{\"id\":\"node-4\",\"x\":-622.2542762663797,\"y\":-22.191270712137737,\"goal\":false},{\"id\":\"goal-13\",\"x\":-141.66771489025035,\"y\":265.1660470981801,\"goal\":true}],\"edges\":[{\"id\":\"edge-13\",\"from\":\"entry-13\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"node-4\",\"weight\":1},{\"id\":\"edge-4\",\"from\":\"node-4\",\"to\":\"goal-13\",\"weight\":1}],\"legacy\":false,\"nameFromSpawns\":true,\"requiresAnyBuilding\":[6]}]",
     "spawns": "[{\"id\":1,\"name\":\"Spawn 1\",\"x\":-204.65784118839923,\"y\":-1364,\"enabled\":true,\"radius\":150},{\"id\":2,\"name\":\"Spawn 2\",\"x\":-265.71128413868337,\"y\":-1364,\"enabled\":true,\"radius\":150},{\"id\":3,\"name\":\"Spawn 3\",\"x\":-228.7668635181225,\"y\":-1364,\"enabled\":true,\"radius\":150},{\"id\":4,\"name\":\"Spawn 4\",\"x\":-780,\"y\":-433.72914522981773,\"enabled\":true,\"radius\":150},{\"id\":5,\"name\":\"Spawn 5\",\"x\":-780,\"y\":-464.0091452298177,\"enabled\":true,\"radius\":150},{\"id\":6,\"name\":\"Spawn 6\",\"x\":-780,\"y\":-415.5611452298177,\"enabled\":true,\"radius\":150},{\"id\":7,\"name\":\"Spawn 7\",\"x\":788.3,\"y\":527.5410323484037,\"enabled\":true,\"radius\":141.7},{\"id\":8,\"name\":\"Spawn 8\",\"x\":780,\"y\":592.5619355607129,\"enabled\":true,\"radius\":150},{\"id\":9,\"name\":\"Spawn 9\",\"x\":780,\"y\":613.8990323484037,\"enabled\":true,\"radius\":150},{\"id\":10,\"name\":\"Spawn 10\",\"x\":62.09459661335009,\"y\":1331.518238735755,\"enabled\":true,\"radius\":150},{\"id\":11,\"name\":\"Spawn 11\",\"x\":93.55143075609091,\"y\":1323.5793041073698,\"enabled\":true,\"radius\":150},{\"id\":12,\"name\":\"Spawn 12\",\"x\":117.1440563631465,\"y\":1328.2548719072067,\"enabled\":true,\"radius\":150}]",
     "node": {
-      "__id__": 3345
+      "__id__": 3316
     }
   },
   {
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-legacy-route-792-0",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -118827,7 +118851,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-legacy-route-792-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -118878,7 +118902,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-legacy-route-792-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -118929,7 +118953,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-node-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -118980,7 +119004,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-node-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119031,7 +119055,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-legacy-route-792-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119082,7 +119106,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-0",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119133,7 +119157,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119184,7 +119208,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119235,7 +119259,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119286,7 +119310,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-4",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119337,7 +119361,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-5",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119388,7 +119412,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-6",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119439,7 +119463,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-831-legacy-route-831-0",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119490,7 +119514,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-831-legacy-route-831-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119541,7 +119565,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-831-legacy-route-831-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119592,7 +119616,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-831-legacy-route-831-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119643,7 +119667,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-831-legacy-route-831-4",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119694,7 +119718,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-831-legacy-route-831-5",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119745,7 +119769,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-852-legacy-route-852-0",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119796,7 +119820,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-852-legacy-route-852-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119847,7 +119871,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-852-legacy-route-852-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119898,7 +119922,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-852-legacy-route-852-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -119949,7 +119973,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-852-legacy-route-852-4",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120000,7 +120024,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-852-node-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120051,7 +120075,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-852-node-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120102,7 +120126,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-852-legacy-route-852-5",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120153,7 +120177,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-legacy-route-873-0",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120204,7 +120228,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-legacy-route-873-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120255,7 +120279,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-legacy-route-873-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120306,7 +120330,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-node-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120357,7 +120381,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-node-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120408,7 +120432,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-node-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120459,7 +120483,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-node-5",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120510,7 +120534,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-node-4",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120561,7 +120585,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-legacy-route-873-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120612,7 +120636,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-888-legacy-route-888-0",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120663,7 +120687,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-888-legacy-route-888-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120714,7 +120738,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-888-legacy-route-888-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120765,7 +120789,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-888-node-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120816,7 +120840,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-888-legacy-route-888-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120867,7 +120891,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-legacy-route-900-0",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120918,7 +120942,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-legacy-route-900-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -120969,7 +120993,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-legacy-route-900-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121020,7 +121044,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-legacy-route-900-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121071,7 +121095,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-node-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121122,7 +121146,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-node-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121173,7 +121197,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-legacy-route-900-4",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121224,7 +121248,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-918-legacy-route-918-0",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121275,7 +121299,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-918-legacy-route-918-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121326,7 +121350,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-918-legacy-route-918-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121377,7 +121401,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-918-legacy-route-918-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121428,7 +121452,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-918-legacy-route-918-4",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121479,7 +121503,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-legacy-route-930-0",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121530,7 +121554,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-legacy-route-930-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121581,7 +121605,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-legacy-route-930-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121632,7 +121656,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-legacy-route-930-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121683,7 +121707,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-node-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121734,7 +121758,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-node-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121785,7 +121809,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-node-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121836,7 +121860,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-legacy-route-930-4",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121887,7 +121911,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-948-legacy-route-948-0",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121938,7 +121962,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-948-legacy-route-948-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -121989,7 +122013,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-948-legacy-route-948-5",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -122040,7 +122064,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-963-legacy-route-963-0",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -122091,7 +122115,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-963-legacy-route-963-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -122142,7 +122166,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-963-legacy-route-963-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -122193,7 +122217,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-963-legacy-route-963-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -122244,7 +122268,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-963-legacy-route-963-5",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -122295,7 +122319,7 @@
     "__type__": "cc.Node",
     "_name": "point-18-path-1794260517664-entry-13",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -122346,7 +122370,7 @@
     "__type__": "cc.Node",
     "_name": "point-18-path-1794260517664-node-1",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -122397,7 +122421,7 @@
     "__type__": "cc.Node",
     "_name": "point-18-path-1794260517664-node-2",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -122448,7 +122472,7 @@
     "__type__": "cc.Node",
     "_name": "point-18-path-1794260517664-node-3",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -122499,7 +122523,7 @@
     "__type__": "cc.Node",
     "_name": "point-18-path-1794260517664-node-4",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],
@@ -122550,7 +122574,7 @@
     "__type__": "cc.Node",
     "_name": "point-18-path-1794260517664-goal-13",
     "_parent": {
-      "__id__": 3345
+      "__id__": 3316
     },
     "_children": [],
     "_components": [],

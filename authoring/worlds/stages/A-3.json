@@ -1051,14 +1051,6 @@
             "id": "entry-5"
           },
           {
-            "count": 1,
-            "startSeconds": 101.5,
-            "intervalSeconds": 2,
-            "spawnId": 13,
-            "unitId": 91071,
-            "id": "entry-8"
-          },
-          {
             "count": 10,
             "startSeconds": 0,
             "intervalSeconds": 11.5,
@@ -1217,14 +1209,6 @@
             "spawnId": 7,
             "unitId": 91010,
             "id": "entry-5"
-          },
-          {
-            "count": 1,
-            "startSeconds": 104.5,
-            "intervalSeconds": 2,
-            "spawnId": 13,
-            "unitId": 91071,
-            "id": "entry-8"
           },
           {
             "count": 10,
@@ -1388,14 +1372,6 @@
             "spawnId": 1,
             "unitId": 91164,
             "id": "entry-7"
-          },
-          {
-            "count": 3,
-            "startSeconds": 10.5,
-            "intervalSeconds": 2,
-            "spawnId": 13,
-            "unitId": 91071,
-            "id": "entry-8"
           },
           {
             "count": 10,
@@ -6008,8 +5984,8 @@
     {
       "id": 7,
       "name": "Spawn 7",
-      "x": -2.225902930264283,
-      "y": -1141.3296341300954,
+      "x": -780,
+      "y": 458.94378878890416,
       "enabled": true,
       "radius": 150
     },
@@ -6028,15 +6004,6 @@
       "y": 514.8535429729559,
       "enabled": true,
       "radius": 150
-    },
-    {
-      "id": 13,
-      "name": "Spawn 10",
-      "x": 186.61581025342505,
-      "y": -1219.931023204032,
-      "radius": 150,
-      "enabled": true,
-      "graphId": "route-13"
     }
   ],
   "graphs": [
@@ -6419,11 +6386,9 @@
     },
     {
       "id": "route-13",
-      "name": "Spawn 10 · Route 1",
+      "name": "Unassigned spawns · Route 1",
       "nameFromSpawns": true,
-      "spawnIds": [
-        13
-      ],
+      "spawnIds": [],
       "entry": "entry-13",
       "nodes": [
         {
@@ -6456,7 +6421,7 @@
   "nextBuilding": 28,
   "nextSpawn": 14,
   "nextSpecial": 7,
-  "sourceRevision": "e15fcaad7d22874a004e4472d7bd586200917211cd4a6e3611737fe5cf1c6643",
+  "sourceRevision": "120b40afae18f37525a8eb94c1743d7d1fbb9faec293ed2c975c3b8eb5361164",
   "templates": {
     "Map03": [
       {
@@ -84869,12 +84834,6 @@
       "id": "spawn-group-3",
       "spawnIds": [
         7,
-        13
-      ]
-    },
-    {
-      "id": "spawn-group-4",
-      "spawnIds": [
         8,
         9
       ]

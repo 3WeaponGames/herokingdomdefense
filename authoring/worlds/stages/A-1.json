@@ -221,12 +221,13 @@
             "intervalSeconds": 0.5
           },
           {
-            "count": 7,
+            "count": 8,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5,
             "spawnId": 1,
             "unitId": 91037,
-            "id": "entry-1"
+            "id": "entry-1",
+            "unitGroupId": "unit-group-1"
           }
         ]
       },
@@ -334,6 +335,12 @@
             "unitId": 101679,
             "id": "entry-1"
           }
+        ],
+        "editorUnitOrder": [
+          "legacy-2-0",
+          "legacy-3-0",
+          "entry-1",
+          "legacy-1-0"
         ]
       },
       {
@@ -371,7 +378,7 @@
             "id": "legacy-2-0",
             "spawnId": 2,
             "unitId": 100245,
-            "count": 4,
+            "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
           },
@@ -379,12 +386,12 @@
             "id": "legacy-3-0",
             "spawnId": 4,
             "unitId": 101656,
-            "count": 3,
+            "count": 4,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
           },
           {
-            "count": 3,
+            "count": 4,
             "startSeconds": 2.5,
             "intervalSeconds": 0.5,
             "spawnId": 5,
@@ -449,7 +456,7 @@
             "id": "entry-1"
           },
           {
-            "count": 3,
+            "count": 4,
             "startSeconds": 2.5,
             "intervalSeconds": 0.5,
             "spawnId": 6,
@@ -639,7 +646,7 @@
             "id": "legacy-2-0",
             "spawnId": 2,
             "unitId": 91037,
-            "count": 15,
+            "count": 10,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
           },
@@ -4078,7 +4085,7 @@
   "nextBuilding": 23,
   "nextSpawn": 10,
   "nextSpecial": 7,
-  "sourceRevision": "3312af59144593552a2d1ebf4ade51b94adad3d364427890044b255e51546254",
+  "sourceRevision": "ca5f32bc0e7a20b9f882374d6eca7f093c8a8fb91dc4285bbbfd515c8560709b",
   "templates": {
     "Map01": [
       {

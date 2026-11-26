@@ -833,76 +833,112 @@
         ],
         "SpawnTimeline": [
           {
-            "id": "legacy-1-0",
+            "count": 1,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
             "spawnId": 1,
-            "unitId": 101729,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91091,
+            "id": "entry-1"
+          },
+          {
             "count": 1,
             "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91093,
+            "id": "entry-2"
           },
           {
-            "id": "legacy-2-0",
-            "spawnId": 2,
-            "unitId": 91167,
-            "count": 9,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-3-0",
-            "spawnId": 3,
-            "unitId": 100512,
-            "count": 2,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
-          },
-          {
-            "id": "legacy-4-0",
-            "spawnId": 4,
-            "unitId": 101731,
             "count": 1,
             "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91135,
+            "id": "entry-3"
           },
           {
-            "id": "legacy-5-0",
-            "spawnId": 5,
+            "count": 1,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
             "unitId": 91166,
-            "count": 4,
-            "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "id": "entry-4"
           },
           {
-            "id": "legacy-6-0",
-            "spawnId": 6,
-            "unitId": 100518,
-            "count": 3,
+            "count": 1,
             "startSeconds": 0.5,
-            "intervalSeconds": 0.5
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91168,
+            "id": "entry-5"
           },
           {
-            "id": "legacy-10-1",
-            "spawnId": 10,
+            "count": 1,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
             "unitId": 91167,
-            "count": 5,
-            "startSeconds": 8,
-            "intervalSeconds": 0.5
+            "id": "entry-6"
           },
           {
-            "id": "legacy-11-1",
-            "spawnId": 11,
-            "unitId": 100522,
-            "count": 3,
-            "startSeconds": 8,
-            "intervalSeconds": 0.5
+            "count": 1,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91092,
+            "id": "entry-7"
           },
           {
-            "id": "legacy-12-1",
-            "spawnId": 12,
-            "unitId": 100512,
-            "count": 3,
-            "startSeconds": 8,
-            "intervalSeconds": 0.5
+            "count": 1,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91165,
+            "id": "entry-8"
+          },
+          {
+            "count": 1,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "spawnId": 1,
+            "inheritSpawnTiming": [
+              "startSeconds",
+              "intervalSeconds"
+            ],
+            "unitId": 91169,
+            "id": "entry-9"
           }
         ]
       }
@@ -7149,13 +7185,13 @@
     }
   ],
   "hero": {
-    "x": -82.30925737538146,
-    "y": 193.0349999999999
+    "x": -76.65789492670659,
+    "y": 68.70502612915257
   },
   "nextBuilding": 31,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "04ba43c66bdd2b7019d600876b7e2315b71878303ad36e449685924228a7d966",
+  "sourceRevision": "ed7cafaea0d949c4980e63be90d2243d3755ae375582cc518555655824717dc7",
   "templates": {
     "Map07": [
       {
@@ -165317,5 +165353,9 @@
         12
       ]
     }
-  ]
+  ],
+  "tasksPosition": {
+    "x": 226.05449794699516,
+    "y": 288.2194848824188
+  }
 }
