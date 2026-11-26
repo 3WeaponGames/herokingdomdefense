@@ -300,7 +300,7 @@ test('Native F7 releases correctly and a release build cannot open the panel', (
   release.service._keyDown({ key: 'F7' });
   assert.equal(toggles, 2);
 });
-test('F5 opens in the lobby while F6 requires an active battle, and neither changes the F8 preference', () => {
+test('F4 opens in the lobby while F6 requires an active battle, and neither changes the F8 preference', () => {
   let waves = 0, rewards = 0, closed = 0;
   const wave = { toggle(target) {
     waves++;
@@ -315,7 +315,9 @@ test('F5 opens in the lobby while F6 requires an active battle, and neither chan
   const env = environment({ preview: true, wave, rewards: reward });
   env.service.init();
   down(env, 'F6'); up(env, 'F6');
-  down(env, 'F5'); down(env, 'F5', { repeat: true }); up(env, 'F5');
+  down(env, 'F5'); up(env, 'F5');
+  assert.equal(rewards, 0);
+  down(env, 'F4'); down(env, 'F4', { repeat: true }); up(env, 'F4');
   assert.equal(rewards, 1);
   assert.equal(waves, 0);
   down(env, 'Escape'); up(env, 'Escape');
@@ -327,8 +329,43 @@ test('F5 opens in the lobby while F6 requires an active battle, and neither chan
   assert.equal(closed, 2);
   assert.equal(env.calls.writes, 0);
   const release = environment({ wave, rewards: reward });
-  release.service._keyDown({ keyCode: 116 }); release.service._keyDown({ keyCode: 117 });
+  release.service._keyDown({ keyCode: 115 }); release.service._keyDown({ keyCode: 117 });
   assert.equal(rewards, 1);
   assert.equal(waves, 1);
+});
+test('native F4 uses key code 115 and leaves the Simulator reload key alone', () => {
+  let toggles = 0;
+  const native = environment({ debug: true, web: false, rewards: { toggle() { toggles++; return true; } } });
+  native.service.init();
+  native.system.emit('down', { keyCode: 116 });
+  assert.equal(toggles, 0);
+  native.system.emit('down', { keyCode: 115 });
+  native.system.emit('down', { keyCode: 115 });
+  assert.equal(toggles, 1);
+  native.nativeListeners[0].onKeyReleased(115);
+  native.system.emit('down', { keyCode: 115 });
+  assert.equal(toggles, 2);
+});
+test('the lobby reward button is available only in the ready lobby with Test Mode enabled', () => {
+  let opened = 0;
+  const rewards = { toggle() { opened++; return true; } };
+  const { service } = environment({ preview: true, rewards });
+  assert.equal(service.showLobbyRewardTesting(), false);
+  service.setStartupActive(true);
+  service.setEnabled(true);
+  assert.equal(service.showLobbyRewardTesting(), false);
+  assert.equal(service.toggleRewardTesting(), false);
+  service.setStartupActive(false);
+  assert.equal(service.showLobbyRewardTesting(), true);
+  assert.equal(service.toggleRewardTesting(), true);
+  assert.equal(opened, 1);
+  const battle = { node: { active: true } };
+  service.setGameplayTarget(battle);
+  assert.equal(service.showLobbyRewardTesting(), false);
+  service.removeGameplayTarget(battle);
+  assert.equal(service.showLobbyRewardTesting(), true);
+  service.setEnabled(false);
+  assert.equal(service.showLobbyRewardTesting(), false);
+  assert.equal(environment({ rewards }).service.showLobbyRewardTesting(), false);
 });
 console.log(passed + ' TestMode checks passed; no SDK calls, rewards, or files written.');

@@ -12,6 +12,8 @@ Current artwork coverage and localization validity do not prove preservation aga
 
 For runtime validation, open the project in Cocos Creator 2.4.13 and preview at 375 × 667 and a wider phone viewport. Check home, sign-in, Battle Pass and playtime claims, English/Chinese switching, battle entry, movement, pause/resume, victory, defeat and revive. Use isolated test saves for failure injection. Keep F8 development rewards disabled when checking normal ads; release builds must never enable them.
 
+Press F4 to open Reward Testing in a development preview. The Windows Simulator reserves F5 to relaunch the preview.
+
 Check Browser and native Simulator separately. Battle rendering uses authored depth order and a foreground HP-bar layer. Walk units behind scenery, buildings, and gates, then bring them back in front. Check that their HP bars remain visible while they are alive, follow movement, and leave the layer when units are removed or the stage closes. Verify both Continue with a copied existing save and entry into a fresh stage. Keep previews muted before boot, isolate storage, and close temporary verification sessions.
 
 After clearing stage 1, follow the Equipment tutorial from the lobby tab through upgrading and the next tutorial steps. Frames must keep advancing and tabs must remain responsive without exceptions. Creator destroys child nodes before a component's `onDestroy`: lobby teardown must detach input/event subscriptions without traversing released chest-popup children. `chest-preview-regressions.test.cjs` covers this ordering.

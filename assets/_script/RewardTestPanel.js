@@ -112,7 +112,7 @@ exports.toggle = function (mode) {
   }
 
   label(panel, "Title", "Reward Testing", 24, 17, 500, 50, 36, colors.text, true).enableBold = true;
-  label(panel, "Shortcut", "F5", 550, 20, 56, 46, 23, colors.muted);
+  label(panel, "Shortcut", "F4", 550, 20, 56, 46, 23, colors.muted);
   button(panel, "Close", "×", 626, 20, 54, 46, close);
   var profile = label(panel, "Profile", "", 24, 72, 656, 33, 22, colors.muted, true);
   var calendar = label(panel, "Day", "", 24, 116, 656, 42, 25, colors.text, true);

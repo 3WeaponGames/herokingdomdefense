@@ -1,5 +1,7 @@
 "use strict";
 var Core = require("LobbyLayoutCore"), Config = require("KinghtFallConfig"), Language = require("LanguageMgr");
+var TestMode = require("TestMode").TestMode;
+var REWARD_TEST_WIDTH = 244, REWARD_TEST_HEIGHT = 64;
 function disable(node, Type) { var component = node && node.getComponent(Type); if (component) component.enabled = false; }
 function graphics(node) {
   if (node.getComponent(cc.Sprite)) {
@@ -135,6 +137,10 @@ function layout(home) {
   var bounds = { left: a.x, right: b.x, bottom: a.y, top: b.y, footer: a.y + 120 };
   var manager = require("UIMgr").UIMgr.getInstance(), ui = manager.getUIById(Config.KinghtFallUIID.UIHome), footer = ui && ui.node.getChildByName("ndBottom");
   if (footer) bounds.footer = Math.max(bounds.footer, home.node.convertToNodeSpaceAR(footer.convertToWorldSpaceAR(cc.v2(0, footer.height * (1 - footer.anchorY)))).y);
+  var rewardTesting = layoutRewardTestButton(home, state);
+  var buttonScale = Math.max(.01, Math.min(1, (bounds.right - bounds.left) / 750));
+  var buttonInset = rewardTesting ? (REWARD_TEST_HEIGHT + 16) * buttonScale : 0;
+  bounds.top -= buttonInset;
   var points = logicalWidth(), geometry = Core.measure(bounds, points);
   var fonts = state.items.map(function (item) { var text = item.getChildByName("labName").getComponent(cc.Label); return [text.string, text.font && text.font.uuid, text.fontFamily, text.useSystemFont, text.fontSize]; });
   var stageIcon = state.stagePreview.getChildByName("sprIcon"), stageOrder = home.ndLevelInfo.getChildByName("labOrder");
@@ -142,6 +148,11 @@ function layout(home) {
   if (signature !== state.signature) {
     var oldCell = state.geometry && state.geometry.cell, oldOffset = oldCell ? scrollOffset(state.scroll) / oldCell : 0;
     state.signature = signature; state.geometry = geometry;
+    if (rewardTesting) {
+      state.rewardTestButton.setScale(buttonScale);
+      state.rewardTestButton.setPosition(bounds.right - (24 + REWARD_TEST_WIDTH / 2) * buttonScale,
+        geometry.barY + (geometry.barHeight + buttonInset) / 2);
+    }
     state.bar.setPosition(geometry.center, geometry.barY); state.bar.setContentSize(geometry.barWidth, geometry.barHeight);
     var background = graphics(state.bar); background.clear(); background.fillColor = new cc.Color(19, 61, 159, 155); background.roundRect(-geometry.barWidth / 2, -geometry.barHeight / 2, geometry.barWidth, geometry.barHeight, 22); background.fill();
     state.view.setContentSize(geometry.viewport, geometry.barHeight); state.content.setContentSize(geometry.cell * 5, geometry.barHeight); state.content.setPosition(-geometry.viewport / 2, 0);
@@ -178,6 +189,19 @@ function layout(home) {
     state.defenseCaption.setPosition(geometry.buttonLeft, geometry.buttonY - 73 * geometry.buttonScale - 21);
   }
   refresh(home);
+}
+function layoutRewardTestButton(home, state) {
+  var mode = TestMode.getInstance(), visible = mode.showLobbyRewardTesting();
+  if (visible && !state.rewardTestButton) {
+    var button = require("UnitTestPanel").controls.button(home.node, "RewardTestingButton", "", 0, 0,
+      REWARD_TEST_WIDTH, REWARD_TEST_HEIGHT, function () {
+        if (home.node.activeInHierarchy && mode.showLobbyRewardTesting()) mode.toggleRewardTesting();
+      }, true);
+    Language.LanguageMgr.getInstance().bindLabel(button.caption, "lobby.rewardTesting");
+    state.rewardTestButton = button.caption.node.parent;
+  }
+  if (state.rewardTestButton) state.rewardTestButton.active = visible;
+  return visible;
 }
 function layoutStage(home, bounds, points, geometry) {
   var state = home._lobby, stage = home.ndLevelInfo, ribbon = stage.getChildByName("wg_zy_pd"), title = stage.getChildByName("labName");

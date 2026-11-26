@@ -10,7 +10,7 @@ function TestMode() {
   this._initialized = false;
   this._enabled = false;
   this._startupActive = false;
-  this._f5Down = false;
+  this._f4Down = false;
   this._f6Down = false;
   this._f7Down = false;
   this._f8Down = false;
@@ -58,6 +58,16 @@ TestMode.prototype.isEnabled = function () {
 
 TestMode.prototype.shouldBypassAdLimits = function () { return this.isEnabled(); };
 
+TestMode.prototype.showLobbyRewardTesting = function () {
+  return !this._startupActive && this.isEnabled() && !this._hasGameplayTarget();
+};
+
+TestMode.prototype.toggleRewardTesting = function () {
+  if (!this.isAvailable() || this._startupActive || !require("RewardTestPanel").toggle(this)) return false;
+  this.clearGameplayInput(true);
+  return true;
+};
+
 TestMode.prototype.setEnabled = function (enabled) {
   this.init();
   if (!this.isAvailable()) return false;
@@ -77,8 +87,9 @@ TestMode.prototype.setStartupActive = function (active) {
   this._refreshBadge();
 };
 
-TestMode.prototype._isF5 = function (event) {
-  return !!event && (event.code === "F5" || event.key === "F5" || event.keyCode === 116);
+TestMode.prototype._isF4 = function (event) {
+  // On Windows the Cocos Simulator handles F5 itself to relaunch the preview.
+  return !!event && (event.code === "F4" || event.key === "F4" || event.keyCode === 115);
 };
 
 TestMode.prototype._isF6 = function (event) {
@@ -118,15 +129,12 @@ TestMode.prototype._isEditing = function (event) {
 
 TestMode.prototype._keyDown = function (event) {
   if (!event || !this.isAvailable()) return;
-  if (this._isF5(event)) {
-    if (this._f5Down) return;
-    this._f5Down = true;
+  if (this._isF4(event)) {
+    if (this._f4Down) return;
+    this._f4Down = true;
     if (event.repeat || event.isComposing || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey ||
         this._startupActive || !this._rewardTestPanel && this._isEditing(event)) return;
-    if (require("RewardTestPanel").toggle(this)) {
-      if (event.preventDefault) event.preventDefault();
-      this.clearGameplayInput(true);
-    }
+    if (this.toggleRewardTesting() && event.preventDefault) event.preventDefault();
     return;
   }
   var wave = this._isF6(event);
@@ -174,7 +182,7 @@ TestMode.prototype._keyDown = function (event) {
 };
 
 TestMode.prototype._keyUp = function (event) {
-  if (this._isF5(event)) this._f5Down = false;
+  if (this._isF4(event)) this._f4Down = false;
   if (this._isF6(event)) this._f6Down = false;
   if (this._isF7(event)) this._f7Down = false;
   if (this._isF8(event)) this._f8Down = false;
@@ -182,7 +190,7 @@ TestMode.prototype._keyUp = function (event) {
   if (key) { delete this._held[key]; delete this._movement[key]; }
 };
 
-TestMode.prototype._releaseKey = function () { this._f5Down = this._f6Down = this._f7Down = this._f8Down = false; this.clearGameplayInput(); };
+TestMode.prototype._releaseKey = function () { this._f4Down = this._f6Down = this._f7Down = this._f8Down = false; this.clearGameplayInput(); };
 
 TestMode.prototype._gameplayKey = function (event) {
   if (!event) return null;

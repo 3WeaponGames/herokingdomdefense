@@ -6,6 +6,8 @@ The preference is stored locally under `project-cocos.test-mode` for browser pre
 
 Holding F8 toggles only once per press. F8 is ignored while an HTML input, textarea, select, content-editable field, or Cocos EditBox is focused, and while modifier keys are held. Leaving Defend the Wall does not remove the hotkey.
 
+With Test Mode on, the **Reward Testing** button appears below the resource bar on the Battle lobby screen. **F4** opens the same panel in a development preview.
+
 While test mode is on and a main campaign battle is active:
 
 | Key | Action |
