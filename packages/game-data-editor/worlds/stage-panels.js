@@ -21,7 +21,7 @@ function create(c){
  const {state,el,button,field,select,note,section,edit,render,draw}=c;
  const waveOverview=WaveOverview.create(el);
  const stage=()=>c.stageLayout?c.stageLayout():state.snap.value,catalog=()=>state.catalog,unitRows=()=>StageProfiles.rows(stage().config,catalog().units),summary=wave=>Waves.summary(wave,catalog().interval),wave=()=>stage().config.WaveCfg[state.wave],stageCards=StageCards.create(c);
- let waveModels,modelCatalog,waveView,validation;
+ let waveModels,modelCatalog,waveView,validation,draftActions;
  function destroy(){
   if(waveModels)waveModels.destroy();
   waveModels=modelCatalog=null;
@@ -30,25 +30,31 @@ function create(c){
   CardDrag.bind(list,rows,{stage,items,edit,cancelDrag:c.cancelDrag,...options,
    busy:()=>!!(state.closed||state.loading||state.snap.busy||options.busy?.())});
  }
+ const reorder=collection=>c.editStageCards&&(edit=>c.editStageCards({type:'order',collection,...edit}));
  state.stageSearch='';state.waveSpawnFilter='all';state.showFirstUpgradeCards=false;
  const expanded=state.stageDetails||(state.stageDetails=Object.create(null));
  // Tokens are editor-only: wave rows deliberately retain their authored format.
  // A queued handler may compose our own edits, but never follow a shifted row.
  const waveTargets=new Map();
  function rememberWave(target,fingerprint){target.known.add(fingerprint);while(target.known.size>8)target.known.delete(target.known.values().next().value);}
- function waveTarget(index){const stageId=stage().id,key=stageId+'\u0000'+index,row=stage().config.WaveCfg&&stage().config.WaveCfg[index],fingerprint=JSON.stringify(row);let target=waveTargets.get(key);if(!target||!target.known.has(fingerprint)){target={key,stageId,index,latest:fingerprint,known:new Set([fingerprint]),pending:0};waveTargets.set(key,target);}else if(!target.pending)target.latest=fingerprint;return target;}
+ function waveFingerprint(wave){
+  if(!wave||!Object.prototype.hasOwnProperty.call(wave,'editorUnitOrder'))return JSON.stringify(wave);
+  const {editorUnitOrder,...config}=wave;
+  return JSON.stringify(config);
+ }
+ function waveTarget(index){const stageId=stage().id,key=stageId+'\u0000'+index,row=stage().config.WaveCfg&&stage().config.WaveCfg[index],fingerprint=waveFingerprint(row);let target=waveTargets.get(key);if(!target||!target.known.has(fingerprint)){target={key,stageId,index,latest:fingerprint,known:new Set([fingerprint]),pending:0};waveTargets.set(key,target);}else if(!target.pending)target.latest=fingerprint;return target;}
  function invalidateWaves(stageId,start){for(const [key,target]of waveTargets)if(target.stageId===stageId&&target.index>=start)waveTargets.delete(key);}
  function waveEdit(target,mutate,strict,numberEdit=false){
   target.pending++;
-  const settle=()=>{target.pending--;if(!target.pending&&stage().id===target.stageId&&waveTargets.get(target.key)===target){target.latest=JSON.stringify(stage().config.WaveCfg&&stage().config.WaveCfg[target.index]);rememberWave(target,target.latest);}};
+  const settle=()=>{target.pending--;if(!target.pending&&stage().id===target.stageId&&waveTargets.get(target.key)===target){target.latest=waveFingerprint(stage().config.WaveCfg&&stage().config.WaveCfg[target.index]);rememberWave(target,target.latest);}};
   const change=s=>{
    const list=s.config&&s.config.WaveCfg,row=Array.isArray(list)&&list[target.index];
-   if(s.id!==target.stageId||waveTargets.get(target.key)!==target||JSON.stringify(row)!==target.latest){
+   if(s.id!==target.stageId||waveTargets.get(target.key)!==target||waveFingerprint(row)!==target.latest){
     throw Error('This wave changed or moved while the edit was waiting. Select the latest wave and try again.');
    }
    mutate(s,target.index,row);
    if(waveTargets.get(target.key)===target){
-    target.latest=JSON.stringify(s.config.WaveCfg[target.index]);rememberWave(target,target.latest);
+    target.latest=waveFingerprint(s.config.WaveCfg[target.index]);rememberWave(target,target.latest);
    }
   };
   try{
@@ -75,6 +81,12 @@ function create(c){
  function rowForCurrent(){return (catalog().stages||[]).find(row=>row.id===stage().id)||stage();}
  function currentName(){const name=stage().config.Name;return typeof name==='string'&&!/^\[\[loc:/.test(name)?name:state.snap.stageName||rowForCurrent().name;}
  function stageButton(parent,row){const b=button(parent,'',()=>{c.cancelDrag();return c.load('stage:'+row.id);},row.id===stage().id);b.className+=' world-stage-card';b.dataset.stageId=row.id;b.setAttribute('aria-current',String(row.id===stage().id));b.appendChild(el('strong',title(row)));b.appendChild(el('small',(row.waves||0)+' waves · '+((catalog().maps.find(m=>m.id===row.mapId)||{}).name||row.mapId)+(row.dirty?' · Draft':'')));return b;}
+ function refreshDraftActions(){
+  const {undo,redo,discard,save}=draftActions;
+  undo.disabled=!state.snap.canUndo;redo.disabled=!state.snap.canRedo;
+  discard.disabled=save.disabled=!state.snap.dirty;
+  if(state.snap.dirty)save.classList.add('active');else save.classList.remove('active');
+ }
  function top(){
   const parent=c.top;parent.textContent='';const main=el('div',undefined,'world-stage-primary'),label=el('label',undefined,'world-stage-picker');label.appendChild(el('span','Stage'));const picker=select(label,stage().id,catalog().stages.map(row=>({value:row.id,label:title(row)})),id=>c.load('stage:'+id));picker.setAttribute('aria-label','Stage');main.appendChild(label);
   if(state.tab==='Waves'){
@@ -85,7 +97,13 @@ function create(c){
   parent.appendChild(main);
   const actions=el('div',undefined,'world-stage-header-actions');parent.appendChild(actions);button(actions,'Fit map',c.fit);button(actions,state.previewBusy?'Preparing preview…':'Preview draft',c.startPreview).disabled=!!state.previewBusy;if(state.previewOpen)button(actions,'Close preview',c.closePreview);
   const replace=button(actions,'Replace stage',c.replaceStage);replace.disabled=!catalog().stages.some(row=>row.id!==stage().id);replace.title='Choose a source stage and the sections to replace in this draft. Undo restores it; Save applies it.';
-  actions.appendChild(el('span',undefined,'world-spacer'));const undo=button(actions,'Undo',()=>c.action('undo'));undo.disabled=!state.snap.canUndo;undo.title='Undo (Ctrl+Z)';const redo=button(actions,'Redo',()=>c.action('redo'));redo.disabled=!state.snap.canRedo;redo.title='Redo (Ctrl+Shift+Z)';button(actions,'Refresh',c.refresh);button(actions,'Discard',c.discard).disabled=!state.snap.dirty;const save=button(actions,'Save',c.save,state.snap.dirty);save.dataset.action='save';save.disabled=!state.snap.dirty;save.onmousedown=event=>{if(event.button===0)event.preventDefault();};
+  actions.appendChild(el('span',undefined,'world-spacer'));
+  const undo=button(actions,'Undo',()=>c.action('undo')),redo=button(actions,'Redo',()=>c.action('redo'));
+  undo.title='Undo (Ctrl+Z)';redo.title='Redo (Ctrl+Shift+Z)';
+  button(actions,'Refresh',c.refresh);
+  const discard=button(actions,'Discard',c.discard),save=button(actions,'Save',c.save);
+  save.dataset.action='save';save.onmousedown=event=>{if(event.button===0)event.preventDefault();};
+  draftActions={undo,redo,discard,save};refreshDraftActions();
  }
  function tabs(){
   for(const name of ['Stage','Buildings','Spawns','Paths','Waves']){const tab=button(c.tabs,name,()=>{c.cancelDrag();state.tab=name;state.tool='select';state.selection=[];state.connect=null;render();},state.tab===name);tab.setAttribute('aria-pressed',String(state.tab===name));}
@@ -116,7 +134,7 @@ function create(c){
    section(parent,'Stages');const search=el('input');search.type='search';search.placeholder='Find a stage…';search.setAttribute('aria-label','Find a stage');search.value=state.stageSearch;parent.appendChild(search);const rows=el('div',undefined,'world-stage-list');parent.appendChild(rows);for(const row of catalog().stages)stageButton(rows,row);const filter=()=>{state.stageSearch=search.value;for(const row of rows.children)row.hidden=!row.textContent.toLowerCase().includes(search.value.toLowerCase());};search.oninput=filter;filter();return;
   }
   if(state.tab==='Buildings'){
-   section(parent,'Placed buildings');note(parent,'Drag cards to rearrange them.');const rows=el('div',undefined,'world-building-list'),cards=[];parent.appendChild(rows);for(const b of CardOrder.ordered(stage().buildings)){const item=button(rows,b.name+(b.enabled===false?' · Disabled':''),()=>{c.cancelDrag();state.tool='select';state.selection=['building:'+b.id];render();},state.selection.includes('building:'+b.id));item.dataset.buildingId=b.id;item.setAttribute('aria-current',String(state.selection[0]==='building:'+b.id));item.setAttribute('aria-pressed',String(state.selection.includes('building:'+b.id)));cards.push({id:b.id,node:item});}draggable(rows,cards,s=>s.buildings,{commit:c.reorderStageCards&&(edit=>c.reorderStageCards("buildings",edit))});
+   section(parent,'Placed buildings');note(parent,'Drag cards to rearrange them.');const rows=el('div',undefined,'world-building-list'),cards=[];parent.appendChild(rows);for(const b of CardOrder.ordered(stage().buildings)){const item=button(rows,b.name+(b.enabled===false?' · Disabled':''),()=>{c.cancelDrag();state.tool='select';state.selection=['building:'+b.id];render();},state.selection.includes('building:'+b.id));item.dataset.buildingId=b.id;item.setAttribute('aria-current',String(state.selection[0]==='building:'+b.id));item.setAttribute('aria-pressed',String(state.selection.includes('building:'+b.id)));cards.push({id:b.id,node:item});}draggable(rows,cards,s=>s.buildings,{commit:reorder('buildings')});
    const offers=stage().specials||[];
    if(offers.length){
     section(parent,'Recruit and merchant offers');
@@ -130,7 +148,7 @@ function create(c){
      item.setAttribute('aria-pressed',String(state.selection.includes('special:'+offer.id)));
      offerCards.push({id:offer.id,node:item});
     }
-    draggable(list,offerCards,s=>s.specials||[],{commit:c.reorderStageCards&&(edit=>c.reorderStageCards("specials",edit))});
+    draggable(list,offerCards,s=>s.specials||[],{commit:reorder('specials')});
    }
    section(parent,'Add a building');note(parent,'Choose a type, then click the map to place it.');c.buildingPalette(parent);return;
   }
@@ -154,7 +172,7 @@ function create(c){
     b.dataset.graphId=graph.id;b.setAttribute('aria-current',String(state.graph===graph.id));
     b.appendChild(el('strong',pathTitle(stage(),graph)));b.appendChild(el('small',pathSubtitle(stage(),graph)));cards.push({id:graph.id,node:b});
    }
-   draggable(rows,cards,s=>s.graphs,{commit:c.reorderStageCards&&(edit=>c.reorderStageCards("graphs",edit))});
+   draggable(rows,cards,s=>s.graphs,{commit:reorder('graphs')});
    button(parent,'New path',()=>{c.cancelDrag();return c.newPath();});return;
   }
   section(parent,'Spawn points');SpawnGroupsPanel.sidebar(parent,c,stage());
@@ -739,9 +757,14 @@ function create(c){
   const summaryText=total=>total.units+' units · '+groups.length+(groups.length===1?' group':' groups')+' · last spawn at '+Number(total.duration.toFixed(2))+' s';
   const waveSummary=el('p',summaryText(total),'world-note');parent.appendChild(waveSummary);
   const refreshRows=new Map();
-  let displayedWave=w;
-  waveView={index,stageId:target.stageId,update(next){
+  let displayedWave=w,moveCards;
+  function updateCardOrder(next){
+   const previous=displayedWave.editorUnitOrder,order=next.editorUnitOrder;
+   if(previous!==order&&(!Array.isArray(previous)||!Array.isArray(order)||previous.length!==order.length||!previous.every((id,i)=>id===order[i])))moveCards?.(next);
    displayedWave=next;
+  }
+  waveView={index,stageId:target.stageId,updateCardOrder,update(next){
+   updateCardOrder(next);
    const schedule=summary(next);waveSummary.textContent=summaryText(schedule);
    for(const row of Waves.entries(next,interval))refreshRows.get(row.id)?.refresh(row);
   }};
@@ -783,16 +806,30 @@ function create(c){
    const cards=shown.map(item=>waveUnitCard(list,w,target,item,units,sortable,timingSection,refreshRows));
    updateTimingButton();
    if(sortable){
+    const visibleIds=current=>Waves.unitGroups(Waves.entries(current,interval),current.editorUnitOrder)
+     .filter(group=>Waves.visibleRows(group,filter).length).map(group=>group[0].id);
+    const byId=new Map(cards.map(card=>[card.id,card]));
+    moveCards=next=>{
+     if(!isCurrentView()||list.isConnected===false)return;
+     const ordered=visibleIds(next).map(id=>byId.get(id));
+     if(ordered.length!==cards.length||ordered.some(card=>!card))return;
+     const focused=list.contains(document.activeElement)?document.activeElement:null;
+     for(const [i,{node}] of ordered.entries()){
+      if(list.children[i]!==node)list.insertBefore(node,list.children[i]);
+     }
+     cards.splice(0,cards.length,...ordered);
+     if(focused&&document.activeElement!==focused)focused.focus({preventScroll:true});
+    };
     const items=value=>{
      const current=value.config.WaveCfg[index];
-     if(current===displayedWave)return cards;
-     return Waves.unitGroups(Waves.entries(current,interval),current.editorUnitOrder)
-      .filter(group=>Waves.visibleRows(group,filter).length)
-      .map(group=>({id:group[0].id}));
+     return current===displayedWave?cards:visibleIds(current).map(id=>({id}));
     };
     draggable(list,cards,items,{
      grid:true,
      busy:()=>list.isConnected===false||!isCurrentView()||stage().config.WaveCfg?.[index]!==displayedWave,
+     commit:c.editStageCards&&(edit=>c.editStageCards({
+      type:'wave-order',waveIndex:index,waveId:displayedWave.id,waveNumber:displayedWave.Wave,spawnFilter:filter,...edit
+     })),
      edit:change=>waveEdit(target,value=>{
       if(!isCurrentView())throw Error('The wave or spawn filter changed while the cards were being moved.');
       change(value);
@@ -810,10 +847,13 @@ function create(c){
   validation.hidden=!state.snap.issues.length;
   if(state.snap.issues.length){section(validation,'Validation');state.snap.issues.slice(0,12).forEach(issue=>note(validation,issue,true));}
  }
- function refreshWave(index){
+ function refreshWave(index,orderOnly=false){
   if(state.tab!=='Waves')return;
-  if(waveView?.index===index&&waveView.stageId===stage().id&&state.wave===index)waveView.update(stage().config.WaveCfg[index]);
-  renderValidation();
+  if(waveView?.index===index&&waveView.stageId===stage().id&&state.wave===index){
+   const next=stage().config.WaveCfg[index];
+   if(orderOnly)waveView.updateCardOrder(next);else waveView.update(next);
+  }
+  if(!orderOnly)renderValidation();
  }
  function right(){
   waveView=validation=null;
@@ -825,6 +865,6 @@ function create(c){
   else if(state.tab==='Spawns')spawnInspector();else c.buildingInspector();
   renderValidation();
  }
- return {top,tabs,left,right,title,destroy,refreshWave};
+ return {top,tabs,left,right,title,destroy,refreshWave,refreshDraftActions,renderValidation};
 }
 module.exports={create,STAGE_SECTIONS,pathTitle,pathSubtitle,spawnRanges};

@@ -179,14 +179,23 @@ function summary(wave,interval){
 }
 function waves(stage){if(!stage||!stage.config||!Array.isArray(stage.config.WaveCfg)||!stage.config.WaveCfg.length)throw Error('A stage needs at least one wave.');return stage.config.WaveCfg;}
 function waveAt(stage,index){const list=waves(stage);if(!Number.isInteger(index)||index<0||index>=list.length)throw Error('Select an existing wave.');return list[index];}
-function moveGroup(stage,index,sourceId,targetId,after,interval,spawnFilter='all'){
- const wave=waveAt(stage,index),groups=unitGroups(entries(wave,interval),wave.editorUnitOrder);
+function movedGroupOrder(wave,{sourceId,targetId,after,spawnFilter='all',before},interval,strict=true){
+ const groups=unitGroups(entries(wave,interval),wave.editorUnitOrder);
  const visible=groups.filter(group=>visibleRows(group,spawnFilter).length).map(group=>({id:group[0].id}));
- if(!CardOrder.move(visible,sourceId,targetId,after))return false;
+ if(before&&(before.length!==visible.length||!visible.every(({id},index)=>id===before[index]))){
+  if(strict)throw Error('The wave cards changed while you were dragging. Review their latest order and try again.');
+  return null;
+ }
+ if(!CardOrder.move(visible,sourceId,targetId,after))return null;
  const moved=CardOrder.ordered(visible),visibleIds=new Set(visible.map(card=>card.id));
  // Keep filtered-out cards in their slots and keep scheduling arrays in runtime order.
  let at=0;
- wave.editorUnitOrder=groups.map(([first])=>visibleIds.has(first.id)?moved[at++].id:first.id);
+ return groups.map(([first])=>visibleIds.has(first.id)?moved[at++].id:first.id);
+}
+function moveGroup(stage,index,sourceId,targetId,after,interval,spawnFilter='all'){
+ const wave=waveAt(stage,index),order=movedGroupOrder(wave,{sourceId,targetId,after,spawnFilter},interval);
+ if(!order)return false;
+ wave.editorUnitOrder=order;
  return true;
 }
 function validTiming(entry){
@@ -405,4 +414,4 @@ function copyWaveFrom(stage,sourceIndex,destinationIndex,{groups=true,paths=true
  return true;
 }
 function removeWave(stage,index){waveAt(stage,index);const list=waves(stage);if(list.length===1)throw Error('Keep at least one wave in the stage.');const remaining=list.filter((wave,at)=>at!==index);if(remaining.some(wave=>!wave||typeof wave!=='object'||Array.isArray(wave)))throw Error('Repair the other malformed wave rows before removing this wave.');list.splice(index,1);list.forEach((wave,index)=>{wave.Wave=index+1;});return Math.min(index,list.length-1);}
-module.exports={MIN_SPAWN_INTERVAL,schedule,entries,summary,unitGroups,visibleRows,availableSpawns,spawnTiming,inheritsTiming,usesSpawnDefaults,isTimingManual,setTimingMode,followingBosses,alignBossStarts,applyBalancedTiming,setSpawnTiming,applySpawnDefaults,refreshSpawnTiming,preserveTimingOverrides,reconcileLegacyTimingLocks,addGroup,addSpawn,editGroup,moveGroup,removeGroup,chooseGroups,addWave,duplicateWave,copyWaveFrom,removeWave};
+module.exports={MIN_SPAWN_INTERVAL,schedule,entries,summary,unitGroups,visibleRows,availableSpawns,spawnTiming,inheritsTiming,usesSpawnDefaults,isTimingManual,setTimingMode,followingBosses,alignBossStarts,applyBalancedTiming,setSpawnTiming,applySpawnDefaults,refreshSpawnTiming,preserveTimingOverrides,reconcileLegacyTimingLocks,addGroup,addSpawn,editGroup,movedGroupOrder,moveGroup,removeGroup,chooseGroups,addWave,duplicateWave,copyWaveFrom,removeWave};

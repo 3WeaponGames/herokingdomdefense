@@ -7,12 +7,21 @@ function change(c,stage,mutate){
   mutate(draft);
  });
 }
+function transfer(c,stage,spawnId,fromGroupId,toGroupId){
+ if(c.editStageCards)return c.editStageCards({type:'spawn-group',stageId:stage.id,spawnId,fromGroupId,toGroupId});
+ return change(c,stage,draft=>{
+  if((Groups.list(draft).find(group=>group.spawnIds.includes(spawnId))?.id||'')!==fromGroupId){
+   throw Error('This spawn group changed while you were dragging. Try again.');
+  }
+  Groups.assign(draft,spawnId,toGroupId);
+ });
+}
 
 function assignment(parent,c,stage,spawn){
  const groups=Groups.list(stage);
  const assigned=groups.find(group=>group.spawnIds.includes(spawn.id));
  const choices=[{value:'',label:'Ungrouped'},...groups.map((group,index)=>({value:group.id,label:Groups.label(group,index)}))];
- const input=c.field(parent,'Spawn group',assigned?.id||'',value=>change(c,stage,draft=>Groups.assign(draft,spawn.id,value)),choices);
+ const input=c.field(parent,'Spawn group',assigned?.id||'',value=>transfer(c,stage,spawn.id,assigned?.id||'',value),choices);
  input.disabled=groups.length===0;
 }
 
@@ -24,7 +33,7 @@ function sidebar(parent,c,stage){
  let drag=null,highlight=null;
  function clearHighlight(){if(highlight)highlight.classList.remove('world-spawn-group-drop');highlight=null;}
  function end(){drag=null;clearHighlight();}
- const current=()=>state.tab==='Spawns'&&!state.closed&&!state.loading&&!state.snap.busy&&state.snap.value===stage;
+ const current=()=>state.tab==='Spawns'&&!state.closed&&!state.loading&&!state.snap.busy&&(c.stageLayout?.()||state.snap.value).id===stage.id;
 
  for(const {id,title,spawns} of lists){
   const list=el('div',undefined,'world-spawn-list');
@@ -43,11 +52,8 @@ function sidebar(parent,c,stage){
    list.ondrop=event=>{
     if(!accepts())return;
     event.preventDefault();event.stopPropagation();
-    const {spawnId,revision}=drag;end();
-    return change(c,stage,draft=>{
-     if(state.snap.version!==revision)throw Error('The spawn groups changed during the drag. Try again.');
-     Groups.assign(draft,spawnId,id);
-    });
+    const {spawnId,groupId}=drag;end();
+    return transfer(c,stage,spawnId,groupId,id);
    };
   }
   for(const spawn of spawns){
@@ -57,13 +63,13 @@ function sidebar(parent,c,stage){
    },selected);
    item.setAttribute('aria-current',String(state.selection[0]==='spawn:'+spawn.id));
    item.setAttribute('aria-pressed',String(selected));
+   item.dataset.spawnId=String(spawn.id);item.draggable=groups.length>0;
    if(!groups.length)continue;
-   item.dataset.spawnId=String(spawn.id);item.draggable=true;
    item.title='Drag to another spawn group or to Ungrouped';
    item.ondragstart=event=>{
     if(item.isConnected===false||!current()){event.preventDefault();return;}
     c.cancelDrag();clearHighlight();
-    drag={spawnId:spawn.id,groupId:id,revision:state.snap.version};
+    drag={spawnId:spawn.id,groupId:id};
     if(event.dataTransfer){event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',String(spawn.id));}
     event.stopPropagation();
    };
@@ -98,9 +104,7 @@ function render(parent,c,stage){
    const members=el('div',undefined,'world-spawn-group-members');
    for(const id of group.spawnIds){
     const name=stage.spawns.find(spawn=>spawn.id===id)?.name||'Spawn '+id;
-    const remove=button(members,name+' ×',()=>change(c,stage,draft=>{
-     if(Groups.list(draft).find(item=>item.id===group.id)?.spawnIds.includes(id))Groups.assign(draft,id,null);
-    }));
+    const remove=button(members,name+' ×',()=>transfer(c,stage,id,group.id,''));
     remove.setAttribute('aria-label','Remove '+name+' from '+title);
    }
    card.appendChild(members);
@@ -112,7 +116,10 @@ function render(parent,c,stage){
     return {value:String(spawn.id),label:spawn.name+(owner<0?'':' · Move from group '+(owner+1))};
    })];
    field(card,'Add spawn','',value=>{
-    if(value!=='')return change(c,stage,draft=>Groups.assign(draft,Number(value),group.id));
+    if(value!==''){
+     const id=Number(value),owner=groups.find(item=>item.spawnIds.includes(id));
+     return transfer(c,stage,id,owner?.id||'',group.id);
+    }
    },choices).setAttribute('aria-label','Add spawn to '+title);
   }
   parent.appendChild(card);

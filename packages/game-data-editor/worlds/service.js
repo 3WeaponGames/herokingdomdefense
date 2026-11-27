@@ -201,7 +201,8 @@ class Service{
   if(typeof key!=='string'||!key.startsWith('stage:'))throw Error('Select a stage before moving placements.');
   const doc=this.doc(key);
   if(doc.data.mapId!==mapId)throw Error('The stage map changed while you were dragging.');
-  const next=StageLayoutEdit.apply(doc.data,edit,true);
+  const map=this.loadMap(mapId).data,interval=Number(this.index().documents.A.ParameterCfg?.['60018']?.Value)||.5;
+  const next=StageLayoutEdit.apply(doc.data,edit,true,{map,interval});
   if(next!==doc.data)this.recordChange(doc,next);
   return this.snapshot(key,undefined,{layoutOnly:true});
  }
