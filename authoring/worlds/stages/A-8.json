@@ -6290,7 +6290,8 @@
           "to": "p4",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 0
     },
     {
       "id": "s08-g2-hall",
@@ -6350,7 +6351,8 @@
           "to": "p4",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 2
     },
     {
       "id": "s08-g3-hall",
@@ -6410,7 +6412,8 @@
           "to": "p5",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 6
     },
     {
       "id": "s08-g4-hall",
@@ -6482,7 +6485,8 @@
           "to": "p5",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 9
     },
     {
       "id": "s08-g4-alternate",
@@ -6578,7 +6582,8 @@
           "to": "p7",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 10
     },
     {
       "id": "s08-g3-b13",
@@ -6638,7 +6643,8 @@
           "to": "p5",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 7
     },
     {
       "id": "s08-g1-b7",
@@ -6736,7 +6742,8 @@
           "to": "p8",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 1
     },
     {
       "id": "s08-g2-b6",
@@ -6820,7 +6827,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 3
     },
     {
       "id": "s08-g2-b25",
@@ -6904,7 +6912,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 4
     },
     {
       "id": "s08-g2-b30",
@@ -6988,7 +6997,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 5
     },
     {
       "id": "s08-g3-b14",
@@ -7060,7 +7070,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 8
     }
   ],
   "hero": {

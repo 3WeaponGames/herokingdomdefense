@@ -867,5 +867,50 @@
     "trimStart": 0,
     "startOnImpact": true,
     "ground": true
+  },
+  {
+    "id": "vanguard-spear-thrust",
+    "name": "Spear Barrage Flipbook",
+    "style": "vanguard",
+    "slot": "cast",
+    "phase": "once",
+    "group": "vanguard-spear-thrust",
+    "loop": false,
+    "frames": 160,
+    "columns": 16,
+    "cell": 96,
+    "fps": 120,
+    "anchorX": 0.2604166666666667,
+    "anchorY": 0.5,
+    "aspect": 1,
+    "forwardX": 1,
+    "forwardY": 0,
+    "alphaBounds": [
+      27,
+      37,
+      76,
+      57
+    ],
+    "visibleFrames": 159,
+    "kind": "flipbook",
+    "bundle": "resources",
+    "resource": "vfx/hero-skills/vanguard-spear-thrust",
+    "uuid": "6a6f16d2-3a45-5fee-9a9a-b5c0edd457b9",
+    "sha256": "83245b460078180b984d3867e6bf269889c72adcdeba8384129ba1cdb44124ee",
+    "source": {
+      "kind": "imagegen-sheet",
+      "file": "vanguard-imagegen-source.png",
+      "sha256": "396066edbe9695f341c29e27d05c4646dc4d92ea3be62810b4daf94849205162",
+      "sourceClip": "vanguard-spear-barrage",
+      "sourceClipSha256": "2c0ba71fdd2eafbc33d33cf20825afd55384dabb2a5fb5d8c47d832966ba3fdb",
+      "contactFrames": [
+        52,
+        64,
+        68,
+        76,
+        104
+      ]
+    },
+    "trimStart": 0
   }
 ]

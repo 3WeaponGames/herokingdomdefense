@@ -83,7 +83,7 @@ def run(taunt, shield, backups):
     relative='assets/resources/vfx/hero-skills/catalog.json'; catalog=json.loads(tx.read(relative))
     new_clips={c['id']:c for c in clips}
     catalog['clips']=[new_clips.pop(c['id'], c) for c in catalog['clips']]+list(new_clips.values())
-    tx.json('tools/skills-vfx/sheet-clips.json', [c for c in catalog['clips'] if c.get('source',{}).get('kind')=='user-sheet'])
+    tx.json('tools/skills-vfx/sheet-clips.json', [c for c in catalog['clips'] if c.get('source',{}).get('kind') in ('user-sheet', 'imagegen-sheet')])
     catalog['presets']['guardian'].update(taunt='guardian-taunt-test', shield='guardian-body-shield-loop')
     tx.json(relative,catalog)
     tx.stage('assets/_script/HeroSkillVFXCatalog.js', b'"use strict";\n// Generated VFX atlas metadata; see tools/skills-vfx.\nmodule.exports = '+json.dumps(catalog,ensure_ascii=False,indent=2).encode()+b';\n')

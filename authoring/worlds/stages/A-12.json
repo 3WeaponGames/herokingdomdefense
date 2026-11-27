@@ -7853,7 +7853,8 @@
           "to": "p5",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 0
     },
     {
       "id": "s12-g2-hall",
@@ -7901,7 +7902,8 @@
           "to": "p3",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 2
     },
     {
       "id": "s12-g3-hall",
@@ -7961,7 +7963,8 @@
           "to": "p4",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 5
     },
     {
       "id": "s12-g4-hall",
@@ -8045,7 +8048,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 9
     },
     {
       "id": "s12-g3-b24",
@@ -8117,7 +8121,8 @@
           "to": "p5",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 6
     },
     {
       "id": "s12-g2-b25",
@@ -8189,7 +8194,8 @@
           "to": "p5",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 3
     },
     {
       "id": "s12-g2-b40",
@@ -8249,7 +8255,8 @@
           "to": "p4",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 4
     },
     {
       "id": "s12-g3-b29",
@@ -8329,7 +8336,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 7
     },
     {
       "id": "s12-g3-b36",
@@ -8401,7 +8409,8 @@
           "to": "p5",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 8
     },
     {
       "id": "s12-g4-b38",
@@ -8487,7 +8496,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 10
     },
     {
       "id": "s12-g1-b27",
@@ -8561,7 +8571,8 @@
           "to": "p5",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 1
     },
     {
       "id": "s12-g4-b39",
@@ -8695,7 +8706,8 @@
           "to": "p10",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 11
     },
     {
       "id": "s12-g4-b26",
@@ -8805,7 +8817,8 @@
           "to": "p8",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 12
     }
   ],
   "hero": {

@@ -82,7 +82,7 @@ def run(bake,artifacts):
         clips.append(clip)
     catalog={'version':1,'workbookSha256':source['workbookSha256'],'clips':clips,'presets':{
       'fighter':{'passive':'fighter-stack-activation','cast':'fighter-crescent-slash'},
-      'vanguard':{'cast':'vanguard-spear-barrage','buff':'vanguard-incomplete-buff'},
+      'vanguard':{'cast':'vanguard-spear-thrust','buff':'vanguard-incomplete-buff'},
       'bruiser':{'passive':'bruiser-flame-aura','cast':'bruiser-ring-slash'},
       'mystic':{'beam':'mystic-electric-barrier','channelHit':'mystic-electrified-target','mark':'mystic-mark-loop','cast':'mystic-charged-burst'},
       'guardian':{'presence':'guardian-gold-presence','taunt':'guardian-taunt-exclamation','physicalShield':'guardian-sp162-gold-shield','cast':'guardian-taunt-ring'}}}

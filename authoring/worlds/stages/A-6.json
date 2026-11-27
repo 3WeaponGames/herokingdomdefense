@@ -5357,7 +5357,8 @@
           "to": "p2",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 0
     },
     {
       "id": "s06-g2-hall",
@@ -5441,7 +5442,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 3
     },
     {
       "id": "s06-g3-hall",
@@ -5525,7 +5527,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 4
     },
     {
       "id": "s06-g4-hall",
@@ -5633,7 +5636,8 @@
           "to": "p8",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 7
     },
     {
       "id": "s06-g3-b4",
@@ -5753,7 +5757,8 @@
           "to": "p9",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 5
     },
     {
       "id": "s06-g1-b2",
@@ -5837,7 +5842,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 1
     },
     {
       "id": "s06-g1-b3",
@@ -5921,7 +5927,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 2
     },
     {
       "id": "s06-g3-b5",
@@ -6065,7 +6072,8 @@
           "to": "p11",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 6
     }
   ],
   "hero": {

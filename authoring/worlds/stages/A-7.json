@@ -6623,7 +6623,8 @@
           "to": "p4",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 0
     },
     {
       "id": "s07-g1-alternate",
@@ -6743,7 +6744,8 @@
           "to": "p9",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 1
     },
     {
       "id": "s07-g2-hall",
@@ -6791,7 +6793,8 @@
           "to": "p3",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 5
     },
     {
       "id": "s07-g3-hall",
@@ -6899,7 +6902,8 @@
           "to": "p8",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 7
     },
     {
       "id": "s07-g4-hall",
@@ -6983,7 +6987,8 @@
           "to": "p6",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 9
     },
     {
       "id": "s07-g4-b22",
@@ -7105,7 +7110,8 @@
           "to": "p9",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 10
     },
     {
       "id": "s07-g1-b9",
@@ -7203,7 +7209,8 @@
           "to": "p7",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 2
     },
     {
       "id": "s07-g1-b11",
@@ -7323,7 +7330,8 @@
           "to": "p9",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 3
     },
     {
       "id": "s07-g3-b23",
@@ -7457,7 +7465,8 @@
           "to": "p10",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 8
     },
     {
       "id": "s07-g1-b7",
@@ -7555,7 +7564,8 @@
           "to": "p7",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 4
     },
     {
       "id": "s07-g2-b17",
@@ -7629,7 +7639,8 @@
           "to": "p5",
           "weight": 1
         }
-      ]
+      ],
+      "editorOrder": 6
     }
   ],
   "hero": {

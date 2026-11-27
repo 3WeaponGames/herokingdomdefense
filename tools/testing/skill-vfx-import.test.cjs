@@ -7,8 +7,8 @@ from pathlib import Path
 spec=importlib.util.spec_from_file_location('skill_vfx_import','tools/skills-vfx/import-bake.py')
 module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 catalog=json.loads(Path('assets/resources/vfx/hero-skills/catalog.json').read_text())
-# User-sheet entries join publication after the complete workbook capture set.
-rows=copy.deepcopy([row for row in catalog['clips'] if row.get('kind')=='flipbook' and row.get('source',{}).get('kind')!='user-sheet'])
+# Custom sheets join publication after the complete workbook capture set.
+rows=copy.deepcopy([row for row in catalog['clips'] if row.get('kind')=='flipbook' and row.get('source',{}).get('package')])
 for row in rows:
     row.update(row.pop('source'));row['file']=row['id']+'.png'
 jobs=copy.deepcopy(rows)

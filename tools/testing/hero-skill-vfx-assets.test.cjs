@@ -2,13 +2,13 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'../..'),Catalog=require('../../assets/_script/HeroSkillVFXCatalog'),Settings=require('../../assets/_script/HeroSkillSettings'),Layout=require('../../assets/_script/HeroSkillVFXLayout'),{Model}=require('../../packages/hkd-skills/preview-model');
 test('workbook particle captures and native Spine effects preserve bounded assets and source identity',()=>{
- assert.equal(Catalog.clips.length,40);
+ assert.equal(Catalog.clips.length,41);
  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root,'assets/resources/vfx/hero-skills/catalog.json'))),Catalog);
  const selection=require('../skills-vfx/effects.json');assert.equal(selection.workbook,'Characters Plan.xlsx');assert(fs.statSync(path.join(root,selection.workbook)).isFile());assert.match(Catalog.workbookSha256,/^[a-f0-9]{64}$/);
  const planned=selection.clips.concat(selection.beam.parts.flatMap(part=>selection.beam.phases.map(phase=>({...selection.beam,...part,...phase,id:'mystic-beam-'+part.id+'-'+phase.phase}))));
- const baked=Catalog.clips.filter(c=>c.kind==='flipbook'&&c.source.kind!=='user-sheet');assert.equal(planned.length,baked.length);
+ const baked=Catalog.clips.filter(c=>c.kind==='flipbook'&&c.source.package);assert.equal(planned.length,baked.length);
  for(const clip of baked){const source=planned.find(row=>row.id===clip.id);assert(source,'Missing bake selection: '+clip.id);assert.deepEqual(clip.source,{package:source.package,prefab:source.prefab});for(const key of ['frames','fps'])assert.equal(clip[key],source[key]);}
- assert.deepEqual(Catalog.clips.filter(c=>c.source.kind==='user-sheet'),require('../skills-vfx/sheet-clips.json'));
+ assert.deepEqual(Catalog.clips.filter(c=>['user-sheet','imagegen-sheet'].includes(c.source.kind)),require('../skills-vfx/sheet-clips.json'));
  assert.deepEqual(Catalog.clips.filter(c=>c.kind==='spine'),require('../skills-vfx/native-clips.json'));
  const ids=new Set();for(const clip of Catalog.clips){assert(!ids.has(clip.id));ids.add(clip.id);
   if(clip.kind==='spine'){const file=path.join(root,'assets/resources',clip.resource+'.json'),json=JSON.parse(fs.readFileSync(file)),meta=JSON.parse(fs.readFileSync(file+'.meta'));assert.equal(meta.uuid,clip.uuid);assert.match(json.skeleton.spine,/^3\.8\./);assert(json.animations[clip.animation]);assert(clip.duration>0&&clip.decodedBytes>0);assert.equal(meta.textures.length,fs.readdirSync(path.dirname(file)).filter(n=>n.endsWith('.png')).length);continue;}
@@ -20,6 +20,23 @@ test('the retired hero effects are absent from the catalog and rebake manifests'
  const retired=['skirmisher-single-volley','bruiser-blood-aura','bruiser-sp162-skill3','bruiser-sp162-hit1','fighter-sp162-attack2','fighter-windup','fighter-meshy-center','vanguard-momentum','vanguard-momentum-buff'];
  const records=Catalog.clips.concat(require('../skills-vfx/effects.json').clips,require('../skills-vfx/native-clips.json'));
  for(const id of retired)assert(!records.some(row=>row.id===id),id);
+});
+
+test('the Vanguard flipbook has a strong painted frame on each original spear contact',()=>{
+ const clip=Layout.clipFor(Settings.defaults('vanguard').visual.castResource);
+ const original=Layout.clipFor(clip.source.sourceClip),timeline=require('../../assets/_script/HeroSkillTimeline');
+ assert.equal(clip.source.sourceClipSha256,original.sha256);
+ assert.deepEqual(clip.source.contactFrames,timeline.vanguardSchedule({}).map(time=>Math.round(time*clip.fps)));
+ const png=require('../../packages/hkd-characters/lib/png-atlas');
+ const sheet=png.decode(fs.readFileSync(path.join(root,'assets/resources',clip.resource+'.png')));
+ for(const frame of clip.source.contactFrames){
+  const x=frame%clip.columns*clip.cell,y=Math.floor(frame/clip.columns)*clip.cell;
+  let peak=0;
+  for(let row=0;row<clip.cell;row++)for(let col=0;col<clip.cell;col++){
+   peak=Math.max(peak,sheet.rgba[((y+row)*sheet.width+x+col)*4+3]);
+  }
+  assert(peak>=230,'Contact frame '+frame+' should have a readable thrust');
+ }
 });
 
 test('style presets do not change gameplay tuning, write overrides, or expose incompatible slots',()=>{

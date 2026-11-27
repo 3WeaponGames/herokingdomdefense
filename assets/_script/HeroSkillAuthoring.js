@@ -50,7 +50,7 @@ function slotOf(key){var match=/^(passive|beam|mark|buff|taunt|shield|channelHit
 function slots(style,id){return (SLOT_MAP[style]&&SLOT_MAP[style][id]||[]).slice();}
 function fields(style,id,source,effective,catalogs){
   var selected=entry(style,id),result={tuning:[],visual:[],audio:[]};if(!selected)return result;id=selected.id;
-  var allowed=(TUNING[style]&&TUNING[style][id]||[]).slice(),allowedSlots=slots(style,id);var currentVisual=effective&&effective.visual||{},fullCast=!!(currentVisual.castResource||currentVisual.castSecondaryResource)&&!currentVisual.resource,nativeSpear=style==="vanguard"&&/vanguard-spear-barrage$/.test(currentVisual.castResourcePath||"");if(id==="active")allowed.push("contactDelay");
+  var allowed=(TUNING[style]&&TUNING[style][id]||[]).slice(),allowedSlots=slots(style,id);var currentVisual=effective&&effective.visual||{},fullCast=!!(currentVisual.castResource||currentVisual.castSecondaryResource)&&!currentVisual.resource,authoredSpear=style==="vanguard"&&/vanguard-spear-(?:barrage|thrust)$/.test(currentVisual.castResourcePath||"");if(id==="active")allowed.push("contactDelay");
   ["tuning","visual","audio"].forEach(function(group){
     (source&&source[group]||[]).forEach(function(original){
       var field=Object.assign({},original),key=field.key||String(field.path||"").split(".").pop(),slot=slotOf(key);
@@ -67,7 +67,7 @@ function fields(style,id,source,effective,catalogs){
       // Ordinary hammer-hit feedback has no Iron Bulwark event. Circular
       // areas have no facing angle unless custom artwork consumes rotation.
       if(id==="active"&&group==="visual"&&(style==="guardian"&&key.indexOf("impact")===0||/^(guardian|bruiser)$/.test(style)&&key==="rotation"&&!currentVisual.resource))return;
-      if(group==="tuning"){if(allowed.indexOf(key)<0||nativeSpear&&key==="strikes")return;field.group="Gameplay";if(style==='mystic'&&key==='contactDelay'){field.label='Additional actual hit delay';field.help='Extra gameplay seconds after the selected explosion source frame before damage, lifesteal and hit feedback. Zero keeps the actual hit synchronized to the explosion. This does not shift the cast VFX.';}if(nativeSpear&&key==="duration"){field.label="Barrage duration (VFX + hits)";field.help="Saved duration of the complete spear effect and all matching contacts. Shorter durations play faster; longer durations play slower. Rider animation speed is independent.";}}
+      if(group==="tuning"){if(allowed.indexOf(key)<0||authoredSpear&&key==="strikes")return;field.group="Gameplay";if(style==='mystic'&&key==='contactDelay'){field.label='Additional actual hit delay';field.help='Extra gameplay seconds after the selected explosion source frame before damage, lifesteal and hit feedback. Zero keeps the actual hit synchronized to the explosion. This does not shift the cast VFX.';}if(authoredSpear&&key==="duration"){field.label="Barrage duration (VFX + hits)";field.help="Saved duration of the complete spear effect and all matching contacts. Shorter durations play faster; longer durations play slower. Rider animation speed is independent.";}}
       else if(group==="audio"){
         var phase=field.phase||String(field.path||"").split(".")[1];
         if(style==="guardian"&&id==="active"&&phase==="impact")return;
@@ -99,7 +99,7 @@ function fields(style,id,source,effective,catalogs){
       }
       if(style==='vanguard'&&id==='active'&&group==='visual'){
         if(/^(?:cast)?[Oo]ffset[XY]$/.test(key)){field.label=(key.indexOf('cast')===0?'Cast effect ':'Arc ')+(key.slice(-1)==='X'?'along spear offset':'across spear offset');field.help='Offset from the spearhead in the spear’s own axes. This placement rotates and mirrors with the spear, so the same fit works in every direction.';}
-        if(key==='castRotation')field.help='Additional artwork rotation around the yellow flash at the spearhead. The imported spear fan is already aligned to the spear’s direction.';
+        if(key==='castRotation')field.help='Additional artwork rotation around its attachment point at the spearhead.';
         if(key==='rotation')field.help='Rotate the spear aim, the center-bottom arc pivot and the attached cast effect together.';
       }
       if(style==='bruiser'&&id==='active'&&group==='visual'){
