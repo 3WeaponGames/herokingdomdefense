@@ -1,9 +1,10 @@
 'use strict';
 
-// Optional stage authoring metadata. Its array order controls balance priority.
+// Ordered stage groups are used by wave balancing and the in-game wave preview.
 const validGroup=group=>group&&typeof group.id==='string'&&group.id.trim()&&Array.isArray(group.spawnIds);
 const list=stage=>Array.isArray(stage.spawnGroups)?stage.spawnGroups.filter(validGroup):[];
 const label=(group,index)=>'Spawn group '+(index+1)+' ('+(group.spawnIds.join(', ')||'empty')+')';
+const runtimeGroups=stage=>list(stage).filter(group=>group.spawnIds.length).map(group=>group.spawnIds.slice());
 
 function editable(stage){
  const groups=stage.spawnGroups;
@@ -82,4 +83,4 @@ function validate(stage){
  return Array.from(new Set(issues));
 }
 
-module.exports={list,label,add,assign,move,remove,detach,validate};
+module.exports={list,label,runtimeGroups,add,assign,move,remove,detach,validate};

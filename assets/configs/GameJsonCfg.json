@@ -2767,7 +2767,7 @@
             29
           ],
           "Data": [
-            7,
+            5,
             1,
             300
           ],
@@ -3293,7 +3293,7 @@
             29
           ],
           "Data": [
-            13,
+            12,
             1.25,
             325
           ],
@@ -3566,7 +3566,7 @@
             ],
             "nextLightId": 3
           },
-          "BuildCost": 5,
+          "BuildCost": 6,
           "VedioCount": 0
         },
         {
@@ -3585,7 +3585,7 @@
             37
           ],
           "Data": [
-            21,
+            19,
             1.5,
             350
           ],
@@ -3801,7 +3801,7 @@
             ],
             "nextLightId": 3
           },
-          "BuildCost": 8
+          "BuildCost": 12
         },
         {
           "ID": 2,
@@ -4250,7 +4250,7 @@
               "distance": 103.59113979486855
             }
           },
-          "BuildCost": 5,
+          "BuildCost": 6,
           "VedioCount": 0
         },
         {
@@ -4474,7 +4474,7 @@
               "distance": 103.59113979486855
             }
           },
-          "BuildCost": 8,
+          "BuildCost": 12,
           "VedioCount": 0
         },
         {
@@ -4924,7 +4924,7 @@
               ]
             }
           },
-          "BuildCost": 5,
+          "BuildCost": 6,
           "VedioCount": 0
         },
         {
@@ -5153,7 +5153,7 @@
               ]
             }
           },
-          "BuildCost": 8,
+          "BuildCost": 12,
           "VedioCount": 0
         },
         {
@@ -5172,11 +5172,11 @@
             37
           ],
           "Data": [
-            34,
+            26,
             1.9,
             375
           ],
-          "BuildCost": 10,
+          "BuildCost": 24,
           "ColliderIndex": 3,
           "Tower": {
             "attackType": "arrow",
@@ -5512,7 +5512,7 @@
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.cannon-4.description]]",
-          "BuildCost": 10,
+          "BuildCost": 24,
           "VedioCount": 0,
           "WorldScale": 0.7996017392058284,
           "Blocker": {
@@ -5722,7 +5722,7 @@
             "lifecycle": "native-tower"
           },
           "LevelUpDescribe": "[[loc:data.building.sniper-4.description]]",
-          "BuildCost": 10,
+          "BuildCost": 24,
           "VedioCount": 0,
           "WorldScale": 0.78940877015086,
           "Blocker": {
@@ -6099,7 +6099,7 @@
               "distance": 141.245830016323
             }
           },
-          "BuildCost": 10,
+          "BuildCost": 16,
           "VedioCount": 0
         },
         {
@@ -8179,7 +8179,7 @@
             ],
             "nextLightId": 3
           },
-          "BuildCost": 10,
+          "BuildCost": 16,
           "VedioCount": 0
         },
         {
@@ -8564,7 +8564,7 @@
               "distance": 141.245830016323
             }
           },
-          "BuildCost": 10,
+          "BuildCost": 16,
           "VedioCount": 0
         },
         {
@@ -8873,7 +8873,7 @@
               ]
             }
           },
-          "BuildCost": 10,
+          "BuildCost": 16,
           "VedioCount": 0
         },
         {
@@ -8896,7 +8896,7 @@
             90001,
             8
           ],
-          "BuildCost": 14,
+          "BuildCost": 24,
           "VedioCount": 0,
           "WorldScale": 0.967311632142044,
           "Blocker": {
@@ -8980,7 +8980,7 @@
             90002,
             8
           ],
-          "BuildCost": 14,
+          "BuildCost": 24,
           "VedioCount": 0,
           "WorldScale": 0.8552987190364839,
           "Blocker": {
@@ -9155,7 +9155,7 @@
             90003,
             8
           ],
-          "BuildCost": 14,
+          "BuildCost": 24,
           "VedioCount": 0,
           "WorldScale": 0.782819775262297,
           "Blocker": {
@@ -9255,7 +9255,7 @@
             90004,
             8
           ],
-          "BuildCost": 14,
+          "BuildCost": 24,
           "VedioCount": 0,
           "WorldScale": 0.6444508826024902,
           "Blocker": {
@@ -9601,7 +9601,7 @@
             28
           ],
           "Data": [
-            4,
+            3,
             0
           ],
           "BranchBuild": [
@@ -9735,7 +9735,7 @@
             28
           ],
           "Data": [
-            8,
+            4,
             0
           ],
           "BuildCost": 2,
@@ -10101,7 +10101,7 @@
               ]
             }
           },
-          "BuildCost": 3,
+          "BuildCost": 4,
           "VedioCount": 0
         },
         {
@@ -10227,7 +10227,7 @@
               ]
             }
           },
-          "BuildCost": 3
+          "BuildCost": 5
         },
         {
           "ID": 5,
@@ -10248,7 +10248,7 @@
             4,
             0
           ],
-          "BuildCost": 4,
+          "BuildCost": 6,
           "ColliderIndex": 3,
           "MillDefense": {
             "kind": "scarecrow",
@@ -10429,7 +10429,7 @@
               ]
             }
           },
-          "BuildCost": 3,
+          "BuildCost": 4,
           "VedioCount": 0
         },
         {
@@ -10541,7 +10541,7 @@
               ]
             }
           },
-          "BuildCost": 3
+          "BuildCost": 5
         },
         {
           "ID": 5,
@@ -10562,7 +10562,7 @@
             4,
             0
           ],
-          "BuildCost": 4,
+          "BuildCost": 6,
           "ColliderIndex": 3,
           "MillDefense": {
             "kind": "bomb",
@@ -10897,7 +10897,7 @@
             28
           ],
           "WorldScale": 1.00025660658486,
-          "BuildCost": 9
+          "BuildCost": 14
         }
       ]
     }

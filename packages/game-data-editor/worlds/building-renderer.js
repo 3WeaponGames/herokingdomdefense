@@ -3,10 +3,26 @@
 const Spine=require('../preview/spine-renderer'),Paint=require('./paint'),M=require('./model'),Shadow=require('../../../assets/_script/BuildingShadow'),Drop=require('../../../assets/_script/BuildingDropShadow');
 const WallGround=require('../../../assets/_script/WallShadowGround');
 const WindowLightMask=require('../../../assets/_script/WindowLightMask');
+const maskBudget=16*1024*1024;
 function create(options){
  const cache=new Map(),shadows=new Map(),alphas=new Map(),drops=new Map();let closed=false,shadowBytes=0;
  const key=(d,runtime)=>JSON.stringify([runtime,d.source,d.uuid,d.revision,d.skin,d.animation,d.poseTime,d.pages]);
  function release(entry){for(const canvas of [entry.canvas,entry.body,...(entry.casters||[]).map(c=>c.canvas)])if(canvas)canvas.width=canvas.height=1;entry.canvas=entry.body=null;entry.casters=[];}
+ function recent(entries,key){
+  const entry=entries.get(key);
+  if(entry){entries.delete(key);entries.set(key,entry);}
+  return entry;
+ }
+ function rememberMask(entries,key,entry,dispose){
+  entries.set(key,entry);
+  let bytes=0;for(const value of entries.values())bytes+=value.bytes;
+  // Keep masks for the whole visible stage when they fit. A fixed count can
+  // evict a still-visible building and rerasterize it on every drag frame.
+  while(bytes>maskBudget&&entries.size>1){
+   const oldest=entries.keys().next().value,value=entries.get(oldest);
+   bytes-=value.bytes;entries.delete(oldest);if(dispose)dispose(value);
+  }
+ }
  function ensure(d,runtime){
   const id=key(d,runtime);if(closed||cache.has(id)||!runtime)return;
   const entry={};cache.set(id,entry);
@@ -48,7 +64,17 @@ function create(options){
   if(part.dropShadow){
    const settings=Drop.settings(part.dropShadow);
    if(b.flipX){const light=(settings.angle-(b.angle||0))*Math.PI/180;settings.angle=Math.atan2(Math.sin(light),-Math.cos(light))*180/Math.PI;}
-   const source=silhouette(r,images,runtime);if(source){const id=source.key+':'+JSON.stringify(settings);let entry=drops.get(id);if(!entry){const image=Drop.raster(source,settings),canvas=Paint.canvas(image.pixelWidth,image.pixelHeight),g=canvas.getContext('2d'),pixels=g.createImageData(canvas.width,canvas.height);pixels.data.set(image.pixels);g.putImageData(pixels,0,0);entry={canvas,image};drops.set(id,entry);while(drops.size>6){const first=drops.keys().next().value;release(drops.get(first));drops.delete(first);}}const d=entry.image;ctx.translate(origin.x+d.x,origin.y+d.y+d.height);ctx.scale(d.width/entry.canvas.width,-d.height/entry.canvas.height);ctx.drawImage(entry.canvas,0,0);}
+   const source=silhouette(r,images,runtime);
+   if(source){
+    const id=source.key+':'+JSON.stringify(settings);let entry=recent(drops,id);
+    if(!entry){
+     const image=Drop.raster(source,settings),canvas=Paint.canvas(image.pixelWidth,image.pixelHeight),g=canvas.getContext('2d');
+     const pixels=g.createImageData(canvas.width,canvas.height);pixels.data.set(image.pixels);g.putImageData(pixels,0,0);
+     entry={canvas,image:{x:image.x,y:image.y,width:image.width,height:image.height},bytes:canvas.width*canvas.height*4};
+     rememberMask(drops,id,entry,release);
+    }
+    const d=entry.image;ctx.translate(origin.x+d.x,origin.y+d.y+d.height);ctx.scale(d.width/entry.canvas.width,-d.height/entry.canvas.height);ctx.drawImage(entry.canvas,0,0);
+   }
   }
   else if(part.shadow){
    const d=part.shadow,id=JSON.stringify([d.regions,d.opacity]);let entry=shadows.get(id);
@@ -77,7 +103,8 @@ function create(options){
  function silhouette(record,images,runtime){
   const source=Object.assign({},record,{shadow:undefined,dropShadow:undefined,sprites:(record.sprites||[]).filter((s,i)=>!(record.purchaseField&&record.purchaseField.sprites[i])&&!s.ground&&!s.shadowExcluded),skeletons:(record.skeletons||[]).filter(s=>!s.ground)});delete source.purchaseField;
   if(source.skeletons.some(d=>{const e=cache.get(key(d,runtime));return !e||!e.canvas;}))return null;
-  const id=JSON.stringify([source.origin,source.sprites.map(s=>[s.frame,images[s.frame]&&(images[s.frame].revision||images[s.frame].url||images[s.frame].sha256),s.matrix,s.width,s.height,s.anchor]),source.skeletons.map(d=>[key(d,runtime),d.matrix])]);if(alphas.has(id))return alphas.get(id);
+  const id=JSON.stringify([source.origin,source.sprites.map(s=>[s.frame,images[s.frame]&&(images[s.frame].revision||images[s.frame].url||images[s.frame].sha256),s.matrix,s.width,s.height,s.anchor]),source.skeletons.map(d=>[key(d,runtime),d.matrix])]);
+  const cached=recent(alphas,id);if(cached)return cached;
   const b=measure(source,runtime);if(!b)return null;const z=Math.min(1,384/Math.max(1,b.maxX-b.minX,b.maxY-b.minY)),w=Math.max(1,Math.ceil((b.maxX-b.minX)*z)),h=Math.max(1,Math.ceil((b.maxY-b.minY)*z)),canvas=Paint.canvas(w,h),g=canvas.getContext('2d');g.setTransform(z,0,0,-z,-b.minX*z,b.maxY*z);
   for(const p of parts({x:0,y:0,scale:1,angle:0},source))draw(g,p,images,runtime);
   const read=()=>{const rgba=g.getImageData(0,0,w,h).data,alpha=new Uint8Array(w*h);for(let i=0;i<alpha.length;i++)alpha[i]=rgba[i*4+3];return alpha;},alpha=read();
@@ -90,7 +117,9 @@ function create(options){
    for(const d of source.skeletons)for(const caster of cache.get(key(d,runtime)).casters||[]){clear();draw(g,{building:{x:0,y:0,scale:1,angle:0},record:source,skeleton:d,silhouetteCanvas:caster.canvas,silhouetteBounds:caster.bounds},images,runtime);layers.push({...result,alpha:read(),contacts:caster.post?contacts.filter(c=>c.slot===caster.slot):[],groundedColumns:true});}
    result.layers=layers;
   }
-  canvas.width=canvas.height=1;alphas.set(id,result);while(alphas.size>8)alphas.delete(alphas.keys().next().value);return result;
+  canvas.width=canvas.height=1;
+  result.bytes=alpha.byteLength+(result.layers||[]).reduce((total,layer)=>total+layer.alpha.byteLength,0);
+  rememberMask(alphas,id,result);return result;
  }
  function clear(){for(const e of cache.values())release(e);cache.clear();for(const e of shadows.values())release(e);shadows.clear();for(const e of drops.values())release(e);drops.clear();alphas.clear();shadowBytes=0;}
  return {prepare,parts,draw,hit,measure,silhouette,clear,destroy(){closed=true;clear();},stats:()=>({poses:cache.size,ready:Array.from(cache.values()).filter(e=>e.canvas).length,shadowMasks:shadows.size,shadowBytes,dropMasks:drops.size,silhouettes:alphas.size})};

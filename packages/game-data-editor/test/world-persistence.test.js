@@ -104,6 +104,45 @@ function timedSaveFixture(){
 function moveHero(s){const key='stage:A-1',value=clone(s.snapshot(key).value);value.hero.x+=15;return s.change({key,version:s.version,value});}
 
 function changeWave(s){const key='stage:A-1',value=clone(s.snapshot(key).value);Object.assign(value.config.WaveCfg[0].SpawnTimeline[0],{count:7,intervalSeconds:.5,future:{keep:['wave metadata']}});return s.change({key,version:s.version,value});}
+test('world persistence: moving placements and paths sends only draft metadata and records undo',()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',doc=s.doc(key);
+ const source=clone(s.snapshot(key).value),files=[L.configFile('A'),doc.file],original=files.map(file=>fs.readFileSync(path.join(f.root,file)));
+ const apply=edit=>s.editStageLayout({key,version:s.version,mapId:source.mapId,edit});
+ const building=source.buildings[0],point=source.graphs[0].nodes[0],templates=doc.data.templates,config=doc.data.config;
+ const move={type:'move',moves:[{id:'building:'+building.id,beforeX:building.x,beforeY:building.y,x:f.map.size.width,y:building.y}]};
+ const moved=apply(move);
+ assert(moved.dirty&&moved.canUndo&&moved.issues.some(issue=>issue.includes('is outside the map')));
+ assert.equal(moved.value,undefined);assert.equal(moved.buildingPreview,undefined);
+ assert.equal(doc.data.templates,templates);assert.equal(doc.data.config,config);
+ assert.throws(()=>apply(move),/changed while you were dragging/);
+ assert.throws(()=>s.editStageLayout({key,version:1,mapId:source.mapId,edit:move}),/Another panel changed/);
+ assert.throws(()=>apply({type:'move',moves:[{...move.moves[0],x:Infinity}]}),/finite/);
+ assert((apply({type:'move',graphId:'route',moves:[{id:'node:'+point.id,beforeX:point.x,beforeY:point.y,x:point.x+20,y:point.y}]})).canUndo);
+ assert.equal(doc.data.graphs[0].nodes[0].x,point.x+20);
+ s.history({key,version:s.version},false);assert.deepEqual(doc.data.graphs,source.graphs);
+ s.history({key,version:s.version},false);assert.deepEqual(doc.data.buildings,source.buildings);
+ s.history({key,version:s.version},true);assert.equal(doc.data.buildings[0].x,f.map.size.width);
+ files.forEach((file,i)=>assert.deepEqual(fs.readFileSync(path.join(f.root,file)),original[i]));
+});
+test('world persistence: spawn groups publish with the stage and removed groups disappear from the wave preview',async()=>{
+ const f=timedSaveFixture(),s=f.service,key='stage:A-1',configFile=L.configFile('A');
+ const original=L.read(f.root,configFile),value=clone(s.snapshot(key).value);
+ const sparseSpawn={id:13,name:'Spawn 2',x:30,y:200,enabled:true};
+ value.spawns.push(sparseSpawn);value.nextSpawn=14;
+ value.graphs[0].spawnIds.push(sparseSpawn.id);
+ value.spawnGroups=[{id:'flank',spawnIds:[13,1]},{id:'empty',spawnIds:[]}];
+ s.change({key,version:s.version,value});
+ assert.deepEqual(L.read(f.root,configFile),original);
+ assert((await s.save({key,version:s.version})).result.saved);
+ const published=L.read(f.root,configFile);
+ assert.deepEqual(published.LevelCfg[0].SpawnGroups,[[13,1]]);
+ assert.deepEqual(published.LevelCfg[0].WaveCfg,original.LevelCfg[0].WaveCfg);
+ assert.deepEqual(published.LevelCfg[1],original.LevelCfg[1]);
+ const next=clone(s.snapshot(key).value);delete next.spawnGroups;
+ s.change({key,version:s.version,value:next});
+ assert((await s.save({key,version:s.version})).result.saved);
+ assert.deepEqual(L.read(f.root,configFile).LevelCfg[0].SpawnGroups,[]);
+});
 test('world persistence: Advisor task drafts validate and publish only on the selected stage',async()=>{
  const f=timedSaveFixture(),s=f.service,key='stage:A-1',configPath=L.configFile('A');
  const initial=L.read(f.root,configPath);

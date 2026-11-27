@@ -38,7 +38,9 @@ for(const retire of ['epoch','data','UI generation'])test('hero presentation rej
  old();assert.equal(calls,0);assert.equal(c.spAniLevelUp.node.active,true);
 });
 function wallFixture(hit=()=>{}){
- const ui={node:{},_resourceGeneration:1,ctrGame:{gameData:{round:1},_combatEpoch:1}},module=load('KinghtFallBuildWall',{BattleSounds:{hit},KinghtFallUIGame:{default:{instance:ui}},KinghtFallBuildBase:{default:function(){},KinghtFallBuildAniName:{destroy:'destroy'}}});
+ function Base(){}
+ Base.prototype._applyBuildingDamage=function(damage){this.buildInfo.hp-=damage;};
+ const ui={node:{},_resourceGeneration:1,ctrGame:{gameData:{round:1},_combatEpoch:1}},module=load('KinghtFallBuildWall',{BattleSounds:{hit},KinghtFallUIGame:{default:{instance:ui}},KinghtFallBuildBase:{default:Base,KinghtFallBuildAniName:{destroy:'destroy'}}});
  const wall=Object.create(module.default.prototype);Object.assign(wall,{node:{_combatGeneration:1},buildInfo:{hp:10,hpMax:10},isDestroyed:false,ndAniEffect:renderer(),ctrHp:{calls:0,setHp(){this.calls++;}}});wall.onDead=function(){this.isDestroyed=true;};return{wall,ui};
 }
 test('wall damage preserves current destruction/HP behavior and current effect completion',()=>{

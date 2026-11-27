@@ -50,7 +50,7 @@ function guardBrowserElement(manager, source) {
   element.play = function () {
     var state = manager.channelStates.get(source), states = cc._Audio && cc._Audio.State;
     if (source.audio !== audio || audio._element !== element || manager.releasedSources.has(source) ||
-        !state || !state.active || !state.ready || state.paused || manager.appHidden || state.music && manager.allMusicPaused ||
+        manager._restarting || !state || !state.active || !state.ready || state.paused || manager.appHidden || state.music && manager.allMusicPaused ||
         state.ownerCurrent && !state.ownerCurrent() ||
         !(state.music ? $z1CacheUtils.CacheUtils.canPlayMusin() : $z1CacheUtils.CacheUtils.canPlayEffect())) return;
     // Creator's iOS volume changes can enqueue the same element repeatedly.
@@ -102,6 +102,7 @@ var exp_AudioMgr = function (t) {
     e.allMusicPaused = false;
     e.musicPauseOwners = new Set();
     e.appHidden = false;
+    e._restarting = false;
     return e;
   }
   cc__extends(_ctor, t);
@@ -318,7 +319,7 @@ var exp_AudioMgr = function (t) {
     }
   };
   _ctor.prototype.playSource = function (source, config, key, loop, music, volume, complete, cacheKey, options) {
-    if (!source || this.releasedSources.has(source) || !music && this.appHidden) return false;
+    if (this._restarting || !source || this.releasedSources.has(source) || !music && this.appHidden) return false;
     var isCurrent = audioOwner(options);
     if (isCurrent && !isCurrent()) return false;
     var manager = this;
@@ -374,7 +375,7 @@ var exp_AudioMgr = function (t) {
     });
   };
   _ctor.prototype.resumeSource = function (source, state, recover) {
-    if (!state.active || !state.ready || state.paused || this.appHidden || state.music && this.allMusicPaused) return;
+    if (this._restarting || !state.active || !state.ready || state.paused || this.appHidden || state.music && this.allMusicPaused) return;
     if (!(state.music ? $z1CacheUtils.CacheUtils.canPlayMusin() : $z1CacheUtils.CacheUtils.canPlayEffect())) return;
     if (!state.started) {
       source.play();
@@ -493,6 +494,16 @@ var exp_AudioMgr = function (t) {
     this.audioSourceMap.forEach(function (source) { manager.stopSource(source); });
     this.EffectAduioSource && this.stopSource(this.EffectAduioSource);
     this.musicKeys.length = 0;
+  };
+  _ctor.prototype.setRestarting = function (restarting) {
+    this._restarting = restarting;
+    if (!restarting) return;
+    try {
+      this.stopAll();
+    } finally {
+      // JSB restarts the game VM while the native audio engine can retain handles.
+      if (cc.audioEngine) cc.audioEngine.stopAll();
+    }
   };
   _ctor.prototype.playEffect = function (id, volume, options) {
     if (!$z1CacheUtils.CacheUtils.canPlayEffect()) return;

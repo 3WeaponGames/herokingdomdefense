@@ -3,9 +3,10 @@
 const Groups=require('./spawn-groups');
 const {coincident}=require('./wave-pressure');
 
-function prepare(entries,groups,starts,eligible,step,deadline){
+function prepare(entries,groups,starts,eligible,step,deadline,bosses){
  const windows=[],floors=new Map(),claimed=new Set();
- if(!starts||!Object.keys(starts).length)return {windows,floors};
+ let bossStart=null;
+ if(!starts||!Object.keys(starts).length)return {windows,floors,bossStart};
  for(const [index,group] of groups.entries()){
   const members=Array.isArray(group)?group:group.spawnIds||[];
   const positions=entries.flatMap((row,at)=>row.count&&members.includes(row.spawnId)&&!claimed.has(row.spawnId)?[at]:[]);
@@ -18,10 +19,19 @@ function prepare(entries,groups,starts,eligible,step,deadline){
   if(deadline!==null&&time>deadline&&!coincident(time,deadline)){
    return {error:name+' starts after the last-spawn limit.'};
   }
+  if(bosses&&positions.every(at=>bosses.has(entries[at].id))){
+   if(bossStart!==null&&!coincident(bossStart,time)){
+    return {error:name+' must share the same start as the other boss groups following the last regular spawn.'};
+   }
+   bossStart=time;
+   windows.push({time,positions,auto:[]});
+   continue;
+  }
   const auto=[];
   let manualStart=Infinity;
   for(const at of positions){
    const row=entries[at];
+   if(bosses?.has(row.id))continue;
    if(eligible.has(row.id)){auto.push(row);floors.set(row.id,time);}
    else manualStart=Math.min(manualStart,row.startSeconds);
   }
@@ -31,7 +41,7 @@ function prepare(entries,groups,starts,eligible,step,deadline){
   }
   windows.push({time,positions,auto:manualOpener?[]:auto});
  }
- return {windows,floors};
+ return {windows,floors,bossStart};
 }
 
 function matches(timeline,windows){

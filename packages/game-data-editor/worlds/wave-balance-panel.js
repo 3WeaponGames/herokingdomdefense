@@ -22,6 +22,8 @@ function describeThreat(profile){
  if(profile.support)factors.push('Support');
  if(profile.heavy)factors.push('Heavy hitter');
  if(profile.durable)factors.push('High HP');
+ if(profile.healthRegenPercent>0)factors.push(Stats.format(profile.healthRegenPercent*100)+'% HP regen/s');
+ if(profile.damageOverTime>0)factors.push('Damage over time');
  return factors.join(' · ');
 }
 
@@ -69,11 +71,11 @@ function open(c,{label,wave,waveIndex,units,stage,spawnGroups,interval,defeatSec
  const {el,button,note}=c;
  const suggestedPeakCap=Balance.suggestedPeakCap(wave.Wave||waveIndex+1);
  const initial=limits(wave,suggestedPeakCap,stage.level),summary=Waves.summary(wave,interval),total=summary.units;
- const rows=Waves.entries(wave,interval),unitThreats=Threat.profiles(units,wave);
+ const rows=Waves.entries(wave,interval),unitThreats=Threat.profiles(units,wave,defeatSeconds);
+ const bosses=Waves.followingBosses(rows,unitThreats);
  const pool=Counts.countPool(rows,unitThreats);
  const reference=validTotal(suggestedTotal)?suggestedTotal:null;
  const savedTotal=wave.editorTimingBalance?.totalUnits;
- initial.totalUnits=savedTotal===null||validTotal(savedTotal)?savedTotal:reference;
  const initialCount=initial.pushPeaks.length;
  const peakInputs=[],groupInputs=new Map();
  let unitTotal,cap,deadline,pushCount,resultBox,previewButton,suggestedCapButton,suggestedTotalButton,applyButton,activePreview,review,previewRequest=0;
@@ -84,7 +86,8 @@ function open(c,{label,wave,waveIndex,units,stage,spawnGroups,interval,defeatSec
  const targetTotal=value=>value==null?total:Counts.targetTotal(pool,value);
  function readLimits(){
   const peakCap=Number(cap.value),lastSpawnLimit=String(deadline.value).trim()===''?null:Number(deadline.value);
-  const totalUnits=unitTotal.value.trim()===''?null:Number(unitTotal.value);
+  const countInput=unitTotal.value.trim()===''?null:Number(unitTotal.value);
+  const totalUnits=countInput===total?null:countInput;
   if(cap.validity?.badInput||!Number.isSafeInteger(peakCap)||peakCap<1)throw Error('Enter a whole number of enemies greater than zero.');
   if(unitTotal.validity?.badInput||totalUnits!==null&&!validTotal(totalUnits)){
    throw Error('Enter a target unit count from 1 to '+Balance.MAX_SEARCH_UNITS+', or leave it blank.');
@@ -109,7 +112,7 @@ function open(c,{label,wave,waveIndex,units,stage,spawnGroups,interval,defeatSec
    }
   }
   const requested={peakCap,lastSpawnLimit,defeatSeconds,pushPeaks};
-  if(totalUnits!==null||reference!==null||savedTotal===null||validTotal(savedTotal))requested.totalUnits=totalUnits;
+  if(totalUnits!==null||savedTotal===null||validTotal(savedTotal))requested.totalUnits=totalUnits;
   if(groupStarts.size||initial.groupStarts)requested.groupStarts=Object.fromEntries(groupStarts);
   return requested;
  }
@@ -188,12 +191,17 @@ function open(c,{label,wave,waveIndex,units,stage,spawnGroups,interval,defeatSec
   review=null;
   if(applyButton)applyButton.disabled=true;
   stats.textContent='';
+  for(const cell of proposal.bossTimes.values())cell.textContent='—';
   try{
    assertCurrent();
    if(!sameLimits(requested,readLimits()))throw Error('Preview these settings before applying.');
    const timingEdits=readReviewedTimings(inputs);
    const result=initialResult??Balance.plan(wave,{...options,timingEdits});
    if(!result.ok){note(stats,result.message,true);showMetrics(stats,before);return;}
+   for(const row of Waves.entries(result.afterWave,interval)){
+    const cell=proposal.bossTimes.get(row.id);
+    if(cell)cell.textContent=seconds(row.startSeconds);
+   }
    const after=Pressure.build(result.afterWave,units,interval,defeatSeconds);
    if(!after.projected||after.totals.units!==targetTotal(requested.totalUnits)||after.peaks.units.value>requested.peakCap||
      requested.lastSpawnLimit!==null&&after.duration>requested.lastSpawnLimit&&!Pressure.coincident(after.duration,requested.lastSpawnLimit)){
@@ -227,10 +235,18 @@ function open(c,{label,wave,waveIndex,units,stage,spawnGroups,interval,defeatSec
   }
   const changes=rows.filter(row=>row.count).map(row=>{
    const spawn=spawns.get(row.spawnId)||'Spawn '+row.spawnId,name=names.get(row.unitId)||'Unit '+row.unitId;
-   const manual=Waves.isTimingManual(row);
-   const traits=[describeThreat(unitThreats.get(row.unitId)),manual?'Manual timing':''].filter(Boolean).join(' · ');
+   const following=bosses.has(row.id),manual=Waves.isTimingManual(row);
+   const traits=[describeThreat(unitThreats.get(row.unitId)),following?'Starts with the last regular spawn':manual?'Manual timing':''].filter(Boolean).join(' · ');
    const choice=planned.get(row.id),count=Stats.format(choice.count);
    const columns=[spawn,{text:name,description:traits},choice.count===row.count?count:{text:count,description:'Current '+Stats.format(row.count)}];
+   if(following){
+    const content=el('div');
+    const start=el('span',seconds(choice.startSeconds));
+    content.appendChild(start);
+    content.appendChild(el('small','Current '+seconds(row.startSeconds),'world-wave-balance-traits'));
+    proposal.bossTimes.set(row.id,start);
+    return columns.concat({content},seconds(row.intervalSeconds));
+   }
    if(manual)return columns.concat(seconds(row.startSeconds),seconds(row.intervalSeconds));
    const label=name+' at '+spawn;
    const start=timeInput(label+' · proposed start (s)',row.startSeconds,choice.startSeconds,0);
@@ -258,21 +274,20 @@ function open(c,{label,wave,waveIndex,units,stage,spawnGroups,interval,defeatSec
    if(!result.ok){note(resultBox,result.message,true);showMetrics(resultBox,before);return;}
    const stats=el('div',undefined,'world-wave-balance-stats');
    stats.setAttribute('aria-live','polite');resultBox.appendChild(stats);
-   activePreview={stats,before,limits:requested,options,inputs:[]};
+   activePreview={stats,before,limits:requested,options,inputs:[],bossTimes:new Map()};
    showTimingRows(activePreview,result);
    reviewTimings(activePreview,result);
   }catch(error){if(request===previewRequest&&resultBox.isConnected!==false)note(resultBox,error.message,true);}
  }
  const modal=c.modal('Balance '+label,dialog=>{
   dialog.classList.add('world-wave-balance-dialog');
-  note(dialog,'Auto timing uses '+seconds(Balance.TIMING_STEP)+' steps and weighs unit roles. Pressure assumes one defeat every '+seconds(defeatSeconds)+'. Manual timings are fixed.');
-  note(dialog,(reference===null?'':'Stages 15–20 suggest '+reference+' units for this wave. ')+
-   'Clear the target to keep current counts. Manual groups, elites, and bosses keep their counts.');
+  note(dialog,'Auto timing uses '+seconds(Balance.TIMING_STEP)+' steps. Pressure assumes one defeat every '+seconds(defeatSeconds)+'. Bosses start with the last regular spawn.');
+  note(dialog,'The default target is the current count. Manual groups, elites, and bosses keep their counts.');
   if(wave.editorTimingBalance?.defeatSeconds&&initial.defeatSeconds!==defeatSeconds){
    note(dialog,'The previous balance used one defeat every '+seconds(initial.defeatSeconds)+'.');
   }
   const inputs=el('div',undefined,'world-wave-balance-inputs');dialog.appendChild(inputs);
-  unitTotal=numberField(inputs,'Target unit count',initial.totalUnits,1,'1');
+  unitTotal=numberField(inputs,'Target unit count',validTotal(total)?total:null,1,'1');
   unitTotal.max=String(Balance.MAX_SEARCH_UNITS);
   unitTotal.placeholder='Keep current';
   cap=numberField(inputs,'Max enemies alive',initial.peakCap,1,'1');
@@ -338,7 +353,7 @@ function open(c,{label,wave,waveIndex,units,stage,spawnGroups,interval,defeatSec
  return modal;
 }
 
-function openAll(c,{stage,units,interval,spawnGroups,referenceCounts,assertCurrent,apply}){
+function openAll(c,{stage,units,interval,spawnGroups,assertCurrent,apply}){
  const {el,button,note}=c,spawnOrder=stage.spawns.map(spawn=>spawn.id);
  let percentage,resultBox,previewButton,applyButton,review,previewRequest=0;
  function readPercentage(){
@@ -362,21 +377,17 @@ function openAll(c,{stage,units,interval,spawnGroups,referenceCounts,assertCurre
     proposal.detail='Add units to balance this wave.';
     return proposal;
    }
-   const suggested=Counts.suggestedTotal(referenceCounts,index);
-   const base=validTotal(suggested)?suggested:current;
-   const totalUnits=proposal.target=Math.max(1,Math.round(base*scale/100));
+   const target=proposal.target=Math.max(1,Math.round(current*scale/100));
+   const totalUnits=target===current?null:target;
    const settings=limits(wave,Balance.suggestedPeakCap(wave.Wave||index+1),stage.level);
-   const unitThreats=Threat.profiles(units,wave);
+   const unitThreats=Threat.profiles(units,wave,settings.defeatSeconds);
    const result=Balance.plan(wave,{...settings,totalUnits,interval,spawnGroups,spawnOrder,unitThreats});
    if(!result.ok)throw Error(result.message);
    const proposed=Waves.summary(result.afterWave,interval).units;
    const pool=Counts.countPool(Waves.entries(wave,interval),unitThreats);
-   if(proposed!==Counts.targetTotal(pool,totalUnits))throw Error('The proposal did not reach the expected count.');
+   if(proposed!==(totalUnits===null?current:Counts.targetTotal(pool,totalUnits)))throw Error('The proposal did not reach the expected count.');
    Object.assign(proposal,{proposed,peak:result.after.peak,cap:settings.peakCap,lastSpawn:result.after.lastSpawn,changes:result.changes});
-   const details=[];
-   if(base!==suggested)details.push('Scaled from the current count.');
-   if(proposed!==totalUnits)details.push(pool.adjustable.length?'Kept at least one per group and all fixed counts.':'All counts are fixed.');
-   proposal.detail=details.join(' ');
+   if(proposed!==target)proposal.detail=pool.adjustable.length?'Kept at least one per group and all fixed counts.':'All counts are fixed.';
   }catch(error){proposal.error=error.message||String(error);}
   return proposal;
  }
@@ -410,7 +421,7 @@ function openAll(c,{stage,units,interval,spawnGroups,referenceCounts,assertCurre
  }
  const modal=c.modal('Balance all waves · Stage '+stage.level,dialog=>{
   dialog.classList.add('world-wave-balance-dialog');
-  note(dialog,'100% uses the suggested counts from stages 15–20. Each wave uses its timing limits and defaults. Manual groups, elites, and bosses use their authored counts.');
+  note(dialog,'100% keeps each wave’s current count. The percentage adjusts Auto groups. Manual groups, elites, and bosses keep their counts. Bosses start with the last regular spawn.');
   const label=el('label');
   label.appendChild(el('span','Unit count (%)'));
   percentage=el('input');

@@ -759,7 +759,16 @@ var def_KinghtFallBuildBase = function (t) {
   _ctor.prototype.getIsWork = function () {
     return this.buildCfg.enumValue != $z1KinghtFallEnum.KinghtFallEnumBuildEnum.None && 0 != this.index && !this.isDestroyed;
   };
-  _ctor.prototype.onAttacked = function (t) {
+  _ctor.prototype._applyBuildingDamage = function (amount, attacker, game) {
+    var info = this.buildInfo;
+    var received = Math.min(info.hp, amount);
+    info.hp -= amount;
+    if (attacker && received > 0) {
+      var awareness = require("AllyAwareness");
+      awareness.notify(awareness.capture(this, attacker, game), received);
+    }
+  };
+  _ctor.prototype.onAttacked = function (t, attacker) {
     if (!this.isDestroyed) {
       var building=this,info=this.buildInfo,node=this.node,generation=node&&node._combatGeneration,hp=this.ctrHp;
       if(!info)return 0;
@@ -774,7 +783,8 @@ var def_KinghtFallBuildBase = function (t) {
       if(!current())return 0;
       var damage = castle ? RelicBattle.castleIncomingDamage(data, this, t) : t;
       if(!current())return 0;
-      info.hp -= damage;
+      this._applyBuildingDamage(damage, attacker, game);
+      if(!current())return damage;
       if (BattleSounds.hit) BattleSounds.hit(this, null, damage);
       if(!current())return damage;
       if (castle) RelicBattle.afterCastleDamage(data, this);

@@ -180,20 +180,35 @@ test('hide, death, disable and destroy retire old collider callbacks including f
   }
 });
 
-test('opening during gate-close tween restores the complete enemy barrier and keeps side walls enabled', () => {
-  const h = fixture(); h.wall.setLevel(3); h.step(1); h.state.near = true; h.wall.doTime(); h.flush();
+test('opening during construction restores the full leaf and keeps side walls enabled', () => {
+  const h = fixture(); h.wall.setLevel(3); h.step(.5);
+  const leaf = h.leaves[2], growth = h.tweens.find(tween => tween.target === leaf);
+  assert.equal(leaf.points[0].x, -10);
+  h.state.near = true; h.wall.doTime(); h.flush();
+  const applies = h.state.applies;
+  growth.options.onUpdate(growth.target, 1); h.flush();
+  assert.equal(h.wall.isOpen, true); assert.equal(growth.stopped, true); assert.equal(h.state.applies, applies);
   assert.deepEqual(h.fixtures(), [0, 0, 1, 0, 0, 1]);
-  h.state.near = false; h.wall.doTime(); h.step(.5);
-  const closing = h.tweens.at(-1); assert.equal(closing.duration, .1);
-  h.state.near = true; h.wall.doTime(); h.flush(); closing.options.onUpdate(closing.target, 1); h.flush();
-  assert.equal(h.wall.isOpen, true); assert.equal(closing.stopped, true); assert.deepEqual(h.fixtures(), [0, 0, 1, 0, 0, 1]);
-  assert.deepEqual(Array.from(h.leaves[2].points, p => [p.x, p.y]), [[-20, -10], [20, -10], [20, 10], [-20, 10]]);
+  assert.deepEqual(Array.from(leaf.points, p => [p.x, p.y]), [[-20, -10], [20, -10], [20, 10], [-20, 10]]);
+});
+
+test('the Creator gate keeps the same full-size fixtures as it closes and reopens', { skip: !enginePresent }, () => {
+  const h = fixture(true, true); h.wall.setLevel(3); h.step(1);
+  const leaf = h.leaves[2], wing = h.wings[2];
+  const leafFixture = leaf._fixtures[0], wingFixture = wing._fixtures[0], applies = h.state.applies;
+  for (const near of [true, false, true, false]) {
+    h.state.near = near; h.wall.doTime(); h.step(.5); h.step(1);
+    assert.equal(h.wall.isOpen, near);
+    assert.equal(leaf._fixtures[0], leafFixture);
+    assert.equal(wing._fixtures[0], wingFixture);
+    assert.equal(h.state.applies, applies);
+  }
 });
 
 test('open gate filters friendly contacts per step while retaining enemy and wing collisions', () => {
   const h = fixture(); h.wall.setLevel(1); h.step(1); h.state.near = true; h.wall.doTime(); h.flush();
   assert.equal(h.wall.node.bodyComponent.enabledContactListener, true);
-  const actor = team => ({ body: { node: { getComponents: () => team ? [{ navigationTeam: team }] : [] } } });
+  const actor = team => ({ body: { node: { activeInHierarchy: true, getComponents: () => team ? [{ navigationTeam: team }] : [] } } });
   for (const team of ['friendly', undefined]) {
     const contact = {}; h.wall.onPreSolve(contact, h.leaves[0], actor(team));
     assert.equal(contact.disabledOnce, true); assert.equal(contact.disabled, undefined);
@@ -202,6 +217,17 @@ test('open gate filters friendly contacts per step while retaining enemy and win
   const wing = {}; h.wall.onPreSolve(wing, h.wings[0], actor('friendly')); assert(!wing.disabledOnce);
   h.state.near = false; h.wall.doTime();
   const shut = {}; h.wall.onPreSolve(shut, h.leaves[0], actor('friendly')); assert(!shut.disabledOnce);
+});
+
+test('an open gate ignores retired colliders received during the physics step', () => {
+  const h = fixture(); h.wall.setLevel(1); h.step(1); h.state.near = true; h.wall.doTime(); h.flush();
+  const retired = [null, { body: { node: null }, node: null }, { node: { activeInHierarchy: false } },
+    { destroyed: true, node: { activeInHierarchy: true } }, { node: { destroyed: true, activeInHierarchy: true } }];
+  for (const collider of retired) {
+    const contact = {};
+    h.wall.onPreSolve(contact, h.leaves[0], collider);
+    assert.equal(contact.disabledOnce, undefined);
+  }
 });
 
 test('component disable during growth retains authored footprint for re-enable without setLevel', () => {
@@ -241,7 +267,7 @@ test('actual Box2D open leaf admits allies and hero but withstands an enemy push
     function actor(y, navigationTeam) {
       const def = new b2.b2BodyDef(); def.type = b2.b2BodyType.b2_dynamicBody; def.position.Set(0, y); def.fixedRotation = true;
       const body = h.world.CreateBody(def), shape = new b2.b2CircleShape(.18), fixture = body.CreateFixture(shape, 1);
-      fixture.collider = { body: { node: { getComponents: () => [{ navigationTeam }] } } };
+      fixture.collider = { body: { node: { activeInHierarchy: true, getComponents: () => [{ navigationTeam }] } } };
       return body;
     }
     const subject = actor(side, team), pusher = team === 'enemy' ? actor(side * 1.5, 'friendly') : null;

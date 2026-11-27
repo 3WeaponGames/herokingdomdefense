@@ -895,7 +895,7 @@
             "unitId": 1000012000,
             "spawnId": 7,
             "count": 4,
-            "startSeconds": 20.25,
+            "startSeconds": 15,
             "intervalSeconds": 3.625,
             "id": "entry-17"
           },
@@ -903,7 +903,7 @@
             "unitId": 91182,
             "spawnId": 8,
             "count": 9,
-            "startSeconds": 21.625,
+            "startSeconds": 16.019,
             "intervalSeconds": 2.25,
             "id": "entry-18",
             "unitGroupId": "unit-group-0"
@@ -912,7 +912,7 @@
             "unitId": 100807,
             "spawnId": 9,
             "count": 5,
-            "startSeconds": 23.75,
+            "startSeconds": 17.593,
             "intervalSeconds": 3.75,
             "id": "entry-19"
           },
@@ -920,7 +920,7 @@
             "unitId": 91182,
             "spawnId": 5,
             "count": 9,
-            "startSeconds": 42.25,
+            "startSeconds": 31.296,
             "intervalSeconds": 2.125,
             "id": "entry-20",
             "unitGroupId": "unit-group-0"
@@ -929,7 +929,7 @@
             "unitId": 91162,
             "spawnId": 6,
             "count": 4,
-            "startSeconds": 45.375,
+            "startSeconds": 33.611,
             "intervalSeconds": 3.875,
             "id": "entry-21"
           },
@@ -937,7 +937,7 @@
             "unitId": 101719,
             "spawnId": 4,
             "count": 3,
-            "startSeconds": 47.5,
+            "startSeconds": 35.185,
             "intervalSeconds": 4.125,
             "id": "entry-22"
           }
@@ -963,8 +963,8 @@
       {
         "id": 4,
         "Wave": 11,
-        "HealthCoefficient": 2.05,
-        "AttackCoefficient": 1.85,
+        "HealthCoefficient": 2.3575,
+        "AttackCoefficient": 1.9425,
         "StartSliver": 6,
         "CommerceSliver": 4,
         "WaveReward": [
@@ -1000,7 +1000,7 @@
             "unitId": 91071,
             "spawnId": 11,
             "count": 4,
-            "startSeconds": 19.375,
+            "startSeconds": 13.362,
             "intervalSeconds": 3.75,
             "id": "entry-11"
           },
@@ -1008,7 +1008,7 @@
             "unitId": 91182,
             "spawnId": 12,
             "count": 9,
-            "startSeconds": 20.875,
+            "startSeconds": 14.397,
             "intervalSeconds": 2,
             "id": "entry-17",
             "unitGroupId": "unit-group-0"
@@ -1017,7 +1017,7 @@
             "unitId": 1000012000,
             "spawnId": 10,
             "count": 3,
-            "startSeconds": 23.125,
+            "startSeconds": 15.948,
             "intervalSeconds": 3.625,
             "id": "entry-18"
           },
@@ -1025,7 +1025,7 @@
             "unitId": 91162,
             "spawnId": 9,
             "count": 6,
-            "startSeconds": 38.375,
+            "startSeconds": 26.466,
             "intervalSeconds": 3,
             "id": "entry-13"
           },
@@ -1033,7 +1033,7 @@
             "unitId": 91182,
             "spawnId": 7,
             "count": 6,
-            "startSeconds": 40.125,
+            "startSeconds": 27.672,
             "intervalSeconds": 2.5,
             "id": "entry-19",
             "unitGroupId": "unit-group-0"
@@ -1042,7 +1042,7 @@
             "unitId": 100801,
             "spawnId": 8,
             "count": 2,
-            "startSeconds": 42.25,
+            "startSeconds": 29.138,
             "intervalSeconds": 4,
             "id": "entry-3"
           },
@@ -1050,7 +1050,7 @@
             "unitId": 101719,
             "spawnId": 4,
             "count": 3,
-            "startSeconds": 55.25,
+            "startSeconds": 38.103,
             "intervalSeconds": 4.125,
             "id": "entry-20"
           },
@@ -1058,7 +1058,7 @@
             "unitId": 91182,
             "spawnId": 6,
             "count": 6,
-            "startSeconds": 56.75,
+            "startSeconds": 39.138,
             "intervalSeconds": 1.5,
             "id": "entry-21",
             "unitGroupId": "unit-group-0"
@@ -1086,8 +1086,8 @@
       {
         "id": 4,
         "Wave": 12,
-        "HealthCoefficient": 2.1,
-        "AttackCoefficient": 1.9,
+        "HealthCoefficient": 2.625,
+        "AttackCoefficient": 2.052,
         "StartSliver": 6,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [],
@@ -1107,7 +1107,7 @@
             "spawnId": 5,
             "count": 5,
             "startSeconds": 0.625,
-            "intervalSeconds": 3.75,
+            "intervalSeconds": 3.375,
             "id": "entry-18"
           },
           {
@@ -1115,7 +1115,7 @@
             "spawnId": 6,
             "count": 9,
             "startSeconds": 2.25,
-            "intervalSeconds": 1.625,
+            "intervalSeconds": 1.463,
             "id": "entry-19",
             "unitGroupId": "unit-group-1"
           },
@@ -1123,8 +1123,8 @@
             "unitId": 91182,
             "spawnId": 3,
             "count": 9,
-            "startSeconds": 17.375,
-            "intervalSeconds": 2.375,
+            "startSeconds": 11.21,
+            "intervalSeconds": 2.138,
             "id": "entry-20",
             "unitGroupId": "unit-group-1"
           },
@@ -1132,32 +1132,32 @@
             "unitId": 100807,
             "spawnId": 1,
             "count": 6,
-            "startSeconds": 20.625,
-            "intervalSeconds": 3.25,
+            "startSeconds": 13.306,
+            "intervalSeconds": 2.925,
             "id": "entry-21"
           },
           {
             "unitId": 100801,
             "spawnId": 2,
             "count": 3,
-            "startSeconds": 22.875,
-            "intervalSeconds": 4,
+            "startSeconds": 14.758,
+            "intervalSeconds": 3.6,
             "id": "entry-22"
           },
           {
             "unitId": 91071,
             "spawnId": 10,
             "count": 3,
-            "startSeconds": 38.875,
-            "intervalSeconds": 3.75,
+            "startSeconds": 25.081,
+            "intervalSeconds": 3.375,
             "id": "entry-23"
           },
           {
             "unitId": 91182,
             "spawnId": 12,
             "count": 9,
-            "startSeconds": 40.375,
-            "intervalSeconds": 1.875,
+            "startSeconds": 26.048,
+            "intervalSeconds": 1.688,
             "id": "entry-24",
             "unitGroupId": "unit-group-1"
           },
@@ -1165,30 +1165,30 @@
             "unitId": 1000012000,
             "spawnId": 11,
             "count": 3,
-            "startSeconds": 42.5,
-            "intervalSeconds": 3.625,
+            "startSeconds": 27.419,
+            "intervalSeconds": 3.263,
             "id": "entry-10"
           },
           {
             "unitId": 101719,
             "spawnId": 8,
             "count": 2,
-            "startSeconds": 57.25,
-            "intervalSeconds": 4.125,
+            "startSeconds": 36.935,
+            "intervalSeconds": 3.712,
             "id": "entry-25"
           },
           {
             "unitId": 91182,
             "spawnId": 7,
             "count": 9,
-            "startSeconds": 58.875,
-            "intervalSeconds": 1.25,
+            "startSeconds": 37.984,
+            "intervalSeconds": 1.125,
             "id": "entry-26",
             "unitGroupId": "unit-group-1"
           },
           {
             "count": 1,
-            "startSeconds": 68.875,
+            "startSeconds": 46.984,
             "intervalSeconds": 0.5,
             "spawnId": 9,
             "unitId": 91164,
@@ -6002,162 +6002,33 @@
         2,
         3
       ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": -350,
-          "y": -1170,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": -321,
-          "y": -944,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": -300,
-          "y": -764,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": -271,
-          "y": -708,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -222,
-          "y": -459,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": -188,
-          "y": -162,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": -170,
-          "y": 62,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": -165.09,
-          "y": 115.04,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
-        }
-      ],
       "requiresAnyBuilding": [],
       "weight": 5,
-      "spread": 28
-    },
-    {
-      "id": "s04-g1-b4",
-      "name": "Southwest - Tower 1 detour",
-      "nameFromSpawns": false,
-      "spawnIds": [
-        1,
-        2,
-        3
-      ],
+      "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
           "x": -350,
-          "y": -1170,
+          "y": -1166,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -321,
-          "y": -944,
+          "x": -300,
+          "y": -786,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -300,
-          "y": -764,
+          "x": -220,
+          "y": -626,
           "goal": false
         },
         {
           "id": "p4",
-          "x": -302.03,
-          "y": -678.09,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -260,
-          "y": -644,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": -188,
-          "y": -162,
-          "goal": false
-        },
-        {
-          "id": "p7",
           "x": -170,
-          "y": 62,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": -165.09,
-          "y": 115.04,
+          "y": 124,
           "goal": true
         }
       ],
@@ -6179,251 +6050,8 @@
           "from": "p3",
           "to": "p4",
           "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
         }
-      ],
-      "requiresAnyBuilding": [ 4 ],
-      "weight": 2,
-      "spread": 28
-    },
-    {
-      "id": "s04-g1-b6",
-      "name": "Southwest - Tower 2 detour",
-      "nameFromSpawns": false,
-      "spawnIds": [
-        1,
-        2,
-        3
-      ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": -350,
-          "y": -1170,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": -321,
-          "y": -944,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": -300,
-          "y": -764,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": -271,
-          "y": -708,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -260,
-          "y": -604,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": -320.22,
-          "y": -316.58,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": -188,
-          "y": -162,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": -170,
-          "y": 62,
-          "goal": false
-        },
-        {
-          "id": "p9",
-          "x": -165.09,
-          "y": 115.04,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
-        },
-        {
-          "id": "e8",
-          "from": "p8",
-          "to": "p9",
-          "weight": 1
-        }
-      ],
-      "requiresAnyBuilding": [ 6 ],
-      "weight": 2,
-      "spread": 28
-    },
-    {
-      "id": "s04-g1-b17",
-      "name": "Southwest - Mill 1 detour",
-      "nameFromSpawns": false,
-      "spawnIds": [
-        1,
-        2,
-        3
-      ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": -350,
-          "y": -1170,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": -321,
-          "y": -944,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": -300,
-          "y": -764,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": -271,
-          "y": -708,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -222,
-          "y": -459,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": -91.22,
-          "y": -280.99,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": -165.09,
-          "y": 115.04,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        }
-      ],
-      "requiresAnyBuilding": [ 17 ],
-      "weight": 2,
-      "spread": 28
+      ]
     },
     {
       "id": "s04-g2-hall",
@@ -6434,498 +6062,33 @@
         5,
         6
       ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 545,
-          "y": -1168,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 493,
-          "y": -971,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 446,
-          "y": -707,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": 429,
-          "y": -449,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": 420,
-          "y": -424,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": 244,
-          "y": -262,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": 240,
-          "y": -64,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": 80,
-          "y": 16,
-          "goal": false
-        },
-        {
-          "id": "p9",
-          "x": 59,
-          "y": -19.65,
-          "goal": false
-        },
-        {
-          "id": "p10",
-          "x": -42,
-          "y": 76,
-          "goal": false
-        },
-        {
-          "id": "p11",
-          "x": -84.26,
-          "y": 143.13,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
-        },
-        {
-          "id": "e8",
-          "from": "p8",
-          "to": "p9",
-          "weight": 1
-        },
-        {
-          "id": "e9",
-          "from": "p9",
-          "to": "p10",
-          "weight": 1
-        },
-        {
-          "id": "e10",
-          "from": "p10",
-          "to": "p11",
-          "weight": 1
-        }
-      ],
       "requiresAnyBuilding": [],
       "weight": 5,
-      "spread": 28
-    },
-    {
-      "id": "s04-g2-b7",
-      "name": "Southeast - Tower 3 detour",
-      "nameFromSpawns": false,
-      "spawnIds": [
-        4,
-        5,
-        6
-      ],
+      "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": 545,
-          "y": -1168,
+          "x": 540,
+          "y": -1166,
           "goal": false
         },
         {
           "id": "p2",
-          "x": 493,
-          "y": -971,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 446,
-          "y": -707,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": 429,
-          "y": -449,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": 415.36,
-          "y": -284.38,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": 240,
-          "y": -84,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": 80,
-          "y": 16,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": 59,
-          "y": -19.65,
-          "goal": false
-        },
-        {
-          "id": "p9",
-          "x": -42,
-          "y": 76,
-          "goal": false
-        },
-        {
-          "id": "p10",
-          "x": -84.26,
-          "y": 143.13,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
-        },
-        {
-          "id": "e8",
-          "from": "p8",
-          "to": "p9",
-          "weight": 1
-        },
-        {
-          "id": "e9",
-          "from": "p9",
-          "to": "p10",
-          "weight": 1
-        }
-      ],
-      "requiresAnyBuilding": [ 7 ],
-      "weight": 2,
-      "spread": 28
-    },
-    {
-      "id": "s04-g2-b8",
-      "name": "Southeast - Tower 4 detour",
-      "nameFromSpawns": false,
-      "spawnIds": [
-        4,
-        5,
-        6
-      ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 545,
-          "y": -1168,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 320.45,
-          "y": -960.44,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 446,
-          "y": -707,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": 429,
-          "y": -449,
-          "goal": false
-        },
-        {
-          "id": "p5",
           "x": 420,
-          "y": -424,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": 244,
-          "y": -262,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": 240,
-          "y": -64,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": 80,
-          "y": 16,
-          "goal": false
-        },
-        {
-          "id": "p9",
-          "x": 59,
-          "y": -19.65,
-          "goal": false
-        },
-        {
-          "id": "p10",
-          "x": -42,
-          "y": 76,
-          "goal": false
-        },
-        {
-          "id": "p11",
-          "x": -84.26,
-          "y": 143.13,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
-        },
-        {
-          "id": "e8",
-          "from": "p8",
-          "to": "p9",
-          "weight": 1
-        },
-        {
-          "id": "e9",
-          "from": "p9",
-          "to": "p10",
-          "weight": 1
-        },
-        {
-          "id": "e10",
-          "from": "p10",
-          "to": "p11",
-          "weight": 1
-        }
-      ],
-      "requiresAnyBuilding": [ 8 ],
-      "weight": 2,
-      "spread": 28
-    },
-    {
-      "id": "s04-g2-b23",
-      "name": "Southeast - Tower 6 detour",
-      "nameFromSpawns": false,
-      "spawnIds": [
-        4,
-        5,
-        6
-      ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 545,
-          "y": -1168,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 493,
-          "y": -971,
+          "y": -376,
           "goal": false
         },
         {
           "id": "p3",
-          "x": 226.41,
-          "y": -736.16,
+          "x": 150,
+          "y": 24,
           "goal": false
         },
         {
           "id": "p4",
-          "x": 440,
-          "y": -504,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": 429,
-          "y": -449,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": 420,
-          "y": -424,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": 244,
-          "y": -262,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": 240,
-          "y": -64,
-          "goal": false
-        },
-        {
-          "id": "p9",
-          "x": 80,
-          "y": 16,
-          "goal": false
-        },
-        {
-          "id": "p10",
-          "x": 59,
-          "y": -19.65,
-          "goal": false
-        },
-        {
-          "id": "p11",
-          "x": -42,
-          "y": 76,
-          "goal": false
-        },
-        {
-          "id": "p12",
-          "x": -84.26,
-          "y": 143.13,
+          "x": -80,
+          "y": 164,
           "goal": true
         }
       ],
@@ -6947,59 +6110,8 @@
           "from": "p3",
           "to": "p4",
           "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
-        },
-        {
-          "id": "e8",
-          "from": "p8",
-          "to": "p9",
-          "weight": 1
-        },
-        {
-          "id": "e9",
-          "from": "p9",
-          "to": "p10",
-          "weight": 1
-        },
-        {
-          "id": "e10",
-          "from": "p10",
-          "to": "p11",
-          "weight": 1
-        },
-        {
-          "id": "e11",
-          "from": "p11",
-          "to": "p12",
-          "weight": 1
         }
-      ],
-      "requiresAnyBuilding": [ 23 ],
-      "weight": 2,
-      "spread": 28
+      ]
     },
     {
       "id": "s04-g3-hall",
@@ -7010,228 +6122,33 @@
         8,
         9
       ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 690,
-          "y": -532,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 549,
-          "y": -429,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 500,
-          "y": -464,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": 460,
-          "y": -464,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": 440,
-          "y": -404,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": 433,
-          "y": -362,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": 247,
-          "y": -238,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": 240,
-          "y": -64,
-          "goal": false
-        },
-        {
-          "id": "p9",
-          "x": 80,
-          "y": 16,
-          "goal": false
-        },
-        {
-          "id": "p10",
-          "x": 48,
-          "y": -29.5,
-          "goal": false
-        },
-        {
-          "id": "p11",
-          "x": -23,
-          "y": 70,
-          "goal": false
-        },
-        {
-          "id": "p12",
-          "x": -78.11,
-          "y": 147.25,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
-        },
-        {
-          "id": "e8",
-          "from": "p8",
-          "to": "p9",
-          "weight": 1
-        },
-        {
-          "id": "e9",
-          "from": "p9",
-          "to": "p10",
-          "weight": 1
-        },
-        {
-          "id": "e10",
-          "from": "p10",
-          "to": "p11",
-          "weight": 1
-        },
-        {
-          "id": "e11",
-          "from": "p11",
-          "to": "p12",
-          "weight": 1
-        }
-      ],
       "requiresAnyBuilding": [],
       "weight": 5,
-      "spread": 28
-    },
-    {
-      "id": "s04-g3-b7",
-      "name": "East - Tower 3 detour",
-      "nameFromSpawns": false,
-      "spawnIds": [
-        7,
-        8,
-        9
-      ],
+      "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
           "x": 690,
-          "y": -532,
+          "y": -536,
           "goal": false
         },
         {
           "id": "p2",
-          "x": 549,
-          "y": -429,
+          "x": 470,
+          "y": -436,
           "goal": false
         },
         {
           "id": "p3",
-          "x": 500,
-          "y": -464,
+          "x": 140,
+          "y": 34,
           "goal": false
         },
         {
           "id": "p4",
-          "x": 460,
-          "y": -464,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": 440,
-          "y": -404,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": 414.9,
-          "y": -281.02,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": 240,
-          "y": -64,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": 80,
-          "y": 16,
-          "goal": false
-        },
-        {
-          "id": "p9",
-          "x": 48,
-          "y": -29.5,
-          "goal": false
-        },
-        {
-          "id": "p10",
-          "x": -23,
-          "y": 70,
-          "goal": false
-        },
-        {
-          "id": "p11",
-          "x": -78.11,
-          "y": 147.25,
+          "x": -80,
+          "y": 164,
           "goal": true
         }
       ],
@@ -7253,213 +6170,8 @@
           "from": "p3",
           "to": "p4",
           "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
-        },
-        {
-          "id": "e8",
-          "from": "p8",
-          "to": "p9",
-          "weight": 1
-        },
-        {
-          "id": "e9",
-          "from": "p9",
-          "to": "p10",
-          "weight": 1
-        },
-        {
-          "id": "e10",
-          "from": "p10",
-          "to": "p11",
-          "weight": 1
         }
-      ],
-      "requiresAnyBuilding": [
-        7
-      ],
-      "weight": 2,
-      "spread": 28
-    },
-    {
-      "id": "s04-g3-b17",
-      "name": "East - Mill 1 detour",
-      "nameFromSpawns": false,
-      "spawnIds": [
-        7,
-        8,
-        9
-      ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 690,
-          "y": -532,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 549,
-          "y": -429,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 500,
-          "y": -464,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": 460,
-          "y": -464,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": 440,
-          "y": -404,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": 36.16,
-          "y": -242.31,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": -40,
-          "y": -124,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": -40,
-          "y": -64,
-          "goal": false
-        },
-        {
-          "id": "p9",
-          "x": 80,
-          "y": 16,
-          "goal": false
-        },
-        {
-          "id": "p10",
-          "x": 48,
-          "y": -29.5,
-          "goal": false
-        },
-        {
-          "id": "p11",
-          "x": -23,
-          "y": 70,
-          "goal": false
-        },
-        {
-          "id": "p12",
-          "x": -78.11,
-          "y": 147.25,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
-        },
-        {
-          "id": "e8",
-          "from": "p8",
-          "to": "p9",
-          "weight": 1
-        },
-        {
-          "id": "e9",
-          "from": "p9",
-          "to": "p10",
-          "weight": 1
-        },
-        {
-          "id": "e10",
-          "from": "p10",
-          "to": "p11",
-          "weight": 1
-        },
-        {
-          "id": "e11",
-          "from": "p11",
-          "to": "p12",
-          "weight": 1
-        }
-      ],
-      "requiresAnyBuilding": [
-        17
-      ],
-      "weight": 2,
-      "spread": 28
+      ]
     },
     {
       "id": "s04-g4-hall",
@@ -7470,42 +6182,81 @@
         11,
         12
       ],
+      "requiresAnyBuilding": [],
+      "weight": 5,
+      "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": -441,
-          "y": 1180,
+          "x": -440,
+          "y": 1184,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -413,
-          "y": 963,
+          "x": -230,
+          "y": 334,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "s04-g3-b7",
+      "name": "East - Tower 3 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        7,
+        8,
+        9
+      ],
+      "requiresAnyBuilding": [ 7 ],
+      "weight": 2,
+      "spread": 28,
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": 690,
+          "y": -536,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": 470,
+          "y": -436,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -381,
-          "y": 748,
+          "x": 410,
+          "y": -316,
           "goal": false
         },
         {
           "id": "p4",
-          "x": -336,
-          "y": 557,
+          "x": 410,
+          "y": -296,
           "goal": false
         },
         {
           "id": "p5",
-          "x": -262,
-          "y": 361,
+          "x": 260,
+          "y": -106,
           "goal": false
         },
         {
           "id": "p6",
-          "x": -229,
-          "y": 330.5,
+          "x": -80,
+          "y": 164,
           "goal": true
         }
       ],
@@ -7540,50 +6291,56 @@
           "to": "p6",
           "weight": 1
         }
-      ],
-      "requiresAnyBuilding": [],
-      "weight": 5,
-      "spread": 28
+      ]
     },
     {
-      "id": "s04-g4-b22",
-      "name": "Northwest - Tower 5 detour",
+      "id": "s04-g1-b4",
+      "name": "Southwest - Tower 1 detour",
       "nameFromSpawns": false,
       "spawnIds": [
-        10,
-        11,
-        12
+        1,
+        2,
+        3
       ],
+      "requiresAnyBuilding": [ 4 ],
+      "weight": 2,
+      "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": -441,
-          "y": 1180,
+          "x": -350,
+          "y": -1166,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -222.39,
-          "y": 841.92,
+          "x": -300,
+          "y": -786,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -336,
-          "y": 557,
+          "x": -240,
+          "y": -666,
           "goal": false
         },
         {
           "id": "p4",
-          "x": -262,
-          "y": 361,
+          "x": -260,
+          "y": -626,
           "goal": false
         },
         {
           "id": "p5",
-          "x": -229,
-          "y": 330.5,
+          "x": -270,
+          "y": -616,
+          "goal": false
+        },
+        {
+          "id": "p6",
+          "x": -170,
+          "y": 124,
           "goal": true
         }
       ],
@@ -7611,13 +6368,14 @@
           "from": "p4",
           "to": "p5",
           "weight": 1
+        },
+        {
+          "id": "e5",
+          "from": "p5",
+          "to": "p6",
+          "weight": 1
         }
-      ],
-      "requiresAnyBuilding": [
-        22
-      ],
-      "weight": 2,
-      "spread": 28
+      ]
     },
     {
       "id": "s04-g4-b24",
@@ -7628,42 +6386,331 @@
         11,
         12
       ],
+      "requiresAnyBuilding": [ 24 ],
+      "weight": 2,
+      "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": -441,
-          "y": 1180,
+          "x": -440,
+          "y": 1184,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -413,
-          "y": 963,
+          "x": -330,
+          "y": 524,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -381,
-          "y": 748,
+          "x": -230,
+          "y": 334,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "s04-g4-b22",
+      "name": "Northwest - Tower 5 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        10,
+        11,
+        12
+      ],
+      "requiresAnyBuilding": [ 22 ],
+      "weight": 2,
+      "spread": 28,
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": -440,
+          "y": 1184,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": -220,
+          "y": 824,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": -230,
+          "y": 334,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "s04-g1-b6",
+      "name": "Southwest - Tower 2 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        1,
+        2,
+        3
+      ],
+      "requiresAnyBuilding": [ 6 ],
+      "weight": 2,
+      "spread": 28,
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": -350,
+          "y": -1166,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": -300,
+          "y": -786,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": -240,
+          "y": -666,
           "goal": false
         },
         {
           "id": "p4",
-          "x": -384.79,
-          "y": 559.92,
+          "x": -320,
+          "y": -326,
           "goal": false
         },
         {
           "id": "p5",
-          "x": -320,
-          "y": 516,
+          "x": -170,
+          "y": 124,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        },
+        {
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        },
+        {
+          "id": "e4",
+          "from": "p4",
+          "to": "p5",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "s04-g3-b11",
+      "name": "East - Barracks 2 detour",
+      "nameFromSpawns": false,
+      "weight": 2,
+      "spread": 28,
+      "spawnIds": [
+        7,
+        8,
+        9
+      ],
+      "requiresAnyBuilding": [
+        11
+      ],
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": 690,
+          "y": -536,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": 470,
+          "y": -436,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": 160,
+          "y": 84,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": -80,
+          "y": 164,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        },
+        {
+          "id": "e3",
+          "from": "p3",
+          "to": "p4",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "s04-g4-b13",
+      "name": "Northwest - House 2 detour",
+      "nameFromSpawns": false,
+      "weight": 2,
+      "spread": 28,
+      "spawnIds": [
+        10,
+        11,
+        12
+      ],
+      "requiresAnyBuilding": [
+        13
+      ],
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": -440,
+          "y": 1184,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": -230,
+          "y": 494,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": -230,
+          "y": 334,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p3",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "s04-g1-b17",
+      "name": "Southwest - Mill 1 detour",
+      "nameFromSpawns": false,
+      "spawnIds": [
+        1,
+        2,
+        3
+      ],
+      "requiresAnyBuilding": [ 17 ],
+      "weight": 2,
+      "spread": 28,
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": -350,
+          "y": -1166,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": -300,
+          "y": -786,
+          "goal": false
+        },
+        {
+          "id": "p3",
+          "x": -200,
+          "y": -586,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": -110,
+          "y": -296,
+          "goal": false
+        },
+        {
+          "id": "p5",
+          "x": -100,
+          "y": -286,
           "goal": false
         },
         {
           "id": "p6",
-          "x": -229,
-          "y": 330.5,
+          "x": -110,
+          "y": -276,
+          "goal": false
+        },
+        {
+          "id": "p7",
+          "x": -170,
+          "y": 124,
           "goal": true
         }
       ],
@@ -7697,13 +6744,14 @@
           "from": "p5",
           "to": "p6",
           "weight": 1
+        },
+        {
+          "id": "e6",
+          "from": "p6",
+          "to": "p7",
+          "weight": 1
         }
-      ],
-      "requiresAnyBuilding": [
-        24
-      ],
-      "weight": 2,
-      "spread": 28
+      ]
     }
   ],
   "hero": {
@@ -7713,7 +6761,7 @@
   "nextBuilding": 29,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "03efe5d59fa1d876f264aec0d036c6e103cceb18d4bac42c83bdb9665aebe890",
+  "sourceRevision": "dd93170fbff9e53b04b8517dc6b8c831e0b0c5da62f46e383840b211df09d8b2",
   "templates": {
     "Map03": [
       {

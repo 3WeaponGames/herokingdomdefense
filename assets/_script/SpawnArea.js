@@ -27,18 +27,18 @@ function sampleInBounds(center,radius,random,bounds,body) {
   // nearest in-map fallback so an authored wave never loses an enemy.
   return clamp(center,limits);
 }
-var flightSpawnFallbacks = new WeakMap();
-function clearFlightFallback(grid,center,radius,body) {
-  var cached=flightSpawnFallbacks.get(grid);
-  if(!cached)flightSpawnFallbacks.set(grid,cached=new Map());
-  var key=center.x+":"+center.y+":"+radius+":"+body;
+var clearSpawnFallbacks = new WeakMap();
+function clearSpawnFallback(grid,center,radius,body,projectOutside) {
+  var cached=clearSpawnFallbacks.get(grid);
+  if(!cached)clearSpawnFallbacks.set(grid,cached=new Map());
+  var key=center.x+":"+center.y+":"+radius+":"+body+":"+projectOutside;
   if(cached.has(key))return cached.get(key);
-  var start=(radius>0&&grid.nearestSpawnPoint(center,body,radius))||grid.nearestSpawnPoint(center,body);
+  var start=(radius>0&&grid.nearestSpawnPoint(center,body,radius))||(projectOutside?grid.nearestSpawnPoint(center,body):null);
   if(cached.size>=128)cached.delete(cached.keys().next().value);
   cached.set(key,start);
   return start;
 }
-function sampleFlight(grid,center,radius,body) {
+function sampleClear(grid,center,radius,body,projectOutside) {
   if(!validSample(center,radius))return null;
   var limits=bodyBounds(grid.bounds,body),first;
   var start=sample(center,radius,Math.random,function(p){
@@ -49,7 +49,7 @@ function sampleFlight(grid,center,radius,body) {
   if(start&&inside(start,limits)&&(radius>0||grid.isWalkable(start,body)))return start;
   // A fully sealed map still gets its scheduled enemy and controlled egress
   // if geometry later opens. No extra RNG is needed for the fallback.
-  return clearFlightFallback(grid,center,radius,body)||first||clamp(center,limits);
+  return clearSpawnFallback(grid,center,radius,body,projectOutside)||first||clamp(center,limits);
 }
 function spread(points,start,center,width,random,walkable,clear,anchorWalkable) {
   if(typeof width!=="number"||!isFinite(width)||!(width>0)||!points.length||!start||!center||!isFinite(start.x)||!isFinite(start.y)||!isFinite(center.x)||!isFinite(center.y))return points.map(function(p){return {x:p.x,y:p.y};});
@@ -74,32 +74,36 @@ function spread(points,start,center,width,random,walkable,clear,anchorWalkable) 
     return {x:p.x,y:p.y};
   });
 }
-function spawnRadius(game,spawnId) {
-  var holder=game.ndPath.getChildByName('Authored routes'),paths=holder&&holder.getComponent('AuthoredStagePaths'),spec=paths&&paths.spawnSpec(spawnId);
+function authoredSpawn(game,spawnId) {
+  var holder=game.ndPath.getChildByName('Authored routes'),paths=holder&&holder.getComponent('AuthoredStagePaths');
+  return paths&&paths.spawnSpec(spawnId)||null;
+}
+function spawnRadius(game,spawnId,spec) {
+  if(spec===undefined)spec=authoredSpawn(game,spawnId);
   if(spec&&spec.radius!==undefined)return spec.radius;
   var node=game.ndPath.getChildByName('ndEnemy'+spawnId),area=node&&node.getComponent&&node.getComponent('SpawnPointArea');return area?area.radius:0;
 }
 function prepare(unit,game,spawnId,collides,cfg) {
-  var radius=spawnRadius(game,spawnId)||0,bounds=mapBounds(game.mapSize);if(!(radius>0)&&!bounds)return;
+  var spec=authoredSpawn(game,spawnId),radius=spawnRadius(game,spawnId,spec)||0,bounds=mapBounds(game.mapSize);if(!(radius>0)&&!bounds)return;
   var Navigation=require('KinghtFallNavigation'),center=Navigation.positionOf(game.ndPath.getChildByName('ndEnemy'+spawnId),game);
   var navigation,start,flightUnit=cfg?{cfg:cfg,navigationTeam:unit.navigationTeam}:unit;
   var flight=Navigation.usesFlightGrid(flightUnit);
   if(!flight&&!(radius>0)&&inside(center,bounds))return;
-  // Terrain forbids entry, not exit. A spawn inside a blocker is a valid actor;
-  // shared navigation moves it out just like knockback or skill displacement.
   if(flight){
     navigation=Navigation.get(game);
-    start=sampleFlight(navigation.gridFor(flightUnit),center,radius,navigation.radius(unit,true));
+    start=sampleClear(navigation.gridFor(flightUnit),center,radius,navigation.radius(unit,true),true);
   }else if(collides){
     navigation=Navigation.get(game);navigation.refresh();
-    // Pooled bodies can still be inactive until initData. Measure the body
-    // that will collide, then keep it inside the map without excluding terrain.
-    start=sampleInBounds(center,radius,Math.random,navigation.grid.bounds,navigation.radius(unit,true));
+    // Measure the pooled body before activation. Keep the enemy in its
+    // authored area, with controlled egress available if the whole disk is blocked.
+    var body=navigation.radius(unit,true);
+    start=spec&&radius>0?sampleClear(navigation.mapGrid(),center,radius,body,false):
+      sampleInBounds(center,radius,Math.random,navigation.grid.bounds,body);
   }else start=bounds?sampleInBounds(center,radius,Math.random,bounds,0):sample(center,radius,Math.random);
   return start?{center:center,start:start}:null;
 }
 function apply(unit,game,spawnId,prepared) {
-  var radius=spawnRadius(game,spawnId)||0,route=unit.bornInfo&&unit.bornInfo.pathList,override=route&&route.routeSpread,bounds=mapBounds(game.mapSize);
+  var spec=authoredSpawn(game,spawnId),radius=spawnRadius(game,spawnId,spec)||0,route=unit.bornInfo&&unit.bornInfo.pathList,override=route&&route.routeSpread,bounds=mapBounds(game.mapSize);
   if(!(radius>0)&&!(override>0)&&!prepared&&!bounds)return true;
   var Navigation=require('KinghtFallNavigation'),node=game.ndPath.getChildByName('ndEnemy'+spawnId),center=prepared?prepared.center:Navigation.positionOf(node,game),collides=!unit.rigidBody||unit.rigidBody.active!==false,navigation,grid,body=0;
   var flight=Navigation.usesFlightGrid(unit);
@@ -110,9 +114,11 @@ function apply(unit,game,spawnId,prepared) {
     body=navigation.radius(unit,flight);bounds=grid.bounds;
   }
   var walkable=grid?function(p){return grid.isWalkable(p,body);}:null;
-  var start=prepared?prepared.start:flight?sampleFlight(grid,center,radius,body):bounds?sampleInBounds(center,radius,Math.random,bounds,body):sample(center,radius,Math.random);
+  var start=prepared?prepared.start:flight?sampleClear(grid,center,radius,body,true):
+    collides&&spec&&radius>0?sampleClear(navigation.mapGrid(),center,radius,body,false):
+      bounds?sampleInBounds(center,radius,Math.random,bounds,body):sample(center,radius,Math.random);
   if(!start)return false;
-  if(flight&&prepared&&!walkable(start))start=clearFlightFallback(grid,center,radius,body)||start;
+  if(flight&&prepared&&!walkable(start))start=clearSpawnFallback(grid,center,radius,body,true)||start;
   if(bounds)start=clamp(start,bodyBounds(bounds,body));
   unit.node.setPosition(start.x,start.y);
   var width=override===undefined?radius:override;

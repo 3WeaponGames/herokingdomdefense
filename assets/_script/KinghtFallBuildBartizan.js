@@ -138,9 +138,12 @@ var def_KinghtFallBuildBartizan = function (t) {
     e < 0 && (e = 0);
     return t * e;
   };
-  _ctor.prototype.onAttacked = function (t) {
+  _ctor.prototype.onAttacked = function (t, attacker) {
     if (!(this.isDestroyed || this.time[r.Invincible] >= 0)) {
-      this.buildInfo.hp -= t;
+      var info = this.buildInfo;
+      var ui = $z1KinghtFallUIGame.default.instance;
+      this._applyBuildingDamage(t, attacker, ui && ui.ctrGame);
+      if (this.buildInfo !== info || this.isDestroyed) return t;
       if (BattleSounds.hit) BattleSounds.hit(this, null, t);
       if (this.buildInfo.hp <= 0 && -1 == this.time[r.Invincible]) {
         var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff05);

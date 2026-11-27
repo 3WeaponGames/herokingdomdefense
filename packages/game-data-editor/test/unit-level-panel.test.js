@@ -66,16 +66,20 @@ test('shared sight edits compose rapidly and reset only the optional sight leaf,
     const f=fixture();f.render('ally:90001');const row=f.row('ally:90001'),before=f.store.draftState(),base=f.fields(f.section('Shared base stats'),'Sight range')[0];
     base.value='320';base.onchange();base.value='240';base.onchange();await f.panel._queue;assert.equal(f.store.draftState().A.AllyCfg[90001].SightRange,240,'The final queued control value wins');
     await f.panel._unitSightRangeEdit(row,400);f.panel._selectUnitLevel(f.row('ally:90001'),2);assert.equal(f.levelField(2,'SightRange').value,'400');await f.panel._unitLevelEdit(f.row('ally:90001'),2,'SightRange',500);
-    const reset=f.all(f.panel.$detail,n=>n.tagName==='button'&&n.textContent==='Reset sight range')[0];assert(reset);await reset.onclick();assert.equal(f.store.draftState().A.AllyCfg[90001].SightRange,undefined);assert.equal(f.store.draftState().overrides.unitLevels[Stats.key(90001,2)].SightRange,500);const expected=clone(before.A);assert.deepEqual(f.store.draftState().A,expected);
+    const reset=f.all(f.panel.$detail,n=>n.tagName==='button'&&n.textContent==='Reset sight range')[0];assert(reset);await reset.onclick();assert.equal(f.store.draftState().A.AllyCfg[90001].SightRange,undefined);assert.equal(f.store.draftState().overrides.unitLevels[Stats.key(90001,2)].SightRange,500);
+    const expected=clone(before.A);delete expected.AllyCfg[90001].SightRange;
+    assert.deepEqual(f.store.draftState().A,expected);
     for(const value of [-1,NaN,Infinity,'300',null])await assert.rejects(f.panel._unitSightRangeEdit(f.row('ally:90001'),value),/finite sight range/);
     const version=f.store.version;await f.panel._unitSightRangeEdit(f.row('ally:90001'));assert.equal(f.store.version,version,'An absent-leaf reset is a no-op');
 });
 
 test('selected-level sight supports zero, inherits shared or virtual defaults and preserves future fields on reset',async()=>{
     const f=fixture(),key=Stats.key(90001,2),other=Stats.key(90002,1);seedLevels(f,{[key]:{SightRange:350,future:{keep:true}},[other]:{SightRange:600}});f.render('ally:90001');f.panel._selectUnitLevel(f.row('ally:90001'),2);const before=f.store.draftState();
+    const shared=before.A.AllyCfg[90001].SightRange,inherited=shared??240;
     assert.equal(f.levelField(2,'SightRange').value,'350');const input=f.levelField(2,'SightRange');input.value='0';input.onchange();await f.panel._queue;assert.equal(f.preview().record.SightRange,0);
-    const reset=f.all(f.panel.$detail,n=>n.getAttribute&&n.getAttribute('aria-label')==='Use Lvl 1 Sight range')[0];assert(reset);await reset.onclick();await f.panel._queue;assert.deepEqual(f.store.draftState().overrides.unitLevels[key],{future:{keep:true}});assert.deepEqual(f.store.draftState().overrides.unitLevels[other],before.overrides.unitLevels[other]);assert.equal(f.levelField(2,'SightRange').value,'240');assert.equal(f.preview().record.SightRange,undefined);
-    const version=f.store.version;await f.panel._unitLevelEdit(f.row('ally:90001'),2,'SightRange',240);assert.equal(f.store.version,version,'Writing the inherited virtual default creates no override');assert.deepEqual(f.store.draftState().A,before.A);
+    const reset=f.all(f.panel.$detail,n=>n.getAttribute&&n.getAttribute('aria-label')==='Use Lvl 1 Sight range')[0];assert(reset);await reset.onclick();await f.panel._queue;assert.deepEqual(f.store.draftState().overrides.unitLevels[key],{future:{keep:true}});assert.deepEqual(f.store.draftState().overrides.unitLevels[other],before.overrides.unitLevels[other]);
+    assert.equal(f.levelField(2,'SightRange').value,String(inherited));assert.equal(f.preview().record.SightRange,shared);
+    const version=f.store.version;await f.panel._unitLevelEdit(f.row('ally:90001'),2,'SightRange',inherited);assert.equal(f.store.version,version,'Writing the inherited sight range creates no override');assert.deepEqual(f.store.draftState().A,before.A);
 });
 
 test('malformed saved sight is preserved while browsing and can be explicitly corrected with a numeric control',async()=>{

@@ -14,6 +14,7 @@ function bind(list,rows,options){
  function place(sourceId,targetId,after,stageId,before){
   if(sourceId===targetId)return;
   options.cancelDrag();
+  if(options.commit)return options.commit({sourceId,targetId,after,stageId,before});
   return options.edit(value=>{if(value.id!==stageId||!same(ids(value),before))throw Error('This card list changed while you were dragging. Review the latest list and try again.');move(value,sourceId,targetId,after);});
  }
  for(const row of rows){

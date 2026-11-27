@@ -200,7 +200,7 @@ test('pins group starts and applies hand-edited proposal values as Manual timing
  assert.equal(field('Spawn group 3 (3)').value,'20');
 });
 
-test('Balance wave suggests a total and applies an edited count with timing in a single draft operation',async()=>{
+test('Balance wave defaults to the current count and applies an edited count and aligned boss in one draft operation',async()=>{
  const f=fixture(),wave=f.state.snap.value.config.WaveCfg[0];
  f.state.tab='Waves';
  f.state.catalog.waveCountTargets=[9,12];
@@ -208,6 +208,7 @@ test('Balance wave suggests a total and applies an edited count with timing in a
  wave.SpawnTimeline[0].editorManualTiming=true;
  wave.SpawnTimeline[2].unitId=4;
  wave.SpawnTimeline[3].unitId=5;
+ wave.editorTimingBalance={totalUnits:12};
  let modal;
  f.context.modal=(title,body,apply)=>{
   modal={dialog:f.context.el('div'),applyButton:f.context.el('button'),apply};
@@ -222,8 +223,12 @@ test('Balance wave suggests a total and applies an edited count with timing in a
  const preview=()=>nodes().find(node=>node.textContent==='Preview changes').onclick();
  const before=clone(f.state.snap.value);
  await reopen();
- assert.equal(select('Target unit count').value,'9');
- assert.match(modal.dialog.textContent,/Stages 15–20 suggest 9 units/);
+ assert.equal(select('Target unit count').value,'4');
+ assert.match(modal.dialog.textContent,/The default target is the current count/);
+ await preview();
+ assert.match(modal.dialog.textContent,/Total units44/);
+ assert.match(modal.dialog.textContent,/Starts with the last regular spawn/);
+ nodes().find(node=>node.textContent==='Use suggested total (9)').onclick();
  await preview();
  assert.match(modal.dialog.textContent,/Total units49/);
  assert.match(modal.dialog.textContent,/6Current 1/);
@@ -244,6 +249,8 @@ test('Balance wave suggests a total and applies an edited count with timing in a
  assert.equal(saved.editorTimingBalance.totalUnits,6);
  assert.deepEqual(saved.SpawnTimeline.map(row=>row.count),[1,3,1,1]);
  assert.deepEqual(saved.SpawnTimeline[0],wave.SpawnTimeline[0]);
+ const regular=saved.SpawnTimeline.slice(0,-1);
+ assert.equal(saved.SpawnTimeline[3].startSeconds,Math.max(...regular.map(row=>row.startSeconds+(row.count-1)*row.intervalSeconds)));
  assert.equal(f.edits(),1);
 
  await reopen();
@@ -254,11 +261,11 @@ test('Balance wave suggests a total and applies an edited count with timing in a
  suggested.onclick();
  assert.equal(target.value,'9');
  target.value='';target.oninput();
- await preview();await modal.apply();
- assert.equal(f.state.snap.value.config.WaveCfg[0].editorTimingBalance.totalUnits,null);
- assert.deepEqual(f.state.snap.value.config.WaveCfg[0].SpawnTimeline.map(row=>row.count),[1,3,1,1]);
+ await preview();
+ assert.match(modal.dialog.textContent,/Total units66/);
+ assert.equal(f.edits(),1);
  await reopen();
- assert.equal(select('Target unit count').value,'');
+ assert.equal(select('Target unit count').value,'6');
 });
 
 async function openStageBalance(f){
@@ -280,7 +287,7 @@ async function openStageBalance(f){
  };
 }
 
-test('stage balance scales both directions from suggested totals and applies the whole populated stage in one draft',async()=>{
+test('stage balance scales current totals and applies the whole populated stage in one draft',async()=>{
  const f=fixture(),stage=f.state.snap.value,[first,legacy]=stage.config.WaveCfg;
  f.state.catalog.waveCountTargets=[10,20,25];
  stage.spawns.push({id:2,name:'East',enabled:true});
@@ -294,16 +301,17 @@ test('stage balance scales both directions from suggested totals and applies the
  assert.equal(review.percentage.value,'100');
  assert(review.applyButton.disabled);
  await review.preview();
- assert.deepEqual(review.row('Wave 1').slice(1,4),['4','10','10']);
+ assert.deepEqual(review.row('Wave 1').slice(1,4),['4','4','4']);
+ assert.deepEqual(review.row('Wave 2').slice(1,4),['1','1','1']);
  review.percentage.value='80';review.percentage.oninput();
  await review.preview();
- assert.deepEqual(review.row('Wave 1').slice(1,4),['4','8','8']);
- assert.deepEqual(review.row('Wave 2').slice(1,4),['1','16','16']);
- review.percentage.value='125';review.percentage.oninput();
+ assert.deepEqual(review.row('Wave 1').slice(1,4),['4','3','4']);
+ assert.deepEqual(review.row('Wave 2').slice(1,4),['1','1','1']);
+ review.percentage.value='250';review.percentage.oninput();
  await assert.rejects(review.apply(),/Preview this percentage/);
  await review.preview();
- assert.deepEqual(review.row('Wave 1').slice(1,4),['4','13','13']);
- assert.deepEqual(review.row('Wave 2').slice(1,4),['1','25','25']);
+ assert.deepEqual(review.row('Wave 1').slice(1,4),['4','10','10']);
+ assert.deepEqual(review.row('Wave 2').slice(1,4),['1','3','3']);
  assert.match(review.row('Wave 3').at(-1),/Add units/);
  assert(!review.applyButton.disabled);
  assert.deepEqual(f.state.snap.value,before);
@@ -314,15 +322,15 @@ test('stage balance scales both directions from suggested totals and applies the
  assert.equal(f.edits(),1);
  assert.deepEqual(firstDraft.SpawnTimeline[0],first.SpawnTimeline[0]);
  assert.equal(firstDraft.SpawnTimeline[1].startSeconds,3);
- assert.deepEqual(firstDraft.editorTimingBalance,{...first.editorTimingBalance,totalUnits:13});
+ assert.deepEqual(firstDraft.editorTimingBalance,{...first.editorTimingBalance,totalUnits:10});
  assert.deepEqual(secondDraft.RefreshSoldierKind,legacy.RefreshSoldierKind);
- assert.equal(secondDraft.editorTimingBalance.totalUnits,25);
+ assert.equal(secondDraft.editorTimingBalance.totalUnits,3);
  assert.deepEqual(emptyDraft,empty);
  const Pressure=require('../worlds/wave-pressure');
  const measured=Pressure.build(firstDraft,[],.5,.5);
- assert.equal(measured.totals.units,13);
+ assert.equal(measured.totals.units,10);
  assert(measured.peaks.units.value<=4 && measured.duration<=15);
- assert.equal(Pressure.build(secondDraft,[],.5).totals.units,25);
+ assert.equal(Pressure.build(secondDraft,[],.5).totals.units,3);
 });
 
 test('stage balance refuses a partial or stale proposal',async()=>{
@@ -332,7 +340,7 @@ test('stage balance refuses a partial or stale proposal',async()=>{
  const before=clone(stage),review=await openStageBalance(f);
  review.percentage.value='0';review.percentage.oninput();await review.preview();
  assert.match(review.dialog.textContent,/positive whole percentage/);
- review.percentage.value='100';review.percentage.oninput();await review.preview();
+ review.percentage.value='2000';review.percentage.oninput();await review.preview();
  assert.match(review.row('Wave 2').at(-1),/Blocked.*at least 19 s/);
  assert(review.applyButton.disabled);
  await assert.rejects(review.apply(),/Preview this percentage/);
@@ -340,7 +348,7 @@ test('stage balance refuses a partial or stale proposal',async()=>{
  assert(!review.applyButton.disabled);
  assert.deepEqual(review.row('Wave 1').slice(1,4),['4','1','4']);
  assert.match(review.row('Wave 1').at(-1),/at least one/);
- f.state.catalog.waveCountTargets[1]++;
+ f.state.snap.unitCatalogRevision=1;
  await assert.rejects(review.apply(),/balance inputs changed/);
  assert.deepEqual(f.state.snap.value,before);
  assert.equal(f.edits(),0);
@@ -353,8 +361,12 @@ test('stage balance leaves the draft untouched when every wave is empty or alrea
  stage.config.WaveCfg[1].RefreshSoldierKind=[];
  const before=clone(stage),review=await openStageBalance(f);
  await review.preview();
- assert.match(review.row('Wave 1').at(-1),/All counts are fixed/);
+ assert.deepEqual(review.row('Wave 1').slice(1,4),['4','4','4']);
  assert.match(review.row('Wave 2').at(-1),/Add units/);
+ assert(review.applyButton.disabled);
+ review.percentage.value='200';review.percentage.oninput();await review.preview();
+ assert.deepEqual(review.row('Wave 1').slice(1,4),['4','8','4']);
+ assert.match(review.row('Wave 1').at(-1),/All counts are fixed/);
  assert(review.applyButton.disabled);
  assert.deepEqual(f.state.snap.value,before);
  assert.equal(f.edits(),0);

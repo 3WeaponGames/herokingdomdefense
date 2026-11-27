@@ -239,6 +239,10 @@ Navigation.prototype.refresh = function () {
         this._flightGrid = this._flightBlockers = null;
       }
     }
+    if (this._mapGrid && (!sameBounds || this._mapPolygonCount !== mapPolygonCount ||
+      polygons.slice(0, mapPolygonCount).some(function (polygon, index) { return polygon !== navigation._polygons[index]; }))) {
+      this._mapGrid = null;
+    }
     this._mapPolygonCount = mapPolygonCount;
     this._polygons = polygons;
     this._friendlyPolygons = friendly;
@@ -253,6 +257,13 @@ Navigation.prototype.refresh = function () {
     this.stats.revisions++;
     this.stats.snapshotBuilds++;
   }
+};
+Navigation.prototype.mapGrid = function () {
+  this.refresh();
+  if (!this._mapGrid) {
+    this._mapGrid = new NavigationGrid(this._polygons.slice(0, this._mapPolygonCount), this.grid.bounds, this.grid.cellSize);
+  }
+  return this._mapGrid;
 };
 Navigation.prototype.gridFor = function (unit) {
   this.refresh();

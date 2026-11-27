@@ -19,7 +19,7 @@ function fixture(height=1334,position){
  Object.assign(Label,{HorizontalAlign:{CENTER:1},VerticalAlign:{CENTER:1},Overflow:{NONE:0,RESIZE_HEIGHT:3}});
  class LabelOutline extends Component{}
  class Button extends Component{constructor(){super();this.interactable=true;}}
- Button.Transition={SCALE:3};
+ Button.Transition={NONE:0,SCALE:3};
  class Sprite extends Component{}Object.assign(Sprite,{Type:{SLICED:1},SizeMode:{CUSTOM:0}});
  class Graphics extends Component{
   clear(){this.points=[];this.rectangles=[];this.circles=[];}
@@ -37,6 +37,7 @@ function fixture(height=1334,position){
   set parent(value){if(this._parent)this._parent.children.splice(this._parent.children.indexOf(this),1);this._parent=value;if(value)value.children.push(this);}get parent(){return this._parent;}
   get activeInHierarchy(){return this.active&&(!this.parent||this.parent.activeInHierarchy);}
   setContentSize(w,h){if(typeof w==='object')({width:w,height:h}=w);this.width=w;this.height=h;}
+  setSiblingIndex(index){const nodes=this.parent.children;nodes.splice(nodes.indexOf(this),1);nodes.splice(index,0,this);}
   setPosition(x,y){if(typeof x==='object')({x,y}=x);this.x=x;this.y=y;}
   getPosition(){return {x:this.x,y:this.y};}
   setScale(n){this.scaleX=this.scaleY=n;}
@@ -93,13 +94,16 @@ function fixture(height=1334,position){
 test('battle header stays inside safe edges, with Pause above Buildings and a compact opaque white title',()=>{
  for(const h of [1334,1688,1900]){const f=fixture(h),u=f.ui;f.setSafe({x:20,y:30,width:710,height:h-90});f.settle();assert.equal(u.ndCoin.x-u.ndCoin.width/2,-375+38);assert(u.btnSuspend.x+38<375-38);assert.equal(u.btnSuspend.x,u.btnBuildInfo.x);assert(u.btnBuildInfo.y+38<u.btnSuspend.y-38);const caption=f.nodes[190];assert.equal(caption.x,0);assert(u.btnBuildInfo.x+caption.x+caption.width*.25<=337);assert.equal(f.nodes[237].opacity,255);assert.equal(f.nodes[237].color,'white');assert.equal(f.nodes[237].getComponent(f.cc.Label).fontSize,68);assert.equal(f.nodes[240].getComponent(f.cc.Label).fontSize,54);}
 });
-test('the Royal Advisor stands at the authored point with an open task and its claim action',()=>{
+function openTask(ui){ui._battleHud.questMarker.emit('click');}
+
+test('the Royal Advisor offers the task and its claim action at the authored point',()=>{
  const {ui,nodes,cc,loadKing,Skeleton}=fixture(1334,{x:-100,y:65});
  const task=ui.ndTask,info=ui.ctrGame.gameData.taskInfo,king=ui._battleHud.king;
  assert.equal(king.name,'Royal Advisor');
  assert.deepEqual(king.getPosition(),{x:-88,y:70});assert.equal(king.parent,ui.ctrGame.ndMain);assert.equal(king.group,'world');
  assert.equal(king.scaleX,.5);assert.equal(king.scaleY,.5);
  loadKing();assert.deepEqual(king.getComponent(Skeleton).animation,{track:0,name:'idle',loop:true});
+ openTask(ui);
  assert.equal(task.parent,ui.ctrUI.node);assert.equal(task.active,true);
  assert.equal(nodes[200].getComponent(cc.Label).string,'Build 1 Mill');assert(nodes[208].active);
  assert.equal(nodes[208].getComponent(cc.Label).string,'Pending task');
@@ -150,6 +154,9 @@ test('the closed quest popup follows the Advisor and marks pending and ready tas
  const {ui,hud,camera}=fixture(),state=ui._battleHud,task=ui.ndTask;
  const info=ui.ctrGame.gameData.taskInfo,close=state.closeControl.node,marker=state.questMarker;
  const pending=structuredClone(info);
+ assert(!task.active && marker.active && state.king.active);
+ assert.equal(state.markerGlyph.string,'!');
+ openTask(ui);
  assert(!marker.active && close.activeInHierarchy);
  close.emit('click');
  assert(!task.active && marker.active && state.king.active);
@@ -201,6 +208,7 @@ test('only Collect claims the ready task during planning',()=>{
   $z1KinghtFallConfig:{KinghtFallEventName:{PlayVideoSucc:'resume'}},require:()=>({LanguageMgr:{getInstance:()=>({t:()=> '1×'})}})});
  bind.call(ui);
  ui.ctrGame.gameData.taskInfo.stage=1;ui.initView();
+ openTask(ui);
  ui.ndTask.emit(cc.Node.EventType.TOUCH_END);
  ui._battleHud.closeControl.node.emit('click');
  collect.emit('click');
@@ -212,18 +220,52 @@ test('only Collect claims the ready task during planning',()=>{
  collect.emit('click');
  assert.equal(claimEvents.length,2);
 });
+test('clicking the Advisor toggles the task and follows the visible model',()=>{
+ const {ui,hud,camera,loadKing}=fixture(),state=ui._battleHud;
+ const tap=state.advisorControl.node,task=ui.ndTask,info=ui.ctrGame.gameData.taskInfo;
+ const pending=structuredClone(info);
+ assert(!tap.active);
+ loadKing();hud.layout(ui);
+ assert(tap.activeInHierarchy);
+ assert.equal(tap.parent.children[0],tap);
+ assert.equal(tap.width,56);
+ assert.equal(tap.height,66);
+ assert(!task.active&&state.questMarker.active);
+ tap.emit('click');
+ assert(task.active&&!state.questMarker.active);
+ tap.emit('click');
+ assert(!task.active&&state.questMarker.active);
+ assert.deepEqual(info,pending);
+
+ const position=tap.getPosition();
+ camera.offset.x=25;camera.offset.y=50;hud.layout(ui);
+ assert.deepEqual(tap.getPosition(),{x:position.x-25,y:position.y-50});
+ camera.offset.y=1500;hud.layout(ui);
+ assert(!tap.active);
+ camera.offset.y=0;hud.layout(ui);
+ assert(tap.active&&state.questMarker.active&&!task.active);
+ ui.ctrGame.gameStatus=GameStage.Transition;hud.layout(ui,.2);
+ assert(state.king.active&&!tap.active);
+ tap.emit('click');
+ assert(state.popupClosed);
+ ui.ctrGame.gameStatus=GameStage.Prepare;hud.layout(ui,.4);
+ assert(tap.active);
+ info.index=info.list.length;ui.initView();
+ assert(!state.king.active&&!tap.active&&!task.active&&!state.questMarker.active);
+});
 test('the Advisor and task bubble fade out at dusk and return together in planning',()=>{
  const {ui,hud}=fixture(),state=ui._battleHud,task=ui.ndTask,advisor=state.king;
  const info=ui.ctrGame.gameData.taskInfo;
  info.stage=1;ui.initView();
+ openTask(ui);
  ui.ctrGame.gameStatus=GameStage.Transition;
  hud.layout(ui,.2);
  assert(advisor.active&&task.active);
  assert.equal(advisor.opacity,128);
  assert.equal(state.taskName.opacity,128);
  assert.equal(state.collectLabel.opacity,128);
- assert.equal(state.backdropArt.fillColor.a,120);
- assert.equal(state.tailArt.fillColor.a,120);
+ assert.equal(state.backdropArt.fillColor.a,77);
+ assert.equal(state.tailArt.fillColor.a,77);
  assert.equal(state.collectArt.fillColor.a,128);
  assert.equal(state.collectControl.interactable,false);
  ui.ctrGame.gameStatus=GameStage.Fight;
@@ -236,12 +278,12 @@ test('the Advisor and task bubble fade out at dusk and return together in planni
  hud.layout(ui,.2);
  assert(advisor.active&&task.active);
  assert.equal(advisor.opacity,128);
- assert.equal(state.backdropArt.fillColor.a,120);
+ assert.equal(state.backdropArt.fillColor.a,77);
  hud.layout(ui,.2);
  assert.equal(advisor.opacity,255);
  assert.equal(state.collectLabel.opacity,255);
  assert.equal(state.rewardPreview.opacity,255);
- assert.equal(state.backdropArt.fillColor.a,240);
+ assert.equal(state.backdropArt.fillColor.a,153);
  assert(state.collectButton.activeInHierarchy && state.collectControl.interactable);
  assert.equal(info.index,0);assert.equal(info.stage,1);
 });
@@ -250,18 +292,20 @@ test('the visible testing banner reserves top-center space without moving the co
 });
 test('legacy stages place the King beside Hero start and camera movement only moves the projected bubble',()=>{
  const {ui,hero,camera,settle}=fixture();
+ openTask(ui);
  const king=ui._battleHud.king,task=ui.ndTask,original=task.getPosition(),ground=king.getPosition();
  assert.deepEqual(ground,{x:126,y:29});
  hero.setPosition(100,200);camera.offset.y=150;settle();assert.deepEqual(king.getPosition(),ground);assert.equal(task.y,original.y-150);
  camera.offset.y=1500;settle();assert.equal(task.active,false);
  camera.offset.y=0;settle();assert.equal(task.active,true);assert.deepEqual(task.getPosition(),original);
 });
-test('the dark bubble has a red pending label and points up from below the Advisor near the top edge',()=>{
+test('the bubble uses the Silver panel opacity and points toward the Advisor near the top edge',()=>{
  const f=fixture(1334,{x:-355,y:540}),task=f.ui.ndTask,state=f.ui._battleHud;
  f.setSafe({x:16,y:0,width:684,height:1280});f.settle();
+ openTask(f.ui);
  const sprite=task.getComponent(f.cc.Sprite);
  assert(!sprite.enabled);
- assert.deepEqual(state.backdropArt.fillColor,{r:16,g:23,b:32,a:240});
+ assert.deepEqual(state.backdropArt.fillColor,{r:16,g:23,b:32,a:153});
  assert.deepEqual(state.tailArt.fillColor,state.backdropArt.fillColor);
  assert.equal(task.opacity,255);
  const [rectangle]=state.backdropArt.rectangles;
@@ -274,13 +318,15 @@ test('the dark bubble has a red pending label and points up from below the Advis
  assert(state.tail.y>0);assert(state.tailArt.points[1].y>0);
  assert.equal(f.ui.ndLevelInfo.getComponent(f.cc.Sprite).enabled,false);
 });
-test('a retired battle tears down its King and marker and ignores a late Spine load',()=>{
- const {ui,loadKing,hud,Skeleton}=fixture(),{king,questMarker}=ui._battleHud;
+test('a retired battle tears down the Advisor and both controls and ignores a late Spine load',()=>{
+ const {ui,loadKing,hud,Skeleton}=fixture(),{king,questMarker,advisorControl}=ui._battleHud;
  hud.dispose(ui);loadKing();
- assert(king.destroyed && questMarker.destroyed);assert.equal(king.getComponent(Skeleton),undefined);assert.equal(ui._battleHud,null);
+ assert(king.destroyed && questMarker.destroyed && advisorControl.node.destroyed);assert.equal(king.getComponent(Skeleton),undefined);assert.equal(ui._battleHud,null);
 });
 test('long task copy grows the bubble and stays clear of its status',()=>{
- const f=fixture(),{ui,nodes}=f,initial=ui.ndTask.height;
+ const f=fixture(),{ui,nodes}=f;
+ openTask(ui);
+ const initial=ui.ndTask.height;
  ui.ctrGame.gameData.taskInfo.index=1;ui.initView();f.settle();
  const name=nodes[200],status=nodes[208];assert(ui.ndTask.height>initial);
  assert(name.y-name.height*.25>=status.y+status.height*.25+4);assert(ui.ndTask.x+ui.ndTask.width/2<=375-16);
@@ -289,6 +335,7 @@ test('long task copy grows the bubble and stays clear of its status',()=>{
 });
 test('task reward feedback floats above the bubble at the King',()=>{
  const {ui,cc}=fixture(),task=ui.ndTask,hint=ui._battleHud.rewardHint;
+ openTask(ui);
  assert.equal(hint.parent.parent,task);assert.equal(hint.parent.y,task.height/2);
  for(let p=hint.parent;p;p=p.parent)assert(!p.getComponent(cc.Mask));
 });

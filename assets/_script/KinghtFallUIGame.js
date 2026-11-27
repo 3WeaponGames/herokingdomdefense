@@ -89,6 +89,82 @@ function enemyIndicatorBounds(node, ui, ignored) {
   visit(node);
   return rect;
 }
+function enemyIndicatorFootprint(node, ui) {
+  var arrow = node.getChildByName("ndArr");
+  var origin = ui.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, 0)));
+  var footprint = enemyIndicatorBounds(node, ui, arrow);
+  if (arrow) {
+    // Reserve every arrow rotation, including when the arrow was hidden last frame.
+    var center = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(0, 0)));
+    var ax = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(1, 0)));
+    var ay = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(0, 1)));
+    var sx = Math.hypot(ax.x - center.x, ax.y - center.y), sy = Math.hypot(ay.x - center.x, ay.y - center.y);
+    var left = -arrow.width * arrow.anchorX, bottom = -arrow.height * arrow.anchorY, width = arrow.width, height = arrow.height;
+    var sprite = arrow.getComponent(cc.Sprite), frame = sprite && sprite.spriteFrame;
+    if (sprite && sprite.trim === false && frame && frame.getRect && frame.getOriginalSize && frame.getOffset) {
+      var rect = frame.getRect(), original = frame.getOriginalSize(), offset = frame.getOffset();
+      if (original.width && original.height) {
+        var px = width / original.width, py = height / original.height;
+        left += (original.width / 2 + offset.x - rect.width / 2) * px;
+        bottom += (original.height / 2 + offset.y - rect.height / 2) * py;
+        width = rect.width * px; height = rect.height * py;
+      }
+    }
+    // The arrow texture has large transparent corners. Reserve its painted extent.
+    var radius = Math.hypot(Math.max(Math.abs(left), Math.abs(left + width)) * sx, Math.max(Math.abs(bottom), Math.abs(bottom + height)) * sy);
+    footprint.minX = Math.min(footprint.minX, center.x - radius); footprint.maxX = Math.max(footprint.maxX, center.x + radius);
+    footprint.minY = Math.min(footprint.minY, center.y - radius); footprint.maxY = Math.max(footprint.maxY, center.y + radius);
+  }
+  footprint.minX -= origin.x; footprint.maxX -= origin.x; footprint.minY -= origin.y; footprint.maxY -= origin.y;
+  return footprint;
+}
+function reserveEnemyIndicator(target, footprint, obstacles, viewport, gap, edge) {
+  var bounds = { minX: -246, maxX: 246, minY: -442, maxY: 442 };
+  if (viewport) bounds = { minX: viewport.minX - footprint.minX + 16, maxX: viewport.maxX - footprint.maxX - 16,
+    minY: viewport.minY - footprint.minY + 16, maxY: viewport.maxY - footprint.maxY - 16 };
+  if (edge === "left") bounds.maxX = bounds.minX;
+  if (edge === "right") bounds.minX = bounds.maxX;
+  var position = placeEnemyIndicator(target, footprint, bounds, obstacles, gap);
+  obstacles.push({ indicator: true, minX: position.x + footprint.minX, maxX: position.x + footprint.maxX,
+    minY: position.y + footprint.minY, maxY: position.y + footprint.maxY });
+  return position;
+}
+function positionEnemyIndicator(node, target, x, y) {
+  node.setPosition(x, y);
+  var arrow = node.getChildByName("ndArr");
+  if (arrow) {
+    var dx = target.x - x, dy = target.y - y;
+    arrow.active = dx * dx + dy * dy > 0.001;
+    if (arrow.active) arrow.angle = 180 * Math.atan2(dy, dx) / Math.PI - 90;
+  }
+}
+function upcomingIndicatorGroups(markers, spawnGroups) {
+  if (markers.length <= 4 || !Array.isArray(spawnGroups)) {
+    return markers.map(function (marker) { return { members: [marker] }; });
+  }
+  var remaining = new Map(markers.map(function (marker) { return [String(marker.spawnId), marker]; }));
+  var groups = [];
+  spawnGroups.forEach(function (ids, index) {
+    if (!Array.isArray(ids)) return;
+    var members = [];
+    ids.forEach(function (id) {
+      var key = String(id), marker = remaining.get(key);
+      if (marker) { members.push(marker); remaining.delete(key); }
+    });
+    if (members.length) groups.push({ index: index, members: members });
+  });
+  remaining.forEach(function (marker) { groups.push({ members: [marker] }); });
+  return groups;
+}
+function scaleUpcomingPortrait(record, scale) {
+  var previous = record._upcomingScale || 1;
+  if (scale === previous) return;
+  var node = record.ndItem;
+  var authored = record._upcomingBaseScale || (record._upcomingBaseScale = { x: node.scaleX, y: node.scaleY });
+  node.scaleX = authored.x * scale;
+  node.scaleY = authored.y * scale;
+  record._upcomingScale = scale;
+}
 var def_KinghtFallUIGame = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -732,8 +808,10 @@ var def_KinghtFallUIGame = function (t) {
     this.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.Transition;
     // Planning portraits belong to the preview, never to the spawn queue that
     // continues draining during combat. Hide them before the transition starts.
+    this._expandedUpcomingGroup = null;
     Object.keys(this.enemyIconInfo).forEach(function (key) {
       var record = t.enemyIconInfo[key]; record.tag = false; record.ndItem.active = false;
+      if (record.groupToggle) record.groupToggle.node.active = false;
     });
     if (this._enemyGuideMarkersBound) require("EnemyGuide").update(this);
     this.playBattleMusic();
@@ -959,47 +1037,97 @@ var def_KinghtFallUIGame = function (t) {
     this._buildCaptionBoundsSignature = signature;
   };
   _ctor.prototype._placeEnemyIndicator = function (node, target, obstacles, viewport, placementTarget, gap, edge) {
-    var ui = this.ctrUI.node, arrow = node.getChildByName("ndArr");
-    var origin = ui.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, 0)));
-    var footprint = enemyIndicatorBounds(node, ui, arrow);
-    if (arrow) {
-      // Reserve every arrow rotation, including when it was hidden last frame.
-      var center = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(0, 0)));
-      var ax = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(1, 0)));
-      var ay = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(0, 1)));
-      var sx = Math.hypot(ax.x - center.x, ax.y - center.y), sy = Math.hypot(ay.x - center.x, ay.y - center.y);
-      var left=-arrow.width*arrow.anchorX,bottom=-arrow.height*arrow.anchorY,width=arrow.width,height=arrow.height;
-      var sprite=arrow.getComponent(cc.Sprite),frame=sprite&&sprite.spriteFrame;
-      if(sprite&&sprite.trim===false&&frame&&frame.getRect&&frame.getOriginalSize&&frame.getOffset){
-        var rect=frame.getRect(),original=frame.getOriginalSize(),offset=frame.getOffset();
-        if(original.width&&original.height){var px=width/original.width,py=height/original.height;left+=(original.width/2+offset.x-rect.width/2)*px;bottom+=(original.height/2+offset.y-rect.height/2)*py;width=rect.width*px;height=rect.height*py;}
-      }
-      // The arrow texture has large transparent corners. Reserve its painted
-      // extent through rotation, so padding cannot spread the rings apart.
-      var radius=Math.hypot(Math.max(Math.abs(left),Math.abs(left+width))*sx,Math.max(Math.abs(bottom),Math.abs(bottom+height))*sy);
-      footprint.minX = Math.min(footprint.minX, center.x - radius); footprint.maxX = Math.max(footprint.maxX, center.x + radius);
-      footprint.minY = Math.min(footprint.minY, center.y - radius); footprint.maxY = Math.max(footprint.maxY, center.y + radius);
-    }
-    footprint.minX -= origin.x; footprint.maxX -= origin.x; footprint.minY -= origin.y; footprint.maxY -= origin.y;
-    var bounds = { minX: -246, maxX: 246, minY: -442, maxY: 442 };
-    if (viewport) bounds = { minX: viewport.minX - footprint.minX + 16, maxX: viewport.maxX - footprint.maxX - 16,
-      minY: viewport.minY - footprint.minY + 16, maxY: viewport.maxY - footprint.maxY - 16 };
-    // Upcoming waves stay on their side while moving around nearby controls.
-    if (edge === "left") bounds.maxX = bounds.minX;
-    if (edge === "right") bounds.minX = bounds.maxX;
-    var position = placeEnemyIndicator(placementTarget || target, footprint, bounds, obstacles, gap === undefined ? 12 : gap);
-    node.setPosition(position.x, position.y);
-    obstacles.push({ indicator:true,minX: position.x + footprint.minX, maxX: position.x + footprint.maxX,
-      minY: position.y + footprint.minY, maxY: position.y + footprint.maxY });
-    if (arrow) {
-      var dx = target.x - position.x, dy = target.y - position.y;
-      arrow.active = dx * dx + dy * dy > 0.001;
-      if (arrow.active) arrow.angle = 180 * Math.atan2(dy, dx) / Math.PI - 90;
-    }
+    var footprint = enemyIndicatorFootprint(node, this.ctrUI.node);
+    var position = reserveEnemyIndicator(placementTarget || target, footprint, obstacles, viewport, gap === undefined ? 12 : gap, edge);
+    positionEnemyIndicator(node, target, position.x, position.y);
   };
-  _ctor.prototype._placeUpcomingEnemyIndicators = function (markers, obstacles) {
+  _ctor.prototype._upcomingGroupToggle = function (record) {
+    if (record.groupToggle) return record.groupToggle;
+    var self = this, node = new cc.Node("UpcomingWaveGroupToggle");
+    node.active = false;
+    node.setContentSize(86, 58);
+    node.setParent(this.ctrUI.node);
+    node.setSiblingIndex(0);
+    var graphics = node.addComponent(cc.Graphics);
+    graphics.fillColor = cc.color(94, 28, 32, 244);
+    graphics.strokeColor = cc.color(234, 99, 88);
+    graphics.lineWidth = 2;
+    graphics.roundRect(-42, -28, 84, 56, 14); graphics.fill(); graphics.stroke();
+    var caption = new cc.Node("Count");
+    caption.setParent(node); caption.setContentSize(node.width, node.height);
+    var label = caption.addComponent(cc.Label);
+    label.fontSize = 31; label.lineHeight = 36;
+    label.enableBold = true; label.enableWrapText = false; label.overflow = cc.Label.Overflow.CLAMP;
+    label.horizontalAlign = cc.Label.HorizontalAlign.CENTER; label.verticalAlign = cc.Label.VerticalAlign.CENTER;
+    var toggle = record.groupToggle = { node: node, label: label, visible: false, index: null };
+    node.addComponent(cc.BlockInputEvents);
+    node.on(cc.Node.EventType.TOUCH_END, function (event) {
+      if (event) event.stopPropagation();
+      if (!toggle.visible || !record.tag || self.isPauset || self.isclose ||
+          self.ctrGame.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare) return;
+      if (event && event.getLocation && event.getStartLocation) {
+        var end = event.getLocation(), start = event.getStartLocation();
+        if (Math.hypot(end.x - start.x, end.y - start.y) > 16) return;
+      }
+      self._expandedUpcomingGroup = self._expandedUpcomingGroup === toggle.index ? null : toggle.index;
+    });
+    return toggle;
+  };
+  _ctor.prototype._placeUpcomingGroup = function (group, side, placementTarget, viewport, obstacles) {
+    var fromLeft = side === "left", direction = fromLeft ? 1 : -1, gap = 6;
+    var expanded = this._expandedUpcomingGroup === group.index, head = group.members[0];
+    var toggle = this._upcomingGroupToggle(head.record), count = group.members.length - 1;
+    var ui = this.ctrUI.node, portraits = expanded ? group.members : [head];
+    var width = 0;
+    var shapes = portraits.map(function (marker, index) {
+      marker.record.ndItem.getChildByName("labName").active = index === 0;
+      var box = enemyIndicatorFootprint(marker.record.ndItem, ui), scale = marker.record._upcomingScale || 1;
+      box.minX /= scale; box.maxX /= scale; box.minY /= scale; box.maxY /= scale;
+      width += box.maxX - box.minX;
+      return box;
+    });
+    // Fit all portraits on one row. Keep the collapse button at full size.
+    var available = viewport.maxX - viewport.minX - 32 - toggle.node.width - gap * portraits.length;
+    var scale = Math.min(1, Math.max(1, available) / width);
+    var cursor = scale * (fromLeft ? shapes[0].minX : shapes[0].maxX);
+    var halfToggleWidth = toggle.node.width / 2, halfToggleHeight = toggle.node.height / 2;
+    var footprint = { minX: Infinity, maxX: -Infinity, minY: -halfToggleHeight, maxY: halfToggleHeight };
+    var offsets = shapes.map(function (box) {
+      var x = cursor - scale * (fromLeft ? box.minX : box.maxX);
+      footprint.minX = Math.min(footprint.minX, x + box.minX * scale);
+      footprint.maxX = Math.max(footprint.maxX, x + box.maxX * scale);
+      footprint.minY = Math.min(footprint.minY, box.minY * scale);
+      footprint.maxY = Math.max(footprint.maxY, box.maxY * scale);
+      cursor += direction * ((box.maxX - box.minX) * scale + gap);
+      return x;
+    });
+    var toggleX = cursor + direction * halfToggleWidth;
+    footprint.minX = Math.min(footprint.minX, toggleX - halfToggleWidth);
+    footprint.maxX = Math.max(footprint.maxX, toggleX + halfToggleWidth);
+    var position = reserveEnemyIndicator(placementTarget, footprint, obstacles, viewport, 2, side);
+    group.members.forEach(function (marker, index) {
+      var record = marker.record;
+      record.tag = index < portraits.length;
+      if (!record.tag) return;
+      scaleUpcomingPortrait(record, scale);
+      positionEnemyIndicator(record.ndItem, marker.target, position.x + offsets[index], position.y);
+    });
+    toggle.index = group.index;
+    toggle.visible = true;
+    var text = expanded ? (fromLeft ? "\u2039" : "\u203a") : (fromLeft ? "+" + count + " \u203a" : "\u2039 +" + count);
+    if (toggle.label.string !== text) toggle.label.string = text;
+    toggle.node.setPosition(position.x + toggleX, position.y);
+  };
+  _ctor.prototype._placeUpcomingEnemyIndicators = function (markers, obstacles, spawnGroups) {
+    var round = this.ctrGame && this.ctrGame.gameData.round;
+    if (this._upcomingPortraitRound !== round || markers.length <= 4) this._expandedUpcomingGroup = null;
+    this._upcomingPortraitRound = round;
     if (!markers.length) return;
-    var ui = this.ctrUI.node, width = ui.width || 750, height = ui.height || 1334, self = this;
+    var portraitGroups = upcomingIndicatorGroups(markers, spawnGroups), self = this;
+    if (!portraitGroups.some(function (group) { return group.members.length > 1 && group.index === self._expandedUpcomingGroup; })) {
+      this._expandedUpcomingGroup = null;
+    }
+    var ui = this.ctrUI.node, width = ui.width || 750, height = ui.height || 1334;
     var viewport = { minX: -width / 2, maxX: width / 2, minY: -height / 2, maxY: height / 2 }, groups = {};
     if (cc.view) {
       var size = cc.view.getVisibleSize(), origin = cc.view.getVisibleOrigin();
@@ -1011,15 +1139,22 @@ var def_KinghtFallUIGame = function (t) {
     var centerX = (viewport.minX + viewport.maxX) / 2, centerY = (viewport.minY + viewport.maxY) / 2;
     var rod = this.ctrUI.ndRod;
     if (rod && rod.active && rod.activeInHierarchy !== false) obstacles.push(enemyIndicatorBounds(rod, ui));
-    markers.forEach(function (marker) {
-      var side = marker.target.x < centerX ? "left" : "right";
-      (groups[side] || (groups[side] = [])).push(marker);
+    portraitGroups.forEach(function (group) {
+      var side = group.members[0].target.x < centerX ? "left" : "right";
+      (groups[side] || (groups[side] = [])).push(group);
     });
     Object.keys(groups).forEach(function (side) {
       var x = side === "left" ? viewport.minX : viewport.maxX;
-      groups[side].sort(function (a, b) { return Math.abs(b.target.y - centerY) - Math.abs(a.target.y - centerY); });
-      groups[side].forEach(function (marker) {
-        self._placeEnemyIndicator(marker.record.ndItem, marker.target, obstacles, viewport, { x: x, y: marker.target.y }, 2, side);
+      groups[side].sort(function (a, b) { return Math.abs(b.members[0].target.y - centerY) - Math.abs(a.members[0].target.y - centerY); });
+      groups[side].forEach(function (group) {
+        var head = group.members[0], target = { x: x, y: head.target.y };
+        if (group.members.length > 1) self._placeUpcomingGroup(group, side, target, viewport, obstacles);
+        else {
+          var node = head.record.ndItem;
+          node.getChildByName("labName").active = true;
+          scaleUpcomingPortrait(head.record, 1);
+          self._placeEnemyIndicator(node, head.target, obstacles, viewport, target, 2, side);
+        }
       });
     });
   };
@@ -1191,61 +1326,48 @@ var def_KinghtFallUIGame = function (t) {
     this._layoutBattleFooter();
     if(this.ctrGame&&this.ctrGame.ctrPlay&&this.ctrGame.ctrPlay._styleRuntime)require("HeroSkillHUD").update(this.ctrGame.ctrPlay,this.ctrGame.ctrPlay._styleRuntime);
     if (!this.isPauset) {
-      for (var e in this.enemyIconInfo) {
-        Object.prototype.hasOwnProperty.call(this.enemyIconInfo, e) && ((o = this.enemyIconInfo[e]).tag = false);
-      }
-      var n = this.ctrGame.gameData.enemyQueue, upcomingMarkers = [];
+      var self = this, data = this.ctrGame.gameData, upcomingMarkers = [];
+      Object.keys(this.enemyIconInfo).forEach(function (key) {
+        var record = self.enemyIconInfo[key];
+        record.tag = false;
+        if (record.groupToggle) record.groupToggle.visible = false;
+      });
       var indicatorObstacles = this._enemyIndicatorObstacles();
-      if (this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Prepare && this.ctrGame.gameData.baseBuild.getLevel() >= 1) {
-        var i = function (t) {
-          if (Object.prototype.hasOwnProperty.call(n, t)) {
-            var e = n[t];
-            if (!a.enemyIconInfo[t]) {
-              a.enemyIconInfo[t] = {
-                id: 0,
-                tagNode: a.ctrGame.ndPath.getChildByName("ndEnemy" + t),
-                ndItem: cc.instantiate(a.ndEnemyIcon),
-                tag: true
-              };
-              a.enemyIconInfo[t].ndItem.setParent(a.ctrUI.node);
-              a.enemyIconInfo[t].ndItem.setSiblingIndex(0);
-            }
-            var i = a.enemyIconInfo[t];
-            if (e[0]) {
-              var o = e[0];
-              -1 == o.id && (o = e[1]);
-              if (!o || -1 == o.id) {
-                i.tag = false;
-              } else {
-                if (i.id != o.id) {
-                  i.id = o.id;
-                  var r = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSoldierCfgById(o.id);
-                  a._loadEnemyPictogram(i, o.id);
-                }
-                i.ndItem.getChildByName("labNum").getComponent(cc.Label).string = "" + o.num;
-                i._guideLive = false;
-                i._guideIds = e.filter(function (entry) { return entry.id !== -1 && entry.num > 0; }).map(function (entry) { return entry.id; });
-                if (a._bindEnemyGuide) a._bindEnemyGuide(i);
-                var s = a.ctrGame.ndPath.convertToWorldSpaceAR(i.tagNode.getPosition());
-                var l = (a.ctrGame.camera || cc.Camera.main).getWorldToScreenPoint(s);
-                var c = a.ctrUI.node.convertToNodeSpaceAR(l);
-                upcomingMarkers.push({ record: i, target: c });
-                i.tag = true;
-              }
-            }
+      if (this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Prepare && data.baseBuild.getLevel() >= 1) {
+        var queue = data.enemyQueue || {}, path = this.ctrGame.ndPath, camera = this.ctrGame.camera || cc.Camera.main;
+        Object.keys(queue).forEach(function (spawnId) {
+          var units = queue[spawnId].filter(function (entry) { return entry.id > 0 && entry.num > 0; });
+          if (!units.length) return;
+          var record = self.enemyIconInfo[spawnId];
+          if (!record) {
+            var spawn = path.getChildByName("ndEnemy" + spawnId);
+            if (!spawn) return;
+            record = self.enemyIconInfo[spawnId] = { id: 0, tagNode: spawn, ndItem: cc.instantiate(self.ndEnemyIcon) };
+            record.ndItem.setParent(self.ctrUI.node);
+            record.ndItem.setSiblingIndex(0);
           }
-        };
-        var a = this;
-        for (var e in n) {
-          i(e);
-        }
+          var first = units[0];
+          if (record.id !== first.id) {
+            record.id = first.id;
+            self._loadEnemyPictogram(record, first.id);
+          }
+          record.ndItem.getChildByName("labNum").getComponent(cc.Label).string = String(first.num);
+          record._guideLive = false;
+          record._guideIds = units.map(function (entry) { return entry.id; });
+          if (self._bindEnemyGuide) self._bindEnemyGuide(record);
+          var world = path.convertToWorldSpaceAR(record.tagNode.getPosition());
+          var target = self.ctrUI.node.convertToNodeSpaceAR(camera.getWorldToScreenPoint(world));
+          upcomingMarkers.push({ spawnId: spawnId, record: record, target: target });
+          record.tag = true;
+        });
       }
-      this._placeUpcomingEnemyIndicators(upcomingMarkers, indicatorObstacles);
+      this._placeUpcomingEnemyIndicators(upcomingMarkers, indicatorObstacles, data.levelCfg && data.levelCfg.SpawnGroups);
       this._updateOffscreenEnemies(indicatorObstacles);
-      for (var e in this.enemyIconInfo) {
-        var o;
-        Object.prototype.hasOwnProperty.call(this.enemyIconInfo, e) && ((o = this.enemyIconInfo[e]).ndItem.active = o.tag);
-      }
+      Object.keys(this.enemyIconInfo).forEach(function (key) {
+        var record = self.enemyIconInfo[key];
+        record.ndItem.active = record.tag;
+        if (record.groupToggle) record.groupToggle.node.active = record.tag && record.groupToggle.visible;
+      });
     }
   };
   _ctor.prototype.onCloseUI = function (t) {
