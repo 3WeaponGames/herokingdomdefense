@@ -72,16 +72,33 @@ function placeEnemyIndicator(target, footprint, bounds, obstacles, gap) {
   }); });
   return best;
 }
-function enemyIndicatorBounds(node, ui, ignored) {
+function enemyIndicatorSpriteRect(node) {
+  var sprite = node.getComponent(cc.Sprite), frame = sprite && sprite.spriteFrame;
+  if (!sprite || sprite.trim !== false || !frame || !frame.getRect || !frame.getOriginalSize || !frame.getOffset) return null;
+  var rect = frame.getRect(), original = frame.getOriginalSize(), offset = frame.getOffset();
+  if (!original.width || !original.height) return null;
+  var sx = node.width / original.width, sy = node.height / original.height;
+  return {
+    x: -node.width * node.anchorX + (original.width / 2 + offset.x - rect.width / 2) * sx,
+    y: -node.height * node.anchorY + (original.height / 2 + offset.y - rect.height / 2) * sy,
+    width: rect.width * sx, height: rect.height * sy
+  };
+}
+function enemyIndicatorBounds(node, ui, ignored, compact) {
   var rect = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
+  var painted = compact && enemyIndicatorSpriteRect(node);
+  var caption = compact && node.getChildByName("labName"), count = compact && node.getChildByName("labNum");
   function include(point) {
     rect.minX = Math.min(rect.minX, point.x); rect.maxX = Math.max(rect.maxX, point.x);
     rect.minY = Math.min(rect.minY, point.y); rect.maxY = Math.max(rect.maxY, point.y);
   }
   function visit(current) {
-    if (!current || current === ignored) return;
-    var left = -current.anchorX * current.width, bottom = -current.anchorY * current.height;
-    [[left, bottom], [left + current.width, bottom], [left, bottom + current.height], [left + current.width, bottom + current.height]].forEach(function (point) {
+    if (!current || current === ignored || current === caption || current === count) return;
+    var visual = current === node && painted;
+    var left = visual ? visual.x : -current.anchorX * current.width;
+    var bottom = visual ? visual.y : -current.anchorY * current.height;
+    var right = left + (visual ? visual.width : current.width), top = bottom + (visual ? visual.height : current.height);
+    [[left, bottom], [right, bottom], [left, top], [right, top]].forEach(function (point) {
       include(ui.convertToNodeSpaceAR(current.convertToWorldSpaceAR(cc.v2(point[0], point[1]))));
     });
     current.children.forEach(function (child) { if (child.active) visit(child); });
@@ -89,27 +106,19 @@ function enemyIndicatorBounds(node, ui, ignored) {
   visit(node);
   return rect;
 }
-function enemyIndicatorFootprint(node, ui) {
+function enemyIndicatorFootprint(node, ui, compact) {
   var arrow = node.getChildByName("ndArr");
   var origin = ui.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, 0)));
-  var footprint = enemyIndicatorBounds(node, ui, arrow);
-  if (arrow) {
+  var footprint = enemyIndicatorBounds(node, ui, arrow, compact);
+  if (arrow && !compact) {
     // Reserve every arrow rotation, including when the arrow was hidden last frame.
     var center = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(0, 0)));
     var ax = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(1, 0)));
     var ay = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(0, 1)));
     var sx = Math.hypot(ax.x - center.x, ax.y - center.y), sy = Math.hypot(ay.x - center.x, ay.y - center.y);
     var left = -arrow.width * arrow.anchorX, bottom = -arrow.height * arrow.anchorY, width = arrow.width, height = arrow.height;
-    var sprite = arrow.getComponent(cc.Sprite), frame = sprite && sprite.spriteFrame;
-    if (sprite && sprite.trim === false && frame && frame.getRect && frame.getOriginalSize && frame.getOffset) {
-      var rect = frame.getRect(), original = frame.getOriginalSize(), offset = frame.getOffset();
-      if (original.width && original.height) {
-        var px = width / original.width, py = height / original.height;
-        left += (original.width / 2 + offset.x - rect.width / 2) * px;
-        bottom += (original.height / 2 + offset.y - rect.height / 2) * py;
-        width = rect.width * px; height = rect.height * py;
-      }
-    }
+    var painted = enemyIndicatorSpriteRect(arrow);
+    if (painted) { left = painted.x; bottom = painted.y; width = painted.width; height = painted.height; }
     // The arrow texture has large transparent corners. Reserve its painted extent.
     var radius = Math.hypot(Math.max(Math.abs(left), Math.abs(left + width)) * sx, Math.max(Math.abs(bottom), Math.abs(bottom + height)) * sy);
     footprint.minX = Math.min(footprint.minX, center.x - radius); footprint.maxX = Math.max(footprint.maxX, center.x + radius);
@@ -543,10 +552,39 @@ var def_KinghtFallUIGame = function (t) {
     return !!this.ctrGame && (this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight ||
       this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Transition);
   };
+  _ctor.prototype.ownsPausedWaveTest = function (dialog) {
+    return !this._endless && TestMode.getInstance().isAvailable() && dialog && dialog === this._battleDialog &&
+      dialog.kind === "wave-test" && dialog.isCurrent() && dialog.paused &&
+      this._pauseOwners && this._pauseOwners.has(dialog) && this.canBreak && !this._restartPending;
+  };
+  _ctor.prototype.finishPausedTestVictory = function (dialog, finish) {
+    // The result dialog replaces F6 while the battle is still paused.
+    dialog.paused = false;
+    try { finish(); }
+    finally {
+      if (this._battleDialog === dialog) dialog.paused = true;
+      else this._pauseOwners.delete(dialog);
+    }
+  };
+  _ctor.prototype.completePausedWaveForTest = function (dialog) {
+    if (!this.ownsPausedWaveTest(dialog) || !this.isWaveInProgress()) return false;
+    var game = this.ctrGame, data = game.gameData;
+    if (game._restartRetired || game._battleSettlement || data._roundCompleted) return false;
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    require("RewardTestProgress").start(player);
+    if (!player.getGameData().readyForNewBattle() || !dialog.isCurrent()) return false;
+
+    if (data.round === data.levelCfg.WaveCfg.length) {
+      this.finishPausedTestVictory(dialog, function () { data.completeWaveForTest(); });
+    } else {
+      data.completeWaveForTest();
+    }
+    // Let the normal update retry any save that delayed the transition.
+    if (this._battleDialog === dialog) this._waveTestPanel.close();
+    return true;
+  };
   _ctor.prototype.clearPausedStageForTest = function (dialog, stars) {
-    if (this._endless || !TestMode.getInstance().isAvailable() || !dialog || dialog !== this._battleDialog ||
-        dialog.kind !== "wave-test" || !dialog.isCurrent() || !dialog.paused ||
-        !this._pauseOwners || !this._pauseOwners.has(dialog) || !this.canBreak || this._restartPending) return false;
+    if (!this.ownsPausedWaveTest(dialog)) return false;
     var game = this.ctrGame, data = game.gameData;
     var phases = $z1KinghtFallModle.KinghtFallGameStage;
     if (game._restartRetired || game._battleSettlement ||
@@ -556,13 +594,8 @@ var def_KinghtFallUIGame = function (t) {
     var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
     require("RewardTestProgress").start(player);
     if (!player.getGameData().readyForNewBattle() || !dialog.isCurrent()) return false;
-    // The result dialog replaces F6 while the battle is still paused.
-    dialog.paused = false;
-    try { this.onGameOver(true, mask); }
-    finally {
-      if (this._battleDialog === dialog) dialog.paused = true;
-      else this._pauseOwners.delete(dialog);
-    }
+    var ui = this;
+    this.finishPausedTestVictory(dialog, function () { ui.onGameOver(true, mask); });
     return this._battleDialog !== dialog;
   };
   _ctor.prototype.restartPausedBattle = function (dialog, mode, waveTest) {
@@ -903,7 +936,8 @@ var def_KinghtFallUIGame = function (t) {
     var generation = this._resourceGeneration, epoch = game._combatEpoch, round = data.round;
     var phases = $z1KinghtFallModle.KinghtFallGameStage;
     function ownsDusk() {
-      return !t.isclose && cc.isValid(t, true) && t._resourceGeneration === generation &&
+      // Wave completion can start its own transition before this tween ends.
+      return !t.isclose && t.canBreak && cc.isValid(t, true) && t._resourceGeneration === generation &&
         t.ctrGame === game && cc.isValid(game, true) && game.gameData === data &&
         game._combatEpoch === epoch && data.round === round && game.gameStatus === phases.Transition;
     }
@@ -1159,20 +1193,17 @@ var def_KinghtFallUIGame = function (t) {
     if (record.groupToggle) return record.groupToggle;
     var self = this, node = new cc.Node("UpcomingWaveGroupToggle");
     node.active = false;
-    node.setContentSize(86, 58);
+    node.setContentSize(70, 50);
     node.setParent(this.ctrUI.node);
-    node.setSiblingIndex(0);
-    var graphics = node.addComponent(cc.Graphics);
-    graphics.fillColor = cc.color(94, 28, 32, 244);
-    graphics.strokeColor = cc.color(234, 99, 88);
-    graphics.lineWidth = 2;
-    graphics.roundRect(-42, -28, 84, 56, 14); graphics.fill(); graphics.stroke();
+    node.zIndex = 1;
     var caption = new cc.Node("Count");
     caption.setParent(node); caption.setContentSize(node.width, node.height);
     var label = caption.addComponent(cc.Label);
-    label.fontSize = 31; label.lineHeight = 36;
+    label.fontSize = 26; label.lineHeight = 32;
     label.enableBold = true; label.enableWrapText = false; label.overflow = cc.Label.Overflow.CLAMP;
     label.horizontalAlign = cc.Label.HorizontalAlign.CENTER; label.verticalAlign = cc.Label.VerticalAlign.CENTER;
+    var outline = caption.addComponent(cc.LabelOutline);
+    outline.color = cc.Color.BLACK; outline.width = 2;
     var toggle = record.groupToggle = { node: node, label: label, visible: false, index: null };
     node.addComponent(cc.BlockInputEvents);
     node.on(cc.Node.EventType.TOUCH_END, function (event) {
@@ -1188,31 +1219,38 @@ var def_KinghtFallUIGame = function (t) {
     return toggle;
   };
   _ctor.prototype._placeUpcomingGroup = function (group, side, placementTarget, viewport, obstacles) {
-    var fromLeft = side === "left", direction = fromLeft ? 1 : -1, gap = 6;
+    var fromLeft = side === "left", direction = fromLeft ? 1 : -1;
+    var portraitGap = 10, toggleGap = 4;
     var expanded = this._expandedUpcomingGroup === group.index, head = group.members[0];
     var toggle = this._upcomingGroupToggle(head.record), count = group.members.length - 1;
     var ui = this.ctrUI.node, portraits = expanded ? group.members : [head];
     var width = 0;
     var shapes = portraits.map(function (marker, index) {
-      marker.record.ndItem.getChildByName("labName").active = index === 0;
-      var box = enemyIndicatorFootprint(marker.record.ndItem, ui), scale = marker.record._upcomingScale || 1;
-      box.minX /= scale; box.maxX /= scale; box.minY /= scale; box.maxY /= scale;
-      width += box.maxX - box.minX;
-      return box;
+      var node = marker.record.ndItem, scale = marker.record._upcomingScale || 1;
+      node.getChildByName("labName").active = index === 0;
+      var outer = enemyIndicatorFootprint(node, ui), body = enemyIndicatorFootprint(node, ui, true);
+      outer.minX /= scale; outer.maxX /= scale; outer.minY /= scale; outer.maxY /= scale;
+      body.minX /= scale; body.maxX /= scale;
+      width += body.maxX - body.minX;
+      return { body: body, outer: outer };
     });
-    // Fit all portraits on one row. Keep the collapse button at full size.
-    var available = viewport.maxX - viewport.minX - 32 - toggle.node.width - gap * portraits.length;
+    // Pack adjacent portraits by their painted bodies and reserve arrow room at the ends.
+    var first = shapes[0], last = shapes[shapes.length - 1];
+    width += fromLeft ? first.body.minX - first.outer.minX + last.outer.maxX - last.body.maxX
+      : first.outer.maxX - first.body.maxX + last.body.minX - last.outer.minX;
+    var available = viewport.maxX - viewport.minX - 32 - toggle.node.width - toggleGap - portraitGap * (portraits.length - 1);
     var scale = Math.min(1, Math.max(1, available) / width);
-    var cursor = scale * (fromLeft ? shapes[0].minX : shapes[0].maxX);
+    var cursor = scale * (fromLeft ? first.body.minX : first.body.maxX);
     var halfToggleWidth = toggle.node.width / 2, halfToggleHeight = toggle.node.height / 2;
     var footprint = { minX: Infinity, maxX: -Infinity, minY: -halfToggleHeight, maxY: halfToggleHeight };
-    var offsets = shapes.map(function (box) {
-      var x = cursor - scale * (fromLeft ? box.minX : box.maxX);
-      footprint.minX = Math.min(footprint.minX, x + box.minX * scale);
-      footprint.maxX = Math.max(footprint.maxX, x + box.maxX * scale);
-      footprint.minY = Math.min(footprint.minY, box.minY * scale);
-      footprint.maxY = Math.max(footprint.maxY, box.maxY * scale);
-      cursor += direction * ((box.maxX - box.minX) * scale + gap);
+    var offsets = shapes.map(function (shape, index) {
+      var body = shape.body, outer = shape.outer;
+      var x = cursor - scale * (fromLeft ? body.minX : body.maxX);
+      footprint.minX = Math.min(footprint.minX, x + outer.minX * scale);
+      footprint.maxX = Math.max(footprint.maxX, x + outer.maxX * scale);
+      footprint.minY = Math.min(footprint.minY, outer.minY * scale);
+      footprint.maxY = Math.max(footprint.maxY, outer.maxY * scale);
+      cursor += direction * ((body.maxX - body.minX) * scale + (index + 1 === shapes.length ? toggleGap : portraitGap));
       return x;
     });
     var toggleX = cursor + direction * halfToggleWidth;

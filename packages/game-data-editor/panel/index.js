@@ -430,7 +430,7 @@ function create(kind){
     _equipment(row){
       const r=row.record,p=row.path,config=this._data('A'),secondary=r.id===3&&HeroEquipmentStats.enabled(config),context={table:'EquipCfg',equipment:r.id,weaponStats:HeroEquipmentStats.enabled(config),baseDamage:r.id===4&&HeroEquipmentStats.enabled(config)};
       this._properties(this._section('Equipment category'),'A',p,r,context,['levelInfo',...(context.weaponStats&&(r.id===3||r.id===4)?['Describe']:[])]);
-      if(row.heroStyle)this._note(secondary?'These bonuses apply only while '+HeroWeapons.find(row.heroStyle).name+' is equipped. Each style has its own secondary values and upgrade progress.':'Main weapons provide attack damage. Each style keeps its own upgrade progress.');
+      if(row.heroStyle)this._note(secondary?HeroWeapons.find(row.heroStyle).name+' applies these bonuses at the shared sub-item level.':'Main weapons provide attack damage at the shared weapon level.');
       if(secondary&&row.heroStyle==='bruiser')this._note('Critical damage improves critical hits. Critical chance comes from your perks and relics.');
       if(HeroEquipmentStats.enabled(config)&&(r.id===3||r.id===4)){const defaults=this._section('Weapon combat defaults');this._heroAttackRateField(defaults,row.heroStyle);this._field(defaults,'Base attack range',config.HeroEquipment.baseRange,v=>this._set('A',['HeroEquipment','baseRange'],v),{min:1});if(row.heroStyle==='mystic'&&secondary)this._field(defaults,'Splash radius',config.HeroEquipment.splashRadius,v=>this._set('A',['HeroEquipment','splashRadius'],v),{min:1});}
       const damage=context.baseDamage&&HeroWeapons.find(row.heroStyle);

@@ -25,6 +25,7 @@ var $z1EventMgr = require("EventMgr");
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
+var DRAW_FOOTER_HEIGHT = 220;
 var def_KinghtFallHomeTreasureCtrl = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
@@ -97,9 +98,21 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
       this._drawFooterSource = source;
       this._drawFooterSprite = sprite;
     }
+    // The original sprite can resize its node when the prefab loads.
+    footer.height = DRAW_FOOTER_HEIGHT;
+    var collection = this.node.getChildByName("ndShow"), title = this._relicTitle = collection && collection.getChildByName("wg_tf_bt");
+    for (var parent = this.node.parent; parent && !this._relicNavigation; parent = parent.parent) {
+      this._relicNavigation = parent.getChildByName("ndBottom");
+    }
     footer.on(cc.Node.EventType.SIZE_CHANGED, this.layoutDrawFooter, this);
     footer.on(cc.Node.EventType.POSITION_CHANGED, this.layoutRelicViewport, this);
     this.node.on(cc.Node.EventType.SIZE_CHANGED, this.layoutRelicViewport, this);
+    if (title) title.on(cc.Node.EventType.SIZE_CHANGED, this.layoutRelicViewport, this);
+    if (this.labNum) this.labNum.node.on(cc.Node.EventType.SIZE_CHANGED, this.layoutRelicViewport, this);
+    if (this._relicNavigation) {
+      this._relicNavigation.on(cc.Node.EventType.SIZE_CHANGED, this.layoutRelicViewport, this);
+      this._relicNavigation.on(cc.Node.EventType.POSITION_CHANGED, this.layoutRelicViewport, this);
+    }
     this._drawGuaranteeNode.on(cc.Node.EventType.SIZE_CHANGED, this.fitDrawGuarantee, this);
     this.layoutDrawFooter();
     if (cc.Widget) this.scheduleOnce(this.layoutRelicViewport, 0);
@@ -131,27 +144,69 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
     var scroll = view && view.parent, collection = scroll && scroll.parent;
     var widget = cc.Widget && collection && collection.getComponent(cc.Widget);
     var target = widget && (widget.target || collection.parent);
-    if (!footer || !target || !(target.height > 0)) return;
-    var top = target.convertToNodeSpaceAR(footer.convertToWorldSpaceAR(cc.v2(0, footer.height * (1 - footer.anchorY)))).y;
-    widget.isAbsoluteBottom = true;
-    widget.bottom = top + target.height * target.anchorY + 4;
-    var title = cc.view && collection.getChildByName("wg_tf_bt");
-    var titleWidget = title && title.getComponent(cc.Widget);
-    if (titleWidget) {
-      if (this._relicAuthoredTop === undefined) this._relicAuthoredTop = widget.top;
-      var extra = require("LobbyHeaderLayout").extraTopInset(target, this._relicAuthoredTop + titleWidget.top);
-      widget.isAbsoluteTop = true;
-      widget.top = this._relicAuthoredTop + extra;
+    if (this._aligningRelics || !footer || !target || !(target.height > 0)) return;
+    this._aligningRelics = true;
+    try {
+      var footerWidget = footer.getComponent(cc.Widget), navigation = this._relicNavigation;
+      if (footerWidget) {
+        if (navigation) {
+          var navWidget = navigation.getComponent(cc.Widget), footerTarget = footerWidget.target || footer.parent;
+          if (navWidget) navWidget.updateAlignment();
+          var navTop = navigation.convertToWorldSpaceAR(cc.v2(0, navigation.height * (1 - navigation.anchorY)));
+          footerWidget.isAbsoluteBottom = true;
+          footerWidget.bottom = footerTarget.convertToNodeSpaceAR(navTop).y + footerTarget.height * footerTarget.anchorY;
+        }
+        footerWidget.updateAlignment();
+      }
+      var footerTop = footer.convertToWorldSpaceAR(cc.v2(0, footer.height * (1 - footer.anchorY)));
+      widget.isAbsoluteBottom = true;
+      widget.bottom = target.convertToNodeSpaceAR(footerTop).y + target.height * target.anchorY + 4;
+      var header = require("LobbyHeaderLayout"), bounds = header.viewport();
+      if (bounds) {
+        widget.isAbsoluteTop = true;
+        widget.top = Math.max(0, target.height * (1 - target.anchorY) - header.contentTop(target, bounds));
+      }
+      widget.updateAlignment();
+
+      var headingHeight = this.layoutRelicHeading(collection);
+      var scrollWidget = scroll.getComponent(cc.Widget), viewWidget = view.getComponent(cc.Widget);
+      if (scrollWidget) {
+        if (headingHeight > 0) {
+          scrollWidget.isAbsoluteTop = true;
+          scrollWidget.top = headingHeight + 8;
+        }
+        scrollWidget.updateAlignment();
+      }
+      if (viewWidget) viewWidget.updateAlignment();
+    } finally {
+      this._aligningRelics = false;
     }
-    widget.updateAlignment();
-    var scrollWidget = scroll.getComponent(cc.Widget), viewWidget = view.getComponent(cc.Widget);
-    if (scrollWidget) scrollWidget.updateAlignment();
-    if (viewWidget) viewWidget.updateAlignment();
+  };
+  _ctor.prototype.layoutRelicHeading = function (collection) {
+    var title = this._relicTitle, titleWidget = title && title.getComponent(cc.Widget);
+    if (!titleWidget) return 0;
+    var count = this.labNum && this.labNum.node, countWidget = count && count.getComponent(cc.Widget);
+    if (count) {
+      var countWidth = count.width * Math.abs(count.scaleX), rightMargin = 16, gap = 12;
+      var titleWidth = Math.max(1, collection.width - 2 * (countWidth + rightMargin + gap));
+      title.scaleX = title.scaleY = Math.min(1, titleWidth / Math.max(1, title.width));
+      count.x = collection.width * (1 - collection.anchorX) - rightMargin - countWidth * (1 - count.anchorX);
+    }
+    titleWidget.isAbsoluteTop = true;
+    titleWidget.top = 0;
+    titleWidget.updateAlignment();
+    var height = title.height * Math.abs(title.scaleY);
+    if (countWidget) {
+      countWidget.isAbsoluteTop = true;
+      countWidget.top = Math.max(0, (height - count.height * Math.abs(count.scaleY)) / 2);
+      countWidget.updateAlignment();
+    }
+    return height;
   };
   _ctor.prototype.fitDrawGuarantee = function () {
     var node = this._drawGuaranteeNode, footer = this._drawFooter;
     if (!node || !footer || footer.width <= 0) return;
-    var scale = Math.min(.5, Math.max(1, footer.width - 36) / Math.max(1, node.width));
+    var scale = Math.min(.5, Math.max(1, footer.width - 36) / Math.max(1, node.width), 48 / Math.max(1, node.height));
     node.scaleX = node.scaleY = scale;
     node.setPosition(0, footer.height / 2 - 34);
   };
@@ -162,6 +217,14 @@ var def_KinghtFallHomeTreasureCtrl = function (t) {
       footer.off(cc.Node.EventType.POSITION_CHANGED, this.layoutRelicViewport, this);
     }
     if (footer && this.node && (!cc.isValid || cc.isValid(this.node))) this.node.off(cc.Node.EventType.SIZE_CHANGED, this.layoutRelicViewport, this);
+    if (this._relicTitle && (!cc.isValid || cc.isValid(this._relicTitle))) this._relicTitle.off(cc.Node.EventType.SIZE_CHANGED, this.layoutRelicViewport, this);
+    var count = this.labNum && this.labNum.node;
+    if (count && (!cc.isValid || cc.isValid(count))) count.off(cc.Node.EventType.SIZE_CHANGED, this.layoutRelicViewport, this);
+    if (this._relicNavigation && (!cc.isValid || cc.isValid(this._relicNavigation))) {
+      this._relicNavigation.off(cc.Node.EventType.SIZE_CHANGED, this.layoutRelicViewport, this);
+      this._relicNavigation.off(cc.Node.EventType.POSITION_CHANGED, this.layoutRelicViewport, this);
+    }
+    this._relicTitle = this._relicNavigation = null;
     if (label && (!cc.isValid || cc.isValid(label))) label.off(cc.Node.EventType.SIZE_CHANGED, this.fitDrawGuarantee, this);
     var frame = this._drawFooterFrame, sprite = this._drawFooterSprite;
     if (sprite && (!cc.isValid || cc.isValid(sprite)) && sprite.spriteFrame === frame) sprite.spriteFrame = this._drawFooterSource;

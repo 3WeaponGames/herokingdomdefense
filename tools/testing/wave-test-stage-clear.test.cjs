@@ -7,12 +7,13 @@ const Stars = require('../../assets/_script/StageStarsCore');
 
 const singleton = value => ({ getInstance: () => value });
 const noop = () => {};
-const phases = { Prepare: 0, Fight: 2, Transition: 3, End: 4 };
+const phases = { Prepare: 0, Transition: 1, Fight: 2, End: 4 };
 
-function stageClear(phase, preview = true) {
+function stageClear(phase, preview = true, finalWave = false) {
   const scene = fixture(), progress = harness(), { cc, modules, ui } = scene, player = progress.player;
   const level = config.LevelCfg[0], stage = level.Level, record = player.getGameData();
-  record.setLevelInfo(stage, 1, 0);
+  const round = finalWave ? level.WaveCfg.length : 1;
+  record.setLevelInfo(stage, round, 0);
   player.rewardRecords().forEach(item => item.saveData());
   const saved = progress.persist();
   const shown = [], mode = { isAvailable: () => preview, clearGameplayInput: noop, removeGameplayTarget: noop };
@@ -20,8 +21,9 @@ function stageClear(phase, preview = true) {
     TestMode: { TestMode: singleton(mode) },
     RewardTestProgress: progress.load('RewardTestProgress'),
     KinghtFallConfig: {
-      KinghtFallEventName: {}, KinghtFallParameter: {}, KinghtFallAudioId: {},
-      KinghtFallUIID: { UIGameEnd: 'victory', UIHome: 'home' }
+      KinghtFallEventName: { RoundEnd: 'round-end', GameOver: 'game-over' },
+      KinghtFallParameter: {}, KinghtFallAudioId: {},
+      KinghtFallUIID: { UIGameEnd: 'victory', UIHome: 'home', UIBuff: 'perk' }
     },
     KinghtFallModle: {
       ...progress.modules.KinghtFallModle,
@@ -31,9 +33,10 @@ function stageClear(phase, preview = true) {
     KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton(player) },
     KinghtFallDataMgr: progress.modules.KinghtFallDataMgr,
     KinghtFallEnum: progress.load('KinghtFallEnum'),
-    KinghtFallGameCtrl: {}, KinghtFallGameCtrlData: { KinghtFallTimeType: {} },
+    KinghtFallGameCtrl: {}, KinghtFallBuildBase: {}, KinghtFallBuildObstacle: {}, KinghtFallCommerce: {}, KinghtFallInterface: {},
     KinghtFallGameEffect: {}, KinghtFallGameUICtrl: {}, KinghtFallTextConfig: {},
-    KinghtFallUtilLayout: {}, KinghtFallItemGood: {}, PlatformSetting: {}, SdkMgr: {}, Utils: {}, PlayerMgr: {},
+    KinghtFallUtilLayout: {}, KinghtFallItemGood: {}, PlatformSetting: {}, SdkMgr: {}, Utils: {},
+    PlayerMgr: { PlayerMgr: singleton({ getTrackData: () => ({ youmengTrack: noop }) }) },
     BattleSounds: { dispose: noop }, GameplayAdOwner: { cancel: noop },
     AudioMgr: { AudioMgr: singleton({ stopMusic: noop, stopOwnedEffects: noop, setChannelGain: noop, playEffectFree: noop }) },
     StageStarPresentation: { showResult: (_owner, cfg, mask) => shown.push(Stars.count(cfg, mask, true)) },
@@ -52,21 +55,40 @@ function stageClear(phase, preview = true) {
   const home = { node: new cc.Node('Home') };
   home.node.active = false;
   ui.uistatck.set('home', home);
-  ui.setConf({ victory: { bundleName: 'ui', prefab: 'victory', name: 'Victory', zIndex: 10 } });
+  ui.setConf({
+    victory: { bundleName: 'ui', prefab: 'victory', name: 'Victory', zIndex: 10 },
+    perk: { bundleName: 'ui', prefab: 'perk', name: 'Perk', zIndex: 10 }
+  });
   battle.node = new cc.Node('Battle');
   battle.node.ui = battle;
   battle.uid = 'battle';
   battle.canBreak = true;
   battle.isPauset = false;
   battle._stopTestMovement = noop;
+  battle.playPlanningMusic = noop;
+  battle.btnBuildInfo = {};
   battle.ctrUI = { node: battle.node, setRevive: noop };
   battle.ctrGame = {
-    gameData: { round: 1, levelCfg: level },
     gameStatus: phase, gameTag: [0, 0, 1, 1], _combatEpoch: 1, ndMain: {}, ndPath: {},
     moveFun: noop,
     onPauseGame() { this.paused = true; },
     onResumeGame() { this.paused = false; }
   };
+  const Data = scene.load('KinghtFallGameCtrlData').default;
+  const game = battle.ctrGame;
+  game.gameData = Object.assign(Object.create(Data.prototype), {
+    ctrPar: game, round, levelCfg: level, bulidPointMap: {}, enemyList: [], pendingEnemySpawns: 0,
+    addTime: {}, buffList: [], businessPoints: []
+  });
+  game.gameData.resetEnemyWave(level.WaveCfg[round - 1]);
+  const eventManager = modules.EventMgr.EventMgr.getInstance();
+  const emit = eventManager.emit;
+  eventManager.emit = (name, ...args) => {
+    emit(name, ...args);
+    if (name === 'round-end') battle.endRoundGame();
+    if (name === 'game-over') battle.onGameOver(...args);
+  };
+  modules.EventMgr.EventMgr = singleton(eventManager);
   ui.uistatck.set('battle', battle);
 
   cc.instantiate = () => {
@@ -139,4 +161,119 @@ test('the stage-clear action rejects release builds and stale paused dialogs', (
   assert.equal(fresh.battle.clearPausedStageForTest(dialog, 3), false);
   assert.equal(fresh.modules.RewardTestProgress.active(), false);
   assert.deepEqual(fresh.progress.persist(), fresh.saved);
+});
+
+test('opening Wave Adjuster from Settings replaces the owning Pause without resuming the battle', () => {
+  const f = stageClear(phases.Fight), { battle } = f;
+  const pause = battle.beginBattleDialog('pause');
+  pause.paused = true;
+  battle.onPauseGame(true, pause);
+  f.flush();
+  let resumes = 0;
+  battle.ctrGame.onResumeGame = () => { resumes++; };
+  const wave = f.load('WaveTestPanel');
+  assert.equal(wave.toggle(battle), false);
+  assert.equal(wave.toggle(battle, true), true);
+  f.flush();
+  assert.equal(resumes, 0);
+  assert.equal(battle.isPauset, true);
+  assert.deepEqual([...battle._pauseOwners], [battle._battleDialog]);
+  assert.equal(battle._battleDialog.kind, 'wave-test');
+  assert(battle.node.getChildByName('WaveTestOverlay').getChildByName('WaveTestPanel').getChildByName('Complete Wave'));
+  battle._waveTestPanel.close();
+  f.flush();
+  assert.equal(resumes, 1);
+});
+
+test('Reward Testing shares the existing battle pause and returns to it when closed', () => {
+  const f = stageClear(phases.Fight), { battle, modules, cc } = f;
+  const mode = modules.TestMode.TestMode.getInstance();
+  mode._gameplayTarget = battle;
+  modules.Main = { default: { instance: {} } };
+  modules.KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getSignCfg = () => Array(7);
+  const scene = {};
+  cc.director.getScene = () => scene;
+  cc.director.on = cc.director.off = noop;
+  cc.Director = { EVENT_AFTER_UPDATE: 'update' };
+  const pause = battle.beginBattleDialog('pause');
+  pause.paused = true;
+  battle.onPauseGame(true, pause);
+  const reward = f.load('RewardTestPanel');
+  assert.equal(reward.toggle(mode), false);
+  assert.equal(reward.toggle(mode, null, true), true);
+  assert(battle._pauseOwners.has(pause));
+  assert.equal(battle._pauseOwners.size, 2);
+  mode._rewardTestPanel.close();
+  f.flush();
+  assert.deepEqual([...battle._pauseOwners], [pause]);
+  assert.equal(battle.isPauset, true);
+  assert.equal(modules.RewardTestProgress.active(), false);
+  assert.deepEqual(f.progress.persist(), f.saved);
+});
+
+test('Complete Wave appears after Start Battle and enters the usual perk flow from the opening transition', () => {
+  const f = stageClear(phases.Prepare), { battle } = f;
+  const game = battle.ctrGame, data = game.gameData;
+  const toggle = () => f.load('WaveTestPanel').toggle(battle);
+  const overlay = () => battle.node.getChildByName('WaveTestOverlay');
+  assert(toggle());
+  assert.equal(overlay().getChildByName('WaveTestPanel').getChildByName('Complete Wave'), undefined);
+  assert.equal(battle.completePausedWaveForTest(battle._battleDialog), false);
+  assert.equal(f.modules.RewardTestProgress.active(), false);
+  assert(toggle());
+
+  let finishDusk;
+  Object.assign(battle, { btnStartFight: {}, btnAddCoin: {}, enemyIconInfo: {}, playBattleMusic: noop });
+  battle.ctrUI.ndLight = {};
+  game.ctrPlay = { ndRange: {} };
+  f.cc.tween = () => ({
+    set() { return this; }, to() { return this; },
+    call(callback) { finishDusk = callback; return this; }, start() {}
+  });
+  battle.startRoundGame();
+  assert.equal(game.gameStatus, phases.Transition);
+  assert(toggle());
+  const dialog = battle._battleDialog;
+  const button = overlay().getChildByName('WaveTestPanel').getChildByName('Complete Wave');
+  button.handlers.end({ stopPropagation: noop });
+  finishDusk();
+  assert.equal(game.gameStatus, phases.Transition);
+  assert.equal(overlay(), undefined);
+  assert.equal(battle.completePausedWaveForTest(dialog), false);
+  f.flush();
+  assert.equal(data.round, 1);
+  assert.equal(f.player.getUserData().getMaxOrder(), 1);
+  assert.equal(game.gameStatus, phases.Prepare);
+  assert.deepEqual(f.requests.map(request => request.name), ['perk']);
+  assert.equal(f.events.filter(([name]) => name === 'round-end').length, 1);
+  assert.equal(f.modules.RewardTestProgress.active(), true);
+  assert.deepEqual(f.progress.persist(), f.saved);
+});
+
+test('Complete Wave on the final wave uses earned stars and the normal victory rewards', () => {
+  const f = stageClear(phases.Fight, true, true), { battle, level, player } = f;
+  const game = battle.ctrGame;
+  const user = player.getUserData(), gold = user.getGoldNum();
+  const { Coin } = f.modules.KinghtFallEnum.KinghtFallEnumGoodsCfg;
+  const waveGold = level.WaveCfg.flatMap(wave => wave.WaveReward)
+    .reduce((sum, [id, amount]) => sum + (id === Coin ? amount : 0), 0);
+  game.gameTag = [0, 0, 0, 1];
+  assert(f.load('WaveTestPanel').toggle(battle));
+  const panel = battle.node.getChildByName('WaveTestOverlay').getChildByName('WaveTestPanel');
+  const button = panel.getChildByName('Complete Wave');
+  button.handlers.end({ stopPropagation: noop });
+  button.handlers.end({ stopPropagation: noop });
+  f.flush();
+  assert.equal(game.gameStatus, phases.End);
+  assert.equal(game.paused, true);
+  assert.equal(battle.isPauset, true);
+  assert.deepEqual(f.requests.map(request => request.name), ['victory']);
+  f.requests[0].done(null, f.asset);
+  const victory = f.ui.getUIById('victory');
+  victory.start();
+  assert.equal(victory._testChallengeMask, undefined);
+  assert.equal(victory.settlement.challengeMask, 3);
+  assert.equal(user.getGoldNum(), gold + waveGold);
+  assert.equal(user.getMaxStage(), level.Level + 1);
+  assert.deepEqual(f.progress.persist(), f.saved);
 });

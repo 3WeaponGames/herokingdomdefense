@@ -96,6 +96,27 @@ test('failed local tail saves retry before cloud upload and hide flushes queued 
   h.state.hide(); assert.equal(h.state.sends.length, 3); assert.equal(JSON.parse(h.state.sends[2].value).list[0].value, 2);
 });
 
+test('an independent preview save loads and persists segmented records locally', () => {
+  const h = harness({ cloud: true, server: {
+    'audit-test0': JSON.stringify({ goldNum: 99, test: [{ remote: true }], maxNum: 0, sft: 100 })
+  } });
+  const Cache = h.load('CacheUtils').CacheUtils;
+  Cache.usePreviewSaveSlot({
+    localOnly: true,
+    owns: key => key.startsWith('audit-'),
+    exists: () => true,
+    key: key => 'separate-save/' + key
+  });
+  h.record.getData();
+  assert(!h.record.data.test.some(item => item.remote));
+  h.record.data.test = [{ local: true }];
+  assert.equal(h.record.saveData(-1), true);
+  h.state.hide();
+  assert.equal(h.state.sends.length, 0);
+  assert.equal(JSON.parse(h.storage.get('separate-save/audit-test0'))[h.record.aliseMap.test][0].local, true);
+  assert.equal(h.storage.has('audit-test0'), false);
+});
+
 test('legacy segments without a head count retain all entries and unknown fields in deferred uploads', () => {
   const h = harness({ cloud: true, local: {
     'audit-test0': JSON.stringify({ goldNum: 2, test: Array(30).fill({ value: 1 }), sft: 1 }),

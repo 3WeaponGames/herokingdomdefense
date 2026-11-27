@@ -65,41 +65,81 @@ test('the combined guarantee stays centered and fits long live copy after width 
  const f=fixture();f.controller.prepareDrawFooter();for(const height of[220,250,310])for(const width of[640,750,900])for(const textWidth of[1000,1800,2600]){f.footer.setContentSize(width,height);f.nodes.get(71).setContentSize(textWidth,76);const n=f.nodes.get(71),box=bounds({...n,width:n.width*n.scaleX,height:n.height*n.scaleY});assert.equal(n.x,0);assert.equal(n.y,f.footer.height/2-34);assert(n.scaleX===n.scaleY&&n.scaleX<=.5);assert(box.left>=-width/2+18&&box.right<=width/2-18);const buttonTop=Math.max(...[f.controller.btnOne,f.controller.btnVideo,f.controller.btnTen].map(n=>bounds(n,1.04).top));assert(box.bottom>buttonTop,'guarantee clears pressed button tops');}
 });
 
-test('relic viewport ends above the live draw footer and the last progress bar fits inside the scroll content',()=>{
- const f=fixture(), collection=f.nodes.get(2), scroll=f.nodes.get(48), view=f.nodes.get(49), passes=[];
- class Widget { constructor(name){this.name=name;} updateAlignment(){passes.push(this.name);} }
- const widget=new Widget('collection'), banner=new Widget('banner');
- widget.top=prefab[60]._top;banner.top=prefab[11]._top;
- f.context.cc.Widget=Widget;
- collection.components.push(widget);
- f.nodes.get(3).components.push(banner);
- scroll.components.push(new Widget('scroll'));
- view.components.push(new Widget('view'));
- f.controller.scheduleOnce=callback=>callback.call(f.controller);
+test('Relics keeps the title and the compact footer outside the scroll area on resize', () => {
+ const f = fixture(), collection = f.nodes.get(2), title = f.nodes.get(3), scroll = f.nodes.get(48), view = f.nodes.get(49);
+ const count = f.controller.labNum.node;
+ title.setContentSize(420, title.height);
+ const home = new Node({_contentSize: {width: 750, height: 1334}});
+ const navigation = new Node({_name: 'ndBottom', _contentSize: {width: 750, height: 120}});
+ home.children.push(f.page, navigation);
+ f.page.parent = navigation.parent = home;
+ f.page.setPosition(0, 0);
+ class Widget {
+  constructor(node, top, bottom) {
+   Object.assign(this, {node, top, bottom, isAlignTop: top !== undefined, isAlignBottom: bottom !== undefined});
+   node.components.push(this);
+  }
+  updateAlignment() {
+   const node = this.node, parent = node.parent;
+   const top = parent.height * (1 - parent.anchorY) - this.top;
+   const bottom = this.bottom - parent.height * parent.anchorY;
+   if (this.isAlignTop && this.isAlignBottom) node.setContentSize(node.width, top - bottom);
+   const height = node.height * node.scaleY;
+   const y = this.isAlignTop ? top - height * (1 - node.anchorY) : bottom + height * node.anchorY;
+   if (node.y !== y) { node.y = y; node.emit('position'); }
+  }
+ }
+ f.context.cc.Widget = Widget;
+ new Widget(navigation, undefined, 0);
+ new Widget(f.footer, undefined, prefab[133]._bottom);
+ new Widget(collection, prefab[60]._top, prefab[60]._bottom);
+ new Widget(title, prefab[11]._top);
+ new Widget(count, prefab[17]._top);
+ new Widget(scroll, prefab[58]._top, 0);
+ new Widget(view, 0, 0);
+ let topInset = 0;
+ const origin = () => f.page.convertToWorldSpaceAR({x: -f.page.width / 2, y: -f.page.height / 2});
+ f.context.cc.view = {getVisibleOrigin: origin, getVisibleSize: () => ({width: f.page.width, height: f.page.height})};
+ f.context.cc.sys = {getSafeAreaRect: () => ({...origin(), width: f.page.width, height: f.page.height - topInset})};
+ f.controller.scheduleOnce = callback => callback.call(f.controller);
+ f.footer.height = 358;
  f.controller.prepareDrawFooter();
- const base=widget.bottom;
- assert(Math.abs(base-331.381)<1e-8);
- assert.deepEqual(passes.slice(-3),['collection','scroll','view']);
- f.footer.y+=35;f.footer.emit('position');
- assert(Math.abs(widget.bottom-base-35)<1e-8);
- f.page.height=1650;
- const origin=f.page.convertToWorldSpaceAR({x:-375,y:-825});
- const safe={...origin,width:750,height:1650-120/1.44};
- f.context.cc.view={getVisibleOrigin:()=>origin,getVisibleSize:()=>({width:750,height:1650})};
- f.context.cc.sys={getSafeAreaRect:()=>safe};
- f.controller.layoutRelicViewport();
- assert(widget.top>prefab[60]._top);
- const titleTop=825-widget.top-banner.top;
- assert(Math.abs(titleTop-f.header.contentTop(f.page,f.header.viewport()))<1e-7);
- assert(825-widget.top-prefab[58]._top<titleTop,'the grid stays below the banner');
- assert(Math.abs(widget.bottom-(base+35+158))<1e-8);
- safe.height=1650;f.controller.layoutRelicViewport();assert.equal(widget.top,prefab[60]._top);
+ const top = node => node.convertToWorldSpaceAR({x: 0, y: node.height * node.scaleY * (1 - node.anchorY)}).y;
+ const bottom = node => node.convertToWorldSpaceAR({x: 0, y: -node.height * node.scaleY * node.anchorY}).y;
+ const check = () => {
+  assert.equal(f.footer.height, 220);
+  const headerBottom = f.header.contentTop(f.page, f.header.viewport());
+  assert(Math.abs(top(title) - headerBottom) < 1e-8);
+  assert(Math.abs(top(view) - bottom(title) + 8) < 1e-8);
+  assert.equal(bottom(view), top(f.footer) + 4);
+  assert.equal(bottom(f.footer), top(navigation));
+  const titleRight = title.x + title.width * title.scaleX * (1 - title.anchorX);
+  const countLeft = count.x - count.width * count.scaleX * count.anchorX;
+  assert(countLeft >= titleRight + 12 - 1e-8);
+  assert.equal(count.x + count.width * count.scaleX * (1 - count.anchorX), collection.width / 2 - 16);
+ };
+ check();
+ topInset = 83;
+ home.height = 1650;
+ f.page.setContentSize(750, 1650);
+ check();
+ navigation.setContentSize(750, 140);
+ title.setContentSize(title.width, title.height + 16);
+ check();
+ collection.width = 615;
+ f.page.setContentSize(615, 1650);
+ check();
+ assert(title.scaleX < 1);
  const item=f.controller.ndItem, progress=item.getChildByName('ndPro');
  const extraBelowTile=-bounds(progress).bottom-item.height*item.anchorY;
  assert(prefab[52]['_N$paddingBottom']>=extraBelowTile+12);
  f.controller.onDestroy();
  assert.equal(f.footer.handlers.get('position').length,0);
  assert.equal(f.page.handlers.get('size').length,0);
+ assert.equal(title.handlers.get('size').length, 0);
+ assert.equal(count.handlers.get('size').length, 0);
+ assert.equal(navigation.handlers.get('size').length, 0);
+ assert.equal(navigation.handlers.get('position').length, 0);
 });
 
 test('prefab and scoped localization provide one complete guarantee row without removing control bindings',()=>{

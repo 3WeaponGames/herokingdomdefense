@@ -606,7 +606,7 @@ var def_KinghtFallEnemyBase = function (t) {
       return t;
     }
   };
-  _ctor.prototype.freeNode = function (transformed) {
+  _ctor.prototype.freeNode = function (skipKill) {
     if (this._isPooled) return;
     var owner = this, node = this.node, data = this._combatData || setupLife(this).data;
     var key = $z1KinghtFallConfig.KinghtFallPoolName.Enemy + "_" + (this._poolCfgID || this.cfg.ID);
@@ -614,9 +614,9 @@ var def_KinghtFallEnemyBase = function (t) {
     var generation = node._combatGeneration = (node._combatGeneration || 0) + 1;
     function retired() { return cc.isValid(owner, true) && owner.node === node && cc.isValid(node, true) && node._combatGeneration === generation && owner._isPooled; }
     // Unlink this lease before cleanup can initialize the same component again.
-    if (data) data.delEnemy(this, transformed);
+    if (data) data.delEnemy(this, skipKill);
     if (!retired()) return;
-    if (transformed === true) { this.delAllBuff(); if (!retired()) return; }
+    if (skipKill === true) { this.delAllBuff(); if (!retired()) return; }
     if (this._enemySkillEffects) { require("EnemySkillVisuals").clear(this); if (!retired()) return; }
     this._attackAnimation = null;
     Navigation.reset(this);

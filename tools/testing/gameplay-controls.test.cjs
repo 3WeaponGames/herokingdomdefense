@@ -33,7 +33,8 @@ function fixture() {
     AudioMgr: { AudioMgr: singleton({ playEffectFree() {} }) },
     RelicCombat: { updateHero() {} }, RelicBattle: { updateHeroAura() {} },
     GameToolsOverrides: { tick() {} }, KinghtFallNavigation: { beginFrame() {} },
-    HeroSkillHUD: { update(hero, runtime) { state.events.push(['skillHUD', runtime.time]); } },
+    BattleHud: { layoutFooter() {} },
+    HeroSkillHUD: { layout() {}, update(hero, runtime) { state.events.push(['skillHUD', runtime.time]); } },
     EventMgr: { EventMgr: singleton({ emit(...args) { state.events.push(args); } }) },
     BaseUI: { default: Base }, BaseCtrl: { default: Base }
   };

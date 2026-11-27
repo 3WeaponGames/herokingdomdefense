@@ -7,12 +7,12 @@ var node = uiControls.node, paint = uiControls.paint, label = uiControls.label;
 var button = uiControls.button, input = uiControls.input, colors = uiControls.colors;
 var WIDTH = 704, ROWS_PER_PAGE = 8;
 
-function canOpen(ui) {
+function canOpen(ui, fromPause) {
   var game = ui.ctrGame, data = game && game.gameData, level = data && data.levelCfg;
   var phases = require("KinghtFallModle").KinghtFallGameStage;
   return !!(level && !data.endless && level.WaveCfg && level.WaveCfg[data.round - 1] && game.ndMain && game.ndPath &&
-    ui.ctrUI && ui.ctrUI.node && ui.canBreak && !ui.isclose && !ui.isPauset && !ui._isEntryLoading &&
-    !ui._enemyGuide && !ui._battleDialog && !ui._unitTestPanel && !ui._restartPending &&
+    ui.ctrUI && ui.ctrUI.node && ui.canBreak && !ui.isclose && !ui._isEntryLoading &&
+    (fromPause || !ui.isPauset && !ui._battleDialog) && !ui._enemyGuide && !ui._unitTestPanel && !ui._restartPending &&
     (game.gameStatus === phases.Prepare || ui.isWaveInProgress()));
 }
 
@@ -27,8 +27,8 @@ function unitName(manager, language, level, id) {
   return type ? name + " · " + language.t(type.name) : name;
 }
 
-function open(ui) {
-  if (!canOpen(ui)) return false;
+function open(ui, fromPause) {
+  if (!canOpen(ui, fromPause)) return false;
   var game = ui.ctrGame, data = game.gameData, model = Settings.describe(data);
   var fighting = ui.isWaveInProgress(), prepare = require("KinghtFallModle").KinghtFallGameStage.Prepare;
   var manager = require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance();
@@ -153,6 +153,15 @@ function open(ui) {
     }
   }
 
+  function completeWave() {
+    if (!current()) return;
+    try {
+      if (!ui.completePausedWaveForTest(dialog)) message.string = "The wave could not be completed.";
+    } catch (error) {
+      message.string = error.message;
+    }
+  }
+
   label(panel, "Title", "Wave Adjuster", 24, 17, 500, 50, 36, colors.text, true).enableBold = true;
   label(panel, "Shortcut", "F6", 550, 20, 56, 46, 23, colors.muted);
   button(panel, "Close", "×", 626, 20, 54, 46, close);
@@ -205,6 +214,9 @@ function open(ui) {
   var message = label(panel, "Message", fighting ? "Restart to apply these values." : "Test values and rewards stay in the preview.",
     24, footer, 656, 42, 22, colors.muted, true);
   button(panel, "Reset values", "Reset fields", 24, footer + 50, 178, 48, reset);
+  if (fighting && !data._roundCompleted) {
+    button(panel, "Complete Wave", "Complete Wave", 214, footer + 50, 209, 48, completeWave);
+  }
   button(panel, fighting ? "Restart wave" : "Apply", fighting ? "Restart wave" : "Apply to wave",
     435, footer + 50, 245, 48, apply, true);
   label(panel, "Stage clear caption", "Clear stage", 24, footer + 112, 656, 31, 23, colors.text, true);
@@ -224,8 +236,8 @@ function open(ui) {
   return true;
 }
 
-exports.toggle = function (ui) {
+exports.toggle = function (ui, fromPause) {
   if (!require("TestMode").TestMode.getInstance().isAvailable()) return false;
   if (ui._waveTestPanel) { ui._waveTestPanel.close(); return true; }
-  return open(ui);
+  return open(ui, fromPause);
 };

@@ -2,20 +2,40 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),{test}=require('node:test');
 const root=path.resolve(__dirname,'../..'),Weapons=require('../../assets/_script/HeroWeapons'),Talents=require('../../assets/_script/HeroStyleTalents'),config=require('../../assets/KinghtFallConfig/GameJsonCfg.json');
 const clone=value=>JSON.parse(JSON.stringify(value));
-test('reading legacy equipment is read-only; bow upgrades survive switching and other weapons begin at level one',()=>{
- const data={personLevel:[8,9,17,12,5,4],unknown:{keep:true}},before=JSON.stringify(data);
- assert.equal(Weapons.selected(data).id,'skirmisher');assert.equal(Weapons.level(data,3),17);assert.equal(Weapons.level(data,4),12);assert.equal(JSON.stringify(data),before);
- assert(Weapons.select(data,'fighter'));assert.equal(Weapons.level(data,3),1);assert.equal(Weapons.level(data,4),1);Weapons.upgrade(data,3,4);Weapons.upgrade(data,4,2);
- assert(Weapons.select(data,'skirmisher'));assert.equal(Weapons.level(data,3),17);assert.equal(Weapons.level(data,4),12);Weapons.select(data,'fighter');assert.equal(Weapons.level(data,3),4);assert.equal(Weapons.level(data,4),2);assert.deepEqual(data.personLevel,[8,9,17,12,5,4]);assert(data.unknown.keep);
+test('Bow and Arrow levels carry over to every style as separate upgrade slots', () => {
+ const data = {personLevel: [8, 9, 1, 1, 5, 4]};
+ assert.equal(Weapons.selected(data).id, 'skirmisher');
+ Weapons.upgrade(data, 4, 15);
+ Weapons.upgrade(data, 3, 11);
+ assert(Weapons.select(data, 'bruiser'));
+ assert.equal(Weapons.level(data, 4), 15);
+ assert.equal(Weapons.level(data, 3), 11);
+ Weapons.upgrade(data, 3, 12);
+ for (const style of Weapons.styles) {
+  Weapons.select(data, style.id);
+  assert.equal(Weapons.level(data, 4), 15);
+  assert.equal(Weapons.level(data, 3), 12);
+ }
+ assert.deepEqual(data.personLevel, [8, 9, 12, 15, 5, 4]);
 });
-test('an unequipped weapon can be upgraded, persisted and equipped without changing active levels or shared armor',()=>{
- const data={personLevel:[3,4,7,8,9,10]};Weapons.select(data,'fighter');const equipped=Weapons.selected(data).id;
- Weapons.upgrade(data,3,9,'mystic');Weapons.upgrade(data,4,6,'mystic');assert.equal(Weapons.selected(data).id,equipped);assert.equal(Weapons.level(data,3),1);assert.equal(Weapons.level(data,4),1);
- const loaded=clone(data);Weapons.select(loaded,'mystic');assert.equal(Weapons.level(loaded,3),9);assert.equal(Weapons.level(loaded,4),6);assert.equal(Weapons.level(loaded,1),3);assert.equal(Weapons.level(loaded,5),9);
+test('split saves use the highest earned level per slot and keep other fields when upgraded', () => {
+ const levels = {skirmisher: {3: 7, 4: 15, future: true}, fighter: {3: 11, 4: 6}, futureStyle: {3: 20, 4: 25}};
+ const data = {personLevel: [3, 4, 9, 8, 9, 10], heroWeapon: {selected: 'fighter', levels, note: 5}};
+ const before = clone(data);
+ assert.equal(Weapons.level(data, 4), 15);
+ assert.equal(Weapons.level(data, 3), 11);
+ assert.deepEqual(data, before);
+ assert(Weapons.select(data, 'mystic'));
+ assert.deepEqual(data.heroWeapon, {...before.heroWeapon, selected: 'mystic'});
+ Weapons.upgrade(data, 4, 16);
+ assert.equal(Weapons.level(data, 4), 16);
+ assert.equal(Weapons.level(data, 3), 11);
+ assert.deepEqual(data.personLevel, [3, 4, 9, 16, 9, 10]);
+ assert.deepEqual(levels, {skirmisher: {3: 7, future: true}, fighter: {3: 11}, futureStyle: before.heroWeapon.levels.futureStyle});
 });
-test('all six styles have unique weapon sets and independent item keys; Guardian uses hammer and shield',()=>{
+test('all six styles have distinct items at the same level including Guardian hammer and shield',()=>{
  assert.equal(Weapons.styles.length,6);assert.equal(Weapons.find('guardian').weapon,'Hammer & shield');assert.equal(Weapons.itemKey(4,2,'skirmisher'),'4:2');assert.equal(Weapons.itemKey(4,2,'mystic'),'4:2:mystic');assert.equal(Weapons.itemKey(2,2,'mystic'),'2:2');
- const data={personLevel:[]};for(const [i,style]of Weapons.styles.entries())Weapons.upgrade(data,4,i+2,style.id);for(const [i,style]of Weapons.styles.entries()){Weapons.select(data,style.id);assert.equal(Weapons.level(data,4),i+2);}
+ for (const slot of [3, 4]) assert.equal(new Set(Weapons.styles.map(style => Weapons.itemKey(slot, 15, style.id))).size, Weapons.styles.length);
 });
 test('nine expanded tiers retain their original main node, add two always visible paths, and never require a style to be equipped',()=>{
  const optional=config.TalentLevelCfg.filter(row=>row.OptionalBranch);assert.equal(optional.length,18);
@@ -61,10 +81,36 @@ test('expanded talent rows unlock the next tier after any one purchase while the
  assert(row.every(cfg=>owner.canUnlock(cfg)===4));owned.set(previous.ID,{id:previous.ID,isLock:true});assert(row.every(cfg=>owner.canUnlock(cfg)===2));
  owned.set(row.find(cfg=>cfg.OptionalBranch).ID,{isLock:true});assert(next.every(cfg=>owner.canUnlock(cfg)===2));assert(row.filter(cfg=>!owned.has(cfg.ID)).every(cfg=>owner.canUnlock(cfg)===2));
 });
-test('unequipped weapon upgrades use the existing durable purchase transaction and survive reload without equipping the weapon',()=>{
- const {harness}=require('../testing/persistence-harness.cjs'),h=harness();h.player.udata.data.goldNum=10000;h.player.udata.setHeroWeapon('fighter');
- const purchase=h.player.purchase([{id:2001,num:100}],()=>h.player.udata.setHeroWeaponLevel('mystic',4,2),()=>h.player.udata.getHeroWeaponLevel('mystic',4)===1);assert(purchase);
- const loaded=harness(h.persist());assert.equal(loaded.player.udata.getHeroWeapon().id,'fighter');assert.equal(loaded.player.udata.getHeroWeaponLevel('mystic',4),2);assert.equal(loaded.player.udata.getPersonLevel(4),1);assert.equal(loaded.player.udata.getGoldNum(),9900);
+test('shared levels and the equipped style survive a durable upgrade and reload', () => {
+ const {harness} = require('../testing/persistence-harness.cjs'), h = harness(), user = h.player.udata;
+ user.data.goldNum = 10000;
+ user.setPersonLevel(3, 11);
+ user.setPersonLevel(4, 14);
+ user.setHeroWeapon('bruiser');
+ const purchase = h.player.purchase([{id: 2001, num: 100}], () => user.setHeroWeaponLevel('skirmisher', 4, 15), () => user.getPersonLevel(4) === 14);
+ assert(purchase);
+ const loaded = harness(h.persist()).player.udata;
+ assert.equal(loaded.getHeroWeapon().id, 'bruiser');
+ for (const style of Weapons.styles) {
+  assert.equal(loaded.getHeroWeaponLevel(style.id, 4), 15);
+  assert.equal(loaded.getHeroWeaponLevel(style.id, 3), 11);
+ }
+ assert.equal(loaded.getGoldNum(), 9900);
+});
+test('reward recovery accepts an interrupted journal with the old split equipment levels', () => {
+ const {harness} = require('../testing/persistence-harness.cjs'), h = harness(), user = h.player.udata;
+ user.data.heroWeapon = {selected: 'fighter', levels: {skirmisher: {3: 8, 4: 15}, fighter: {3: 12, 4: 3}}};
+ user.data.goldNum = 1000;
+ user.saveData();
+ h.state.failKeys.add(user.gameKey);
+ h.claim('chapter');
+ assert(h.player.pendingRewardJournal);
+ const loaded = harness(h.persist());
+ assert.equal(loaded.player.restorePendingRewards(), true);
+ assert.equal(loaded.player.udata.getPersonLevel(4), 15);
+ assert.equal(loaded.player.udata.getPersonLevel(3), 12);
+ assert.equal(loaded.player.udata.getGoldNum(), 1123);
+ assert.equal(loaded.player.udata.getStageReward(1, 1), true);
 });
 test('Gear style picker previews without changes and closes with a confirmation sound after equipping',()=>{
  const {harness}=require('../testing/persistence-harness.cjs'),h=harness();h.player.udata.data.goldNum=100000;h.player.udata.setHeroWeapon('fighter');h.player.udata.setHeroWeaponLevel('mystic',3,4);h.player.udata.setHeroWeaponLevel('mystic',4,2);

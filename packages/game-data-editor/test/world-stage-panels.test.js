@@ -52,6 +52,24 @@ test('wave cards render full models for shared units and stage-only profiles',()
  assert.equal(f.edits(),0);
 });
 
+test('wave cards show the selected profile’s enemy class below its name',()=>{
+ const f=fixture(),stage=f.state.snap.value,localId=1000000000;
+ f.state.tab='Waves';
+ f.state.catalog.units.push({id:4,name:'Hellforge Colossus',enemyClass:'elite'},{id:5,name:'Pyre Executioner',enemyClass:'boss'});
+ stage.config.EnemyProfiles={[localId]:{baseId:4,name:'Custom',stats:{}}};
+ const entries=stage.config.WaveCfg[0].SpawnTimeline;
+ entries[1].unitId=localId;
+ entries[2].unitId=5;
+ entries[3].unitId=999999;
+ f.panels.right();
+ const titles=descendants(f.context.right).filter(node=>node.classList.contains('world-wave-unit-title'));
+ assert.deepEqual(titles.map(title=>title.children.map(child=>child.textContent)),[
+  ['Unit','Normal'],['Hellforge Colossus','Elite'],['Pyre Executioner','Boss'],['Unit 999999']
+ ]);
+ assert.deepEqual(titles.slice(0,3).map(title=>title.children[1].dataset.enemyClass),['normal','elite','boss']);
+ assert.equal(f.edits(),0);
+});
+
 test('the Spawns sidebar moves points into and out of groups and updates the generated name',()=>{
  const f=fixture();f.state.tab='Spawns';
  const stage=f.state.snap.value;

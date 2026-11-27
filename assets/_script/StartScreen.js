@@ -2,6 +2,8 @@
 var LanguageMgr = require("LanguageMgr").LanguageMgr;
 var Startup = require("StartupPresentation");
 
+function isF4(event) { return event && (event.keyCode === 115 || event.code === "F4" || event.key === "F4"); }
+
 var StartScreen = cc.Class({
   extends: cc.Component,
   properties: {
@@ -23,6 +25,7 @@ var StartScreen = cc.Class({
     LanguageMgr.getInstance().setCatalog(this.catalog.json);
     this.node.on(cc.Node.EventType.TOUCH_END, this.beginLoading, this);
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+    cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
     cc.view.on("canvas-resize", this.fitContent, this);
     cc.view.on("design-resolution-changed", this.fitContent, this);
     this.fitContent();
@@ -42,12 +45,22 @@ var StartScreen = cc.Class({
 
   onKeyDown: function (event) {
     if (!event || event.repeat || event.ctrlKey || event.altKey || event.metaKey) return;
+    if (isF4(event)) {
+      if (this._f4Down || this._starting || event.shiftKey || event.isComposing) return;
+      this._f4Down = true;
+      if (require("TestMode").TestMode.getInstance().toggleRewardTesting(this) && event.preventDefault) event.preventDefault();
+      return;
+    }
     if (event.keyCode === cc.macro.KEY.enter || event.keyCode === cc.macro.KEY.space) this.beginLoading();
+  },
+
+  onKeyUp: function (event) {
+    if (isF4(event)) this._f4Down = false;
   },
 
   beginLoading: function () {
     if (this._resetProgressPage) return;
-    if (this._starting || !cc.isValid(this, true)) return;
+    if (this._starting || this._saveSlotPanel || !cc.isValid(this, true)) return;
     this._starting = true;
     if (this._pulse) this._pulse.stop();
     this.prompt.node.opacity = 255;
@@ -68,9 +81,11 @@ var StartScreen = cc.Class({
 
   onDestroy: function () {
     ++this._requestGeneration;
+    if (this._saveSlotPanel) this._saveSlotPanel.close();
     if (this._pulse) this._pulse.stop();
     this.node.off(cc.Node.EventType.TOUCH_END, this.beginLoading, this);
     cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+    cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
     cc.view.off("canvas-resize", this.fitContent, this);
     cc.view.off("design-resolution-changed", this.fitContent, this);
   }

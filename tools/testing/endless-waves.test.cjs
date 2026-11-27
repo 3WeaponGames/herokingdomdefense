@@ -101,7 +101,8 @@ test('the survival ledger grants the existing reward rates and saves each stage 
     assert.equal(result.baseGold, 1000);
     assert.equal(result.crystals, 1);
     assert.equal(result.clearedWaves, count);
-    assert.equal(result.rewards.filter(row => row.id !== 2001 && row.id !== 2002).reduce((sum, row) => sum + row.num, 0), count / 5);
+    const relics = result.rewards.slice(2).reduce((sum, row) => sum + row.num, 0);
+    assert(relics >= count / 5 && relics <= count);
     assert.equal(player.udata.data.wallDefenseAdmission.used, true);
     assert.equal(player.settleWallDefense(run.result).id, run.id);
   }
@@ -115,13 +116,102 @@ test('the survival ledger grants the existing reward rates and saves each stage 
   assert.equal(reload.player.udata.getPowerNum(), 0);
 });
 
-test('an interrupted Endless payout is recovered once with the same rewards and best wave', () => {
+test('Endless odds improve with the stage and the cleared reward wave', () => {
+  const stages = config.LevelCfg.slice(0, config.GameTools.campaignStageLimit);
+  const odds = (stage, wave) => RewardRules.rarityWeights(rewardConfig, wave, stage);
+  const { stageWaveOffsets, points } = rewardConfig.endlessRarity;
+  assert(stageWaveOffsets.length >= stages.length);
+  const firstWave = rewardConfig.wavesPerItem;
+  const finalWave = points.at(-1).wave + firstWave;
+  for (const { Level } of stages) {
+    for (let wave = firstWave; wave <= finalWave; wave += firstWave) {
+      const weights = odds(Level, wave);
+      assert.equal(weights.length, 4);
+      assert(weights.every(weight => weight >= 0));
+      assert(Math.abs(weights.reduce((sum, weight) => sum + weight, 0) - 100) < 1e-9);
+      for (const tier of [1, 2, 3]) {
+        const atLeast = list => list.slice(tier).reduce((sum, weight) => sum + weight, 0);
+        if (wave > firstWave) assert(atLeast(weights) >= atLeast(odds(Level, wave - firstWave)) - 1e-9);
+        if (Level > 1) assert(atLeast(weights) >= atLeast(odds(Level - 1, wave)) - 1e-9);
+      }
+    }
+    assert.deepEqual(odds(Level, 10000), points.at(-1).weights);
+  }
+  assert.deepEqual(odds(1, 35), [85, 15, 0, 0]);
+  assert.deepEqual(odds(1, 40), [79, 16, 5, 0]);
+  assert.deepEqual(odds(14, 5), [85, 15, 0, 0]);
+  assert.deepEqual(odds(14, 10), [79, 16, 5, 0]);
+  assert.deepEqual(odds(14, 25), [58, 24, 18, 0]);
+  assert.deepEqual(odds(14, 30), [52, 26, 21.75, 0.25]);
+});
+
+test('the payout rolls each milestone at its own wave and uses the played stage', () => {
+  const payout = (stage, settings = rewardConfig) => RewardRules.createResult({
+    endlessStage: stage, id: 'curve-test', sequence: 1, endReason: 'defeat',
+    activeMilliseconds: 240000, clearedWaves: 10
+  }, settings, treasures, [], () => 0.975);
+  const early = payout(1), late = payout(14);
+  assert.deepEqual(early.drops.map(drop => [drop.wave, drop.quality]), [[5, 4], [10, 3]]);
+  assert.deepEqual(late.drops.map(drop => [drop.wave, drop.quality]), [[5, 3], [10, 2]]);
+  assert(RewardRules.validResult(late));
+  assert.deepEqual(late.rewards.slice(0, 2), [{ id: 2001, num: 2000 }, { id: 2002, num: 2 }]);
+  const { endlessRarity, ...oldSettings } = rewardConfig;
+  assert.deepEqual(payout(1, oldSettings).drops, payout(14, oldSettings).drops);
+});
+
+test('every cleared non-milestone wave has a 10% chance to add a relic on every stage', () => {
+  for (const { Level } of config.LevelCfg.slice(0, config.GameTools.campaignStageLimit)) {
+    for (const clearedWaves of [0, 1, 4, 5, 9, 10, 11, 19, 20]) {
+      const run = { endlessStage: Level, id: 'bonus-test', sequence: 1, endReason: 'defeat', activeMilliseconds: 0, clearedWaves };
+      const count = roll => RewardRules.createResult(run, rewardConfig, treasures, [], () => roll)
+        .rewards.slice(2).reduce((sum, row) => sum + row.num, 0);
+      assert.equal(count(0.09999), clearedWaves);
+      assert.equal(count(0.1), Math.floor(clearedWaves / 5));
+    }
+  }
+});
+
+test('bonus drops halve the next milestone’s blue, epic and legendary chances', () => {
+  function quality(stage, wave, rarityRoll) {
+    const rolls = [];
+    for (let current = 1; current <= wave; current++) {
+      if (current % 5) {
+        rolls.push(current === wave ? 0 : 0.99);
+        if (current < wave) continue;
+      }
+      rolls.push(current === wave ? rarityRoll : 0, current === wave ? 0.99 : 0);
+    }
+    const result = RewardRules.createResult({
+      endlessStage: stage, id: 'bonus-rarity-test', sequence: 1, endReason: 'defeat', activeMilliseconds: 0, clearedWaves: wave
+    }, rewardConfig, treasures, [], () => rolls.shift());
+    assert.equal(rolls.length, 0);
+    return result.drops.find(drop => drop.wave === wave)?.quality;
+  }
+  // Stage 1's wave 15 table is 4% blue. Waves 11–14 roll 2% blue.
+  for (const wave of [11, 12, 13, 14]) {
+    assert.equal(quality(1, wave, 0.9799), 4);
+    assert.equal(quality(1, wave, 0.9801), 3);
+  }
+  assert.equal(quality(1, 15, 0.9601), 3);
+  // Stage 14's wave 30 table is 26% blue, 21.75% epic and 0.25% legendary.
+  assert.equal(quality(14, 26, 0.7599), 4);
+  assert.equal(quality(14, 26, 0.7601), 3);
+  assert.equal(quality(14, 29, 0.8899), 3);
+  assert.equal(quality(14, 29, 0.8901), 2);
+  assert.equal(quality(14, 29, 0.9987), 2);
+  assert.equal(quality(14, 29, 0.9988), 1);
+  assert.equal(quality(14, 30, 0.9976), 1);
+});
+
+test('an interrupted Endless payout recovers the same bonus relics and best wave once', () => {
   const disk = diskFixture(), player = disk.player;
   player.udata.data.powerNum = 10;
   const admission = player.admitWallDefense(10, () => true);
-  const run = new Endless.Run(2, admission, 0, rewardConfig);
+  const rules = disk.load('./GAD_RewardRules'), createResult = rules.createResult;
+  rules.createResult = (run, settings, table, inventory) => createResult(run, settings, table, inventory, () => 0);
+  const run = new (disk.load('EndlessWaves').Run)(2, admission, 0, rewardConfig);
   for (let i = 0; i < 120; i++) run.tick(1);
-  for (let wave = 1; wave <= 5; wave++) run.clear(wave);
+  for (let wave = 1; wave <= 4; wave++) run.clear(wave);
   disk.state.failKeys.add(player.rewardJournalKey());
   run.finish('quit', player, treasures);
   assert.equal(run.getResult(player).saved, false);
@@ -130,7 +220,9 @@ test('an interrupted Endless payout is recovered once with the same rewards and 
   assert(reload.player.retryRewardRecovery());
   assert(reload.player.retryRewardRecovery());
   assert.deepEqual(clone(reload.player.udata.data.wallDefenseReceipt.result), expected);
-  assert.equal(Endless.bestWave(reload.player.udata.data, 2), 5);
+  assert.equal(expected.drops[0].wave, 1);
+  assert.equal(reload.player.udata.getTreasureLevel(expected.drops[0].itemID).frame, 3);
+  assert.equal(Endless.bestWave(reload.player.udata.data, 2), 4);
   assert.equal(reload.player.udata.getGoldNum(), 1000);
 });
 
@@ -301,11 +393,11 @@ test('direct teardown settles an active run exactly once and still skips a resta
   }
 });
 
-test('very long runs retain every reward roll while keeping the receipt within its size limit', () => {
+test('very long runs retain all milestone and bonus drops in a bounded receipt', () => {
   const run = { endlessStage: 1, id: 'endless-test', sequence: 1, endReason: 'quit', activeMilliseconds: 0, clearedWaves: 5005 };
   const result = RewardRules.createResult(run, rewardConfig, treasures, [], () => 0);
   assert(RewardRules.validResult(result));
-  assert.equal(result.rewards.reduce((sum, row) => sum + row.num, 0), 1001);
+  assert.equal(result.rewards.reduce((sum, row) => sum + row.num, 0), run.clearedWaves);
   assert(result.drops.length <= treasures.length);
 });
 

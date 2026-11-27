@@ -206,6 +206,21 @@
       "zh": "· {0} FPS",
       "context": "Rendered frames per second after F8 in the development-only badge; {0} is the measured count or -- before sampling"
     },
+    "settings.developerMode": {
+      "en": "Developer Mode (F8)",
+      "zh": "开发者模式（F8）",
+      "context": "Settings · developer toggle for debug builds"
+    },
+    "settings.developerRewards": {
+      "en": "Reward Testing (F4)",
+      "zh": "奖励测试（F4）",
+      "context": "Settings · opens the reward testing and save slots panel"
+    },
+    "settings.developerWave": {
+      "en": "Wave Adjuster (F6)",
+      "zh": "波次调整（F6）",
+      "context": "Settings · opens the campaign wave testing panel"
+    },
     "lobby.rewardTesting": {
       "en": "Reward Testing",
       "zh": "奖励测试",

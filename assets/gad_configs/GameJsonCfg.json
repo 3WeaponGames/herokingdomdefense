@@ -1538,6 +1538,21 @@
           1
         ]
       }
-    ]
+    ],
+    "endlessRarity": {
+      "bonusDrop": { "chance": 0.1, "rarityMultiplier": 0.5 },
+      "stageWaveOffsets": [0, 2, 4, 6, 8, 11, 13, 16, 18, 21, 23, 25, 28, 30],
+      "points": [
+        { "wave": 5, "weights": [98, 2, 0, 0] },
+        { "wave": 20, "weights": [95, 5, 0, 0] },
+        { "wave": 35, "weights": [85, 15, 0, 0] },
+        { "wave": 40, "weights": [79, 16, 5, 0] },
+        { "wave": 45, "weights": [72, 18, 10, 0] },
+        { "wave": 55, "weights": [58, 24, 18, 0] },
+        { "wave": 60, "weights": [52, 26, 21.75, 0.25] },
+        { "wave": 80, "weights": [40, 32, 27.25, 0.75] },
+        { "wave": 100, "weights": [35, 34, 30, 1] }
+      ]
+    }
   }
 }

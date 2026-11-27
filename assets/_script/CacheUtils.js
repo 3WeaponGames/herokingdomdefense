@@ -12,7 +12,10 @@ var $z1PlatformManager = require("PlatformManager");
 var $z1ServerDataMgr = require("ServerDataMgr");
 var $z1Utils = require("Utils");
 var progressGeneration, generationRead = false;
-var previewSaves, previewPrefixes, previewStartsEmpty;
+var previewSaves, previewPrefixes, previewStartsEmpty, previewSlot;
+function temporaryProgress(key) {
+  return !!previewSaves && typeof key === "string" && previewPrefixes.some(function (prefix) { return key.indexOf(prefix) === 0; });
+}
 function currentProgressGeneration() {
   try {
     var value = localStorage.getItem("project-cocos.progress-generation");
@@ -32,13 +35,29 @@ var exp_CacheUtils = function () {
     return true;
   };
   _ctor.isPreviewProgress = function (key) {
-    return !!previewSaves && typeof key === "string" && previewPrefixes.some(function (prefix) { return key.indexOf(prefix) === 0; });
+    return temporaryProgress(key) || !!previewSlot && previewSlot.localOnly && previewSlot.owns(key);
+  };
+  _ctor.usePreviewSaveSlot = function (slot) { previewSlot = slot; };
+  _ctor.localProgressKey = function (key) {
+    if (!previewSlot || !previewSlot.owns(key)) return key;
+    if (!previewSlot.exists()) throw Error("This save slot was deleted in another preview.");
+    return previewSlot.key(key);
   };
   _ctor.saveData = function (key, value) {
-    if (this.isPreviewProgress(key)) { previewSaves.set(key, value); return true; }
+    if (temporaryProgress(key)) { previewSaves.set(key, value); return true; }
     if (!currentProgressGeneration()) return false;
     var platform = $z1PlatformManager.PlatformManager.currentPlatform;
     var nativeFile = platform == $z1BasePlatform.Platform.BYTEDANCE || platform == $z1BasePlatform.Platform.WECHAT;
+    try {
+      var localKey = this.localProgressKey(key);
+      if (localKey !== key) {
+        localStorage.setItem(localKey, value);
+        return true;
+      }
+    } catch (error) {
+      console.error("Cannot save preview progress", error);
+      return false;
+    }
     if (nativeFile) {
       try {
         var bytedance = platform == $z1BasePlatform.Platform.BYTEDANCE;
@@ -66,6 +85,8 @@ var exp_CacheUtils = function () {
   _ctor.clearAll = function (t) {
     if (previewSaves || !currentProgressGeneration()) return false;
     try {
+      // Clearing a platform account must not clear the F4 slot list or other saves.
+      if (previewSlot && previewSlot.managed()) return false;
       var platform = $z1PlatformManager.PlatformManager.currentPlatform;
       var native = platform === $z1BasePlatform.Platform.BYTEDANCE ? tt : platform === $z1BasePlatform.Platform.WECHAT ? wx : null;
       var kept = Object.create(null), cleared = Object.create(null), self = this;
@@ -93,7 +114,8 @@ var exp_CacheUtils = function () {
   };
   _ctor.getData = function (t) {
     if (previewSaves && previewSaves.has(t)) return previewSaves.get(t) || null;
-    if (previewStartsEmpty && this.isPreviewProgress(t)) return null;
+    if (previewStartsEmpty && temporaryProgress(t)) return null;
+    if (previewSlot && previewSlot.localOnly && previewSlot.owns(t)) return localStorage.getItem(previewSlot.key(t)) || null;
     if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.BYTEDANCE) {
       if (typeof tt !== "undefined" && tt.sffile && Object.prototype.hasOwnProperty.call(tt.sffile, t)) return tt.sffile[t] || null;
     } else if ($z1PlatformManager.PlatformManager.currentPlatform == $z1BasePlatform.Platform.WECHAT) {
@@ -102,11 +124,11 @@ var exp_CacheUtils = function () {
     return localStorage.getItem(t);
   };
   _ctor.removeData = function (key) {
-    if (this.isPreviewProgress(key)) { previewSaves.set(key, null); return true; }
+    if (temporaryProgress(key)) { previewSaves.set(key, null); return true; }
     // Persist an empty tombstone in mini-app files before clearing the mirror.
     // A stale localStorage value must not resurrect a successfully removed file key.
     if (this.saveData(key, "") === false) return false;
-    try { localStorage.removeItem(key); } catch (error) {
+    try { localStorage.removeItem(this.localProgressKey(key)); } catch (error) {
       // saveData already persisted either the empty mirror or authoritative file.
     }
     return true;

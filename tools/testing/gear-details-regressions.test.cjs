@@ -8,7 +8,7 @@ const root=path.resolve(__dirname,'../..');
 function fixture(){
   const data=require('./fixtures/legacy-hero-config.cjs')();
   const prefab=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomePersonCtrl.prefab')));
-  const Weapons=require('../../assets/_script/HeroWeapons'),levels=[10,2,1,1,1,1],user={data:{personLevel:levels},getGoldNum:()=>100000,getMaxStage:()=>2,getMaxOrder:()=>1,getPersonLevel:id=>Weapons.level(user.data,id),getHeroWeapon:()=>Weapons.selected(user.data),getHeroWeaponLevel:(style,id)=>Weapons.level(user.data,id,style)};
+  const Weapons=require('../../assets/_script/HeroWeapons'),levels=[10,2,1,1,1,1],user={data:{personLevel:levels},getGoldNum:()=>100000,getMaxStage:()=>2,getMaxOrder:()=>1,getPersonLevel:id=>Weapons.level(user.data,id),getHeroWeapon:()=>Weapons.selected(user.data),getHeroWeaponLevel:(_style,id)=>Weapons.level(user.data,id)};
   const Label=function(){},Sprite=function(){},Button=function(){},noop=()=>{};
   function node(id){
     const original=prefab[id],label={string:'stale'},sprite={},button={interactable:true};
@@ -207,17 +207,42 @@ test('lobby idle loops without moving the hooves or drifting from the fitted bas
   assert.deepEqual(root,{scaleX:.8,scaleY:.8,y:40});
 });
 
-test('Gear account CP follows only the equipped weapon and retains owned style contributions through repeated refreshes',()=>{
-  const f=fixture(),Weapons=f.deps.HeroWeapons,Loadout=f.deps.HeroLoadout;f.levels.fill(1);Weapons.upgrade(f.user.data,3,10,'skirmisher');Weapons.upgrade(f.user.data,4,10,'skirmisher');
-  f.user.data.talentInfo=f.data.TalentLevelCfg.filter(row=>row.HeroStyle==='skirmisher').map(row=>({id:row.ID,isLock:true}));
-  f.owner.initView();const bow=f.owner._combatPower;assert.equal(f.owner.labPower.string,String(Math.round(Loadout.calculate(f.data,f.user).cp*10)));assert.equal(bow.levels[3],10);assert.equal(bow.levels[4],10);
-  Weapons.select(f.user.data,'fighter');const before=JSON.stringify(f.user.data),config=JSON.stringify(f.data);f.owner.initView();const sword=f.owner._combatPower;assert.equal(sword.style,'fighter');assert.equal(sword.levels[3],1);assert.equal(sword.levels[4],1);assert.equal(sword.raw.damage,20);assert.equal(sword.damage,20.2);assert.equal(sword.attackRate,1.01);assert.equal(f.owner.labPower.string,String(Math.round(Loadout.calculate(f.data,f.user).cp*10)));assert(sword.cp<bow.cp);
-  for(let i=0;i<5;i++){f.owner.initView();assert.equal(f.owner._combatPower.cp,sword.cp);}assert.equal(JSON.stringify(f.user.data),before);assert.equal(JSON.stringify(f.data),config);
-  Weapons.upgrade(f.user.data,3,50,'skirmisher');Weapons.upgrade(f.user.data,4,25,'skirmisher');f.owner.initView();assert.equal(f.owner._combatPower.cp,sword.cp,'unequipped bow upgrades do not affect sword power');
+test('Gear refreshes both item names, shared levels and account CP after equipping another style', () => {
+  const f = fixture(), {HeroWeapons: Weapons, HeroLoadout: Loadout} = f.deps;
+  f.user.getMaxStage = () => 100;
+  f.levels.fill(1);
+  Weapons.upgrade(f.user.data, 4, 15);
+  Weapons.upgrade(f.user.data, 3, 11);
+  f.user.data.talentInfo = f.data.TalentLevelCfg.filter(row => row.HeroStyle === 'skirmisher').map(row => ({id: row.ID, isLock: true}));
+  const label = (node, name) => node.getChildByName(name).getComponent(f.Label).string;
+  const checkItem = (slot, name, level) => {
+    const row = f.owner.nodeInfo[slot - 1];
+    assert.equal(label(row.ndInfo, 'labName'), name);
+    assert.equal(label(row.ndItem, 'labPower'), 'level' + level);
+    assert.equal(label(row.ndInfo.getChildByName('ndItem'), 'labPower'), 'level' + level);
+  };
+  f.owner.initView();
+  checkItem(4, 'Skirmisher · Bow', 15);
+  checkItem(3, 'Skirmisher · Arrow', 11);
+  Weapons.select(f.user.data, 'bruiser');
+  const before = JSON.stringify(f.user.data), config = JSON.stringify(f.data);
+  for (let i = 0; i < 3; i++) {
+    f.owner.initView();
+    checkItem(4, 'Bruiser · Axe', 15);
+    checkItem(3, 'Bruiser · Skull Charm', 11);
+    const power = f.owner._combatPower;
+    assert.equal(power.style, 'bruiser');
+    assert.equal(power.levels[4], 15);
+    assert.equal(power.levels[3], 11);
+    assert(power.bonuses.damage > 0);
+    assert.equal(f.owner.labPower.string, String(Loadout.calculate(f.data, f.user).displayCp));
+  }
+  assert.equal(JSON.stringify(f.user.data), before);
+  assert.equal(JSON.stringify(f.data), config);
 });
 
 test('Gear CP uses the same six combat stats at locked and unlocked stages and handles invalid stats without showing NaN',()=>{
-  const f=fixture();f.levels.fill(1);f.user.getMaxStage=()=>1;f.user.getMaxOrder=()=>1;f.owner.initView();const cp=f.owner.labPower.string;assert.equal(cp,String(Math.round(f.deps.HeroLoadout.calculate(f.data,f.user).cp*10)));
+  const f=fixture();f.levels.fill(1);f.user.getMaxStage=()=>1;f.user.getMaxOrder=()=>1;f.owner.initView();const cp=f.owner.labPower.string;assert.equal(cp,String(f.deps.HeroLoadout.calculate(f.data,f.user).displayCp));
   f.user.getMaxStage=()=>100;f.owner.initView();assert.equal(f.owner.labPower.string,cp,'unlocking an existing stat slot cannot add a second copy to power');
   f.data.EquipCfg.find(row=>row.id===3).levelInfo[0].Parameters=NaN;f.owner.initView();assert.equal(f.owner.labPower.string,'—');assert.match(f.owner._combatPower.reason,/invalid/);
 });
@@ -233,6 +258,24 @@ test('cached Gear refreshes account-wide upgrade contributions after purchases a
   f.user.data.treasureInfo[0].level=3;owner.initBtnView();assert(owner._combatPower.cp>relicPower,'relic upgrade uses its new level immediately');
 });
 
+test('each quarter-point regeneration upgrade adds exactly one whole Gear CP', () => {
+  const { owner, levels } = fixture();
+  for (const level of [1, 20, 49]) {
+    levels.fill(level);
+    owner.refreshCombatPower();
+    const before = owner._combatPower;
+    const displayedBefore = Number(owner.labPower.string);
+    assert.equal(owner.labPower.string, String(Math.round(before.cp * 10) + Math.round(before.regen * 4)));
+
+    levels[1]++;
+    owner.refreshCombatPower();
+    const after = owner._combatPower;
+    assert.equal(after.regen - before.regen, .25);
+    assert.equal(after.cp, before.cp);
+    assert.equal(owner.labPower.string, String(displayedBefore + 1));
+  }
+});
+
 test('Gear CP includes the saved hero animation speed and refreshes paused attacks without writing progress',()=>{
   const f=fixture();f.levels.fill(1);let relative=.5;
   f.context.cc.resources={};f.deps.CharacterAppearance={animationSpeed(actor,team){assert.equal(actor,f.owner);assert.equal(team,'hero');return relative;}};
@@ -240,6 +283,6 @@ test('Gear CP includes the saved hero animation speed and refreshes paused attac
   f.owner.refreshCombatPower();const slow=f.owner._combatPower;
   assert.equal(slow.effectiveAttackRate,1/(1+hit/.5));assert.equal(slow.directDps,20*slow.effectiveAttackRate);
   relative=1;f.owner.refreshCombatPower();assert(f.owner._combatPower.cp>slow.cp);
-  relative=0;f.owner.refreshCombatPower();assert.equal(f.owner._combatPower.effectiveAttackRate,0);assert.equal(f.owner._combatPower.directDps,0);assert.equal(f.owner.labPower.string,'0');
+  relative=0;f.owner.refreshCombatPower();assert.equal(f.owner._combatPower.effectiveAttackRate,0);assert.equal(f.owner._combatPower.directDps,0);assert.equal(f.owner.labPower.string,'40');
   assert.equal(JSON.stringify(f.user.data),before);assert.equal(JSON.stringify(f.data),config);
 });

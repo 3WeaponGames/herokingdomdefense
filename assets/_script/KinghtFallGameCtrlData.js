@@ -580,8 +580,12 @@ var def_KinghtFallGameCtrlData = function () {
   };
   _ctor.prototype.onUpdata = function (t) {
     var data = this, owner = this.ctrPar, epoch = owner && owner._combatEpoch, stage = owner && owner.gameStatus, ui = $z1KinghtFallUIGame.default.instance;
-    function current() { return !owner || cc.isValid(owner, true) && owner.gameData === data && owner._combatEpoch === epoch && owner.gameStatus === stage &&
-      (!ui || $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === owner); }
+    var spawnEpoch = this._enemySpawnEpoch;
+    function current() {
+      return data._enemySpawnEpoch === spawnEpoch && (!owner || cc.isValid(owner, true) &&
+        owner.gameData === data && owner._combatEpoch === epoch && owner.gameStatus === stage &&
+        (!ui || $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === owner));
+    }
     if (!current()) return;
     var advancedQueue = false;
     if (this.authoredTimeline) {
@@ -627,7 +631,7 @@ var def_KinghtFallGameCtrlData = function () {
   _ctor.prototype.addEnemy = function (t) {
     this.enemyList.push(t);
   };
-  _ctor.prototype.delEnemy = function (t, transformed) {
+  _ctor.prototype.delEnemy = function (t, skipKill) {
     var removed = false;
     for (var e = 0; e < this.enemyList.length; e++) {
       if (this.enemyList[e].uuid == t.uuid) {
@@ -637,7 +641,7 @@ var def_KinghtFallGameCtrlData = function () {
       }
     }
     if (!removed) return false;
-    if (transformed === true) return true;
+    if (skipKill === true) return true;
     var n = this.getGameBuff($z1KinghtFallEnum.KinghtFallEnumBuffCfg.Buff03);
     if (n) {
       this.addTime[i.KillSoldier1]++;
@@ -662,6 +666,15 @@ var def_KinghtFallGameCtrlData = function () {
         break;
       }
     }
+  };
+  _ctor.prototype.completeWaveForTest = function () {
+    // Retire queued spawns and prefab requests before removing the live roster.
+    this._enemySpawnEpoch = (this._enemySpawnEpoch || 0) + 1;
+    this.authoredTimeline = null;
+    this.enemyQueue = {};
+    this.pendingEnemySpawns = 0;
+    this.enemyList.slice().forEach(function (enemy) { enemy.freeNode(true); });
+    this.tryEndGame();
   };
   _ctor.prototype.tryEndGame = function () {
     if (this.endless && (!this.endlessRun || this.endlessRun.result ||

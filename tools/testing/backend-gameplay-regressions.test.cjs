@@ -69,6 +69,45 @@ test('final wave and stale prefab completion preserve current request lifetime',
  h.g.cleanMap();h.d.pendingEnemySpawns=0;h.pending[0](prefab(90001));assert.equal(h.d.enemyList.length,0);
  h.g.addEnemy(90001,1);h.pending[1](prefab(90001));h.d.delEnemy(h.d.enemyList[0]);assert.deepEqual(h.events,[['GameOver',true]]);
 });
+for (const [schedule, wave] of [
+  ['legacy', { RefreshSoldierKind: ['1#90001,3'] }],
+  ['timed', { SpawnTimeline: [{ spawnId: 1, unitId: 90001, count: 3, startSeconds: .5, intervalSeconds: .5 }] }]
+]) {
+  test(`Complete Wave clears the ${schedule} queue and rejects an in-flight enemy prefab`, () => {
+    const h = setup({ AuthoredSpawnPlan: require('../../assets/_script/AuthoredSpawnPlan') });
+    const { d, g, e, pending, events } = h;
+    d.packInterval = .5;
+    d.levelCfg.WaveCfg = [wave, wave];
+    d.resetEnemyWave(wave);
+    d.onUpdata(.6);
+    const live = e.actor('KinghtFallEnemyBase');
+    Object.assign(live, { uuid: 'live', _combatData: d });
+    d.addEnemy(live);
+    d.getGameBuff = () => assert.fail('Skipping an enemy must not count as a kill');
+    assert.equal(d.pendingEnemySpawns, 1);
+    assert.equal(d.enemyQueue[1][0].num, 2);
+
+    d.completeWaveForTest();
+    assert.equal(live._isPooled, true);
+    assert.equal(d.enemyList.length, 0);
+    assert.equal(Object.keys(d.enemyQueue).length, 0);
+    assert.equal(d.pendingEnemySpawns, 0);
+    assert.deepEqual(events, [['RoundEnd']]);
+    d.onUpdata(60);
+    assert.equal(pending.length, 1);
+
+    // The retired load can finish even after a request for the next wave starts.
+    d.loadMonster(true);
+    assert.equal(d.round, 2);
+    g.addEnemy(90001, 1);
+    pending[0](() => assert.fail('The completed wave must never spawn a late enemy'));
+    assert.equal(d.pendingEnemySpawns, 1);
+    pending[1](prefab(90001));
+    assert.equal(d.pendingEnemySpawns, 0);
+    assert.equal(d.enemyList.length, 1);
+    assert.deepEqual(events, [['RoundEnd']]);
+  });
+}
 test('retry accepts its own cold ally roster while rejecting the previous request',()=>{
  const h=setup();let old=0,current=0;h.g.addSoldier(90001,()=>old++);h.d.onRestart=()=>h.g.addSoldier(90001,()=>current++);
  h.g.onRestart(false);h.pending[0](prefab(1));h.pending[1](prefab(2));assert.equal(old,0);assert.equal(current,1);assert.equal(h.d.soldierList.length,1);

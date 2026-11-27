@@ -148,7 +148,8 @@
 .world-stages .world-wave-unit-card{position:relative;display:flex;flex-direction:column;gap:10px;padding:11px;border:2px solid #697d8d;border-radius:5px;background:#252e35;min-width:0}
 .world-stages .world-wave-unit-heading{display:flex;align-items:center;gap:9px;min-width:0}
 .world-stages .world-wave-unit-heading>.world-wave-unit-model{width:min(96px,34%);aspect-ratio:1;padding-top:0;text-align:center}
-.world-stages .world-wave-unit-heading>strong{flex:1;min-width:0;font-size:13px;color:#e3edf4;line-height:1.35;overflow-wrap:anywhere}
+.world-stages .world-wave-unit-title{display:flex;flex:1;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
+.world-stages .world-wave-unit-title>strong{font-size:13px;color:#e3edf4;line-height:1.35;overflow-wrap:anywhere}
 .world-stages .world-wave-unit-heading>button{flex-shrink:0;min-height:25px;font-size:10px;padding:4px 6px}
 .world-stages .world-wave-unit-heading>.world-wave-drag-handle{width:24px;padding:0;background:#303b44;border-color:#54616c;color:#c1ced8;font-size:16px;letter-spacing:-2px;line-height:1;cursor:grab}
 .world-stages .world-wave-unit-heading>.world-wave-drag-handle:hover,.world-stages .world-wave-unit-heading>.world-wave-drag-handle:focus-visible{background:#3b5568;border-color:#9dd5ff}
@@ -255,9 +256,10 @@
 .world-stages .world-unit-entry>label>select{width:100%;min-width:0;font-size:10px;padding:4px 2px}
 .world-unit-profile-stats,.world-unit-kingdom,.world-unit-other-selected{font-size:10px;line-height:1.4;color:#b6c6d1;overflow-wrap:anywhere}
 .world-unit-other-selected{color:#a6e3ff}
-.world-stages .world-unit-choice>.world-unit-enemy-class{display:inline-block;align-self:center;padding:2px 7px;border:1px solid #7a97aa;border-radius:9px;font-size:10px;line-height:1.3;color:#d4e4ef;background:#283d4b}
-.world-stages .world-unit-choice>.world-unit-enemy-class[data-enemy-class="elite"]{color:#f8df9a;border-color:#ac8e41;background:#4a3c23}
-.world-stages .world-unit-choice>.world-unit-enemy-class[data-enemy-class="boss"]{color:#ffc6c1;border-color:#b36b64;background:#4d2e32}
+.world-stages .world-unit-enemy-class{display:inline-block;padding:2px 7px;border:1px solid #7a97aa;border-radius:9px;font-size:10px;line-height:1.3;color:#d4e4ef;background:#283d4b}
+.world-stages .world-unit-choice>.world-unit-enemy-class{align-self:center}
+.world-stages .world-unit-enemy-class[data-enemy-class="elite"]{color:#f8df9a;border-color:#ac8e41;background:#4a3c23}
+.world-stages .world-unit-enemy-class[data-enemy-class="boss"]{color:#ffc6c1;border-color:#b36b64;background:#4d2e32}
 .world-stages .world-modal>.world-unit-dialog>.world-actions:last-child{position:static;margin:0;padding:9px 0 0;box-shadow:none;background:transparent;flex-shrink:0;border-top:1px solid #4a5965;border-bottom:0;justify-content:flex-end}
 .world-stages .world-unit-dialog>.world-warn{flex-shrink:0}
 .world-wave-unit-select{display:flex;align-items:flex-end;gap:8px;min-width:0}

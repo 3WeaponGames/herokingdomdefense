@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const test = require('node:test');
 const root = path.resolve(__dirname, '../..');
-function fixture(resumeSavedProgress = false) {
+function fixture(resumeSavedProgress = false, toggleRewardTesting = () => false) {
   const requests = [], listeners = [], imports = [];
   let pulseStopped = 0, size = { width: 750, height: 1334 };
   const language = { setCatalog(data) { this.catalog = data; }, t: key => key };
@@ -20,12 +20,13 @@ function fixture(resumeSavedProgress = false) {
     if(name==='StartupPresentation')return{fit:presentation.exports.fit,start(){},carry(){}};
     if(name==='ProgressReset')return require('../../assets/_script/ProgressReset');
     if(name==='RewardTestProgress')return{prepareStartup:() => resumeSavedProgress};
+    if(name==='TestMode')return{TestMode:{getInstance:()=>({toggleRewardTesting})}};
     assert.equal(name, 'LanguageMgr', 'title screen initializes only language and its presentation');
     return { LanguageMgr: { getInstance: () => language } };
   }, cc: { Component: function () {}, Node: {}, Label: {}, JsonAsset: {},
     Class(definition) { function Type() {} Object.assign(Type.prototype, definition); return Type; },
     isValid: value => !!value && !value.destroyed, error() {}, debug: { setDisplayStats() {} },
-    Node: { EventType: { TOUCH_END: 'touch' } }, SystemEvent: { EventType: { KEY_DOWN: 'key' } },
+    Node: { EventType: { TOUCH_END: 'touch' } }, SystemEvent: { EventType: { KEY_DOWN: 'key', KEY_UP: 'key-up' } },
     macro: { KEY: { enter: 13, space: 32 } }, systemEvent: eventTarget,
     view: { ...eventTarget, getVisibleSize: () => size },
     tween() { const tween = { to() { return this; }, union() { return this; }, repeatForever() { return this; }, start() { return this; }, stop() { pulseStopped++; } }; return tween; },
@@ -54,6 +55,29 @@ test('returning to saved progress loads it from the title screen without another
   assert.equal(h.requests[0].scene, 'loading');
   h.owner.beginLoading();
   assert.equal(h.requests.length, 1);
+});
+test('F4 opens title-screen saves once per press and blocks starting until the panel closes', () => {
+  let toggles = 0, closed = 0, prevented = 0;
+  const h = fixture(false, owner => {
+    toggles++;
+    if (owner._saveSlotPanel) owner._saveSlotPanel.close();
+    else owner._saveSlotPanel = { close() { closed++; owner._saveSlotPanel = null; } };
+    return true;
+  });
+  const press = () => h.owner.onKeyDown({ keyCode: 115, preventDefault() { prevented++; } });
+  press(); press();
+  assert.equal(toggles, 1);
+  h.owner.beginLoading();
+  h.owner.onKeyDown({ keyCode: 13 });
+  assert.equal(h.requests.length, 0);
+  h.owner.onKeyUp({ keyCode: 115 }); press();
+  assert.equal(toggles, 2);
+  assert.equal(closed, 1);
+  assert.equal(prevented, 2);
+  h.owner.onKeyUp({ keyCode: 115 }); press();
+  h.owner.onDestroy();
+  assert.equal(closed, 2);
+  assert.equal(h.listeners.length, 0);
 });
 test('failed scene transitions can retry and stale callbacks cannot affect a later attempt', () => {
   const h = fixture(); h.owner.beginLoading(); h.requests[0].callback(Error('offline'));

@@ -4,6 +4,7 @@ const Waves=require('./wave-editor'),Paths=require('./path-editor'),Stats=requir
 const Names=require('./stage-names'),CardOrder=require('./stage-card-order'),CardDrag=require('./stage-card-drag');
 const WaveOverview=require('./wave-overview'),WaveCounts=require('./wave-counts');
 const WaveBalance=require('./wave-balance-panel'),SpawnGroups=require('./spawn-groups'),SpawnGroupsPanel=require('./spawn-groups-panel');
+const UnitCatalog=require('./unit-catalog'),EnemyClasses=require('../lib/enemy-classes');
 const TaskPosition=require('../../../assets/_script/StageTaskPosition');
 const STAGE_SECTIONS=[
  {value:'buildings',label:'Buildings',description:'All buildings and special offers, including unlock settings and appearance.'},
@@ -616,7 +617,13 @@ function create(c){
    model.appendChild(image);model.appendChild(status);heading.appendChild(model);
    waveModels.watch(model,image,status,unit.baseProfileId||unit.id);
   }
-  heading.appendChild(el('strong',name));
+  const title=el('div',undefined,'world-wave-unit-title');
+  title.appendChild(el('strong',name));
+  if(unit){
+   const rank=UnitCatalog.enemyClass(unit),badge=el('span',EnemyClasses.label(rank),'world-unit-enemy-class');
+   badge.dataset.enemyClass=rank;title.appendChild(badge);
+  }
+  heading.appendChild(title);
   const remove=button(heading,'Remove',()=>waveEdit(target,(s,index)=>Waves.removeGroup(s,index,entry.id,interval,{allSpawns:true})));
   if(group.length>1){card.classList.add('world-wave-unit-card-multi');remove.title='Remove this unit and all its spawn rows';}
   const change=(row,key,value)=>waveEdit(target,(s,index)=>Waves.editGroup(s,index,row.id,{[key]:value},interval),undefined,
