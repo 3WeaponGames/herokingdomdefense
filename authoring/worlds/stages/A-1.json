@@ -122,7 +122,7 @@
       {
         "id": 1,
         "Wave": 1,
-        "HealthCoefficient": 0.7,
+        "HealthCoefficient": 0.5,
         "AttackCoefficient": 0.7,
         "StartSliver": 6,
         "CommerceSliver": 4,
@@ -153,7 +153,7 @@
       {
         "id": 1,
         "Wave": 2,
-        "HealthCoefficient": 0.7,
+        "HealthCoefficient": 0.5,
         "AttackCoefficient": 0.7,
         "StartSliver": 1,
         "CommerceSliver": 4,
@@ -193,7 +193,7 @@
       {
         "id": 1,
         "Wave": 3,
-        "HealthCoefficient": 1,
+        "HealthCoefficient": 0.7,
         "AttackCoefficient": 1,
         "StartSliver": 2,
         "CommerceSliver": 4,
@@ -241,7 +241,7 @@
       {
         "id": 1,
         "Wave": 4,
-        "HealthCoefficient": 1,
+        "HealthCoefficient": 0.9,
         "AttackCoefficient": 1,
         "StartSliver": 3,
         "CommerceSliver": 4,
@@ -308,7 +308,7 @@
       {
         "id": 1,
         "Wave": 5,
-        "HealthCoefficient": 1.2,
+        "HealthCoefficient": 1,
         "AttackCoefficient": 1.2,
         "StartSliver": 3,
         "CommerceSliver": 8,
@@ -381,7 +381,7 @@
       {
         "id": 1,
         "Wave": 6,
-        "HealthCoefficient": 1.4,
+        "HealthCoefficient": 1.1,
         "AttackCoefficient": 1.2,
         "StartSliver": 4,
         "CommerceSliver": 8,
@@ -475,7 +475,7 @@
       {
         "id": 1,
         "Wave": 7,
-        "HealthCoefficient": 1.5,
+        "HealthCoefficient": 1.2,
         "AttackCoefficient": 1.3,
         "StartSliver": 4,
         "CommerceSliver": 8,
@@ -576,7 +576,7 @@
       {
         "id": 1,
         "Wave": 8,
-        "HealthCoefficient": 1.5,
+        "HealthCoefficient": 1.3,
         "AttackCoefficient": 1.3,
         "StartSliver": 5,
         "CommerceSliver": 16,
@@ -668,7 +668,7 @@
       {
         "id": 1,
         "Wave": 9,
-        "HealthCoefficient": 1.6,
+        "HealthCoefficient": 1.4,
         "AttackCoefficient": 1.4,
         "StartSliver": 5,
         "CommerceSliver": 16,
@@ -2298,8 +2298,8 @@
         "x": -126.164,
         "y": -377.297
       },
-      "x": -491.9236767797255,
-      "y": 603.0134796484617,
+      "x": 396.50670105021317,
+      "y": 112.94381961968914,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -2693,8 +2693,8 @@
         "x": 368.849,
         "y": -424.355
       },
-      "x": 366.14350379733503,
-      "y": -40.6743617499835,
+      "x": -298.7463273528127,
+      "y": 684.3994627370311,
       "scale": 1,
       "angle": 0,
       "unlock": 3,
@@ -3308,8 +3308,8 @@
         "x": -79.896,
         "y": 525.515
       },
-      "x": -344.310610162329,
-      "y": 681.4230924164308,
+      "x": 383.62911876929826,
+      "y": 263.0010435029758,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -3507,8 +3507,8 @@
         "x": -79.896,
         "y": 525.515
       },
-      "x": 374.32725841816574,
-      "y": 230.36779992374494,
+      "x": -333.5511394011724,
+      "y": 559.9468110542061,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -3928,8 +3928,8 @@
         "x": -298.147,
         "y": 83.1
       },
-      "x": -263.54310947895755,
-      "y": 33.72541170277911,
+      "x": -275.00672725740833,
+      "y": 288.79090727330987,
       "scale": 1,
       "angle": 0,
       "enabled": true,
@@ -4344,7 +4344,7 @@
   "nextBuilding": 23,
   "nextSpawn": 10,
   "nextSpecial": 7,
-  "sourceRevision": "4cf3da39d2753dbe508fb9e755e2439ed85c4ad1264ab28984a98a005c7b1c4f",
+  "sourceRevision": "aaf5193b8abef91b2d5e774a4a1b054246dc3e66fad6184f205f0b6e00dd61e4",
   "templates": {
     "Map01": [
       {
