@@ -58,6 +58,6 @@ test('detached real snapshots are read-only and unchanged replacements create no
  assert.equal(snapshot.value.hero.x,123);assert(snapshot.dirty);snapshot.value.hero.x=999;assert.equal(preview.hero.x,123);unchanged(f,before);
  // Malformed, inspectable waves stay editable; this transfer does not normalize
  // their data or turn validation diagnostics into a repair operation.
- f.s.doc(sourceKey).data.config.WaveCfg=[null];const first=replace(f,['waves']);assert.deepEqual(first.value.config.WaveCfg,[null]);assert(first.issues.includes('Every wave must be an object.'));
+ f.s.doc(sourceKey).data.config.WaveCfg=[null];const first=replace(f,['waves']);assert.deepEqual(first.value.config.WaveCfg,[null]);assert(first.issues.includes('Stage 20 · Waves · Wave 1 — Every wave must be an object.'));
  const after=stable(f);replace(f,['waves']);unchanged(f,after);
 });

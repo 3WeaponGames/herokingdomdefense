@@ -4,7 +4,7 @@ const M=require('../worlds/model'),L=require('../worlds/legacy'),Catalog=require
 function stage(){return {id:'A-1',buildings:[{id:1,kind:1,x:0,y:0,scale:1}],specials:[],spawns:[{id:1,name:'Spawn 1',x:0,y:100,enabled:true}],graphs:[{id:'route',entry:'start',spawnIds:[1],nodes:[{id:'start',x:0,y:100},{id:'goal',x:0,y:0,goal:true}],edges:[{id:'edge',from:'start',to:'goal',weight:1}]}],hero:{x:0,y:0},config:{WaveCfg:[{Wave:1,SpawnTimeline:[{spawnId:1,unitId:3,count:1,startSeconds:0,intervalSeconds:1}]}]}};}
 test('backend validation rejects broken placement transforms and special offer IDs before export',()=>{
  const s=stage(),map=M.createMap('test','Test','forest');s.buildings[0].scale=0;s.specials=[{id:'offer',x:Infinity,y:0,scale:-1},{id:'offer',x:0,y:0,angle:NaN}];
- const issues=M.validateStage(s,map);assert(issues.some(i=>i.includes('positive scale')));assert(issues.includes('Offer (ID offer) needs finite X and Y coordinates. Select it in the Buildings tab.'));assert(issues.some(i=>i.includes('Duplicate special')));
+ const issues=M.validateStage(s,map);assert(issues.some(i=>i.includes('positive scale')));assert(issues.includes('Stage 1 · Offer (ID offer) needs finite X and Y coordinates. Select it in the Buildings tab.'));assert(issues.some(i=>i.includes('Duplicate special')));
  for(const value of [0,1.5,-1]){const invalid=stage();invalid.spawns[0].id=value;assert(M.validateStage(invalid).some(i=>i.includes('Spawn IDs')));}
 });
 test('outside-map warnings identify each placement and where to edit it',()=>{
@@ -21,16 +21,16 @@ test('outside-map warnings identify each placement and where to edit it',()=>{
  s.hero={x:50,y:-201};
  const before=JSON.stringify(s);
  assert.deepEqual(M.validateStage(s,map),[
-  'Spawn point “North entrance” (ID 1) is outside the map at X 0, Y 201. Select it in the Spawns tab.',
-  'Building “Main Hall 1” (ID 1) is outside the map at X -101, Y 0. Select it in the Buildings tab.',
-  'Offer “Silver offer” (ID offer-1) is outside the map at X 102, Y 30. Select it in the Buildings tab.',
-  'Offer “Silver offer” (ID offer-2) is outside the map at X 102, Y 30. Select it in the Buildings tab.',
-  'Hero start is outside the map at X 50, Y -201. Select it in the Spawns tab.',
+  'Stage 1 · Spawn point “North entrance” (ID 1) is outside the map at X 0, Y 201. Select it in the Spawns tab.',
+  'Stage 1 · Building “Main Hall 1” (ID 1) is outside the map at X -101, Y 0. Select it in the Buildings tab.',
+  'Stage 1 · Offer “Silver offer” (ID offer-1) is outside the map at X 102, Y 30. Select it in the Buildings tab.',
+  'Stage 1 · Offer “Silver offer” (ID offer-2) is outside the map at X 102, Y 30. Select it in the Buildings tab.',
+  'Stage 1 · Hero start is outside the map at X 50, Y -201. Select it in the Spawns tab.',
  ]);
  assert.equal(JSON.stringify(s),before);
 });
 test('backend validation detects colliding path and edge IDs and invalid graph weights',()=>{
- const s=stage();s.graphs.push(M.clone(s.graphs[0]));assert(M.validateStage(s).includes('Duplicate path ID.'));
+ const s=stage();s.graphs.push(M.clone(s.graphs[0]));assert(M.validateStage(s).includes('Stage 1 · Paths · route — Duplicate path ID.'));
  const g=stage().graphs[0];g.edges.push(M.clone(g.edges[0]));assert(M.graphIssues(g).some(i=>i.includes('Duplicate path edge')));
  for(const weight of [-1,NaN,Infinity]){g.weight=weight;assert(M.graphIssues(g).some(i=>i.includes('Path weight')));}
  const zero=stage();zero.graphs[0].weight=0;assert(M.validateStage(zero).some(i=>i.includes('needs a route')));
@@ -38,16 +38,37 @@ test('backend validation detects colliding path and edge IDs and invalid graph w
  const branches=stage().graphs[0];branches.edges[0].weight=1e308;branches.edges.push({id:'other',from:'start',to:'goal',weight:1e308});assert(M.graphIssues(branches).some(i=>/finite total/.test(i)));
 });
 
+test('layout warnings identify each route, edge, point, wave and spawn involved',()=>{
+ const s=stage();s.id='A-2';s.level=2;
+ const [north]=s.graphs;north.name='North approach';
+ const south=M.clone(north);Object.assign(south,{id:'south',name:'South approach',spawnIds:[13]});
+ s.graphs.push(south);s.spawns.push({id:13,name:'Spawn 9',x:20,y:100,enabled:true});
+ for(const graph of s.graphs){
+  graph.edges.push({id:'edge',from:'start',to:'lost-node',weight:1});
+  graph.nodes.push({id:'stranded-node',x:30,y:100});
+ }
+ Object.assign(s.config.WaveCfg[0].SpawnTimeline[0],{spawnId:13,routeGraphId:north.id});
+ const before=JSON.stringify(s),issues=M.validateStage(s);
+ for(const label of ['North approach (route)','South approach (south)']){
+  const scope='Stage 2 · Paths · '+label+' — ';
+  assert(issues.includes(scope+'Duplicate path edge “edge” from “start” to “lost-node”.'));
+  assert(issues.includes(scope+'Disconnected path edge “edge” from “start” to “lost-node”. Missing point “lost-node”.'));
+  assert(issues.includes(scope+'Path point “stranded-node” needs an outgoing connection or a goal marker.'));
+ }
+ assert(issues.includes('Stage 2 · Waves · Wave 1 · Group 1 · Spawn 9 (ID 13) — Route override North approach (route) is assigned to a different spawn.'));
+ assert.equal(JSON.stringify(s),before);
+});
+
 test('disabled unused spawns retain their authored paths but cannot receive wave units',()=>{
  const s=stage(),parked={id:2,name:'Parked lane',x:40,y:100,enabled:false};s.spawns.push(parked);const graph=M.clone(s.graphs[0]);graph.id='parked';graph.spawnIds=[2];s.graphs.push(graph);const before=JSON.stringify(s);
  assert.deepEqual(M.validateStage(s),[]);assert.equal(JSON.stringify(s),before);
  s.config.WaveCfg[0].SpawnTimeline[0].spawnId=2;assert(M.validateStage(s).some(i=>/disabled spawn/.test(i)));
- s.config.WaveCfg[0].SpawnTimeline[0].spawnId=1;s.spawns.pop();assert(M.validateStage(s).includes('Path references a removed spawn.'));
+ s.config.WaveCfg[0].SpawnTimeline[0].spawnId=1;s.spawns.pop();assert(M.validateStage(s).includes('Stage 1 · Paths · parked — Path references removed spawn ID 2.'));
 });
 
 test('disabled placements cannot hide colliding or unsafe identifiers',()=>{
  const s=stage();s.buildings.push({id:1,kind:2,enabled:false});s.spawns.push({id:1,enabled:false});
- assert(M.validateStage(s).includes('Duplicate building ID.'));assert(M.validateStage(s).includes('Duplicate spawn ID.'));
+ assert(M.validateStage(s).includes('Stage 1 · Duplicate building ID.'));assert(M.validateStage(s).includes('Stage 1 · Spawns · Spawn ID 1 — Duplicate spawn ID.'));
  s.buildings[1].id=Number.MAX_SAFE_INTEGER+1;s.spawns[1].id=Number.MAX_SAFE_INTEGER+1;
  assert(M.validateStage(s).some(i=>/Building IDs/.test(i)));assert(M.validateStage(s).some(i=>/Spawn IDs/.test(i)));
 });
@@ -113,9 +134,9 @@ test('validation leaves each original map and representative stage unchanged and
 test('only the exact unavailable legacy zero condition is retained without becoming a fallback route',()=>{
  const s=stage(),parked=M.clone(s.graphs[0]);parked.id='parked';parked.legacy=true;parked.requiresAnyBuilding=Array(10).fill(0);s.graphs.push(parked);const before=JSON.stringify(s);
  assert.equal(M.legacyUnavailable(parked),true);assert.deepEqual(M.validateStage(s),[]);assert.equal(JSON.stringify(s),before);
- for(const patch of [{legacy:false},{legacy:undefined},{requiresAnyBuilding:[0,1]},{requiresAnyBuilding:[0,999]},{requiresAnyBuilding:['0']},{requiresAnyBuilding:[null]},{requiresAnyBuilding:[999]}]){const invalid=M.clone(s);Object.assign(invalid.graphs[1],patch);assert(M.validateStage(invalid).includes('Path condition references a removed building.'),JSON.stringify(patch));}
+ for(const patch of [{legacy:false},{legacy:undefined},{requiresAnyBuilding:[0,1]},{requiresAnyBuilding:[0,999]},{requiresAnyBuilding:['0']},{requiresAnyBuilding:[null]},{requiresAnyBuilding:[999]}]){const invalid=M.clone(s);Object.assign(invalid.graphs[1],patch);assert(M.validateStage(invalid).some(issue=>issue.startsWith('Stage 1 · Paths · parked — Path condition references removed building ID ')),JSON.stringify(patch));}
  assert.equal(M.legacyUnavailable(Object.assign({},parked,{requiresAnyBuilding:Array(2)})),false,'Sparse entries are not numeric zero sentinels');
- const edge=M.clone(s);edge.graphs[0].edges[0].requiresAnyBuilding=[0];assert(M.validateStage(edge).includes('Path condition references a removed building.'));
+ const edge=M.clone(s);edge.graphs[0].edges[0].requiresAnyBuilding=[0];assert(M.validateStage(edge).includes('Stage 1 · Paths · route — Edge “edge” references removed building ID 0.'));
  s.graphs=[parked];assert(M.validateStage(s).some(issue=>issue.includes('needs a route.')),'An unavailable legacy path cannot satisfy the active spawn route requirement');
 });
 
@@ -133,4 +154,11 @@ test('all twenty-four campaign stages recover valid layouts without changing the
  const root=path.resolve(__dirname,'../../..');let count=0;
  for(const variant of ['A'])for(const config of L.read(root,L.configFile(variant)).LevelCfg){const s=L.adaptStage(root,variant,config.Level,config),before=JSON.stringify(s);assert.deepEqual(M.validateStage(s),[],s.id);assert.equal(JSON.stringify(s),before);count++;}
  assert.equal(count,24);
+});
+
+test('Stage 2 routes and waypoint positions in the playable prefab match the authoring layout',()=>{
+ const root=path.resolve(__dirname,'../../..');
+ const authored=L.read(root,'authoring/worlds/stages/A-2.json'),playable=L.adaptStage(root,'A',2);
+ assert.deepEqual(playable.graphs,authored.graphs);
+ assert.deepEqual(playable.spawns,authored.spawns);
 });

@@ -120,6 +120,16 @@ test('validation catches broken references, geometry, spawn lanes, and stage slo
     assert(issues.some(i => /Broken prefab reference/.test(i.message))); assert(issues.some(i => /three finite/.test(i.message)));
     assert(issues.some(i => /spawn lane 999/.test(i.message))); assert(issues.some(i => /building slot 999/.test(i.message)));
 });
+test('native path warnings name the linked stage, map and route', () => {
+    const source = Maps.loadMap(root, 'Map01').data, info = Maps.model(source), docs = clone(documents), route = info.routes[0];
+    docs.A.data.LevelCfg[0].prefab = 'Map01';
+    source[route.id].ndBuildList = [999];
+    const warning = Maps.issuesFor(source, 'Map01', docs).find(i => i.path[0] === route.id && i.path[1] === 'ndBuildList');
+    const name = info.byId[route.node].name;
+    assert(warning.message.includes('Stage 1 · Map01 · Paths · ' + name + ' (route ID ' + route.id + ')'));
+    assert(warning.message.includes('missing building slot 999'));
+    assert.equal(warning.severity, route.active ? 'error' : 'warning');
+});
 test('map lane validation follows active timed schedules and ignores retained legacy queues', () => {
     const source = Maps.loadMap(root, 'Map01').data, docs = clone(documents), wave = docs.A.data.LevelCfg[0].WaveCfg[0];
     docs.A.data.LevelCfg[0].prefab = 'Map01';

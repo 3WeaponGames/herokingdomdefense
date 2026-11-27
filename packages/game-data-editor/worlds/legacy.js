@@ -42,10 +42,18 @@ function restoreAuthoredPaths(root,info,stage){
   stage.nextBuilding=Math.max(stage.nextBuilding,building.id+1);
  }
  const children=new Map(),plan=require('../../../assets/_script/AuthoredSpawnPlan');for(const id of holder.children){const node=info.byId[id];if(node&&!children.has(node.name))children.set(node.name,node);}
- for(const graph of graphs){const issues=Model.graphIdentifierIssues(graph);if(issues.length)throw Error('Invalid authored route metadata: '+issues.join(' '));}
+ for(const graph of graphs){
+  const issues=Model.graphIdentifierIssues(graph);
+  if(issues.length)throw Error(issues.map(issue=>Model.stageIssue(stage,Model.pathIssue(graph,issue))).join('\n'));
+ }
  // Runtime movement uses the actual point nodes. Retain authored IDs, branches
  // and unknown metadata, while honoring explicit native point moves.
- stage.graphs=clone(graphs);for(const graph of stage.graphs)for(const point of graph.nodes){const actual=children.get(plan.pointName(graph.id,point.id));if(!actual)throw Error('The authored route '+graph.id+' is missing waypoint '+point.id+'. Restore its native point node before editing.');point.x=actual.position.x;point.y=actual.position.y;}
+ stage.graphs=clone(graphs);
+ for(const graph of stage.graphs)for(const point of graph.nodes){
+  const actual=children.get(plan.pointName(graph.id,point.id));
+  if(!actual)throw Error(Model.stageIssue(stage,Model.pathIssue(graph,'Missing waypoint '+point.id+' in the stage prefab. Restore its point node before editing.')));
+  point.x=actual.position.x;point.y=actual.position.y;
+ }
  if(spawns){const actual=new Map(stage.spawns.map(spawn=>[spawn.id,spawn])),restored=[],seen=new Set();for(const spawn of spawns){if(!spawn||typeof spawn!=='object'||!Number.isSafeInteger(spawn.id)||spawn.id<1||seen.has(spawn.id))throw Error('The stage has invalid or duplicate authored spawn metadata.');seen.add(spawn.id);const live=actual.get(spawn.id);if(live){restored.push(Object.assign(clone(spawn),{x:live.x,y:live.y,enabled:true}));actual.delete(spawn.id);}else if(spawn.enabled===false)restored.push(clone(spawn));}stage.spawns=restored.concat(Array.from(actual.values()));}
  for(const spawn of stage.spawns)stage.nextSpawn=Math.max(stage.nextSpawn,spawn.id+1);
 }

@@ -311,10 +311,9 @@ function tick(game) {
   }
   var ambient = "ambience-" + surface + "-loop";
   loop(state, "ambience", entries[ambient] ? ambient : null, .5);
-  // Forests restore the original clip at its original full level. Other
-  // surfaces keep the approved 50% of the original .65 biome mix level.
+  // The original forest hoofbeat recording has its own mix level.
   var movement = movementCue(surface);
-  loop(state, "horse", heroMoving ? movement : null, movement === "horse-original-loop" ? 1 : .325);
+  loop(state, "horse", heroMoving ? movement : null, movement === "horse-original-loop" ? .6 : .325);
   // Retire any unit movement channels left by an already-running session.
   stopLoop(state, "foot");
   stopLoop(state, "flying");

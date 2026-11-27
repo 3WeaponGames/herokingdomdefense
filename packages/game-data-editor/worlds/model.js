@@ -132,18 +132,42 @@ function graphIdentifierIssues(graph){
 // Original native paths used a non-empty all-zero building list to park an
 // alternate route. Zero is never a buildable ID, so keep that route unavailable.
 function legacyUnavailable(graph){return !!graph&&graph.legacy===true&&Array.isArray(graph.requiresAnyBuilding)&&graph.requiresAnyBuilding.length>0&&Array.from(graph.requiresAnyBuilding).every(id=>id===0);}
+function identifier(value){
+ if(typeof value==='string'&&value.trim())return '“'+value+'”';
+ return typeof value==='number'?String(value):'unknown';
+}
+function stageIssue(stage,message){
+ const id=typeof stage.id==='string'?stage.id:'',level=stage.level??stage.config?.Level;
+ const label=Number.isSafeInteger(level)?level:/^A-(\d+)$/.exec(id)?.[1]||id;
+ return (label?'Stage '+label:'Stage')+' · '+message;
+}
+function pathLabel(graph){
+ const name=typeof graph?.name==='string'?graph.name.trim():'',id=typeof graph?.id==='string'?graph.id.trim():'';
+ return name&&id&&name!==id?name+' ('+id+')':name||id||'Unnamed path';
+}
+function pathIssue(graph,message){return 'Paths · '+pathLabel(graph)+' — '+message;}
+function spawnLabel(id,spawn){
+ const name=typeof spawn?.name==='string'?spawn.name.trim():'';
+ return name?name+' (ID '+identifier(id)+')':'Spawn ID '+identifier(id);
+}
 function graphIssues(graph,spawnIds,buildingIds){
  const issues=graphIdentifierIssues(graph),nodes=new Map(),outgoing=new Map(),edgeIds=new Set();
  if(!graph||!Array.isArray(graph.nodes)||!Array.isArray(graph.edges)||!Array.isArray(graph.spawnIds)||graph.nodes.some(n=>!n||typeof n!=='object'||Array.isArray(n))||graph.edges.some(e=>!e||typeof e!=='object'||Array.isArray(e)))return issues;
  const edges=graph.edges;
  if(graph.weight!==undefined&&(!finite(graph.weight)||graph.weight<0))issues.push('Path weight must be zero or greater.');
  if(graph.spread!==undefined&&(!finite(graph.spread)||graph.spread<0||graph.spread>1500))issues.push('Path spread must be between 0 and 1500.');
- for(const n of graph.nodes||[]){
-  if(nodes.has(n.id))issues.push('Duplicate path node '+n.id);nodes.set(n.id,n);
-  if(!finite(n.x)||!finite(n.y))issues.push('Invalid path node position');
+ for(const n of graph.nodes){
+  if(nodes.has(n.id))issues.push('Duplicate path node '+identifier(n.id)+'.');
+  nodes.set(n.id,n);
+  if(!finite(n.x)||!finite(n.y))issues.push('Invalid path node position for point '+identifier(n.id)+'.');
  }
  if(!nodes.has(graph.entry))issues.push('Path needs a starting node.');
- for(const edge of edges){if(!outgoing.has(edge.from))outgoing.set(edge.from,[]);outgoing.get(edge.from).push(edge);if(edgeIds.has(edge.id))issues.push('Duplicate path edge '+edge.id);edgeIds.add(edge.id);}
+ for(const edge of edges){
+  if(!outgoing.has(edge.from))outgoing.set(edge.from,[]);
+  outgoing.get(edge.from).push(edge);
+  if(edgeIds.has(edge.id))issues.push('Duplicate path edge '+identifier(edge.id)+' from '+identifier(edge.from)+' to '+identifier(edge.to)+'.');
+  edgeIds.add(edge.id);
+ }
  // Validate arbitrarily long routes without recursive stack growth or repeated
  // full edge scans at every node. Disconnected components are checked too.
  const state=new Map();
@@ -159,21 +183,25 @@ function graphIssues(graph,spawnIds,buildingIds){
   }
  }
  if(graph.requiresAnyBuilding!==undefined&&graph.requiresAnyBuilding!==null&&!Array.isArray(graph.requiresAnyBuilding))issues.push('Path building conditions must be an array.');
- if(!legacyUnavailable(graph))for(const b of Array.isArray(graph.requiresAnyBuilding)?graph.requiresAnyBuilding:[])if(buildingIds&&!buildingIds.has(b))issues.push('Path condition references a removed building.');
+ if(!legacyUnavailable(graph))for(const b of Array.isArray(graph.requiresAnyBuilding)?graph.requiresAnyBuilding:[])if(buildingIds&&!buildingIds.has(b))issues.push('Path condition references removed building ID '+identifier(b)+'.');
  for(const e of edges){
-  if(!nodes.has(e.from)||!nodes.has(e.to))issues.push('Path has a disconnected edge.');
-  if(!finite(e.weight)||e.weight<0)issues.push('Branch chance cannot be negative.');
+  const fromMissing=!nodes.has(e.from),toMissing=!nodes.has(e.to);
+  if(fromMissing||toMissing){
+   const missing=fromMissing&&toMissing&&e.from!==e.to?[e.from,e.to]:[fromMissing?e.from:e.to];
+   issues.push('Disconnected path edge '+identifier(e.id)+' from '+identifier(e.from)+' to '+identifier(e.to)+'. Missing '+(missing.length===1?'point ':'points ')+missing.map(identifier).join(', ')+'.');
+  }
+  if(!finite(e.weight)||e.weight<0)issues.push('Branch chance for edge '+identifier(e.id)+' must be finite and zero or greater.');
   if(e.requiresAnyBuilding!==undefined&&e.requiresAnyBuilding!==null&&!Array.isArray(e.requiresAnyBuilding))issues.push('Connection building conditions must be an array.');
-  for(const b of Array.isArray(e.requiresAnyBuilding)?e.requiresAnyBuilding:[])if(buildingIds&&!buildingIds.has(b))issues.push('Path condition references a removed building.');
+  for(const b of Array.isArray(e.requiresAnyBuilding)?e.requiresAnyBuilding:[])if(buildingIds&&!buildingIds.has(b))issues.push('Edge '+identifier(e.id)+' references removed building ID '+identifier(b)+'.');
  }
  for(const [id,node]of nodes){
   const out=(outgoing.get(id)||[]).filter(e=>e.weight>0);
   if(!Number.isFinite(out.reduce((total,edge)=>total+edge.weight,0)))issues.push('Branch weights at a junction need a finite total.');
-  if(!out.length&&!node.goal)issues.push('Every path must end at a goal.');
+  if(!out.length&&!node.goal)issues.push('Path point '+identifier(id)+' needs an outgoing connection or a goal marker.');
   if(node.goal&&out.length)issues.push('Goal nodes cannot have outgoing branches.');
   if(out.length&&!out.some(e=>!(e.requiresAnyBuilding||[]).length))issues.push('Every junction needs an unconditional fallback.');
  }
- for(const id of graph.spawnIds||[])if(spawnIds&&!spawnIds.has(id))issues.push('Path references a removed spawn.');
+ for(const id of graph.spawnIds)if(spawnIds&&!spawnIds.has(id))issues.push('Path references removed spawn ID '+identifier(id)+'.');
  return Array.from(new Set(issues));
 }
 function validateMap(map,assets){
@@ -218,8 +246,8 @@ function stagePlacementIssues(stage,map){
 function validateStage(stage,map,units){
  const StageProfiles=require('../../../assets/_script/EnemyStageProfiles'),profileIssues=units?StageProfiles.validate(stage.config,units):[];if(units)units=StageProfiles.records(stage.config,units);
  const issues=[],allBuildings=stage.buildings||[],allSpawns=Array.isArray(stage.spawns)?stage.spawns.filter(s=>s&&typeof s==='object'&&!Array.isArray(s)):[],buildings=allBuildings.filter(b=>b.enabled!==false),ids=new Set(allBuildings.map(b=>b.id)),spawns=allSpawns.filter(s=>s.enabled!==false),spawnIds=new Set(spawns.map(s=>s.id)),allSpawnIds=new Set(allSpawns.map(s=>s.id)),graphs=Array.isArray(stage.graphs)?stage.graphs.filter(g=>g&&typeof g==='object'&&!Array.isArray(g)):[],graphIds=new Set(),buildingIds=new Set(allBuildings.map(b=>b.id));
- issues.push(...profileIssues);if(!Array.isArray(stage.spawns)||allSpawns.length!==stage.spawns.length)issues.push('Spawn points must be an array of objects.');
- if(!Array.isArray(stage.graphs)||graphs.length!==stage.graphs.length)issues.push('Paths must be an array of objects.');
+ issues.push(...profileIssues);if(!Array.isArray(stage.spawns)||allSpawns.length!==stage.spawns.length)issues.push('Spawns · Use an array of spawn point objects.');
+ if(!Array.isArray(stage.graphs)||graphs.length!==stage.graphs.length)issues.push('Paths · Use an array of path objects.');
  if(buildings.filter(b=>b.kind===1).length!==1||!buildings.some(b=>b.kind===1&&b.id===1))issues.push('Place exactly one main hall.');
  if(ids.size!==allBuildings.length)issues.push('Duplicate building ID.');
  for(const b of allBuildings)if(!Number.isSafeInteger(b.id)||b.id<1)issues.push('Building IDs must be positive safe whole numbers.');
@@ -229,36 +257,64 @@ function validateStage(stage,map,units){
   if(building.flipX!==undefined&&typeof building.flipX!=='boolean')issues.push('Flip building X must be on or off.');
   if(Object.prototype.hasOwnProperty.call(building,'spawnPosition')&&(building.kind!==3||!require('../../../assets/_script/BuildingSpawnPositions').point(building.spawnPosition)))issues.push('Initial squad destination requires a barracks and finite X/Y offsets between -10,000 and 10,000.');
  }
- if(allSpawnIds.size!==allSpawns.length)issues.push('Duplicate spawn ID.');
- for(const spawn of allSpawns)if(spawn.radius!==undefined&&(!finite(spawn.radius)||spawn.radius<0||spawn.radius>1500))issues.push('Spawn radius must be between 0 and 1500.');
- for(const s of allSpawns)if(!Number.isSafeInteger(s.id)||s.id<1)issues.push('Spawn IDs must be positive safe whole numbers.');
- issues.push(...SpawnGroups.validate(stage));
+ const spawnsById=new Map();
+ for(const spawn of allSpawns){
+  const label='Spawns · '+spawnLabel(spawn.id,spawn)+' — ';
+  if(spawnsById.has(spawn.id))issues.push(label+'Duplicate spawn ID.');
+  spawnsById.set(spawn.id,spawn);
+  if(spawn.radius!==undefined&&(!finite(spawn.radius)||spawn.radius<0||spawn.radius>1500))issues.push(label+'Spawn radius must be between 0 and 1500.');
+  if(!Number.isSafeInteger(spawn.id)||spawn.id<1)issues.push(label+'Spawn IDs must be positive safe whole numbers.');
+ }
+ issues.push(...SpawnGroups.validate(stage).map(issue=>'Spawns · '+issue));
  // Disabled lanes retain their authored paths for later re-enabling. Only wave
  // groups and active-lane fallbacks need an enabled spawn.
- for(const graph of graphs){if(graphIds.has(graph.id))issues.push('Duplicate path ID.');graphIds.add(graph.id);issues.push(...graphIssues(graph,allSpawnIds,buildingIds));}
- for(const s of spawns){
-  const associated=graphs.filter(g=>Array.isArray(g.spawnIds)&&g.spawnIds.includes(s.id)&&(g.weight===undefined||g.weight>0)&&!legacyUnavailable(g));
-  if(!Number.isFinite(associated.reduce((total,g)=>total+(g.weight===undefined?1:g.weight),0)))issues.push(s.name+' needs a finite total path weight.');
-  if(!associated.length)issues.push(s.name+' needs a route.');
-  else if(!associated.some(g=>!(g.requiresAnyBuilding||[]).length))issues.push(s.name+' needs an unconditional fallback route.');
+ for(const graph of graphs){
+  if(graphIds.has(graph.id))issues.push(pathIssue(graph,'Duplicate path ID.'));
+  graphIds.add(graph.id);
+  issues.push(...graphIssues(graph,allSpawnIds,buildingIds).map(issue=>pathIssue(graph,issue)));
+ }
+ for(const spawn of spawns){
+  const label='Spawns · '+spawnLabel(spawn.id,spawn);
+  const associated=graphs.filter(g=>Array.isArray(g.spawnIds)&&g.spawnIds.includes(spawn.id)&&(g.weight===undefined||g.weight>0)&&!legacyUnavailable(g));
+  if(!Number.isFinite(associated.reduce((total,g)=>total+(g.weight===undefined?1:g.weight),0)))issues.push(label+' needs a finite total path weight.');
+  if(!associated.length)issues.push(label+' needs a route.');
+  else if(!associated.some(g=>!(g.requiresAnyBuilding||[]).length))issues.push(label+' needs an unconditional fallback route. Assigned paths are '+associated.map(pathLabel).join(', ')+'.');
  }
  const waves=stage.config&&stage.config.WaveCfg;
- if(!Array.isArray(waves)||!waves.length)issues.push('A stage requires a non-empty wave array.');
- for(const wave of Array.isArray(waves)?waves:[]){
-  if(!wave||typeof wave!=='object'||Array.isArray(wave)){issues.push('Every wave must be an object.');continue;}
-  if(Object.prototype.hasOwnProperty.call(wave,'SpawnTimeline')&&!Array.isArray(wave.SpawnTimeline)){issues.push('Wave '+wave.Wave+' needs a timed spawn array.');continue;}
-  if(!Array.isArray(wave.SpawnTimeline)){if(!Array.isArray(wave.RefreshSoldierKind)){issues.push('Wave '+wave.Wave+' needs a legacy spawn array.');continue;}for(const encoded of wave.RefreshSoldierKind){if(!encoded)continue;if(typeof encoded!=='string'||!encoded.includes('#')){issues.push('Wave '+wave.Wave+' has an invalid legacy spawn group.');continue;}const lane=Number(encoded.split('#')[0]);if(!spawnIds.has(lane))issues.push('Wave '+wave.Wave+' uses a removed spawn.');}continue;}
-  let count=0;
-  for(const e of wave.SpawnTimeline){
-   if(!e||typeof e!=='object'||Array.isArray(e)){issues.push('Wave '+wave.Wave+' has an invalid timed spawn group.');continue;}
-   if(!Number.isSafeInteger(e.spawnId)||!spawnIds.has(e.spawnId))issues.push('Wave '+wave.Wave+' uses a removed or disabled spawn.');
-   if(!Number.isSafeInteger(e.unitId)||e.unitId<1)issues.push('Choose a spawnable unit.');
-   if(units&&(!units[e.unitId]||!units[e.unitId].prefab||[90011,90012].includes(Number(e.unitId))))issues.push('Choose a spawnable unit.');
-   if(!Number.isSafeInteger(e.count)||e.count<1||!finite(e.startSeconds)||e.startSeconds<0||!finite(e.intervalSeconds)||e.intervalSeconds<0||e.count>1&&e.intervalSeconds<=0||!finite(e.startSeconds+(e.count-1)*e.intervalSeconds))issues.push('Invalid spawn time, count or interval.');
-   if(e.routeGraphId&&!graphs.some(g=>g.id===e.routeGraphId&&Array.isArray(g.spawnIds)&&g.spawnIds.includes(e.spawnId)))issues.push('Spawn entry uses an unrelated route.');
-   count+=e.count;
+ if(!Array.isArray(waves)||!waves.length)issues.push('Waves · A stage requires a non-empty wave array.');
+ for(const [waveIndex,wave] of (Array.isArray(waves)?waves:[]).entries()){
+  const label='Waves · Wave '+(Number.isSafeInteger(wave?.Wave)?wave.Wave:waveIndex+1);
+  if(!wave||typeof wave!=='object'||Array.isArray(wave)){issues.push(label+' — Every wave must be an object.');continue;}
+  if(Object.prototype.hasOwnProperty.call(wave,'SpawnTimeline')&&!Array.isArray(wave.SpawnTimeline)){issues.push(label+' needs a timed spawn array.');continue;}
+  if(!Array.isArray(wave.SpawnTimeline)){
+   if(!Array.isArray(wave.RefreshSoldierKind)){issues.push(label+' needs a legacy spawn array.');continue;}
+   for(const [index,encoded] of wave.RefreshSoldierKind.entries()){
+    if(!encoded)continue;
+    const group=label+' · Group '+(index+1);
+    if(typeof encoded!=='string'||!encoded.includes('#')){issues.push(group+' — Invalid legacy spawn group.');continue;}
+    const lane=Number(encoded.split('#')[0]);
+    if(!spawnIds.has(lane))issues.push(group+' · '+spawnLabel(lane,spawnsById.get(lane))+' — This group uses a removed or disabled spawn.');
+   }
+   continue;
   }
-  if(!count)issues.push('Wave '+wave.Wave+' needs at least one enemy.');
+  let count=0;
+  for(const [index,entry] of wave.SpawnTimeline.entries()){
+   const group=label+' · Group '+(index+1);
+   if(!entry||typeof entry!=='object'||Array.isArray(entry)){issues.push(group+' — Invalid timed spawn group.');continue;}
+   const location=group+' · '+spawnLabel(entry.spawnId,spawnsById.get(entry.spawnId))+' — ';
+   if(!Number.isSafeInteger(entry.spawnId)||!spawnIds.has(entry.spawnId))issues.push(location+'This group uses a removed or disabled spawn.');
+   if(!Number.isSafeInteger(entry.unitId)||entry.unitId<1||units&&(!units[entry.unitId]?.prefab||[90011,90012].includes(entry.unitId)))issues.push(location+'Choose a spawnable unit.');
+   if(!Number.isSafeInteger(entry.count)||entry.count<1||!finite(entry.startSeconds)||entry.startSeconds<0||!finite(entry.intervalSeconds)||entry.intervalSeconds<0||entry.count>1&&entry.intervalSeconds<=0||!finite(entry.startSeconds+(entry.count-1)*entry.intervalSeconds))issues.push(location+'Invalid spawn time, count or interval.');
+   if(entry.routeGraphId){
+    const routes=graphs.filter(graph=>graph.id===entry.routeGraphId);
+    if(!routes.some(route=>Array.isArray(route.spawnIds)&&route.spawnIds.includes(entry.spawnId))){
+     const route=routes[0];
+     issues.push(location+(route?'Route override '+pathLabel(route)+' is assigned to a different spawn.':'Missing route override '+identifier(entry.routeGraphId)+'.'));
+    }
+   }
+   count+=entry.count;
+  }
+  if(!count)issues.push(label+' needs at least one enemy.');
  }
  const offers=stage.specials||[],specials=offers.filter(b=>b.enabled!==false),specialIds=new Set();
  const silverOffers=offers.filter(offer=>offer.kind===0);
@@ -272,8 +328,8 @@ function validateStage(stage,map,units){
  }
  const placements=stagePlacementIssues(stage,map);
  issues.unshift(...placements.outsideMap,...placements.invalidCoordinates);
- return Array.from(new Set(issues));
+ return Array.from(new Set(issues),issue=>stageIssue(stage,issue));
 }
-module.exports={assetSize,isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,mergeGroundStrokes,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,flipPoint,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,blockerFixtures,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIdentifierIssues,legacyUnavailable,graphIssues,validateMap,stagePlacementIssues,validateStage};
+module.exports={assetSize,isGroundObject,polygonBlockers,MAP_BLOCKERS,hasGlobalBlockers,mapBlockerRegions,duplicateObjects,assertEditable,convertLayerBlockers,pointInPolygon,groundLayers,groundLayer,mergeGroundStrokes,createGroundLayer,removeGroundLayer,placeGroundImage,groundImage,clone,BIOMES,fixedGround,createMap,createLayer,layerOf,place,matrix,flipPoint,point,toWorld,toLocal,moveObjectToLayer,removeLayer,removeObjects,sampleStroke,blockerCells,mergeCells,blockerRegions,blockerPolygons,blockerFixtures,previewBlockerStroke,stroke,newSpawn,removeSpawn,legacyTimeline,graphIdentifierIssues,legacyUnavailable,graphIssues,stageIssue,pathIssue,validateMap,stagePlacementIssues,validateStage};
 module.exports.buildingMatrix=buildingMatrix;
 module.exports.toBuildingLocal=toBuildingLocal;

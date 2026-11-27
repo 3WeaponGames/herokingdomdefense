@@ -253,6 +253,9 @@ function duplicateObstacle(data, nodeId, doc) {
 }
 function issuesFor(data, id, documents) {
     const issues = [], doc = 'map:' + id;
+    const stageLabel = (variant, level) => 'Stage ' + (variant === 'A' ? level : variant + '-' + level);
+    const linkedStages = stagesFor(id, documents).map(stage => stageLabel(stage.variant, stage.level));
+    const mapLabel = linkedStages.length ? linkedStages.join(', ') + ' · ' + id : id;
     function issue(path, message) { issues.push({ severity: 'error', doc, path, message }); }
     if (!Array.isArray(data)) { issue([], 'Map must be a Cocos prefab array.'); return issues; }
     data.forEach((value, index) => {
@@ -269,7 +272,10 @@ function issuesFor(data, id, documents) {
     if (!info.nodes.some(node => node.kind === 'hero')) issue([], 'Hero start ndPath/ndStar is missing.');
     const lanes = new Set(), slots = new Set();
     info.nodes.forEach(node => {
-        if (node.kind === 'spawn') { if (lanes.has(node.lane)) issue([node.id, '_name'], 'Duplicate spawn lane ' + node.lane); lanes.add(node.lane); }
+        if (node.kind === 'spawn') {
+            if (lanes.has(node.lane)) issue([node.id, '_name'], mapLabel + ' · Spawns · ' + node.name + ' (node ID ' + node.id + ') — Duplicate spawn lane ' + node.lane + '.');
+            lanes.add(node.lane);
+        }
         if (node.kind === 'building') { if (slots.has(node.slot)) issue([node.ownerComponent, 'ID'], 'Duplicate building slot ' + node.slot); slots.add(node.slot); }
         const trs = node.source._trs && node.source._trs.array;
         if (trs && (trs.length !== 10 || !trs.every(Number.isFinite))) issue([node.id, '_trs'], 'Transform must contain ten finite values.');
@@ -284,8 +290,12 @@ function issuesFor(data, id, documents) {
         if (Math.abs(area) < 0.001) issue([collider.id], 'Physics shape cannot have zero area.');
     });
     info.routes.forEach(route => {
-        Array.from(new Set(route.lanes)).forEach(lane => { if (!lanes.has(lane)) issues.push({ severity: route.active ? 'error' : 'warning', doc, path: [route.id, 'ndLockList'], message: 'Route references missing spawn lane ' + lane + (route.active ? '' : ' (inactive route)') }); });
-        Array.from(new Set(route.buildings)).forEach(slot => { if (!slots.has(slot)) issues.push({ severity: route.active ? 'error' : 'warning', doc, path: [route.id, 'ndBuildList'], message: 'Route references missing building slot ' + slot + (route.active ? '' : ' (inactive route)') }); });
+        const name = info.byId[route.node].name, location = mapLabel + ' · Paths · ' + name + ' (route ID ' + route.id + ')';
+        function missing(field, message) {
+            issues.push({ severity: route.active ? 'error' : 'warning', doc, path: [route.id, field], message: location + ' — ' + message + (route.active ? '.' : ' (inactive route).') });
+        }
+        for (const lane of new Set(route.lanes)) if (!lanes.has(lane)) missing('ndLockList', 'Route references missing spawn lane ' + lane);
+        for (const slot of new Set(route.buildings)) if (!slots.has(slot)) missing('ndBuildList', 'Route references missing building slot ' + slot);
     });
     ['A', 'B', 'D'].forEach(variant => {
         const cfg = valueOf(documents && documents[variant]);
@@ -298,7 +308,8 @@ function issuesFor(data, id, documents) {
                 const timed = Array.isArray(wave.SpawnTimeline), field = timed ? 'SpawnTimeline' : 'RefreshSoldierKind';
                 (wave[field] || []).forEach((group, gi) => {
                     const lane = timed ? group.spawnId : Number(String(group).split('#')[0]);
-                    if (!lanes.has(lane)) issues.push({ severity: 'error', doc: variant, path: ['LevelCfg', si, 'WaveCfg', wi, field, gi], message: id + ' has no spawn lane ' + lane });
+                    const label = stageLabel(variant, stage.Level) + ' · Waves · Wave ' + (wave.Wave || wi + 1);
+                    if (!lanes.has(lane)) issues.push({ severity: 'error', doc: variant, path: ['LevelCfg', si, 'WaveCfg', wi, field, gi], message: label + ' · Group ' + (gi + 1) + ' — ' + id + ' has no spawn lane ' + lane + '.' });
                 });
             });
         });

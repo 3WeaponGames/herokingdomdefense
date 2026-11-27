@@ -132,7 +132,22 @@ class Service{
    documents[stage.variant]={data:Object.assign(Object.create(null),base,{LevelCfg:rows})};
    const actual=JSONDoc.diff(original,rows[at]).map(c=>['LevelCfg',at].concat(c.path)),
     overlap=(a,b)=>a.slice(0,Math.min(a.length,b.length)).every((v,i)=>String(v)===String(b[i]));
-   const errors=schema.validate(documents,changes).filter(i=>i.severity==='error'&&(!baseline.signatures.has(signature(i))||i.doc===stage.variant&&actual.some(p=>overlap(p,i.path)))).map(i=>i.message);
+   const errors=schema.validate(documents,changes)
+    .filter(i=>i.severity==='error'&&(!baseline.signatures.has(signature(i))||i.doc===stage.variant&&actual.some(p=>overlap(p,i.path))))
+    .map(issue=>{
+     const [table,index,section,waveIndex,schedule,groupIndex,field]=issue.path;
+     if(issue.doc!==stage.variant||table!=='LevelCfg'||index!==at||section!=='WaveCfg')return issue.message;
+     if(!Number.isInteger(waveIndex))return M.stageIssue(stage,'Waves · '+issue.message);
+     let location='Waves · Wave '+(waveIndex+1);
+     if(Number.isInteger(groupIndex)&&(schedule==='SpawnTimeline'||schedule==='RefreshSoldierKind')){
+      location+=' · Group '+(groupIndex+1);
+      const entry=stage.config.WaveCfg[waveIndex]?.[schedule]?.[groupIndex];
+      const spawnId=entry?.spawnId;
+      if(Number.isSafeInteger(spawnId))location+=' · Spawn ID '+spawnId;
+      if(field)location+=' · '+field;
+     }
+     return M.stageIssue(stage,location+' — '+issue.message);
+    });
    checked={id:stage.id,configRevision,unlocks,errors};
    if(!context)baseline.stageConfigs.set(stage.config,checked);
   }

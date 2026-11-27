@@ -507,6 +507,28 @@ var def_KinghtFallUIGame = function (t) {
     return !!this.ctrGame && (this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight ||
       this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Transition);
   };
+  _ctor.prototype.clearPausedStageForTest = function (dialog, stars) {
+    if (!TestMode.getInstance().isAvailable() || !dialog || dialog !== this._battleDialog ||
+        dialog.kind !== "wave-test" || !dialog.isCurrent() || !dialog.paused ||
+        !this._pauseOwners || !this._pauseOwners.has(dialog) || !this.canBreak || this._restartPending) return false;
+    var game = this.ctrGame, data = game.gameData;
+    var phases = $z1KinghtFallModle.KinghtFallGameStage;
+    if (game._restartRetired || game._battleSettlement ||
+        game.gameStatus !== phases.Prepare && !this.isWaveInProgress()) return false;
+    var mask = require("StageStarsCore").maskForStars(data.levelCfg, stars);
+    if (mask === null) throw Error("This stage cannot award that number of stars.");
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    require("RewardTestProgress").start(player);
+    if (!player.getGameData().readyForNewBattle() || !dialog.isCurrent()) return false;
+    // The result dialog replaces F6 while the battle is still paused.
+    dialog.paused = false;
+    try { this.onGameOver(true, mask); }
+    finally {
+      if (this._battleDialog === dialog) dialog.paused = true;
+      else this._pauseOwners.delete(dialog);
+    }
+    return this._battleDialog !== dialog;
+  };
   _ctor.prototype.restartPausedBattle = function (dialog, mode, waveTest) {
     if (!dialog || !dialog.isCurrent() || this._restartPending) return false;
     mode = mode || "stage";
@@ -753,7 +775,7 @@ var def_KinghtFallUIGame = function (t) {
       }
     });
   };
-  _ctor.prototype.onGameOver = function (t) {
+  _ctor.prototype.onGameOver = function (t, testChallengeMask) {
     var e = this, dialog = this.beginBattleDialog('end');
     if (!dialog) return;
     if (BattleSounds.dispose) BattleSounds.dispose(this.ctrGame);
@@ -766,7 +788,7 @@ var def_KinghtFallUIGame = function (t) {
     this.scheduleOnce(function () {
       if (!dialog.isCurrent()) return;
       if (t) {
-        e.openBattleDialog(dialog, $z1KinghtFallConfig.KinghtFallUIID.UIGameEnd, null, t);
+        e.openBattleDialog(dialog, $z1KinghtFallConfig.KinghtFallUIID.UIGameEnd, null, t, testChallengeMask);
       } else {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.fail_X_Y, e.ctrGame.gameData.levelCfg.Level + "_" + e.ctrGame.gameData.round);
         e.openBattleDialog(dialog, $z1KinghtFallConfig.KinghtFallUIID.UIGameBack, null, function (n) {

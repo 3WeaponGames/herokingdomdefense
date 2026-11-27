@@ -80,10 +80,15 @@ function scaled(data,row,matrix){if(row&&row.ModelOffset){const O=require('../..
 function buildingPolygons(service,stage,building,hall,gate,config,sourceModels){const data=buildingColliderData(service,stage,building,hall,gate,config,sourceModels),matrix=M.buildingMatrix(building);return data.colliders.map(c=>c.points.map(p=>Maps.point(matrix,{x:p.x-data.origin.x,y:p.y-data.origin.y})));}
 function preview(service,request){
  const stage=service.doc(request.key).data,map=service.loadMap(stage.mapId).data,spawn=Array.isArray(stage.spawns)&&stage.spawns.find(s=>s&&s.id===request.spawnId&&s.enabled!==false);
- if(!spawn)throw Error('Select an enabled spawn');
- if(!Array.isArray(stage.graphs))throw Error('Paths must be an array of objects.');
+ if(!spawn)throw Error(M.stageIssue(stage,'Spawns · Select an enabled spawn.'));
+ if(!Array.isArray(stage.graphs))throw Error(M.stageIssue(stage,'Paths · Use an array of path objects.'));
  const routeIds=new Set();
- for(const graph of stage.graphs.filter(graph=>graph&&Array.isArray(graph.spawnIds)&&graph.spawnIds.includes(spawn.id))){const issues=M.graphIssues(graph);if(routeIds.has(graph.id))issues.push('Duplicate path ID.');routeIds.add(graph.id);if(issues.length)throw Error(issues.join('\n'));}
+ for(const graph of stage.graphs.filter(graph=>graph&&Array.isArray(graph.spawnIds)&&graph.spawnIds.includes(spawn.id))){
+  const issues=M.graphIssues(graph);
+  if(routeIds.has(graph.id))issues.push('Duplicate path ID.');
+  routeIds.add(graph.id);
+  if(issues.length)throw Error(issues.map(issue=>M.stageIssue(stage,M.pathIssue(graph,issue))).join('\n'));
+ }
  if(spawn.radius!==undefined&&(!Number.isFinite(spawn.radius)||spawn.radius<0||spawn.radius>1500))throw Error('Spawn radius must be between 0 and 1500.');
  if(request.graphId){const selected=stage.graphs.find(graph=>graph&&graph.id===request.graphId);if(!selected||!Array.isArray(selected.spawnIds)||!selected.spawnIds.includes(spawn.id))throw Error('Choose a path assigned to the selected spawn.');}
  const hall=request.hall===undefined?3:request.hall,buildingLevel=request.buildingLevel===undefined?1:request.buildingLevel,radius=request.radius===undefined?18:request.radius,gate=request.gate||'closed';

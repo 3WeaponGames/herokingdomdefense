@@ -335,7 +335,9 @@ test('world persistence: stage validation caches only its baseline and shares im
   assert.notEqual(actual.A.data,index.documents.A);assert.notEqual(actual.A.data.LevelCfg,index.documents.A.LevelCfg);assert.equal(actual.A.data.LevelCfg[1],index.documents.A.LevelCfg[1]);
   assert.equal(s.stageValidation,cache);assert.equal(JSON.stringify(index.documents),before);assert.deepEqual(stage.config.FutureStage,{values:[1,{keep:true}]});
   const other=clone(stage);other.id='A-2';other.level=2;other.config.Level=2;const warm=s.stageIssues(other,f.map);assert.equal(calls.length,4);assert.equal(s.stageValidation,cache,'one baseline is reused across campaign stages');
-  const fresh=new Service(f.root,{artifacts:temporary('hkd-world-persistence-validation-')});assert.deepEqual(fresh.stageIssues(other,f.map),warm);assert.equal(calls.length,6);assert.deepEqual(first,warm);
+  const fresh=new Service(f.root,{artifacts:temporary('hkd-world-persistence-validation-')});
+  assert.deepEqual(fresh.stageIssues(other,f.map),warm);assert.equal(calls.length,6);
+  assert.deepEqual(first.map(issue=>issue.replace(/^Stage 1 · /,'Stage 2 · ')),warm);
  }finally{schema.validate=validate;}
 });
 test('world persistence: stage validation invalidates its single cache on catalog bytes and index refresh',()=>{

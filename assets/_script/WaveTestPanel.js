@@ -39,7 +39,7 @@ function open(ui) {
   var page = 0, pageCount = Math.max(1, Math.ceil(counts.length / ROWS_PER_PAGE)), slots = [];
   var rowCount = Math.min(counts.length, ROWS_PER_PAGE);
   var listEnd = 254 + 62 * Math.max(1, rowCount), footer = listEnd + (pageCount > 1 ? 48 : 2);
-  var height = footer + 120;
+  var height = footer + 216;
   var dialog = ui.beginBattleDialog("wave-test");
   if (!dialog) return false;
   var parent = ui.ctrUI.node, root = node(null, "WaveTestOverlay", 0, 0, 0, 0);
@@ -144,6 +144,15 @@ function open(ui) {
     }
   }
 
+  function clearStage(stars) {
+    if (!current()) return;
+    try {
+      if (!ui.clearPausedStageForTest(dialog, stars)) message.string = "The stage could not be cleared.";
+    } catch (error) {
+      message.string = error.message;
+    }
+  }
+
   label(panel, "Title", "Wave Adjuster", 24, 17, 500, 50, 36, colors.text, true).enableBold = true;
   label(panel, "Shortcut", "F6", 550, 20, 56, 46, 23, colors.muted);
   button(panel, "Close", "×", 626, 20, 54, 46, close);
@@ -198,6 +207,12 @@ function open(ui) {
   button(panel, "Reset values", "Reset fields", 24, footer + 50, 178, 48, reset);
   button(panel, fighting ? "Restart wave" : "Apply", fighting ? "Restart wave" : "Apply to wave",
     435, footer + 50, 245, 48, apply, true);
+  label(panel, "Stage clear caption", "Clear stage", 24, footer + 112, 656, 31, 23, colors.text, true);
+  [1, 2, 3].forEach(function (stars, index) {
+    var caption = stars + (stars === 1 ? " star" : " stars");
+    button(panel, "Clear stage with " + caption, caption, 24 + index * 222, footer + 150, 212, 48,
+      function () { clearStage(stars); });
+  });
 
   dialog.paused = true;
   ui.onPauseGame(true, dialog);

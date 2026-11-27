@@ -60,9 +60,10 @@ var def_KinghtFallUIGameEnd = function (t) {
     this.ndReward.node.setContentSize(result.width, result.height);
     this._rewardNodes.forEach(function (node, index) { if (node) node.setPosition(result.positions[index]); });
   };
-  _ctor.prototype.init = function (e) {
+  _ctor.prototype.init = function (e, testChallengeMask) {
     t.prototype.init.call(this);
     this.isWin = e;
+    this._testChallengeMask = testChallengeMask;
   };
   _ctor.prototype.start = function () {
     var t = this;
@@ -103,8 +104,10 @@ var def_KinghtFallUIGameEnd = function (t) {
   _ctor.prototype.initData = function () {
     var t;
     var e = this;
-    var n = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.levelCfg;
-    var i = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.round;
+    var controller = $z1KinghtFallUIGame.default.instance.ctrGame;
+    var n = controller.gameData.levelCfg;
+    var testClear = this.isWin && Number.isInteger(this._testChallengeMask);
+    var i = testClear ? n.WaveCfg.length : controller.gameData.round;
     this.getSkillList = [];
     this.challengeMask = 0;
     var a = function (t, n) {
@@ -139,9 +142,11 @@ var def_KinghtFallUIGameEnd = function (t) {
         a(l[0], c);
       }
     }
-    if (this.isWin) {
+    if (testClear) {
+      this.challengeMask = this._testChallengeMask;
+    } else if (this.isWin) {
       var u = 0;
-      var d = $z1KinghtFallUIGame.default.instance.ctrGame.gameTag;
+      var d = controller.gameTag;
       for (var p = $z1KinghtFallEnum.KinghtFallEnumLevelChalType.Pass; p < $z1KinghtFallEnum.KinghtFallEnumLevelChalType.MAX; p++) {
         1 != d[p] && (u += 1 << p - 1);
       }
