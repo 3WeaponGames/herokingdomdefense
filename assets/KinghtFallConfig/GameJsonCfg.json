@@ -119817,7 +119817,9 @@
         "arcDegrees": 46.38,
         "castOpacity": 1,
         "arcStartWidth": 116.28,
-        "buffScale": 0.8
+        "buffScale": 0.8,
+        "castAreaScale": 0.5,
+        "castSpearScale": 0.35
       },
       "audio": {
         "cast": {

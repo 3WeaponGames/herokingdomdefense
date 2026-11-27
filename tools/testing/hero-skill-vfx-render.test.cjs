@@ -50,8 +50,25 @@ test('Vanguard jabs follow the equipped atlas and restore the held weapon layers
  render(80);
  const accents=f.rt._presentation.spearAccents.asset;
  const active=()=>record().spearJabs.sprites.filter(sprite=>sprite.node.active);
- assert.equal(active().filter(sprite=>sprite.spriteFrame.texture===accents).length,3);
- assert.deepEqual(active().filter(sprite=>sprite.spriteFrame.texture===blue.textures[0]).map(sprite=>sprite.node.width),[48,48,48]);
+ const wind=()=>active().filter(sprite=>sprite.spriteFrame.texture===accents);
+ const spears=()=>active().filter(sprite=>sprite.spriteFrame.texture===blue.textures[0]);
+ assert.equal(wind().length,3);
+ assert.deepEqual(spears().map(sprite=>sprite.node.width),[48,48,48]);
+ const oldHeight=spears()[0].node.height,oldOpacity=spears().map(sprite=>sprite.node.opacity);
+ const near=(actual,expected)=>assert(Math.abs(actual-expected)<1e-9,`${actual} != ${expected}`);
+ const tip=({node})=>[node.x+node.width*Math.cos(node.angle*Math.PI/180),node.y+node.width*Math.sin(node.angle*Math.PI/180)];
+ Object.assign(f.rt.settings.visual,{castAreaScale:.5,castSpearScale:.35});
+ f.paint();
+ assert.deepEqual(spears().map(sprite=>sprite.node.opacity),oldOpacity);
+ spears().forEach((spear,i)=>{
+  near(spear.node.width,48*.35);near(spear.node.height,oldHeight*.35);
+  near(wind()[i].node.width,48*Math.sqrt(.5));
+  tip(spear).forEach((axis,k)=>near(axis,tip(wind()[i])[k]));
+ });
+ f.rt.settings.visual.castAreaScale=1;
+ f.paint();
+ near(wind()[0].node.width,48);
+ near(spears()[0].node.width,48*.35);
  const oldFrames=[...record().spearJabs.frames.values()];
  main.skeletonData=gold;
  render(81);

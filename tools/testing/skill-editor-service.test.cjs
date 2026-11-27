@@ -16,6 +16,28 @@ function fixture(t,primary={},secondary={}){
  return {root,service,bytes,req,change,commits:()=>commits};
 }
 
+test('Vanguard cast area and spear size are separate draft controls that save to both configs',t=>{
+ const f=fixture(t),before=f.bytes();
+ const Authoring=require('../../assets/_script/HeroSkillAuthoring');
+ const snapshot=f.service.snapshot(),source=snapshot.fields.vanguard,settings=snapshot.effective.vanguard;
+ const fields=Authoring.fields('vanguard','active',source,settings).visual;
+ const edits=[{path:'visual.castAreaScale',value:.5},{path:'visual.castSpearScale',value:.35}];
+ for(const {path} of edits){
+  const visible=fields.find(field=>field.path===path);
+  assert.equal(visible?.group,'Cast effect');
+  assert.equal(visible.type,'number');
+  assert.equal(Settings.get(settings,path),1);
+  assert(!Authoring.fields('vanguard','passive',source,settings).visual.some(field=>field.path===path));
+  assert(!Settings.fields('fighter').visual.some(field=>field.path===path));
+ }
+ const draft=f.service.changeMany(f.req({style:'vanguard',changes:edits}));
+ assert.deepEqual(f.bytes(),before);
+ const projected=Settings.resourceVisual(draft.effective.vanguard.visual,'castResource');
+ assert.equal(projected.areaScale,.5);assert.equal(projected.spearScale,.35);
+ assert(f.service.save(f.req()).result.saved);
+ for(const text of f.bytes())assert.deepEqual(JSON.parse(text).HeroSkills.vanguard.visual,{castAreaScale:.5,castSpearScale:.35});
+});
+
 test('enemy skill visuals use the shared draft and publish to the battle config',t=>{
  const primary={HeroSkills:{guardian:{future:9}},EnemySkillVisuals:{haste:{future:'keep'}},SoldierCfg:{
   1:{ID:1,Name:'First',prefab:'First',TransformSkill:{unitId:2,trigger:'health',healthPercent:40}},2:{ID:2,Name:'Next',prefab:'Next'}
