@@ -544,7 +544,6 @@ var def_KinghtFallEnemyBase = function (t) {
       var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
       var life = { node: this.node, generation: this.node._combatGeneration, timers: this.time, cfg: this.cfg, ui: ui, game: game, data: game && game.gameData, epoch: game && game._combatEpoch };
       t = RelicCombat.enemyDamage(this, t, source, secondary, context);
-      t = GameToolsOverrides.damageTaken(this, "enemy", t);
       this.hp -= t;
       var transform = this.cfg && this.cfg.TransformSkill;
       if (t > 0 && transform && transform.trigger === "health" && this.time.Transform >= 0 && this.hp > 0 &&

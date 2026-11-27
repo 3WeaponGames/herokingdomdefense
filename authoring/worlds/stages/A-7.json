@@ -6567,8 +6567,8 @@
   "graphs": [
     {
       "id": "s07-g1-hall",
-      "name": "South - Main Hall",
-      "nameFromSpawns": false,
+      "name": "Spawns 1–3 · Route 1",
+      "nameFromSpawns": true,
       "spawnIds": [
         1,
         2,
@@ -6627,8 +6627,8 @@
     },
     {
       "id": "s07-g1-alternate",
-      "name": "South - East of the glacier",
-      "nameFromSpawns": false,
+      "name": "Spawns 1–3 · Route 2",
+      "nameFromSpawns": true,
       "spawnIds": [
         1,
         2,
@@ -6747,8 +6747,8 @@
     },
     {
       "id": "s07-g2-hall",
-      "name": "West - Main Hall",
-      "nameFromSpawns": false,
+      "name": "Spawns 4–6 · Route 1",
+      "nameFromSpawns": true,
       "spawnIds": [
         4,
         5,
@@ -6795,8 +6795,8 @@
     },
     {
       "id": "s07-g3-hall",
-      "name": "East - Main Hall",
-      "nameFromSpawns": false,
+      "name": "Spawns 7–9 · Route 1",
+      "nameFromSpawns": true,
       "spawnIds": [
         7,
         8,
@@ -6903,8 +6903,8 @@
     },
     {
       "id": "s07-g4-hall",
-      "name": "North - Main Hall",
-      "nameFromSpawns": false,
+      "name": "Spawns 10–12 · Route 1",
+      "nameFromSpawns": true,
       "spawnIds": [
         10,
         11,
@@ -6987,8 +6987,8 @@
     },
     {
       "id": "s07-g4-b22",
-      "name": "North - Tower 5 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 10–12 · Route 2",
+      "nameFromSpawns": true,
       "spawnIds": [
         10,
         11,
@@ -7109,8 +7109,8 @@
     },
     {
       "id": "s07-g1-b9",
-      "name": "South - Barracks 1 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 1–3 · Route 3",
+      "nameFromSpawns": true,
       "weight": 2,
       "spread": 28,
       "spawnIds": [
@@ -7207,8 +7207,8 @@
     },
     {
       "id": "s07-g1-b11",
-      "name": "South - Barracks 2 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 1–3 · Route 4",
+      "nameFromSpawns": true,
       "weight": 2,
       "spread": 28,
       "spawnIds": [
@@ -7327,8 +7327,8 @@
     },
     {
       "id": "s07-g3-b23",
-      "name": "East - Tower 6 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 7–9 · Route 2",
+      "nameFromSpawns": true,
       "spawnIds": [
         7,
         8,
@@ -7461,8 +7461,8 @@
     },
     {
       "id": "s07-g1-b7",
-      "name": "South - Tower 3 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 1–3 · Route 5",
+      "nameFromSpawns": true,
       "weight": 2,
       "spread": 28,
       "spawnIds": [
@@ -7559,8 +7559,8 @@
     },
     {
       "id": "s07-g2-b17",
-      "name": "West - Mill 1 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 4–6 · Route 2",
+      "nameFromSpawns": true,
       "spawnIds": [
         4,
         5,

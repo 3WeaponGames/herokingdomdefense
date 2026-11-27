@@ -571,7 +571,6 @@ var def_KinghtFallSoldierBase = function (t) {
     if (!this.isDead()) {
       var ui = $z1KinghtFallUIGame.default.instance, game = ui.ctrGame, notice = AllyAwareness.capture(this, attacker, game), hpBefore = this.hp;
       var life = { node: this.node, generation: this.node._combatGeneration, timers: this.time, cfg: this.cfg, ui: ui, game: game, data: game.gameData, epoch: game._combatEpoch };
-      t=GameToolsOverrides.damageTaken(this,"ally",t);
       t=require("RelicCombat").allyIncoming(this,t);
       if (attacker && attacker.node && attacker.isDead && !attacker.isDead() && FlightTargeting.troopCanTarget(this, attacker)) {
         this._retaliationScope = null;

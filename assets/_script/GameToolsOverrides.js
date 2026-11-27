@@ -66,7 +66,7 @@ function typeCounterDamage(owner, target, amount, releasedRole) {
   return amount * Number(dataManager().getParamsCfgById(parameter));
 }
 function damageTaken(owner, side, amount) {
-  if (!(amount > 0) || !owner || side !== "hero" && !owner.cfg) return amount;
+  if (side !== "hero" || !(amount > 0) || !owner) return amount;
   var settings = config();
   if (!settings) return amount;
   var role = roleFor(owner, side, settings);

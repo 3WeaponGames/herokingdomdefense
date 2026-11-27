@@ -14,10 +14,44 @@ function baseline(f,edit){for(const state of ['data','original']){edit(f.store.d
 function control(f,label){const input=f.fields(f.panel.$detail,label)[0];assert(input,label);return input;}
 function issues(docs){return Schema.validate(docs,[{doc:'overrides',path:['unitTypes']}]).filter(i=>i.path[0]==='unitTypes'&&i.path.includes('damageTaken'));}
 
+test('heroes receive base fighting type modifiers and all sides receive counter damage',()=>{
+ const manager={data:{GameTools:{unitTypes:{
+  guardian:{damageTaken:{mode:'less',percent:200}},
+  skirmisher:{damageTaken:{mode:'more',percent:100}},
+  fighter:{counterType:'skirmisher'},mystic:{counterType:'guardian'}
+ },unitTypeAssignments:{'ally:1:default':'guardian','ally:2:default':'skirmisher','ally:3:default':'fighter'}}},getParamsCfgById(id){assert.equal(id,60017);return 1.25;}};
+ const deps={
+  './FightingTypeDamage':Damage,
+  KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>manager}},
+  KinghtFallEnum:{KinghtFallEnumParameterCfg:{RestrainedArms:60017}}
+ };
+ const runtime={};
+ vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/GameToolsOverrides.js'),'utf8'),{
+  exports:runtime,require(name){assert.ok(deps[name],name);return deps[name];}
+ });
+ const guardianHero={heroStyle:'guardian'},skirmisherHero={heroStyle:'skirmisher'};
+ const ally=ID=>({navigationTeam:'friendly',cfg:{ID}});
+ const enemy=(ID,FightingType)=>({navigationTeam:'enemy',cfg:{ID,FightingType}});
+ const guardianAlly=ally(1),skirmisherEnemy=enemy(90003,'skirmisher'),mysticEnemy=enemy(90006,'mystic');
+ assert.equal(runtime.damageTaken(guardianHero,'hero',100),50);
+ assert.equal(runtime.damageTaken(skirmisherHero,'hero',100),200);
+ for(const unit of [guardianAlly,ally(2)])assert.equal(runtime.damageTaken(unit,'ally',100),100);
+ for(const unit of [skirmisherEnemy,enemy(90007,'guardian')])assert.equal(runtime.damageTaken(unit,'enemy',100),100);
+ for(const [attacker,target,side,expected] of [
+  [ally(3),skirmisherEnemy,'enemy',125],
+  [mysticEnemy,guardianAlly,'ally',125],
+  [mysticEnemy,guardianHero,'hero',62.5]
+ ]){
+  assert.equal(runtime.counters(attacker,target),true);
+  assert.equal(runtime.damageTaken(target,side,runtime.typeCounterDamage(attacker,target,100)),expected);
+ }
+});
+
 test('Fighting Types shows More / Less and literal percentages; browsing, legacy settings and unchanged input never create drafts or writes',async()=>{
  const f=fixture(),before=f.store.draftState(),bytes=fs.readFileSync(path.join(root,primary)),version=f.store.version;
  for(const [id,type]of Object.entries(before.overrides.unitTypes)){
   f.render(id);const mode=control(f,'Damage taken'),percent=control(f,'Amount (%)');
+  assert.match(f.panel.$detail.textContent,/Hero damage taken/);
   assert.deepEqual(Array.from(mode.children,o=>o.textContent),['More','Less']);
   assert.equal(mode.value,type.damageTaken.mode);assert.equal(Number(percent.value),type.damageTaken.percent);
   mode.onchange();percent.onchange();await f.panel._queue;

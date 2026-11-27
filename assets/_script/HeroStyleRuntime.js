@@ -115,7 +115,6 @@ Runtime.prototype.tryAutoCast=function(target,basicDamage,critical){
       if(basicDamage===undefined)return false;
       if(critical)basicDamage*=h.getCriticalDamage?h.getCriticalDamage():h.critDam;
       var damage=require("RelicCombat").previewHeroHit(h,target,basicDamage);
-      damage=require("GameToolsOverrides").damageTaken(target,"enemy",damage);
       if(!(damage>=target.hp))return false;
     }
     return this.game.gameData.getEnemyList().indexOf(target)>=0&&this.cast();

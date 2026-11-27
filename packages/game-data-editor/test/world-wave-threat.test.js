@@ -81,18 +81,18 @@ test('stage custom stats and wave scaling contribute to health, burst and sustai
  assert.equal(base[0].health,48);
 });
 
-test('the saved fighting type damage modifier adjusts estimated durability',()=>{
+test('hero damage modifiers leave enemy durability estimates based on enemy stats',()=>{
  const config={GameTools:{
   unitTypes:{guardian:{damageTaken:{mode:'less',percent:150}},skirmisher:{damageTaken:{mode:'more',percent:100}}},
   unitTypeAssignments:{'enemy:19:default':'guardian','enemy:20:default':'skirmisher'}
  },SoldierCfg:{19:{...meleeRecord,Health:100},20:{...meleeRecord,Health:100}}};
  const profiles=Threat.profiles(Catalog.rows(config,{entries:{}}));
  assert.equal(profiles.get(19).health,100);
- assert.equal(profiles.get(19).effectiveHealth,150);
- assert.equal(profiles.get(19).durable,true);
- assert.equal(profiles.get(20).effectiveHealth,50);
+ assert.equal(profiles.get(19).effectiveHealth,100);
+ assert.equal(profiles.get(19).durable,false);
+ assert.equal(profiles.get(20).effectiveHealth,100);
  assert.equal(profiles.get(20).durable,false);
- assert.ok(profiles.get(19).weight>profiles.get(20).weight);
+ assert.equal(profiles.get(19).weight,profiles.get(20).weight);
 });
 
 test('regen and damage over time use scaled stats and current attack rate',()=>{

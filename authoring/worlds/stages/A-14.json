@@ -5849,8 +5849,8 @@
   "graphs": [
     {
       "id": "s14-g1-hall",
-      "name": "East - Main Hall",
-      "nameFromSpawns": false,
+      "name": "Spawns 1–3 · Route 1",
+      "nameFromSpawns": true,
       "spawnIds": [
         1,
         2,
@@ -5933,8 +5933,8 @@
     },
     {
       "id": "s14-g2-hall",
-      "name": "West - Main Hall",
-      "nameFromSpawns": false,
+      "name": "Spawns 4–6 · Route 1",
+      "nameFromSpawns": true,
       "spawnIds": [
         4,
         5,
@@ -6017,8 +6017,8 @@
     },
     {
       "id": "s14-g3-hall",
-      "name": "South - Main Hall",
-      "nameFromSpawns": false,
+      "name": "Spawns 7–9 · Route 1",
+      "nameFromSpawns": true,
       "spawnIds": [
         7,
         8,
@@ -6077,8 +6077,8 @@
     },
     {
       "id": "s14-g4-hall",
-      "name": "Northeast - Main Hall",
-      "nameFromSpawns": false,
+      "name": "Spawns 10–12 · Route 1",
+      "nameFromSpawns": true,
       "spawnIds": [
         10,
         11,
@@ -6125,8 +6125,8 @@
     },
     {
       "id": "s14-g2-b8",
-      "name": "West - Barracks 2 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 4–6 · Route 2",
+      "nameFromSpawns": true,
       "weight": 2,
       "spread": 28,
       "spawnIds": [
@@ -6211,8 +6211,8 @@
     },
     {
       "id": "s14-g4-b3",
-      "name": "Northeast - Tower 2 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 10–12 · Route 2",
+      "nameFromSpawns": true,
       "weight": 2,
       "spread": 28,
       "spawnIds": [
@@ -6297,8 +6297,8 @@
     },
     {
       "id": "s14-g2-b12",
-      "name": "West - House 4 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 4–6 · Route 3",
+      "nameFromSpawns": true,
       "weight": 2,
       "spread": 28,
       "spawnIds": [
@@ -6381,8 +6381,8 @@
     },
     {
       "id": "s14-g4-b10",
-      "name": "Northeast - House 2 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 10–12 · Route 3",
+      "nameFromSpawns": true,
       "weight": 2,
       "spread": 28,
       "spawnIds": [
@@ -6443,8 +6443,8 @@
     },
     {
       "id": "s14-g1-b13",
-      "name": "East - House 5 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 1–3 · Route 2",
+      "nameFromSpawns": true,
       "weight": 2,
       "spread": 28,
       "spawnIds": [
@@ -6541,8 +6541,8 @@
     },
     {
       "id": "s14-g1-b7",
-      "name": "East - Barracks 1 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 1–3 · Route 3",
+      "nameFromSpawns": true,
       "spawnIds": [
         1,
         2,
@@ -6649,8 +6649,8 @@
     },
     {
       "id": "s14-g4-b11",
-      "name": "Northeast - House 3 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 10–12 · Route 4",
+      "nameFromSpawns": true,
       "weight": 2,
       "spread": 28,
       "spawnIds": [
@@ -6723,8 +6723,8 @@
     },
     {
       "id": "s14-g2-b15",
-      "name": "West - Mill 1 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 4–6 · Route 4",
+      "nameFromSpawns": true,
       "spawnIds": [
         4,
         5,
@@ -6833,8 +6833,8 @@
     },
     {
       "id": "s14-g1-b6",
-      "name": "East - Tower 5 detour",
-      "nameFromSpawns": false,
+      "name": "Spawns 1–3 · Route 4",
+      "nameFromSpawns": true,
       "spawnIds": [
         1,
         2,

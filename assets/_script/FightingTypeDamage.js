@@ -1,6 +1,6 @@
 "use strict";
 
-// Optional damage taken settings and counter rules for fighting types.
+// Hero damage taken settings and shared fighting-type counter rules.
 function valid(value) {
   return !!value && typeof value === "object" && !Array.isArray(value) &&
     (value.mode === "more" || value.mode === "less") &&

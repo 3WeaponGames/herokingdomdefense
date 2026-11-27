@@ -3,7 +3,6 @@
 const Attack=require('../../../assets/_script/UnitAttackRules');
 const Flight=require('../../../assets/_script/FlightTargeting');
 const Skills=require('../../../assets/_script/EnemySkills');
-const Defense=require('../../../assets/_script/FightingTypeDamage');
 const Records=require('../lib/unit-records');
 const Stats=require('./wave-stats');
 const {DEFAULT_DEFEAT_SECONDS}=require('./wave-pressure');
@@ -22,7 +21,7 @@ const BASE_WAVE={HealthCoefficient:1,AttackCoefficient:1};
 const DAMAGE_EFFECTS=Object.keys(Attack.damageEffects);
 const number=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0?value:null;
 
-function recordTraits(record,id,typeDefinition){
+function recordTraits(record,id){
  const custom=Attack.settings(record),effective=Attack.runtimeCfg(record);
  const type=Number(effective.AttackType);
  const delivery=type===1?'melee':type===2?'ranged':type===3?'support':null;
@@ -45,8 +44,7 @@ function recordTraits(record,id,typeDefinition){
  const skills=new Set(Skills.begin(record.EnemySkills||{}).map(skill=>skill.id));
  const innate=Skills.innate(record);
  if(innate&&Skills.originalEnabled(record))skills.add(innate);
- const damageTakenMultiplier=Defense.multiplier(typeDefinition?.damageTaken);
- return {flight:Flight.isFlying({cfg:record}),attack,skills:[...skills],damageTakenMultiplier,
+ return {flight:Flight.isFlying({cfg:record}),attack,skills:[...skills],
   healthRegenPercent:number(record.HealthRegenPercent)||0};
 }
 
@@ -85,10 +83,9 @@ function profile(unit,wave=BASE_WAVE,defeatSeconds=DEFAULT_DEFEAT_SECONDS){
  const range=number(unit?.attackRange===undefined?attack.range:unit.attackRange);
  const attackRate=number(unit?.attackRate),speed=number(unit?.speed);
  const {health,damage,baseHealth,baseDamage}=Stats.resolve({health:unit?.health,damage:unit?.damage===undefined?attack.damage:unit.damage},wave);
- const defense=number(unit?.damageTakenMultiplier)||1;
  const healthRegenPercent=number(unit?.healthRegenPercent)||0;
  const recoveryTime=number(defeatSeconds)??DEFAULT_DEFEAT_SECONDS;
- const effective=health===null?null:health*(1+healthRegenPercent*recoveryTime)/defense;
+ const effective=health===null?null:health*(1+healthRegenPercent*recoveryTime);
  const effectiveHealth=number(effective);
  // Hits refresh the same effect on a target. Estimate uptime from hit rate
  // and duration, up to one active application of each effect.
@@ -102,7 +99,7 @@ function profile(unit,wave=BASE_WAVE,defeatSeconds=DEFAULT_DEFEAT_SECONDS){
  const sustainedDamage=number(sustained);
  // The entire wave's multipliers affect pressure. Intrinsic stats identify its
  // heavy hitters and durable units even when every enemy receives a late boost.
- const heavy=(baseDamage??0)>=12||(baseDamage??0)*(attackRate??0)>=10,durable=(baseHealth??0)/defense>=120;
+ const heavy=(baseDamage??0)>=12||(baseDamage??0)*(attackRate??0)>=10,durable=(baseHealth??0)>=120;
  const additional=additionalTargets(attack),area=additional>0;
  let phase=roleSettings?.phase??1;
  if(backline)phase=Math.max(2,phase);

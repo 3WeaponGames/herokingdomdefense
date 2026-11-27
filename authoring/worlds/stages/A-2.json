@@ -6267,7 +6267,7 @@
     },
     {
       "id": "path-1",
-      "name": "Spawns 4-6 Route 3",
+      "name": "Spawn 4 · Route 1",
       "spawnIds": [
         4
       ],
@@ -6358,7 +6358,8 @@
         22,
         23
       ],
-      "editorOrder": 5
+      "editorOrder": 5,
+      "nameFromSpawns": true
     }
   ],
   "hero": {
