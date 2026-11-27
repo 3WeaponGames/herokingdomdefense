@@ -114,10 +114,6 @@
         46
       ],
       [
-        4,
-        47
-      ],
-      [
         2,
         48
       ],
@@ -1532,6 +1528,28 @@
     "EnvironmentBiome": "ice",
     "EnvironmentBiomeOverride": true,
     "EnvironmentMapId": "map-concept-15-twinwater-saddle",
+    "SpawnGroups": [
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        4,
+        5,
+        6
+      ],
+      [
+        7,
+        8,
+        9
+      ],
+      [
+        10,
+        11,
+        12
+      ]
+    ],
     "StageLayoutId": "A-12",
     "EnemyProfiles": {
       "1000036000": {
@@ -4911,8 +4929,8 @@
         "x": -79.896,
         "y": 525.515
       },
-      "x": 290.72052181376114,
-      "y": -475.1921910152845,
+      "x": 376.8538916598682,
+      "y": -422.83661326569,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -6986,206 +7004,6 @@
       "renderAfter": "layer-3"
     },
     {
-      "id": 47,
-      "name": "House 9",
-      "kind": 4,
-      "origin": {
-        "x": -79.896,
-        "y": 525.515
-      },
-      "x": 402.65908338658045,
-      "y": -407.1422321961631,
-      "scale": 1,
-      "angle": 0,
-      "unlock": 1,
-      "enabled": true,
-      "template": {
-        "prefab": "Map01",
-        "node": 1143,
-        "roots": [
-          1143,
-          328
-        ],
-        "revision": "0eb0047c26ff772dab1722c60e55ef2cb4da012b33abeccb227989b8e86029b2"
-      },
-      "sprites": [
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            5.9846746392924075,
-            439.6343253607076
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            5.9846746392924075,
-            439.6343253607076
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "de5efb11-6931-4bdf-8bf8-428b171ce96b",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            -87.6763253607076,
-            490.2153253607076
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            5.9846746392924075,
-            439.6343253607076
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            5.9846746392924075,
-            439.6343253607076
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            5.9846746392924075,
-            439.6343253607076
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            5.9846746392924075,
-            439.6343253607076
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        }
-      ],
-      "purchaseSide": "default",
-      "purchaseOffset": {
-        "x": -182.58698982282385,
-        "y": 147.36074831624143
-      },
-      "purchaseOverride": true
-    },
-    {
       "id": 48,
       "name": "Tower 7",
       "kind": 2,
@@ -7799,32 +7617,38 @@
       "nodes": [
         {
           "id": "p1",
-          "x": -650,
-          "y": 121,
+          "x": -652.7654917160489,
+          "y": 67.07291153704597,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -500,
-          "y": -69,
+          "x": -397.6768065061898,
+          "y": -135.37180118517418,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -340,
-          "y": -99,
+          "x": -167.1567677469422,
+          "y": -16.035248518532256,
+          "goal": false
+        },
+        {
+          "id": "node-1",
+          "x": -222.7952739867725,
+          "y": 51.608447516217254,
           "goal": false
         },
         {
           "id": "p4",
-          "x": -220,
-          "y": -39,
+          "x": -139.80074023458118,
+          "y": 172.5601162777427,
           "goal": false
         },
         {
           "id": "p5",
-          "x": -170,
-          "y": 271,
+          "x": -125.7521325432172,
+          "y": 258.5552872777798,
           "goal": true
         }
       ],
@@ -7844,6 +7668,12 @@
         {
           "id": "e3",
           "from": "p3",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "p4",
           "weight": 1
         },
@@ -7872,20 +7702,26 @@
       "nodes": [
         {
           "id": "p1",
-          "x": 670,
-          "y": 111,
+          "x": 651.2325971203785,
+          "y": 167.30220863886473,
           "goal": false
         },
         {
           "id": "p2",
-          "x": 500,
-          "y": 281,
+          "x": 484.98607769630274,
+          "y": 308.52552422344496,
+          "goal": false
+        },
+        {
+          "id": "node-1",
+          "x": 338.9718728980894,
+          "y": 383.56090260113587,
           "goal": false
         },
         {
           "id": "p3",
-          "x": 130,
-          "y": 361,
+          "x": 89.96287385680729,
+          "y": 350.9907184642018,
           "goal": true
         }
       ],
@@ -7899,6 +7735,12 @@
         {
           "id": "e2",
           "from": "p2",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "p3",
           "weight": 1
         }
@@ -7933,306 +7775,14 @@
         },
         {
           "id": "p3",
-          "x": -40,
-          "y": 601,
+          "x": -30.320778993828768,
+          "y": 650.7788508888806,
           "goal": false
         },
         {
           "id": "p4",
-          "x": -40,
-          "y": 451,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        }
-      ],
-      "editorOrder": 5
-    },
-    {
-      "id": "s12-g4-hall",
-      "name": "Spawns 10–12 · Route 1",
-      "nameFromSpawns": true,
-      "spawnIds": [
-        10,
-        11,
-        12
-      ],
-      "requiresAnyBuilding": [],
-      "weight": 5,
-      "spread": 28,
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": -640,
-          "y": -1039,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": -170,
-          "y": -489,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": -170,
-          "y": -359,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": -300,
-          "y": -179,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -120,
-          "y": 151,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": 30,
-          "y": 231,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        }
-      ],
-      "editorOrder": 9
-    },
-    {
-      "id": "s12-g3-b24",
-      "name": "Spawns 7–9 · Route 2",
-      "nameFromSpawns": true,
-      "spawnIds": [
-        7,
-        8,
-        9
-      ],
-      "requiresAnyBuilding": [ 24 ],
-      "weight": 2,
-      "spread": 28,
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 580,
-          "y": 1141,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 360,
-          "y": 881,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 260,
-          "y": 871,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": 0,
-          "y": 651,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -40,
-          "y": 451,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        }
-      ],
-      "editorOrder": 6
-    },
-    {
-      "id": "s12-g2-b25",
-      "name": "Spawns 4–6 · Route 2",
-      "nameFromSpawns": true,
-      "spawnIds": [
-        4,
-        5,
-        6
-      ],
-      "requiresAnyBuilding": [ 25 ],
-      "weight": 2,
-      "spread": 28,
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 670,
-          "y": 111,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 500,
-          "y": 281,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 380,
-          "y": 281,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": 340,
-          "y": 321,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": 130,
-          "y": 361,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        }
-      ],
-      "editorOrder": 3
-    },
-    {
-      "id": "s12-g2-b40",
-      "name": "Spawns 4–6 · Route 3",
-      "nameFromSpawns": true,
-      "spawnIds": [
-        4,
-        5,
-        6
-      ],
-      "requiresAnyBuilding": [ 40 ],
-      "weight": 2,
-      "spread": 28,
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 670,
-          "y": 111,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 510,
-          "y": 331,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 510,
-          "y": 341,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": 130,
-          "y": 361,
+          "x": -34.46901656790215,
+          "y": 435.7897955617309,
           "goal": true
         }
       ],
@@ -8259,49 +7809,59 @@
       "editorOrder": 4
     },
     {
-      "id": "s12-g3-b29",
-      "name": "Spawns 7–9 · Route 3",
+      "id": "s12-g4-hall",
+      "name": "Spawns 10–12 · Route 1",
       "nameFromSpawns": true,
-      "weight": 2,
+      "spawnIds": [
+        10,
+        11,
+        12
+      ],
+      "requiresAnyBuilding": [],
+      "weight": 5,
       "spread": 28,
-      "spawnIds": [ 7, 8, 9 ],
-      "requiresAnyBuilding": [ 29 ],
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": 580,
-          "y": 1141,
+          "x": -332.62209192173555,
+          "y": -731.6220919217357,
           "goal": false
         },
         {
           "id": "p2",
-          "x": 360,
-          "y": 881,
+          "x": -142.97776632278993,
+          "y": -509.26667525790754,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -10,
-          "y": 621,
+          "x": -127.77775987935925,
+          "y": -401.2222401206407,
           "goal": false
         },
         {
           "id": "p4",
-          "x": 0,
-          "y": 541,
+          "x": -391.20003866058397,
+          "y": -158.73332474209246,
           "goal": false
         },
         {
           "id": "p5",
-          "x": 20,
-          "y": 521,
+          "x": -170.66668814476887,
+          "y": -12.822291668086024,
+          "goal": false
+        },
+        {
+          "id": "node-1",
+          "x": -206.90018142981987,
+          "y": 71.86852091876351,
           "goal": false
         },
         {
           "id": "p6",
-          "x": -40,
-          "y": 451,
+          "x": -113.55561641017849,
+          "y": 269.8444609109895,
           "goal": true
         }
       ],
@@ -8333,135 +7893,60 @@
         {
           "id": "e5",
           "from": "p5",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "p6",
-          "weight": 1
-        }
-      ],
-      "editorOrder": 7
-    },
-    {
-      "id": "s12-g3-b36",
-      "name": "Spawns 7–9 · Route 4",
-      "nameFromSpawns": true,
-      "weight": 2,
-      "spread": 28,
-      "spawnIds": [
-        7,
-        8,
-        9
-      ],
-      "requiresAnyBuilding": [ 36 ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 580,
-          "y": 1141,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 360,
-          "y": 881,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 60,
-          "y": 731,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": 0,
-          "y": 671,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -40,
-          "y": 451,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
           "weight": 1
         }
       ],
       "editorOrder": 8
     },
     {
-      "id": "s12-g4-b38",
-      "name": "Spawns 10–12 · Route 2",
+      "id": "s12-g3-b24",
+      "name": "Spawns 7–9 · Route 2",
       "nameFromSpawns": true,
+      "spawnIds": [
+        7,
+        8,
+        9
+      ],
+      "requiresAnyBuilding": [],
       "weight": 2,
       "spread": 28,
-      "spawnIds": [
-        10,
-        11,
-        12
-      ],
-      "requiresAnyBuilding": [
-        38
-      ],
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": -640,
-          "y": -1039,
+          "x": 580,
+          "y": 1141,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -170,
-          "y": -489,
+          "x": 270.12151922840997,
+          "y": 788.356027512361,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -180,
-          "y": -299,
+          "x": 344.34749733949224,
+          "y": 692.6257843148444,
           "goal": false
         },
         {
           "id": "p4",
-          "x": -300,
-          "y": -189,
+          "x": 389.9343319628984,
+          "y": 460.1810715926242,
           "goal": false
         },
         {
           "id": "p5",
-          "x": -180,
-          "y": 91,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": 30,
-          "y": 231,
+          "x": 87.21261893825053,
+          "y": 312.72541419755373,
           "goal": true
         }
       ],
@@ -8489,18 +7974,12 @@
           "from": "p4",
           "to": "p5",
           "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
         }
       ],
-      "editorOrder": 10
+      "editorOrder": 5
     },
     {
-      "id": "s12-g1-b27",
+      "id": "path-1",
       "name": "Spawns 1–3 · Route 2",
       "nameFromSpawns": true,
       "spawnIds": [
@@ -8509,40 +7988,61 @@
         3
       ],
       "requiresAnyBuilding": [
-        27
+        42,
+        33,
+        37,
+        34
       ],
-      "weight": 2,
+      "weight": 5,
       "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": -650,
-          "y": 121,
+          "x": -652.7654917160489,
+          "y": 67.07291153704597,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -510,
-          "y": -149,
+          "x": -397.6768065061898,
+          "y": -135.37180118517418,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -500,
-          "y": -149,
+          "x": -10.76174375009569,
+          "y": -457.6947962856268,
+          "goal": false
+        },
+        {
+          "id": "node-1",
+          "x": 105.00869631061778,
+          "y": -356.26977506755844,
           "goal": false
         },
         {
           "id": "p4",
-          "x": -240,
-          "y": -59,
+          "x": 259.3193610053711,
+          "y": -391.7131303028795,
+          "goal": false
+        },
+        {
+          "id": "node-2",
+          "x": 407.75208297958676,
+          "y": -230.6625424054869,
+          "goal": false
+        },
+        {
+          "id": "node-3",
+          "x": 267.49628891384015,
+          "y": -15.873762611317073,
           "goal": false
         },
         {
           "id": "p5",
-          "x": -170,
-          "y": 271,
+          "x": 79.4381389406454,
+          "y": 247.29484555000684,
           "goal": true
         }
       ],
@@ -8562,12 +8062,30 @@
         {
           "id": "e3",
           "from": "p3",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "p4",
           "weight": 1
         },
         {
           "id": "e4",
           "from": "p4",
+          "to": "node-2",
+          "weight": 1
+        },
+        {
+          "id": "edge-2",
+          "from": "node-2",
+          "to": "node-3",
+          "weight": 1
+        },
+        {
+          "id": "edge-3",
+          "from": "node-3",
           "to": "p5",
           "weight": 1
         }
@@ -8575,79 +8093,43 @@
       "editorOrder": 1
     },
     {
-      "id": "s12-g4-b39",
-      "name": "Spawns 10–12 · Route 3",
+      "id": "path-2",
+      "name": "Spawns 4–6 · Route 2",
       "nameFromSpawns": true,
-      "weight": 2,
-      "spread": 28,
       "spawnIds": [
-        10,
-        11,
-        12
+        4,
+        5,
+        6
       ],
       "requiresAnyBuilding": [
-        39
+        41
       ],
+      "weight": 5,
+      "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": -640,
-          "y": -1039,
+          "x": 651.2325971203785,
+          "y": 167.30220863886473,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -170,
-          "y": -489,
+          "x": 484.98607769630274,
+          "y": 308.52552422344496,
+          "goal": false
+        },
+        {
+          "id": "node-1",
+          "x": 547.9156249578762,
+          "y": 576.2395721652508,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -170,
-          "y": -359,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": -300,
-          "y": -179,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -290,
-          "y": -159,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": -190,
-          "y": -89,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": -170,
-          "y": -99,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": -170,
-          "y": 61,
-          "goal": false
-        },
-        {
-          "id": "p9",
-          "x": -130,
-          "y": 121,
-          "goal": false
-        },
-        {
-          "id": "p10",
-          "x": 30,
-          "y": 231,
+          "x": 89.96287385680729,
+          "y": 350.9907184642018,
           "goal": true
         }
       ],
@@ -8661,116 +8143,72 @@
         {
           "id": "e2",
           "from": "p2",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
-        },
-        {
-          "id": "e8",
-          "from": "p8",
-          "to": "p9",
-          "weight": 1
-        },
-        {
-          "id": "e9",
-          "from": "p9",
-          "to": "p10",
           "weight": 1
         }
       ],
-      "editorOrder": 11
+      "editorOrder": 3
     },
     {
-      "id": "s12-g4-b26",
-      "name": "Spawns 10–12 · Route 4",
+      "id": "path-3",
+      "name": "Spawns 10–12 · Route 2",
       "nameFromSpawns": true,
       "spawnIds": [
         10,
         11,
         12
       ],
-      "requiresAnyBuilding": [
-        26
-      ],
-      "weight": 2,
+      "requiresAnyBuilding": [],
+      "weight": 5,
       "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": -640,
-          "y": -1039,
+          "x": -332.62209192173555,
+          "y": -731.6220919217357,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -180,
-          "y": -569,
+          "x": -142.97776632278993,
+          "y": -509.26667525790754,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -90,
-          "y": -589,
+          "x": -24.75549398499588,
+          "y": -433.31114261232767,
           "goal": false
         },
         {
           "id": "p4",
-          "x": -80,
-          "y": -599,
+          "x": 96.88905713402283,
+          "y": -354.64451890186547,
           "goal": false
         },
         {
           "id": "p5",
-          "x": -130,
-          "y": -489,
+          "x": 194.133466497567,
+          "y": -408.0224591972833,
+          "goal": false
+        },
+        {
+          "id": "node-1",
+          "x": 409.5445243315347,
+          "y": -238.88716636915223,
           "goal": false
         },
         {
           "id": "p6",
-          "x": -300,
-          "y": -189,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": -180,
-          "y": 91,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": 30,
-          "y": 231,
+          "x": -22.355577749594516,
+          "y": 207.3555455324412,
           "goal": true
         }
       ],
@@ -8802,33 +8240,26 @@
         {
           "id": "e5",
           "from": "p5",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "p6",
           "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
         }
-      ],
-      "editorOrder": 12
+      ]
     }
   ],
   "hero": {
     "x": 141.3820615938492,
     "y": 153.59083357009237
   },
-  "nextBuilding": 50,
+  "nextBuilding": 51,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "0781c7261d966da2dba3cc6f4ab5b764fafc222f3156aa9d434375d1ff36024d",
+  "sourceRevision": "fc982ccdfb96c29c521044734a7af2307c1dd32079d4073dc30a909d50572837",
   "templates": {
     "Map03": [
       {

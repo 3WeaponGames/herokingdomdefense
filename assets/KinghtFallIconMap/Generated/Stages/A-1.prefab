@@ -53302,7 +53302,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Tower 3",
+    "_name": "Tower 1",
     "_groupIndex": 1,
     "_parent": {
       "__id__": 6
@@ -54305,7 +54305,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Tower 4",
+    "_name": "Tower 2",
     "_groupIndex": 1,
     "_parent": {
       "__id__": 6
@@ -55491,7 +55491,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Barracks 7",
+    "_name": "Barracks 1",
     "_groupIndex": 1,
     "_parent": {
       "__id__": 6
@@ -57598,7 +57598,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Barracks 8",
+    "_name": "Barracks 2",
     "_groupIndex": 1,
     "_parent": {
       "__id__": 6
@@ -62401,7 +62401,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Mill 15",
+    "_name": "Mill 1",
     "_groupIndex": 1,
     "_parent": {
       "__id__": 6
@@ -69368,6 +69368,21 @@
       },
       {
         "__id__": 1909
+      },
+      {
+        "__id__": 1910
+      },
+      {
+        "__id__": 1911
+      },
+      {
+        "__id__": 1912
+      },
+      {
+        "__id__": 1913
+      },
+      {
+        "__id__": 1914
       }
     ],
     "_components": [
@@ -69420,7 +69435,7 @@
   },
   {
     "__type__": "ef20dGN+M5C6JKo/CVJ9bIM",
-    "graphs": "[{\"id\":\"legacy-route-741\",\"name\":\"Spawns 1–3 · Route 1\",\"spawnIds\":[1,3,2],\"entry\":\"legacy-route-741-0\",\"nodes\":[{\"id\":\"legacy-route-741-0\",\"goal\":false,\"x\":-686.4318362599874,\"y\":999.272094389785},{\"id\":\"node-1\",\"x\":-425.91705648176617,\"y\":845.8683036796285,\"goal\":false},{\"id\":\"node-2\",\"x\":-144.30572574969244,\"y\":892.0856242626875,\"goal\":false},{\"id\":\"legacy-route-741-2\",\"goal\":true,\"x\":87.34292575397788,\"y\":585.7481839028553}],\"edges\":[{\"id\":\"legacy-route-741-edge-0\",\"from\":\"legacy-route-741-0\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-741-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-753\",\"name\":\"Spawns 1–3 · Route 2\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-753-0\",\"nodes\":[{\"id\":\"legacy-route-753-0\",\"goal\":false,\"x\":-696.3788836614934,\"y\":958.3798590560098},{\"id\":\"legacy-route-753-1\",\"goal\":false,\"x\":-475.983791019102,\"y\":856.9761799314512},{\"id\":\"legacy-route-753-3\",\"goal\":false,\"x\":-177.63740682704295,\"y\":892.4363120188739},{\"id\":\"node-1\",\"x\":28.537249531726594,\"y\":718.7442503930978,\"goal\":false},{\"id\":\"legacy-route-753-4\",\"goal\":true,\"x\":116.21019198761783,\"y\":511.0325344103737}],\"edges\":[{\"id\":\"legacy-route-753-edge-0\",\"from\":\"legacy-route-753-0\",\"to\":\"legacy-route-753-1\",\"weight\":1},{\"id\":\"legacy-route-753-edge-1\",\"from\":\"legacy-route-753-1\",\"to\":\"legacy-route-753-3\",\"weight\":1},{\"id\":\"legacy-route-753-edge-3\",\"from\":\"legacy-route-753-3\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-753-4\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true},{\"id\":\"legacy-route-771\",\"name\":\"Spawns 4–6 · Route 1\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-771-0\",\"nodes\":[{\"id\":\"legacy-route-771-0\",\"goal\":false,\"x\":591.5409227984328,\"y\":1170.7231685799484},{\"id\":\"legacy-route-771-1\",\"goal\":false,\"x\":385.1422012435526,\"y\":932.2603970197912},{\"id\":\"node-1\",\"x\":190.1215517424734,\"y\":726.6017488882354,\"goal\":false},{\"id\":\"legacy-route-771-2\",\"goal\":true,\"x\":103.22275227424768,\"y\":514.3970228146284}],\"edges\":[{\"id\":\"legacy-route-771-edge-0\",\"from\":\"legacy-route-771-0\",\"to\":\"legacy-route-771-1\",\"weight\":1},{\"id\":\"legacy-route-771-edge-1\",\"from\":\"legacy-route-771-1\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-771-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true}]",
+    "graphs": "[{\"id\":\"legacy-route-741\",\"name\":\"Spawns 1–3 · Route 1\",\"spawnIds\":[1,3,2],\"entry\":\"legacy-route-741-0\",\"nodes\":[{\"id\":\"legacy-route-741-0\",\"goal\":false,\"x\":-686.4318362599874,\"y\":1013.6016166128486},{\"id\":\"node-1\",\"x\":-468.9056231509567,\"y\":854.4660170134666,\"goal\":false},{\"id\":\"node-2\",\"x\":-118.51258574817808,\"y\":734.4608798089887,\"goal\":false},{\"id\":\"legacy-route-741-2\",\"goal\":true,\"x\":87.34292575397788,\"y\":585.7481839028553}],\"edges\":[{\"id\":\"legacy-route-741-edge-0\",\"from\":\"legacy-route-741-0\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-741-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":0},{\"id\":\"legacy-route-753\",\"name\":\"Spawns 1–3 · Route 2\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-753-0\",\"nodes\":[{\"id\":\"legacy-route-753-0\",\"goal\":false,\"x\":-696.3788836614934,\"y\":958.3798590560098},{\"id\":\"legacy-route-753-1\",\"goal\":false,\"x\":-378.54303990227,\"y\":839.7807532637748},{\"id\":\"legacy-route-753-3\",\"goal\":false,\"x\":143.3438909695801,\"y\":981.2793498018677},{\"id\":\"node-1\",\"x\":134.5757139823967,\"y\":796.1236703976408,\"goal\":false},{\"id\":\"legacy-route-753-4\",\"goal\":true,\"x\":130.53971421068135,\"y\":602.7414766379802}],\"edges\":[{\"id\":\"legacy-route-753-edge-0\",\"from\":\"legacy-route-753-0\",\"to\":\"legacy-route-753-1\",\"weight\":1},{\"id\":\"legacy-route-753-edge-1\",\"from\":\"legacy-route-753-1\",\"to\":\"legacy-route-753-3\",\"weight\":1},{\"id\":\"legacy-route-753-edge-3\",\"from\":\"legacy-route-753-3\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-753-4\",\"weight\":1}],\"requiresAnyBuilding\":[15],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":1},{\"id\":\"legacy-route-771\",\"name\":\"Spawns 4–6 · Route 1\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-771-0\",\"nodes\":[{\"id\":\"legacy-route-771-0\",\"goal\":false,\"x\":591.5409227984328,\"y\":1170.7231685799484},{\"id\":\"legacy-route-771-1\",\"goal\":false,\"x\":390.87401013277804,\"y\":940.8581103536293},{\"id\":\"node-1\",\"x\":213.04878729937502,\"y\":760.9926022235879,\"goal\":false},{\"id\":\"legacy-route-771-2\",\"goal\":true,\"x\":143.34541449882556,\"y\":557.3855894838189}],\"edges\":[{\"id\":\"legacy-route-771-edge-0\",\"from\":\"legacy-route-771-0\",\"to\":\"legacy-route-771-1\",\"weight\":1},{\"id\":\"legacy-route-771-edge-1\",\"from\":\"legacy-route-771-1\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-771-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":3},{\"id\":\"path-1\",\"name\":\"Spawns 1–3 · Route 3\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-753-0\",\"nodes\":[{\"id\":\"legacy-route-753-0\",\"goal\":false,\"x\":-696.3788836614934,\"y\":958.3798590560098},{\"id\":\"legacy-route-753-1\",\"goal\":false,\"x\":-481.71559990832736,\"y\":831.1830399299367},{\"id\":\"legacy-route-753-3\",\"goal\":false,\"x\":-363.92119572686886,\"y\":439.6234097700664},{\"id\":\"node-1\",\"x\":-120.48978158813408,\"y\":475.14237260101777,\"goal\":false},{\"id\":\"legacy-route-753-4\",\"goal\":true,\"x\":96.14886087532888,\"y\":545.423387745726}],\"edges\":[{\"id\":\"legacy-route-753-edge-0\",\"from\":\"legacy-route-753-0\",\"to\":\"legacy-route-753-1\",\"weight\":1},{\"id\":\"legacy-route-753-edge-1\",\"from\":\"legacy-route-753-1\",\"to\":\"legacy-route-753-3\",\"weight\":1},{\"id\":\"legacy-route-753-edge-3\",\"from\":\"legacy-route-753-3\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-753-4\",\"weight\":1}],\"requiresAnyBuilding\":[11],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":2}]",
     "spawns": "[{\"id\":1,\"name\":\"Spawn 1\",\"x\":-897.909,\"y\":1027.011,\"enabled\":true,\"radius\":32},{\"id\":2,\"name\":\"Spawn 2\",\"x\":-827.7281708538826,\"y\":1047.718775028453,\"enabled\":true,\"radius\":102.2},{\"id\":3,\"name\":\"Spawn 3\",\"x\":-886.3820937381446,\"y\":1082.023816774155,\"enabled\":true,\"radius\":43.6},{\"id\":4,\"name\":\"Spawn 4\",\"x\":772.96,\"y\":1343.795,\"enabled\":true,\"radius\":150},{\"id\":5,\"name\":\"Spawn 5\",\"x\":775.3214124478366,\"y\":1289.7478500189686,\"enabled\":true,\"radius\":150},{\"id\":6,\"name\":\"Spawn 6\",\"x\":709.1861124857735,\"y\":1300.4466437950505,\"enabled\":true,\"radius\":150}]",
     "node": {
       "__id__": 1895
@@ -69457,7 +69472,7 @@
       "ctor": "Float64Array",
       "array": [
         -686.4318362599874,
-        999.272094389785,
+        1013.6016166128486,
         0,
         0,
         0,
@@ -69507,8 +69522,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -425.91705648176617,
-        845.8683036796285,
+        -468.9056231509567,
+        854.4660170134666,
         0,
         0,
         0,
@@ -69558,8 +69573,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -144.30572574969244,
-        892.0856242626875,
+        -118.51258574817808,
+        734.4608798089887,
         0,
         0,
         0,
@@ -69711,8 +69726,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -475.983791019102,
-        856.9761799314512,
+        -378.54303990227,
+        839.7807532637748,
         0,
         0,
         0,
@@ -69762,8 +69777,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -177.63740682704295,
-        892.4363120188739,
+        143.3438909695801,
+        981.2793498018677,
         0,
         0,
         0,
@@ -69813,8 +69828,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        28.537249531726594,
-        718.7442503930978,
+        134.5757139823967,
+        796.1236703976408,
         0,
         0,
         0,
@@ -69864,8 +69879,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        116.21019198761783,
-        511.0325344103737,
+        130.53971421068135,
+        602.7414766379802,
         0,
         0,
         0,
@@ -69966,8 +69981,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        385.1422012435526,
-        932.2603970197912,
+        390.87401013277804,
+        940.8581103536293,
         0,
         0,
         0,
@@ -70017,8 +70032,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        190.1215517424734,
-        726.6017488882354,
+        213.04878729937502,
+        760.9926022235879,
         0,
         0,
         0,
@@ -70068,8 +70083,263 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        103.22275227424768,
-        514.3970228146284,
+        143.34541449882556,
+        557.3855894838189,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-6-path-1-legacy-route-753-0",
+    "_parent": {
+      "__id__": 1895
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -696.3788836614934,
+        958.3798590560098,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-6-path-1-legacy-route-753-1",
+    "_parent": {
+      "__id__": 1895
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -481.71559990832736,
+        831.1830399299367,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-6-path-1-legacy-route-753-3",
+    "_parent": {
+      "__id__": 1895
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -363.92119572686886,
+        439.6234097700664,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-6-path-1-node-1",
+    "_parent": {
+      "__id__": 1895
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -120.48978158813408,
+        475.14237260101777,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-6-path-1-legacy-route-753-4",
+    "_parent": {
+      "__id__": 1895
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        96.14886087532888,
+        545.423387745726,
         0,
         0,
         0,

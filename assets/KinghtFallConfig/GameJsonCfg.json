@@ -17888,7 +17888,7 @@
         {
           "id": 1,
           "Wave": 1,
-          "HealthCoefficient": 0.9,
+          "HealthCoefficient": 0.7,
           "AttackCoefficient": 0.7,
           "StartSliver": 6,
           "CommerceSliver": 4,
@@ -17919,7 +17919,7 @@
         {
           "id": 1,
           "Wave": 2,
-          "HealthCoefficient": 0.9,
+          "HealthCoefficient": 0.7,
           "AttackCoefficient": 0.7,
           "StartSliver": 1,
           "CommerceSliver": 4,
@@ -17959,7 +17959,7 @@
         {
           "id": 1,
           "Wave": 3,
-          "HealthCoefficient": 1.2,
+          "HealthCoefficient": 1,
           "AttackCoefficient": 1,
           "StartSliver": 2,
           "CommerceSliver": 4,
@@ -18007,7 +18007,7 @@
         {
           "id": 1,
           "Wave": 4,
-          "HealthCoefficient": 1.2,
+          "HealthCoefficient": 1,
           "AttackCoefficient": 1,
           "StartSliver": 3,
           "CommerceSliver": 4,
@@ -18074,7 +18074,7 @@
         {
           "id": 1,
           "Wave": 5,
-          "HealthCoefficient": 1.4,
+          "HealthCoefficient": 1.2,
           "AttackCoefficient": 1.2,
           "StartSliver": 3,
           "CommerceSliver": 8,
@@ -32911,10 +32911,6 @@
         [
           6,
           46
-        ],
-        [
-          4,
-          47
         ],
         [
           2,
@@ -60071,7 +60067,7 @@
       "prefab": "Monster1_Slime_Purple",
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-purple",
       "AttackType": 1,
-      "Health": 35,
+      "Health": 24,
       "AttackDamage": 8.3,
       "AttackInterval": 0.58,
       "AttackRange": 215,
@@ -102944,7 +102940,7 @@
           "created": true,
           "role": "skirmisher",
           "stats": {
-            "Health": 35,
+            "Health": 24,
             "AttackDamage": 8.3,
             "AttackInterval": 0.58,
             "Speed": 92,

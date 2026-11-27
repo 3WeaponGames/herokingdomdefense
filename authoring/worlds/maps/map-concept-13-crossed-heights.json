@@ -475,6 +475,110 @@
           "edgeSmoothing": 0.6,
           "edgeStyle": "textured",
           "edgeWidthMode": "fixed"
+        },
+        {
+          "nativeSize": true,
+          "points": [
+            {
+              "x": 98.30927739838081,
+              "y": 1008.872009243003
+            },
+            {
+              "x": -16.764529187057462,
+              "y": 1094.793784826797
+            }
+          ],
+          "size": 98.79,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-6671e456a3174b548ada64c68dd28cd3",
+          "textureScale": 1,
+          "op": "paint",
+          "mode": "road",
+          "edgeAssetId": "env-2a427a7b6b4fac447b816918fd6e7929",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "edgeStyle": "textured",
+          "edgeWidthMode": "fixed"
+        },
+        {
+          "nativeSize": true,
+          "points": [
+            {
+              "x": -16.764529187057462,
+              "y": 1094.793784826797
+            },
+            {
+              "x": -280.6671256229959,
+              "y": 972.0483911356628
+            }
+          ],
+          "size": 98.79,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-6671e456a3174b548ada64c68dd28cd3",
+          "textureScale": 1,
+          "op": "paint",
+          "mode": "road",
+          "edgeAssetId": "env-2a427a7b6b4fac447b816918fd6e7929",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "edgeStyle": "textured",
+          "edgeWidthMode": "fixed"
+        },
+        {
+          "nativeSize": true,
+          "points": [
+            {
+              "x": -280.6671256229959,
+              "y": 972.0483911356628
+            },
+            {
+              "x": -388.0693451027383,
+              "y": 1018.0779137698381
+            }
+          ],
+          "size": 98.79,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-6671e456a3174b548ada64c68dd28cd3",
+          "textureScale": 1,
+          "op": "paint",
+          "mode": "road",
+          "edgeAssetId": "env-2a427a7b6b4fac447b816918fd6e7929",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "edgeStyle": "textured",
+          "edgeWidthMode": "fixed"
+        },
+        {
+          "nativeSize": true,
+          "points": [
+            {
+              "x": -388.0693451027383,
+              "y": 1018.0779137698381
+            },
+            {
+              "x": -153.31877966844422,
+              "y": 775.6557612298482
+            }
+          ],
+          "size": 98.79,
+          "shape": "round",
+          "hardness": 1,
+          "opacity": 1,
+          "assetId": "env-6671e456a3174b548ada64c68dd28cd3",
+          "textureScale": 1,
+          "op": "paint",
+          "mode": "road",
+          "edgeAssetId": "env-2a427a7b6b4fac447b816918fd6e7929",
+          "edgeScale": 1,
+          "edgeSmoothing": 0.6,
+          "edgeStyle": "textured",
+          "edgeWidthMode": "fixed"
         }
       ],
       "images": [],

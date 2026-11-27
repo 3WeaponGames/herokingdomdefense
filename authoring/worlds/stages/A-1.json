@@ -122,7 +122,7 @@
       {
         "id": 1,
         "Wave": 1,
-        "HealthCoefficient": 0.9,
+        "HealthCoefficient": 0.7,
         "AttackCoefficient": 0.7,
         "StartSliver": 6,
         "CommerceSliver": 4,
@@ -153,7 +153,7 @@
       {
         "id": 1,
         "Wave": 2,
-        "HealthCoefficient": 0.9,
+        "HealthCoefficient": 0.7,
         "AttackCoefficient": 0.7,
         "StartSliver": 1,
         "CommerceSliver": 4,
@@ -193,7 +193,7 @@
       {
         "id": 1,
         "Wave": 3,
-        "HealthCoefficient": 1.2,
+        "HealthCoefficient": 1,
         "AttackCoefficient": 1,
         "StartSliver": 2,
         "CommerceSliver": 4,
@@ -241,7 +241,7 @@
       {
         "id": 1,
         "Wave": 4,
-        "HealthCoefficient": 1.2,
+        "HealthCoefficient": 1,
         "AttackCoefficient": 1,
         "StartSliver": 3,
         "CommerceSliver": 4,
@@ -308,7 +308,7 @@
       {
         "id": 1,
         "Wave": 5,
-        "HealthCoefficient": 1.4,
+        "HealthCoefficient": 1.2,
         "AttackCoefficient": 1.2,
         "StartSliver": 3,
         "CommerceSliver": 8,
@@ -863,6 +863,18 @@
     ],
     "EnvironmentMapId": "map-c51330f0e65d",
     "EnvironmentBiome": "forest",
+    "SpawnGroups": [
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        4,
+        5,
+        6
+      ]
+    ],
     "StageLayoutId": "A-1",
     "StageThumbnail": "Thumbnails/biome-forest",
     "StageFaceUnit": 91037,
@@ -1135,7 +1147,7 @@
     },
     {
       "id": 3,
-      "name": "Tower 3",
+      "name": "Tower 1",
       "kind": 2,
       "origin": {
         "x": -65.079,
@@ -1334,7 +1346,7 @@
     },
     {
       "id": 4,
-      "name": "Tower 4",
+      "name": "Tower 2",
       "kind": 2,
       "origin": {
         "x": -447.249,
@@ -1535,7 +1547,7 @@
     },
     {
       "id": 7,
-      "name": "Barracks 7",
+      "name": "Barracks 1",
       "kind": 3,
       "origin": {
         "x": 294.098,
@@ -1907,7 +1919,7 @@
     },
     {
       "id": 8,
-      "name": "Barracks 8",
+      "name": "Barracks 2",
       "kind": 3,
       "origin": {
         "x": -278.24,
@@ -2870,7 +2882,7 @@
     },
     {
       "id": 15,
-      "name": "Mill 15",
+      "name": "Mill 1",
       "kind": 5,
       "origin": {
         "x": -60.323,
@@ -4070,18 +4082,18 @@
           "id": "legacy-route-741-0",
           "goal": false,
           "x": -686.4318362599874,
-          "y": 999.272094389785
+          "y": 1013.6016166128486
         },
         {
           "id": "node-1",
-          "x": -425.91705648176617,
-          "y": 845.8683036796285,
+          "x": -468.9056231509567,
+          "y": 854.4660170134666,
           "goal": false
         },
         {
           "id": "node-2",
-          "x": -144.30572574969244,
-          "y": 892.0856242626875,
+          "x": -118.51258574817808,
+          "y": 734.4608798089887,
           "goal": false
         },
         {
@@ -4113,7 +4125,8 @@
       ],
       "requiresAnyBuilding": [],
       "legacy": true,
-      "nameFromSpawns": true
+      "nameFromSpawns": true,
+      "editorOrder": 0
     },
     {
       "id": "legacy-route-753",
@@ -4134,26 +4147,26 @@
         {
           "id": "legacy-route-753-1",
           "goal": false,
-          "x": -475.983791019102,
-          "y": 856.9761799314512
+          "x": -378.54303990227,
+          "y": 839.7807532637748
         },
         {
           "id": "legacy-route-753-3",
           "goal": false,
-          "x": -177.63740682704295,
-          "y": 892.4363120188739
+          "x": 143.3438909695801,
+          "y": 981.2793498018677
         },
         {
           "id": "node-1",
-          "x": 28.537249531726594,
-          "y": 718.7442503930978,
+          "x": 134.5757139823967,
+          "y": 796.1236703976408,
           "goal": false
         },
         {
           "id": "legacy-route-753-4",
           "goal": true,
-          "x": 116.21019198761783,
-          "y": 511.0325344103737
+          "x": 130.53971421068135,
+          "y": 602.7414766379802
         }
       ],
       "edges": [
@@ -4182,9 +4195,12 @@
           "weight": 1
         }
       ],
-      "requiresAnyBuilding": [],
+      "requiresAnyBuilding": [
+        15
+      ],
       "legacy": true,
-      "nameFromSpawns": true
+      "nameFromSpawns": true,
+      "editorOrder": 1
     },
     {
       "id": "legacy-route-771",
@@ -4205,20 +4221,20 @@
         {
           "id": "legacy-route-771-1",
           "goal": false,
-          "x": 385.1422012435526,
-          "y": 932.2603970197912
+          "x": 390.87401013277804,
+          "y": 940.8581103536293
         },
         {
           "id": "node-1",
-          "x": 190.1215517424734,
-          "y": 726.6017488882354,
+          "x": 213.04878729937502,
+          "y": 760.9926022235879,
           "goal": false
         },
         {
           "id": "legacy-route-771-2",
           "goal": true,
-          "x": 103.22275227424768,
-          "y": 514.3970228146284
+          "x": 143.34541449882556,
+          "y": 557.3855894838189
         }
       ],
       "edges": [
@@ -4243,7 +4259,82 @@
       ],
       "requiresAnyBuilding": [],
       "legacy": true,
-      "nameFromSpawns": true
+      "nameFromSpawns": true,
+      "editorOrder": 3
+    },
+    {
+      "id": "path-1",
+      "name": "Spawns 1–3 · Route 3",
+      "spawnIds": [
+        1,
+        2,
+        3
+      ],
+      "entry": "legacy-route-753-0",
+      "nodes": [
+        {
+          "id": "legacy-route-753-0",
+          "goal": false,
+          "x": -696.3788836614934,
+          "y": 958.3798590560098
+        },
+        {
+          "id": "legacy-route-753-1",
+          "goal": false,
+          "x": -481.71559990832736,
+          "y": 831.1830399299367
+        },
+        {
+          "id": "legacy-route-753-3",
+          "goal": false,
+          "x": -363.92119572686886,
+          "y": 439.6234097700664
+        },
+        {
+          "id": "node-1",
+          "x": -120.48978158813408,
+          "y": 475.14237260101777,
+          "goal": false
+        },
+        {
+          "id": "legacy-route-753-4",
+          "goal": true,
+          "x": 96.14886087532888,
+          "y": 545.423387745726
+        }
+      ],
+      "edges": [
+        {
+          "id": "legacy-route-753-edge-0",
+          "from": "legacy-route-753-0",
+          "to": "legacy-route-753-1",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-753-edge-1",
+          "from": "legacy-route-753-1",
+          "to": "legacy-route-753-3",
+          "weight": 1
+        },
+        {
+          "id": "legacy-route-753-edge-3",
+          "from": "legacy-route-753-3",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
+          "to": "legacy-route-753-4",
+          "weight": 1
+        }
+      ],
+      "requiresAnyBuilding": [
+        11
+      ],
+      "legacy": true,
+      "nameFromSpawns": true,
+      "editorOrder": 2
     }
   ],
   "hero": {
@@ -4253,7 +4344,7 @@
   "nextBuilding": 23,
   "nextSpawn": 10,
   "nextSpecial": 7,
-  "sourceRevision": "feb2d8b74690039d00ae2ded83d202d95519e011250aef581ca2467c117336b3",
+  "sourceRevision": "4cf3da39d2753dbe508fb9e755e2439ed85c4ad1264ab28984a98a005c7b1c4f",
   "templates": {
     "Map01": [
       {

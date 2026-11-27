@@ -1217,6 +1217,23 @@
     "EnvironmentBiome": "desert",
     "EnvironmentBiomeOverride": true,
     "EnvironmentMapId": "map-concept-08-longwall-frontier",
+    "SpawnGroups": [
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        4,
+        5,
+        6
+      ],
+      [
+        7,
+        8,
+        9
+      ]
+    ],
     "StageLayoutId": "A-3",
     "EnemyProfiles": {
       "1000009000": {
@@ -6169,8 +6186,8 @@
         {
           "id": "legacy-route-896-0",
           "goal": false,
-          "x": -593.3775685084762,
-          "y": 515.0950271953478
+          "x": -637.402517399216,
+          "y": 465.2000851191761
         },
         {
           "id": "legacy-route-896-1",
@@ -6186,8 +6203,20 @@
         },
         {
           "id": "node-2",
-          "x": 193.65544050113465,
-          "y": 405.7121029731867,
+          "x": 331.6002803587859,
+          "y": 396.90711319503873,
+          "goal": false
+        },
+        {
+          "id": "node-3",
+          "x": 493.1029389697699,
+          "y": 596.6956447872893,
+          "goal": false
+        },
+        {
+          "id": "node-4",
+          "x": 416.87704096788383,
+          "y": 743.6804546685953,
           "goal": false
         },
         {
@@ -6219,6 +6248,18 @@
         {
           "id": "edge-2",
           "from": "node-2",
+          "to": "node-3",
+          "weight": 1
+        },
+        {
+          "id": "edge-3",
+          "from": "node-3",
+          "to": "node-4",
+          "weight": 1
+        },
+        {
+          "id": "edge-4",
+          "from": "node-4",
           "to": "legacy-route-896-2",
           "weight": 1
         }
@@ -6241,38 +6282,50 @@
         {
           "id": "legacy-route-908-0",
           "goal": false,
-          "x": -581.2062989603548,
-          "y": 551.8022867237783
+          "x": -651.6462171855384,
+          "y": 545.9322935383462
+        },
+        {
+          "id": "node-2",
+          "x": -592.2789914763846,
+          "y": 712.3284963529952,
+          "goal": false
         },
         {
           "id": "legacy-route-908-1",
           "goal": false,
-          "x": -627.7071132275937,
-          "y": 963.2531010429525
+          "x": -645.3170927838896,
+          "y": 901.6181725959168
         },
         {
           "id": "node-1",
-          "x": -472.1140355330572,
-          "y": 1103.5065509673211,
+          "x": -463.3090457549092,
+          "y": 1050.6766122984334,
           "goal": false
         },
         {
           "id": "legacy-route-908-2",
           "goal": false,
-          "x": -32.928199346546194,
-          "y": 1139.5830692007605
+          "x": -29.99320275383021,
+          "y": 1165.9980385352044
         },
         {
           "id": "legacy-route-908-3",
           "goal": true,
-          "x": 46.64418431841497,
-          "y": 827.475489728968
+          "x": 64.25416387471088,
+          "y": 845.0854692852639
         }
       ],
       "edges": [
         {
           "id": "legacy-route-908-edge-0",
           "from": "legacy-route-908-0",
+          "to": "node-2",
+          "weight": 1
+        },
+        {
+          "id": "edge-2",
+          "from": "node-2",
           "to": "legacy-route-908-1",
           "weight": 1
         },
@@ -6394,7 +6447,9 @@
           "weight": 1
         }
       ],
-      "requiresAnyBuilding": [ 11 ],
+      "requiresAnyBuilding": [
+        11
+      ],
       "legacy": true,
       "nameFromSpawns": true,
       "editorOrder": 4
@@ -6407,7 +6462,7 @@
   "nextBuilding": 28,
   "nextSpawn": 14,
   "nextSpecial": 7,
-  "sourceRevision": "3a9476f0357965df590f66f334baff7a786f5374461a4fd7fbc74dcace59656d",
+  "sourceRevision": "f25811b257aa305b6f1fcab36c18661ef22c8a70b806d3ede48f14ae8c032f3d",
   "templates": {
     "Map03": [
       {

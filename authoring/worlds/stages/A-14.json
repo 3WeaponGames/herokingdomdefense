@@ -1459,6 +1459,28 @@
     "EnvironmentBiome": "fire",
     "EnvironmentBiomeOverride": true,
     "EnvironmentMapId": "map-concept-13-crossed-heights",
+    "SpawnGroups": [
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        4,
+        5,
+        6
+      ],
+      [
+        7,
+        8,
+        9
+      ],
+      [
+        10,
+        11,
+        12
+      ]
+    ],
     "StageLayoutId": "A-14",
     "EnemyProfiles": {
       "1000042000": {
@@ -5863,32 +5885,32 @@
       "nodes": [
         {
           "id": "p1",
-          "x": 700,
-          "y": -149.5,
+          "x": 550.4661047507141,
+          "y": -169.0818196159779,
           "goal": false
         },
         {
           "id": "p2",
-          "x": 560,
-          "y": -79.5,
+          "x": 431.8280897863263,
+          "y": 274.7529185072369,
           "goal": false
         },
         {
           "id": "p3",
-          "x": 310,
-          "y": 570.5,
+          "x": 342.04297755341844,
+          "y": 508.1942103127975,
           "goal": false
         },
         {
           "id": "p4",
-          "x": 40,
-          "y": 820.5,
+          "x": 100.5256242675681,
+          "y": 824.0603308392687,
           "goal": false
         },
         {
           "id": "p5",
-          "x": -200,
-          "y": 850.5,
+          "x": 6.499188677585323,
+          "y": 871.8619850356122,
           "goal": false
         },
         {
@@ -5948,38 +5970,38 @@
       "nodes": [
         {
           "id": "p1",
-          "x": -660,
+          "x": -563.8710673397447,
           "y": -169.5,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -520,
-          "y": -29.5,
+          "x": -480.83636076804413,
+          "y": 237.52481294515343,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -360,
-          "y": 540.5,
+          "x": -436.5471130442773,
+          "y": 376.7247813936392,
           "goal": false
         },
         {
           "id": "p4",
-          "x": -170,
-          "y": 820.5,
+          "x": -319.53389524928593,
+          "y": 581.9578337689962,
           "goal": false
         },
         {
           "id": "p5",
-          "x": -250,
-          "y": 900.5,
+          "x": -144.97024024157298,
+          "y": 784.7892477237668,
           "goal": false
         },
         {
           "id": "p6",
-          "x": -300,
-          "y": 1030.5,
+          "x": -424.611579374405,
+          "y": 1035.8404962589032,
           "goal": true
         }
       ],
@@ -6015,7 +6037,7 @@
           "weight": 1
         }
       ],
-      "editorOrder": 4
+      "editorOrder": 2
     },
     {
       "id": "s14-g3-hall",
@@ -6033,26 +6055,20 @@
       "nodes": [
         {
           "id": "p1",
-          "x": -10,
-          "y": -1229.5,
+          "x": -2.7910840880929957,
+          "y": -47.23779044725143,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -50,
-          "y": 770.5,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": -250,
-          "y": 900.5,
+          "x": -4.343532557922316,
+          "y": 828.171327295256,
           "goal": false
         },
         {
           "id": "p4",
-          "x": -290,
-          "y": 1040.5,
+          "x": -381.3129348841554,
+          "y": 1035.6940560587286,
           "goal": true
         }
       ],
@@ -6066,17 +6082,11 @@
         {
           "id": "e2",
           "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
           "to": "p4",
           "weight": 1
         }
       ],
-      "editorOrder": 8
+      "editorOrder": 3
     },
     {
       "id": "s14-g4-hall",
@@ -6094,20 +6104,26 @@
       "nodes": [
         {
           "id": "p1",
-          "x": 610,
-          "y": 1270.5,
+          "x": 453.8068219086816,
+          "y": 1174.3811211745733,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -170,
-          "y": 820.5,
+          "x": 101.53583268183044,
+          "y": 993.5139818857681,
+          "goal": false
+        },
+        {
+          "id": "node-1",
+          "x": -24.422768633682956,
+          "y": 1092.1463669255522,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -360,
-          "y": 1020.5,
+          "x": -304.73164467537964,
+          "y": 1025.3059439412714,
           "goal": true
         }
       ],
@@ -6121,388 +6137,67 @@
         {
           "id": "e2",
           "from": "p2",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "p3",
-          "weight": 1
-        }
-      ],
-      "editorOrder": 9
-    },
-    {
-      "id": "s14-g2-b8",
-      "name": "Spawns 4–6 · Route 2",
-      "nameFromSpawns": true,
-      "weight": 2,
-      "spread": 28,
-      "spawnIds": [
-        4,
-        5,
-        6
-      ],
-      "requiresAnyBuilding": [
-        8
-      ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": -660,
-          "y": -169.5,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": -520,
-          "y": -29.5,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": -360,
-          "y": 540.5,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": -270,
-          "y": 720.5,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -240,
-          "y": 750.5,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": -300,
-          "y": 1030.5,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        }
-      ],
-      "editorOrder": 5
-    },
-    {
-      "id": "s14-g4-b3",
-      "name": "Spawns 10–12 · Route 2",
-      "nameFromSpawns": true,
-      "weight": 2,
-      "spread": 28,
-      "spawnIds": [
-        10,
-        11,
-        12
-      ],
-      "requiresAnyBuilding": [
-        3
-      ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 610,
-          "y": 1270.5,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 280,
-          "y": 1090.5,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 230,
-          "y": 1080.5,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": 220,
-          "y": 1070.5,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -170,
-          "y": 820.5,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": -360,
-          "y": 1020.5,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        }
-      ],
-      "editorOrder": 10
-    },
-    {
-      "id": "s14-g2-b12",
-      "name": "Spawns 4–6 · Route 3",
-      "nameFromSpawns": true,
-      "weight": 2,
-      "spread": 28,
-      "spawnIds": [
-        4,
-        5,
-        6
-      ],
-      "requiresAnyBuilding": [ 12 ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": -660,
-          "y": -169.5,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": -520,
-          "y": -29.5,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": -380,
-          "y": 470.5,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": -330,
-          "y": 520.5,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -220,
-          "y": 680.5,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": -300,
-          "y": 1030.5,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
           "weight": 1
         }
       ],
       "editorOrder": 6
     },
     {
-      "id": "s14-g4-b10",
-      "name": "Spawns 10–12 · Route 3",
-      "nameFromSpawns": true,
-      "weight": 2,
-      "spread": 28,
-      "spawnIds": [
-        10,
-        11,
-        12
-      ],
-      "requiresAnyBuilding": [
-        10
-      ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 610,
-          "y": 1270.5,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": -30,
-          "y": 920.5,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": -230,
-          "y": 1030.5,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": -360,
-          "y": 1020.5,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        }
-      ],
-      "editorOrder": 11
-    },
-    {
-      "id": "s14-g1-b13",
+      "id": "path-1",
       "name": "Spawns 1–3 · Route 2",
       "nameFromSpawns": true,
-      "weight": 2,
-      "spread": 28,
       "spawnIds": [
         1,
         2,
         3
       ],
       "requiresAnyBuilding": [
-        13
+        10,
+        11
       ],
+      "weight": 5,
+      "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": 700,
-          "y": -149.5,
+          "x": 550.4661047507141,
+          "y": -169.0818196159779,
           "goal": false
         },
         {
           "id": "p2",
-          "x": 560,
-          "y": -79.5,
+          "x": 431.8280897863263,
+          "y": 274.7529185072369,
           "goal": false
         },
         {
           "id": "p3",
-          "x": 340,
-          "y": 500.5,
+          "x": 342.04297755341844,
+          "y": 508.1942103127975,
           "goal": false
         },
         {
           "id": "p4",
-          "x": 210,
-          "y": 620.5,
+          "x": 100.5256242675681,
+          "y": 824.0603308392687,
           "goal": false
         },
         {
           "id": "p5",
-          "x": 120,
-          "y": 780.5,
+          "x": -23.763623456198733,
+          "y": 1137.1066325611314,
           "goal": false
         },
         {
           "id": "p6",
-          "x": -170,
-          "y": 820.5,
-          "goal": false
-        },
-        {
-          "id": "p7",
           "x": -350,
           "y": 1010.5,
           "goal": true
@@ -6537,77 +6232,55 @@
           "id": "e5",
           "from": "p5",
           "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
           "weight": 1
         }
       ],
       "editorOrder": 1
     },
     {
-      "id": "s14-g1-b7",
-      "name": "Spawns 1–3 · Route 3",
+      "id": "path-2",
+      "name": "Spawns 7–9 · Route 2",
       "nameFromSpawns": true,
       "spawnIds": [
-        1,
-        2,
-        3
+        7,
+        8,
+        9
       ],
-      "requiresAnyBuilding": [ 7 ],
-      "weight": 2,
+      "requiresAnyBuilding": [
+        6
+      ],
+      "weight": 5,
       "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": 700,
-          "y": -149.5,
+          "x": -2.7910840880929957,
+          "y": -47.23779044725143,
+          "goal": false
+        },
+        {
+          "id": "node-1",
+          "x": -3.6095239277471727,
+          "y": 346.98848205266495,
+          "goal": false
+        },
+        {
+          "id": "node-2",
+          "x": 190.7673077680469,
+          "y": 325.3472915636303,
           "goal": false
         },
         {
           "id": "p2",
-          "x": 560,
-          "y": -79.5,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 360,
-          "y": 570.5,
+          "x": 70.14859853178339,
+          "y": 799.3356636476279,
           "goal": false
         },
         {
           "id": "p4",
-          "x": 370,
-          "y": 580.5,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": 360,
-          "y": 570.5,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": 120,
-          "y": 780.5,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": -170,
-          "y": 820.5,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": -350,
-          "y": 1010.5,
+          "x": -381.3129348841554,
+          "y": 1035.6940560587286,
           "goal": true
         }
       ],
@@ -6615,185 +6288,141 @@
         {
           "id": "e1",
           "from": "p1",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
+          "to": "node-2",
+          "weight": 1
+        },
+        {
+          "id": "edge-2",
+          "from": "node-2",
           "to": "p2",
           "weight": 1
         },
         {
           "id": "e2",
           "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
           "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
           "weight": 1
         }
       ],
-      "editorOrder": 2
+      "editorOrder": 4
     },
     {
-      "id": "s14-g4-b11",
-      "name": "Spawns 10–12 · Route 4",
+      "id": "path-3",
+      "name": "Spawns 7–9 · Route 3",
       "nameFromSpawns": true,
-      "weight": 2,
+      "spawnIds": [
+        7,
+        8,
+        9
+      ],
+      "requiresAnyBuilding": [
+        4
+      ],
+      "weight": 5,
       "spread": 28,
+      "entry": "p1",
+      "nodes": [
+        {
+          "id": "p1",
+          "x": -2.7910840880929957,
+          "y": -47.23779044725143,
+          "goal": false
+        },
+        {
+          "id": "node-1",
+          "x": -3.6095239277471727,
+          "y": 346.98848205266495,
+          "goal": false
+        },
+        {
+          "id": "node-2",
+          "x": -258.58845074082296,
+          "y": 322.9443195929946,
+          "goal": false
+        },
+        {
+          "id": "p2",
+          "x": -242.2377576508534,
+          "y": 686.3959810277515,
+          "goal": false
+        },
+        {
+          "id": "p4",
+          "x": -381.3129348841554,
+          "y": 1035.6940560587286,
+          "goal": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "e1",
+          "from": "p1",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
+          "to": "node-2",
+          "weight": 1
+        },
+        {
+          "id": "edge-2",
+          "from": "node-2",
+          "to": "p2",
+          "weight": 1
+        },
+        {
+          "id": "e2",
+          "from": "p2",
+          "to": "p4",
+          "weight": 1
+        }
+      ],
+      "editorOrder": 5
+    },
+    {
+      "id": "path-4",
+      "name": "Spawns 10–12 · Route 2",
+      "nameFromSpawns": true,
       "spawnIds": [
         10,
         11,
         12
       ],
-      "requiresAnyBuilding": [
-        11
-      ],
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 610,
-          "y": 1270.5,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 100,
-          "y": 990.5,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": -70,
-          "y": 1100.5,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": -130,
-          "y": 1040.5,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -360,
-          "y": 1020.5,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        }
-      ],
-      "editorOrder": 12
-    },
-    {
-      "id": "s14-g2-b15",
-      "name": "Spawns 4–6 · Route 4",
-      "nameFromSpawns": true,
-      "spawnIds": [
-        4,
-        5,
-        6
-      ],
-      "requiresAnyBuilding": [
-        15
-      ],
-      "weight": 2,
+      "requiresAnyBuilding": [],
+      "weight": 5,
       "spread": 28,
       "entry": "p1",
       "nodes": [
         {
           "id": "p1",
-          "x": -660,
-          "y": -169.5,
+          "x": 453.8068219086816,
+          "y": 1174.3811211745733,
+          "goal": false
+        },
+        {
+          "id": "node-1",
+          "x": 148.71738360744257,
+          "y": 1006.3463010085071,
           "goal": false
         },
         {
           "id": "p2",
-          "x": -520,
-          "y": -29.5,
+          "x": -160.38811211745733,
+          "y": 755.6197567928369,
           "goal": false
         },
         {
           "id": "p3",
-          "x": -450,
-          "y": 400.5,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": -470,
-          "y": 510.5,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": -490,
-          "y": 530.5,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": -420,
-          "y": 520.5,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": -230,
-          "y": 700.5,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": -300,
-          "y": 1030.5,
+          "x": -369.61188788254265,
+          "y": 996.4702802936434,
           "goal": true
         }
       ],
@@ -6801,6 +6430,12 @@
         {
           "id": "e1",
           "from": "p1",
+          "to": "node-1",
+          "weight": 1
+        },
+        {
+          "id": "edge-1",
+          "from": "node-1",
           "to": "p2",
           "weight": 1
         },
@@ -6809,174 +6444,8 @@
           "from": "p2",
           "to": "p3",
           "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
         }
-      ],
-      "editorOrder": 7
-    },
-    {
-      "id": "s14-g1-b6",
-      "name": "Spawns 1–3 · Route 4",
-      "nameFromSpawns": true,
-      "spawnIds": [
-        1,
-        2,
-        3
-      ],
-      "requiresAnyBuilding": [
-        6
-      ],
-      "weight": 2,
-      "spread": 28,
-      "entry": "p1",
-      "nodes": [
-        {
-          "id": "p1",
-          "x": 700,
-          "y": -149.5,
-          "goal": false
-        },
-        {
-          "id": "p2",
-          "x": 560,
-          "y": -79.5,
-          "goal": false
-        },
-        {
-          "id": "p3",
-          "x": 400,
-          "y": 330.5,
-          "goal": false
-        },
-        {
-          "id": "p4",
-          "x": 350,
-          "y": 380.5,
-          "goal": false
-        },
-        {
-          "id": "p5",
-          "x": 290,
-          "y": 370.5,
-          "goal": false
-        },
-        {
-          "id": "p6",
-          "x": 270,
-          "y": 350.5,
-          "goal": false
-        },
-        {
-          "id": "p7",
-          "x": 330,
-          "y": 460.5,
-          "goal": false
-        },
-        {
-          "id": "p8",
-          "x": 120,
-          "y": 780.5,
-          "goal": false
-        },
-        {
-          "id": "p9",
-          "x": -170,
-          "y": 820.5,
-          "goal": false
-        },
-        {
-          "id": "p10",
-          "x": -350,
-          "y": 1010.5,
-          "goal": true
-        }
-      ],
-      "edges": [
-        {
-          "id": "e1",
-          "from": "p1",
-          "to": "p2",
-          "weight": 1
-        },
-        {
-          "id": "e2",
-          "from": "p2",
-          "to": "p3",
-          "weight": 1
-        },
-        {
-          "id": "e3",
-          "from": "p3",
-          "to": "p4",
-          "weight": 1
-        },
-        {
-          "id": "e4",
-          "from": "p4",
-          "to": "p5",
-          "weight": 1
-        },
-        {
-          "id": "e5",
-          "from": "p5",
-          "to": "p6",
-          "weight": 1
-        },
-        {
-          "id": "e6",
-          "from": "p6",
-          "to": "p7",
-          "weight": 1
-        },
-        {
-          "id": "e7",
-          "from": "p7",
-          "to": "p8",
-          "weight": 1
-        },
-        {
-          "id": "e8",
-          "from": "p8",
-          "to": "p9",
-          "weight": 1
-        },
-        {
-          "id": "e9",
-          "from": "p9",
-          "to": "p10",
-          "weight": 1
-        }
-      ],
-      "editorOrder": 3
+      ]
     }
   ],
   "hero": {
@@ -6986,7 +6455,7 @@
   "nextBuilding": 21,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "8d708cba09bdd06d69ca85c2a82a9d83aabffd171d5796c71f5674cc639e273f",
+  "sourceRevision": "040025f4391145be1342775b83e5e137dca120a603bfe420dd80fc711402beef",
   "templates": {
     "Map02": [
       {
