@@ -99,8 +99,8 @@ test('saved units expose exactly six fighting profiles per parent without Campai
  ]);
  assert(rows.filter(unit=>unit.kingdom==='plant').every(unit=>Catalog.matches(unit,'nature kingdom deep forest')));
  assert.deepEqual(namesIn('skeleton'),[
-  'Reaper Death','Skeleton Bat','Skeleton Bird','Skeleton Haunt','Skeleton King',
-  'Skeleton Rhino','Skeleton Soldier','Skeleton Warlord','Skeleton Warrior'
+  'Reaper Death','Skeleton Bird','Skeleton Haunt','Skeleton King','Skeleton Rhino',
+  'Skeleton Soldier','Skeleton Warlord','Skeleton Warrior','Skull Bat'
  ]);
  assert.deepEqual(namesIn('orc'),[
   'Orc Crimson Guard','Orc Shaman','Orc Siege Chief','Orc Smasher Berserker','Orc Smasher Red',
@@ -111,9 +111,10 @@ test('saved units expose exactly six fighting profiles per parent without Campai
   'Scarbrow Vampire','Vampire','Wing Demon Vampire'
  ]);
  assert.deepEqual(namesIn('demon'),[
-  'Cinderhorn Demon','Demon Wolf','Devil Bee','Fire Raptor','Hellforge Colossus','Hellgate Behemoth',
+  'Cinderhorn Demon','Demon Wolf','Devil Bee','Hellforge Colossus','Hellgate Behemoth',
   'Horn Rabbit Demon','Pyre Executioner','Raptor Swamp','Toad Giant','Venom Spider','Wing Demon Eye'
  ]);
+ assert(!rows.some(unit=>unit.name==='Skeleton Bat'||unit.name==='Fire Raptor'));
  const kingdomLabels=new Map(Kingdoms.options(rows).map(({value,label})=>[value,label]));
  assert.equal(kingdomLabels.get('demon'),'Demon Kingdom · Fire');
  assert.equal(kingdomLabels.get('vampire'),'Vampire Kingdom · Ice');

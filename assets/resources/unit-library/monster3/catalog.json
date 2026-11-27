@@ -1027,25 +1027,6 @@
       "variantOf": "monster3/Rhino_Armor"
     },
     {
-      "id": "monster3/WingDemon_SkeletonBat",
-      "name": "Skeleton Bat",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/WingDemon/WingDemon_Vampire.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/SkeletonVariants/WingDemon_SkeletonBat.json",
-      "uuid": "39ad72fa-da82-5bd8-ab19-6af84ea9590e",
-      "resource": "unit-library/monster3/Units/SkeletonVariants/WingDemon_SkeletonBat",
-      "animations": [
-        "idle",
-        "die",
-        "move",
-        "attack",
-        "hit"
-      ],
-      "bones": 18,
-      "slots": 9,
-      "variantOf": "monster3/WingDemon_Vampire"
-    },
-    {
       "id": "monster3/Winter_SkeletonKing",
       "name": "Skeleton King",
       "pack": "monster3",
@@ -1139,25 +1120,6 @@
       "bones": 35,
       "slots": 15,
       "variantOf": "monster3/OrcSmasher_Red"
-    },
-    {
-      "id": "monster3/Raptor_Fire",
-      "name": "Fire Raptor",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Raptor/Raptor_Mechanic.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/RaptorVariants/Raptor_Fire.json",
-      "uuid": "356dacd6-bf2e-55cf-aca1-201f55ecb710",
-      "resource": "unit-library/monster3/Units/RaptorVariants/Raptor_Fire",
-      "animations": [
-        "die",
-        "idle",
-        "attack",
-        "move",
-        "hit"
-      ],
-      "bones": 20,
-      "slots": 9,
-      "variantOf": "monster3/Raptor_Mechanic"
     },
     {
       "id": "monster3/OrcSword_ScarbrowVampire",

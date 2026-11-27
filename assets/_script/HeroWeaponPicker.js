@@ -2,7 +2,6 @@
 // Browsing is visual-only. Only the explicit Equip action changes the loadout.
 var Weapons = require("HeroWeapons");
 var WIDTH = 684, HEIGHT = 1120;
-var UNAVAILABLE_STYLE = "vanguard";
 function node(parent, name, x, y, width, height) {
   var value = new cc.Node(name); value.setParent(parent); value.setPosition(x || 0, y || 0);
   if (width) value.setContentSize(width, height); return value;
@@ -214,7 +213,6 @@ function open(owner) {
     if (cc.warn) cc.warn("Fighting style preview: " + error.message);
   });
   var chosen = user.getHeroWeapon().id, body = node(content, "Choices");
-  if (chosen === UNAVAILABLE_STYLE) chosen = Weapons.styles[0].id;
   var grid = node(body, "Style grid"), details = node(body, "Style details"), cardViews = [];
   function render(rebuildCards) {
     if (cancelled || !live(root)) return;
@@ -232,15 +230,6 @@ function open(owner) {
         return;
       }
       var tile = node(grid, "Style " + style.id, (index % 3 - 1) * 204, 38 - Math.floor(index / 3) * 216, 190, 190);
-      if (style.id === UNAVAILABLE_STYLE) {
-        tile.addComponent(cc.BlockInputEvents);
-        box(tile, "Unavailable card outline", 0, -1, 174, 174, 24, "#454545");
-        box(tile, "Unavailable card face", 0, 1, 166, 166, 21, "#787878");
-        label(tile, "Style name", style.name, 0, 20, 158, 40, 29);
-        var status = label(tile, "Availability", "", 0, -20, 158, 34, 24, "#f0f0f0", 2);
-        require("LanguageMgr").LanguageMgr.getInstance().bindLabel(status.getComponent(cc.Label), "common.comingSoon");
-        return;
-      }
       var frame = node(tile, "Selection frame"); frame.active = selected;
       box(frame, "Selection outline", 0, -1, 187, 187, 28, "#100e15");
       box(frame, "Selection yellow", 0, 1, 181, 181, 26, "#ffdf62");

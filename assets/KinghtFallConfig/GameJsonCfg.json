@@ -25588,7 +25588,7 @@
           "CommerceSliver": 8,
           "RefreshSoldierKind": [
             "4#100523,1",
-            "5#101740,7",
+            "5#100350,7",
             "6#100510,6",
             "10#1000021000,6",
             "2#100520,5"
@@ -26954,7 +26954,7 @@
           "CommerceSliver": 8,
           "RefreshSoldierKind": [
             "4#100523,1",
-            "5#101740,7",
+            "5#100350,7",
             "6#100510,6",
             "10#1000024000,6",
             "2#100520,5"
@@ -28483,7 +28483,7 @@
           "CommerceSliver": 8,
           "RefreshSoldierKind": [
             "4#100523,1",
-            "5#101740,7",
+            "5#100350,7",
             "6#100510,6",
             "10#91166,6",
             "2#100520,5"
@@ -34520,7 +34520,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 9,
               "startSeconds": 0.625,
@@ -34553,7 +34553,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 10,
               "startSeconds": 0.625,
@@ -34595,7 +34595,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 13,
               "startSeconds": 0.625,
@@ -34646,7 +34646,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 3,
               "count": 10,
               "startSeconds": 0.625,
@@ -34671,7 +34671,7 @@
               "id": "entry-3"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 6,
               "count": 5,
               "startSeconds": 17.25,
@@ -34715,7 +34715,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 9,
               "startSeconds": 0.625,
@@ -34732,7 +34732,7 @@
               "id": "entry-4"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 7,
               "startSeconds": 16.125,
@@ -34794,7 +34794,7 @@
               "id": "entry-2"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 7,
               "count": 7,
               "startSeconds": 2.25,
@@ -34803,7 +34803,7 @@
               "unitGroupId": "unit-group-1"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 3,
               "count": 6,
               "startSeconds": 13.125,
@@ -34836,7 +34836,7 @@
               "id": "entry-4"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 5,
               "count": 6,
               "startSeconds": 28.375,
@@ -34891,7 +34891,7 @@
               "id": "legacy-3-0"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 2,
               "count": 9,
               "startSeconds": 2.375,
@@ -34900,7 +34900,7 @@
               "unitGroupId": "unit-group-1"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 6,
               "startSeconds": 15.625,
@@ -34925,7 +34925,7 @@
               "id": "entry-4"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 7,
               "startSeconds": 31.875,
@@ -34980,7 +34980,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 10,
               "startSeconds": 0.625,
@@ -35006,7 +35006,7 @@
               "id": "entry-6"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 9,
               "count": 7,
               "startSeconds": 20.75,
@@ -35031,7 +35031,7 @@
               "id": "entry-8"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 7,
               "startSeconds": 37.375,
@@ -35080,7 +35080,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 11,
               "startSeconds": 0.625,
@@ -35105,7 +35105,7 @@
               "id": "entry-7"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 9,
               "startSeconds": 21.125,
@@ -35122,7 +35122,7 @@
               "id": "legacy-2-0"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 10,
               "startSeconds": 39.375,
@@ -35178,7 +35178,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 3,
               "count": 12,
               "startSeconds": 0.625,
@@ -35203,7 +35203,7 @@
               "id": "entry-16"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 6,
               "count": 8,
               "startSeconds": 16.852,
@@ -35220,7 +35220,7 @@
               "id": "entry-18"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 9,
               "startSeconds": 29.722,
@@ -35274,7 +35274,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 11,
               "startSeconds": 0.625,
@@ -35299,7 +35299,7 @@
               "id": "entry-4"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 7,
               "count": 8,
               "startSeconds": 13.707,
@@ -35316,7 +35316,7 @@
               "id": "entry-6"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 3,
               "count": 7,
               "startSeconds": 27.241,
@@ -35341,7 +35341,7 @@
               "id": "entry-8"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 5,
               "startSeconds": 38.19,
@@ -35388,7 +35388,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 11,
               "startSeconds": 0.625,
@@ -35405,7 +35405,7 @@
               "id": "legacy-7-0"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 3,
               "count": 9,
               "startSeconds": 12.742,
@@ -35430,7 +35430,7 @@
               "id": "entry-1"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 7,
               "startSeconds": 25.887,
@@ -35455,7 +35455,7 @@
               "id": "entry-6"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 7,
               "startSeconds": 37.742,
@@ -35502,7 +35502,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 3,
               "count": 13,
               "startSeconds": 0.625,
@@ -35527,7 +35527,7 @@
               "id": "entry-4"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 5,
               "count": 8,
               "startSeconds": 13.235,
@@ -35544,7 +35544,7 @@
               "id": "entry-5"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 11,
               "startSeconds": 24.559,
@@ -35569,7 +35569,7 @@
               "id": "entry-8"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 3,
               "count": 6,
               "startSeconds": 37.574,
@@ -35625,7 +35625,7 @@
               "id": "entry-7"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 5,
               "count": 10,
               "startSeconds": 2,
@@ -35634,7 +35634,7 @@
               "unitGroupId": "unit-group-1"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 10,
               "startSeconds": 10.125,
@@ -35667,7 +35667,7 @@
               "id": "entry-11"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 10,
               "startSeconds": 22.688,
@@ -35692,7 +35692,7 @@
               "id": "entry-5"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 6,
               "count": 10,
               "startSeconds": 32.563,
@@ -35732,7 +35732,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 16,
               "startSeconds": 0.625,
@@ -35758,7 +35758,7 @@
               "id": "entry-16"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 3,
               "count": 14,
               "startSeconds": 14.15,
@@ -35784,7 +35784,7 @@
               "editorManualTiming": true
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 12,
               "startSeconds": 26.8,
@@ -36021,7 +36021,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 10,
               "startSeconds": 0.625,
@@ -36054,7 +36054,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 11,
               "startSeconds": 0.625,
@@ -36096,7 +36096,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 14,
               "startSeconds": 0.625,
@@ -36147,7 +36147,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 10,
               "count": 9,
               "startSeconds": 0.625,
@@ -36164,7 +36164,7 @@
               "id": "entry-3"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 6,
               "startSeconds": 15.5,
@@ -36224,7 +36224,7 @@
               "id": "entry-3"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 8,
               "startSeconds": 2.25,
@@ -36233,7 +36233,7 @@
               "unitGroupId": "unit-group-1"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 12,
               "count": 7,
               "startSeconds": 14.75,
@@ -36295,7 +36295,7 @@
               "id": "entry-2"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 5,
               "count": 7,
               "startSeconds": 2.375,
@@ -36304,7 +36304,7 @@
               "unitGroupId": "unit-group-1"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 7,
               "startSeconds": 13,
@@ -36337,7 +36337,7 @@
               "id": "entry-6"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 12,
               "count": 7,
               "startSeconds": 29.25,
@@ -36392,7 +36392,7 @@
               "id": "entry-3"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 8,
               "startSeconds": 2,
@@ -36401,7 +36401,7 @@
               "unitGroupId": "unit-group-1"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 5,
               "count": 7,
               "startSeconds": 14.25,
@@ -36434,7 +36434,7 @@
               "id": "entry-7"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 7,
               "startSeconds": 33,
@@ -36481,7 +36481,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 11,
               "count": 11,
               "startSeconds": 0.625,
@@ -36506,7 +36506,7 @@
               "id": "entry-6"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 7,
               "count": 8,
               "startSeconds": 20.5,
@@ -36523,7 +36523,7 @@
               "id": "entry-7"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 8,
               "startSeconds": 37,
@@ -36579,7 +36579,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 3,
               "count": 9,
               "startSeconds": 0.625,
@@ -36605,7 +36605,7 @@
               "id": "entry-6"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 12,
               "count": 9,
               "startSeconds": 20.375,
@@ -36622,7 +36622,7 @@
               "id": "entry-8"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 8,
               "startSeconds": 36.5,
@@ -36679,7 +36679,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 11,
               "startSeconds": 0.625,
@@ -36704,7 +36704,7 @@
               "id": "entry-5"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 9,
               "startSeconds": 15.093,
@@ -36721,7 +36721,7 @@
               "id": "entry-7"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 12,
               "count": 10,
               "startSeconds": 29.907,
@@ -36783,7 +36783,7 @@
               "id": "entry-3"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 7,
               "count": 9,
               "startSeconds": 2.25,
@@ -36792,7 +36792,7 @@
               "unitGroupId": "unit-group-1"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 6,
               "count": 8,
               "startSeconds": 11.638,
@@ -36825,7 +36825,7 @@
               "id": "entry-5"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 2,
               "count": 8,
               "startSeconds": 26.207,
@@ -36850,7 +36850,7 @@
               "id": "entry-7"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 12,
               "count": 8,
               "startSeconds": 37.069,
@@ -36889,7 +36889,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 12,
               "count": 14,
               "startSeconds": 0.625,
@@ -36914,7 +36914,7 @@
               "id": "legacy-7-1"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 8,
               "count": 10,
               "startSeconds": 16.774,
@@ -36931,7 +36931,7 @@
               "id": "entry-6"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 5,
               "count": 11,
               "startSeconds": 29.435,
@@ -36986,7 +36986,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 12,
               "startSeconds": 0.625,
@@ -37011,7 +37011,7 @@
               "id": "entry-6"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 12,
               "count": 10,
               "startSeconds": 12.426,
@@ -37028,7 +37028,7 @@
               "id": "entry-8"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 9,
               "count": 8,
               "startSeconds": 24.632,
@@ -37053,7 +37053,7 @@
               "id": "entry-11"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 4,
               "count": 6,
               "startSeconds": 35.441,
@@ -37101,7 +37101,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 5,
               "count": 13,
               "startSeconds": 0.625,
@@ -37126,7 +37126,7 @@
               "id": "entry-6"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 1,
               "count": 11,
               "startSeconds": 11.375,
@@ -37151,7 +37151,7 @@
               "id": "entry-8"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 12,
               "count": 7,
               "startSeconds": 22.5,
@@ -37176,7 +37176,7 @@
               "id": "entry-10"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 7,
               "count": 7,
               "startSeconds": 32.438,
@@ -37216,7 +37216,7 @@
           ],
           "SpawnTimeline": [
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 9,
               "count": 16,
               "startSeconds": 0.625,
@@ -37250,7 +37250,7 @@
               "id": "entry-5"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 6,
               "count": 14,
               "startSeconds": 14.35,
@@ -37267,7 +37267,7 @@
               "id": "entry-7"
             },
             {
-              "unitId": 91178,
+              "unitId": 100724,
               "spawnId": 2,
               "count": 13,
               "startSeconds": 25.15,
@@ -41945,7 +41945,7 @@
           "RefreshSoldierKind": [
             "1#101725,5",
             "2#100512,3",
-            "13#101740,5"
+            "13#100350,5"
           ],
           "WaveReward": [
             [
@@ -41977,7 +41977,7 @@
             {
               "id": "legacy-13-0",
               "spawnId": 13,
-              "unitId": 101740,
+              "unitId": 100350,
               "count": 5,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -41996,7 +41996,7 @@
             "2#91166,4",
             "13#101725,5",
             "14#101737,3",
-            "7#101740,5"
+            "7#100350,5"
           ],
           "WaveReward": [
             [
@@ -42028,7 +42028,7 @@
             {
               "id": "legacy-7-0",
               "spawnId": 7,
-              "unitId": 101740,
+              "unitId": 100350,
               "count": 5,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -42064,7 +42064,7 @@
             "13#91166,3",
             "14#101725,7",
             "15#91166,4",
-            "7#101740,5",
+            "7#100350,5",
             "8#91167,3"
           ],
           "WaveReward": [
@@ -42097,7 +42097,7 @@
             {
               "id": "legacy-7-0",
               "spawnId": 7,
-              "unitId": 101740,
+              "unitId": 100350,
               "count": 5,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -42147,7 +42147,7 @@
             "1#100523,1",
             "2#101725,7",
             "3#100516,3",
-            "13#101744,1"
+            "13#100354,1"
           ],
           "WaveReward": [
             [
@@ -42187,7 +42187,7 @@
             {
               "id": "legacy-13-0",
               "spawnId": 13,
-              "unitId": 101744,
+              "unitId": 100354,
               "count": 1,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -42621,7 +42621,7 @@
             "3#100512,2",
             "4#91169,1",
             "5#91167,4",
-            "7#101742,1",
+            "7#100352,1",
             "8#100512,5",
             "13#100523,1",
             "6#100518,3",
@@ -42690,7 +42690,7 @@
             {
               "id": "legacy-7-0",
               "spawnId": 7,
-              "unitId": 101742,
+              "unitId": 100352,
               "count": 1,
               "startSeconds": 0.5,
               "intervalSeconds": 0.5
@@ -52400,33 +52400,6 @@
         "pattern": "single"
       }
     },
-    "91168": {
-      "ID": 91168,
-      "Name": "[[loc:data.monster-roster.91168.name]]",
-      "prefab": "Monster3_WingDemon_SkeletonBat",
-      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
-      "AttackType": 1,
-      "Health": 48,
-      "AttackDamage": 5,
-      "AttackInterval": 1.12,
-      "AttackRange": 50,
-      "SearchRange": 220,
-      "Speed": 150,
-      "BuildingCross": 0,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91168.description]]"
-      },
-      "MonsterSource": "monster3/WingDemon_SkeletonBat",
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
-    },
     "91169": {
       "ID": 91169,
       "Name": "[[loc:data.monster-roster.91169.name]]",
@@ -52748,46 +52721,6 @@
         "onHit": {
           "lifeSteal": {
             "percent": 0.16
-          }
-        }
-      }
-    },
-    "91178": {
-      "ID": 91178,
-      "Name": "[[loc:data.monster-roster.91178.name]]",
-      "prefab": "Monster3_Raptor_Fire",
-      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-fire",
-      "AttackType": 1,
-      "Health": 44,
-      "AttackDamage": 6.2,
-      "AttackInterval": 0.82,
-      "AttackRange": 48,
-      "SearchRange": 163,
-      "Speed": 115,
-      "BuildingCross": 1,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91178.description]]"
-      },
-      "MonsterSource": "monster3/Raptor_Fire",
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001,
-      "EnemyTargeting": {
-        "mode": "nearest"
-      },
-      "UnitAttack": {
-        "delivery": "melee",
-        "pattern": "single",
-        "onHit": {
-          "burn": {
-            "percent": 0.09,
-            "duration": 2
           }
         }
       }
@@ -79921,136 +79854,6 @@
         "pattern": "single"
       }
     },
-    "101740": {
-      "ID": 101740,
-      "Name": "[[loc:data.monster-roster.91168.name]]",
-      "prefab": "Monster3_WingDemon_SkeletonBat",
-      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
-      "AttackType": 1,
-      "Health": 53.33333333,
-      "AttackDamage": 5.26315789,
-      "AttackInterval": 1.12,
-      "AttackRange": 50,
-      "SearchRange": 220,
-      "Speed": 130.43478261,
-      "BuildingCross": 0,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91168.description]]"
-      },
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
-    },
-    "101741": {
-      "ID": 101741,
-      "Name": "[[loc:data.monster-roster.91168.name]]",
-      "prefab": "Monster3_WingDemon_SkeletonBat",
-      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
-      "AttackType": 1,
-      "Health": 64,
-      "AttackDamage": 4.73684211,
-      "AttackInterval": 1.008,
-      "AttackRange": 50,
-      "SearchRange": 220,
-      "Speed": 117.39130435,
-      "BuildingCross": 0,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91168.description]]"
-      },
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
-    },
-    "101742": {
-      "ID": 101742,
-      "Name": "[[loc:data.monster-roster.91168.name]]",
-      "prefab": "Monster3_WingDemon_SkeletonBat",
-      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
-      "AttackType": 1,
-      "Health": 48,
-      "AttackDamage": 4.73684211,
-      "AttackInterval": 1.232,
-      "AttackRange": 50,
-      "SearchRange": 220,
-      "Speed": 143.47826087,
-      "BuildingCross": 0,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91168.description]]"
-      },
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
-    },
-    "101743": {
-      "ID": 101743,
-      "Name": "[[loc:data.monster-roster.91168.name]]",
-      "prefab": "Monster3_WingDemon_SkeletonBat",
-      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
-      "AttackType": 1,
-      "Health": 58.66666666,
-      "AttackDamage": 6.31578947,
-      "AttackInterval": 1.008,
-      "AttackRange": 50,
-      "SearchRange": 220,
-      "Speed": 123.91304348,
-      "BuildingCross": 0,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91168.description]]"
-      },
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
-    },
-    "101744": {
-      "ID": 101744,
-      "Name": "[[loc:data.monster-roster.91168.name]]",
-      "prefab": "Monster3_WingDemon_SkeletonBat",
-      "loadIcon": "@icon/icons/monster-roster/monster3/wingdemon-skeletonbat",
-      "AttackType": 1,
-      "Health": 48,
-      "AttackDamage": 6.57894737,
-      "AttackInterval": 0.952,
-      "AttackRange": 50,
-      "SearchRange": 220,
-      "Speed": 110.86956522,
-      "BuildingCross": 0,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91168.description]]"
-      },
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001
-    },
     "101745": {
       "ID": 101745,
       "Name": "[[loc:data.monster-roster.91169.name]]",
@@ -81632,201 +81435,6 @@
         "onHit": {
           "lifeSteal": {
             "percent": 0.16
-          }
-        }
-      }
-    },
-    "101790": {
-      "ID": 101790,
-      "Name": "[[loc:data.monster-roster.91178.name]]",
-      "prefab": "Monster3_Raptor_Fire",
-      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-fire",
-      "AttackType": 1,
-      "Health": 48.88888889,
-      "AttackDamage": 6.52631579,
-      "AttackInterval": 0.82,
-      "AttackRange": 48,
-      "SearchRange": 163,
-      "Speed": 100,
-      "BuildingCross": 1,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91178.description]]"
-      },
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001,
-      "EnemyTargeting": {
-        "mode": "nearest"
-      },
-      "UnitAttack": {
-        "delivery": "melee",
-        "pattern": "single",
-        "onHit": {
-          "burn": {
-            "percent": 0.09,
-            "duration": 2
-          }
-        }
-      }
-    },
-    "101791": {
-      "ID": 101791,
-      "Name": "[[loc:data.monster-roster.91178.name]]",
-      "prefab": "Monster3_Raptor_Fire",
-      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-fire",
-      "AttackType": 1,
-      "Health": 58.66666667,
-      "AttackDamage": 5.87368421,
-      "AttackInterval": 0.738,
-      "AttackRange": 48,
-      "SearchRange": 163,
-      "Speed": 90,
-      "BuildingCross": 1,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91178.description]]"
-      },
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001,
-      "EnemyTargeting": {
-        "mode": "nearest"
-      },
-      "UnitAttack": {
-        "delivery": "melee",
-        "pattern": "single",
-        "onHit": {
-          "burn": {
-            "percent": 0.09,
-            "duration": 2
-          }
-        }
-      }
-    },
-    "101792": {
-      "ID": 101792,
-      "Name": "[[loc:data.monster-roster.91178.name]]",
-      "prefab": "Monster3_Raptor_Fire",
-      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-fire",
-      "AttackType": 1,
-      "Health": 44,
-      "AttackDamage": 5.87368421,
-      "AttackInterval": 0.902,
-      "AttackRange": 48,
-      "SearchRange": 163,
-      "Speed": 110,
-      "BuildingCross": 1,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91178.description]]"
-      },
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001,
-      "EnemyTargeting": {
-        "mode": "nearest"
-      },
-      "UnitAttack": {
-        "delivery": "melee",
-        "pattern": "single",
-        "onHit": {
-          "burn": {
-            "percent": 0.09,
-            "duration": 2
-          }
-        }
-      }
-    },
-    "101793": {
-      "ID": 101793,
-      "Name": "[[loc:data.monster-roster.91178.name]]",
-      "prefab": "Monster3_Raptor_Fire",
-      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-fire",
-      "AttackType": 1,
-      "Health": 53.77777778,
-      "AttackDamage": 7.83157895,
-      "AttackInterval": 0.738,
-      "AttackRange": 48,
-      "SearchRange": 163,
-      "Speed": 95,
-      "BuildingCross": 1,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91178.description]]"
-      },
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001,
-      "EnemyTargeting": {
-        "mode": "nearest"
-      },
-      "UnitAttack": {
-        "delivery": "melee",
-        "pattern": "single",
-        "onHit": {
-          "burn": {
-            "percent": 0.09,
-            "duration": 2
-          }
-        }
-      }
-    },
-    "101794": {
-      "ID": 101794,
-      "Name": "[[loc:data.monster-roster.91178.name]]",
-      "prefab": "Monster3_Raptor_Fire",
-      "loadIcon": "@icon/icons/monster-roster/monster3/raptor-fire",
-      "AttackType": 1,
-      "Health": 44,
-      "AttackDamage": 8.15789474,
-      "AttackInterval": 0.697,
-      "AttackRange": 48,
-      "SearchRange": 163,
-      "Speed": 85,
-      "BuildingCross": 1,
-      "DeathAni": 1.5,
-      "AttackPriority": [
-        2,
-        1,
-        3
-      ],
-      "CounterType": "",
-      "Guide": {
-        "description": "[[loc:data.unitguide.91178.description]]"
-      },
-      "MonsterPack": "monster3",
-      "BehaviorTemplate": 90001,
-      "EnemyTargeting": {
-        "mode": "nearest"
-      },
-      "UnitAttack": {
-        "delivery": "melee",
-        "pattern": "single",
-        "onHit": {
-          "burn": {
-            "percent": 0.09,
-            "duration": 2
           }
         }
       }
@@ -94328,24 +93936,6 @@
       "enemy:101739:default": {
         "attack": 0.4583333
       },
-      "enemy:101740:default": {
-        "attack": 0.5
-      },
-      "enemy:101741:default": {
-        "attack": 0.5
-      },
-      "enemy:91168:default": {
-        "attack": 0.5
-      },
-      "enemy:101742:default": {
-        "attack": 0.5
-      },
-      "enemy:101743:default": {
-        "attack": 0.5
-      },
-      "enemy:101744:default": {
-        "attack": 0.5
-      },
       "enemy:101745:default": {
         "attack": 0.5
       },
@@ -94489,24 +94079,6 @@
       },
       "enemy:101784:default": {
         "attack": 0.5
-      },
-      "enemy:101790:default": {
-        "attack": 0.375
-      },
-      "enemy:101791:default": {
-        "attack": 0.375
-      },
-      "enemy:91178:default": {
-        "attack": 0.375
-      },
-      "enemy:101792:default": {
-        "attack": 0.375
-      },
-      "enemy:101793:default": {
-        "attack": 0.375
-      },
-      "enemy:101794:default": {
-        "attack": 0.375
       },
       "enemy:91179:default": {
         "attack": 0.5
@@ -97888,24 +97460,6 @@
       "enemy:101739:default": {
         "mirrorX": true
       },
-      "enemy:101740:default": {
-        "mirrorX": true
-      },
-      "enemy:101741:default": {
-        "mirrorX": true
-      },
-      "enemy:91168:default": {
-        "mirrorX": true
-      },
-      "enemy:101742:default": {
-        "mirrorX": true
-      },
-      "enemy:101743:default": {
-        "mirrorX": true
-      },
-      "enemy:101744:default": {
-        "mirrorX": true
-      },
       "enemy:101745:default": {
         "mirrorX": true
       },
@@ -98048,24 +97602,6 @@
         "mirrorX": true
       },
       "enemy:101784:default": {
-        "mirrorX": true
-      },
-      "enemy:101790:default": {
-        "mirrorX": true
-      },
-      "enemy:101791:default": {
-        "mirrorX": true
-      },
-      "enemy:91178:default": {
-        "mirrorX": true
-      },
-      "enemy:101792:default": {
-        "mirrorX": true
-      },
-      "enemy:101793:default": {
-        "mirrorX": true
-      },
-      "enemy:101794:default": {
         "mirrorX": true
       },
       "enemy:91179:default": {
@@ -99336,12 +98872,6 @@
       "enemy:101737:default": "skirmisher",
       "enemy:101738:default": "bruiser",
       "enemy:101739:default": "mystic",
-      "enemy:101740:default": "fighter",
-      "enemy:101741:default": "guardian",
-      "enemy:91168:default": "vanguard",
-      "enemy:101742:default": "skirmisher",
-      "enemy:101743:default": "bruiser",
-      "enemy:101744:default": "mystic",
       "enemy:101745:default": "fighter",
       "enemy:101746:default": "guardian",
       "enemy:101747:default": "vanguard",
@@ -99390,12 +98920,6 @@
       "enemy:101783:default": "skirmisher",
       "enemy:91176:default": "bruiser",
       "enemy:101784:default": "mystic",
-      "enemy:101790:default": "fighter",
-      "enemy:101791:default": "guardian",
-      "enemy:91178:default": "vanguard",
-      "enemy:101792:default": "skirmisher",
-      "enemy:101793:default": "bruiser",
-      "enemy:101794:default": "mystic",
       "enemy:91179:default": "fighter",
       "enemy:101795:default": "guardian",
       "enemy:101796:default": "vanguard",
@@ -113160,76 +112684,6 @@
           "visual": {},
           "fightingProfile": true
         },
-        "101740": {
-          "baseId": 91168,
-          "name": "Fighter",
-          "created": true,
-          "role": "fighter",
-          "stats": {
-            "Health": 53.33333333,
-            "AttackDamage": 5.26315789,
-            "AttackInterval": 1.12,
-            "Speed": 130.43478261
-          },
-          "visual": {},
-          "fightingProfile": true
-        },
-        "101741": {
-          "baseId": 91168,
-          "name": "Guardian",
-          "created": true,
-          "role": "guardian",
-          "stats": {
-            "Health": 64,
-            "AttackDamage": 4.73684211,
-            "AttackInterval": 1.008,
-            "Speed": 117.39130435
-          },
-          "visual": {},
-          "fightingProfile": true
-        },
-        "101742": {
-          "baseId": 91168,
-          "name": "Skirmisher",
-          "created": true,
-          "role": "skirmisher",
-          "stats": {
-            "Health": 48,
-            "AttackDamage": 4.73684211,
-            "AttackInterval": 1.232,
-            "Speed": 143.47826087
-          },
-          "visual": {},
-          "fightingProfile": true
-        },
-        "101743": {
-          "baseId": 91168,
-          "name": "Bruiser",
-          "created": true,
-          "role": "bruiser",
-          "stats": {
-            "Health": 58.66666666,
-            "AttackDamage": 6.31578947,
-            "AttackInterval": 1.008,
-            "Speed": 123.91304348
-          },
-          "visual": {},
-          "fightingProfile": true
-        },
-        "101744": {
-          "baseId": 91168,
-          "name": "Mystic",
-          "created": true,
-          "role": "mystic",
-          "stats": {
-            "Health": 48,
-            "AttackDamage": 6.57894737,
-            "AttackInterval": 0.952,
-            "Speed": 110.86956522
-          },
-          "visual": {},
-          "fightingProfile": true
-        },
         "101745": {
           "baseId": 91169,
           "name": "Fighter",
@@ -114024,106 +113478,6 @@
                 "castle",
                 "building"
               ]
-            },
-            "BuildingCross": 1
-          },
-          "visual": {},
-          "fightingProfile": true
-        },
-        "101790": {
-          "baseId": 91178,
-          "name": "Fighter",
-          "created": true,
-          "role": "fighter",
-          "stats": {
-            "Health": 48.88888889,
-            "AttackDamage": 6.52631579,
-            "AttackInterval": 0.82,
-            "Speed": 100,
-            "AttackRange": 48,
-            "SearchRange": 163,
-            "EnemyTargeting": {
-              "mode": "nearest"
-            },
-            "BuildingCross": 1
-          },
-          "visual": {},
-          "fightingProfile": true
-        },
-        "101791": {
-          "baseId": 91178,
-          "name": "Guardian",
-          "created": true,
-          "role": "guardian",
-          "stats": {
-            "Health": 58.66666667,
-            "AttackDamage": 5.87368421,
-            "AttackInterval": 0.738,
-            "Speed": 90,
-            "AttackRange": 48,
-            "SearchRange": 163,
-            "EnemyTargeting": {
-              "mode": "nearest"
-            },
-            "BuildingCross": 1
-          },
-          "visual": {},
-          "fightingProfile": true
-        },
-        "101792": {
-          "baseId": 91178,
-          "name": "Skirmisher",
-          "created": true,
-          "role": "skirmisher",
-          "stats": {
-            "Health": 44,
-            "AttackDamage": 5.87368421,
-            "AttackInterval": 0.902,
-            "Speed": 110,
-            "AttackRange": 48,
-            "SearchRange": 163,
-            "EnemyTargeting": {
-              "mode": "nearest"
-            },
-            "BuildingCross": 1
-          },
-          "visual": {},
-          "fightingProfile": true
-        },
-        "101793": {
-          "baseId": 91178,
-          "name": "Bruiser",
-          "created": true,
-          "role": "bruiser",
-          "stats": {
-            "Health": 53.77777778,
-            "AttackDamage": 7.83157895,
-            "AttackInterval": 0.738,
-            "Speed": 95,
-            "AttackRange": 48,
-            "SearchRange": 163,
-            "EnemyTargeting": {
-              "mode": "nearest"
-            },
-            "BuildingCross": 1
-          },
-          "visual": {},
-          "fightingProfile": true
-        },
-        "101794": {
-          "baseId": 91178,
-          "name": "Mystic",
-          "created": true,
-          "role": "mystic",
-          "stats": {
-            "Health": 44,
-            "AttackDamage": 8.15789474,
-            "AttackInterval": 0.697,
-            "Speed": 85,
-            "AttackRange": 48,
-            "SearchRange": 163,
-            "EnemyTargeting": {
-              "mode": "nearest"
             },
             "BuildingCross": 1
           },
@@ -118399,25 +117753,6 @@
           },
           "defaultProfileId": 101738
         },
-        "91168": {
-          "modelKey": "source:monster3/WingDemon_SkeletonBat",
-          "name": "Skeleton Bat",
-          "baseline": {
-            "Health": 53.33333333,
-            "AttackDamage": 5.26315789,
-            "AttackInterval": 1.12,
-            "Speed": 130.43478261
-          },
-          "referenceId": 91168,
-          "profiles": {
-            "fighter": 101740,
-            "guardian": 101741,
-            "vanguard": 91168,
-            "skirmisher": 101742,
-            "bruiser": 101743,
-            "mystic": 101744
-          }
-        },
         "91169": {
           "modelKey": "source:monster3/Winter_SkeletonKing",
           "name": "Skeleton King",
@@ -118576,26 +117911,6 @@
             "mystic": 101784
           },
           "defaultProfileId": 101781
-        },
-        "91178": {
-          "modelKey": "source:monster3/Raptor_Fire",
-          "name": "Fire Raptor",
-          "referenceId": 91178,
-          "profiles": {
-            "fighter": 101790,
-            "guardian": 101791,
-            "vanguard": 91178,
-            "skirmisher": 101792,
-            "bruiser": 101793,
-            "mystic": 101794
-          },
-          "baseline": {
-            "Health": 48.88888889,
-            "AttackDamage": 6.52631579,
-            "AttackInterval": 0.82,
-            "Speed": 100
-          },
-          "defaultProfileId": 91178
         },
         "91179": {
           "modelKey": "source:monster3/OrcSword_ScarbrowVampire",
