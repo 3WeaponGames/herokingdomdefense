@@ -195,9 +195,6 @@
       },
       {
         "__id__": 2998
-      },
-      {
-        "__id__": 3033
       }
     ],
     "_components": [],
@@ -252,40 +249,40 @@
     },
     "_children": [
       {
-        "__id__": 3078
+        "__id__": 3043
       },
       {
-        "__id__": 3079
+        "__id__": 3044
       },
       {
-        "__id__": 3080
+        "__id__": 3045
       },
       {
-        "__id__": 3081
+        "__id__": 3046
       },
       {
-        "__id__": 3082
+        "__id__": 3047
       },
       {
-        "__id__": 3083
+        "__id__": 3048
       },
       {
-        "__id__": 3084
+        "__id__": 3049
       },
       {
-        "__id__": 3085
+        "__id__": 3050
       },
       {
-        "__id__": 3086
+        "__id__": 3051
       },
       {
-        "__id__": 3087
+        "__id__": 3052
       },
       {
-        "__id__": 3088
+        "__id__": 3053
       },
       {
-        "__id__": 3089
+        "__id__": 3054
       }
     ],
     "_components": [],
@@ -1483,10 +1480,7 @@
         "__id__": 3022
       },
       {
-        "__id__": 3057
-      },
-      {
-        "__id__": 3068
+        "__id__": 3033
       }
     ],
     "_components": [],
@@ -104249,7 +104243,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Tower 2",
+    "_name": "Tower 4",
     "_groupIndex": 1,
     "_parent": {
       "__id__": 6
@@ -109674,8 +109668,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -387.78977725581285,
-        107.65871842293211,
+        -381.91978407038084,
+        95.91873205206818,
         0,
         0,
         0,
@@ -110346,8 +110340,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -468.5604518951053,
-        157.79939306222457,
+        -462.6904587096733,
+        146.05940669136064,
         0,
         0,
         0,
@@ -112538,7 +112532,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "9",
+    "_name": "2",
     "_groupIndex": 1,
     "_parent": {
       "__id__": 3
@@ -112559,8 +112553,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -508.56263103113554,
-        -116.3166577891968,
+        -354.77133696937415,
+        -472.2153716336538,
         0,
         0,
         0,
@@ -112692,8 +112686,8 @@
     "_trs": {
       "ctor": "Float64Array",
       "array": [
-        -93.661,
-        50.581,
+        -90.379,
+        55.289,
         0,
         0,
         0,
@@ -112715,7 +112709,7 @@
       }
     ],
     "_spriteFrame": {
-      "__uuid__": "de5efb11-6931-4bdf-8bf8-428b171ce96b"
+      "__uuid__": "0b12ddfe-6a93-44fe-b93b-ec41664a6c6d"
     },
     "node": {
       "__id__": 3002
@@ -112781,12 +112775,12 @@
     "points": [
       {
         "y": 49.5,
-        "x": 6.2999999999999545,
+        "x": 6.300000000000068,
         "__type__": "cc.Vec2"
       },
       {
         "y": -1.1000000000000227,
-        "x": -81.70000000000005,
+        "x": -81.69999999999999,
         "__type__": "cc.Vec2"
       },
       {
@@ -112795,8 +112789,8 @@
         "__type__": "cc.Vec2"
       },
       {
-        "y": -51.5,
-        "x": -9.200000000000045,
+        "y": -51.50000000000006,
+        "x": -9.199999999999932,
         "__type__": "cc.Vec2"
       },
       {
@@ -112964,12 +112958,12 @@
     "points": [
       {
         "y": 49.5,
-        "x": 6.2999999999999545,
+        "x": 6.300000000000068,
         "__type__": "cc.Vec2"
       },
       {
         "y": -1.1000000000000227,
-        "x": -81.70000000000005,
+        "x": -81.69999999999999,
         "__type__": "cc.Vec2"
       },
       {
@@ -112978,8 +112972,8 @@
         "__type__": "cc.Vec2"
       },
       {
-        "y": -51.5,
-        "x": -9.200000000000045,
+        "y": -51.50000000000006,
+        "x": -9.199999999999932,
         "__type__": "cc.Vec2"
       },
       {
@@ -113147,12 +113141,12 @@
     "points": [
       {
         "y": 49.5,
-        "x": 6.2999999999999545,
+        "x": 6.300000000000068,
         "__type__": "cc.Vec2"
       },
       {
         "y": -1.1000000000000227,
-        "x": -81.70000000000005,
+        "x": -81.69999999999999,
         "__type__": "cc.Vec2"
       },
       {
@@ -113161,8 +113155,8 @@
         "__type__": "cc.Vec2"
       },
       {
-        "y": -51.5,
-        "x": -9.200000000000045,
+        "y": -51.50000000000006,
+        "x": -9.199999999999932,
         "__type__": "cc.Vec2"
       },
       {
@@ -113182,7 +113176,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "House 7",
+    "_name": "Tower 5",
     "_groupIndex": 1,
     "_parent": {
       "__id__": 6
@@ -113224,962 +113218,6 @@
     "_prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 191.5,
-      "height": 158
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -589.333305670428,
-        -66.17598314990434,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "groupIndex": 1,
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "ndHP",
-    "_groupIndex": 1,
-    "_parent": {
-      "__id__": 3022
-    },
-    "_prefab": null,
-    "_trs": {
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        111.85,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ],
-      "__type__": "TypedArray"
-    },
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "ndEffect",
-    "_groupIndex": 1,
-    "_parent": {
-      "__id__": 3022
-    },
-    "_prefab": null,
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "New Node",
-    "_parent": {
-      "__id__": 3022
-    },
-    "_prefab": null,
-    "_trs": {
-      "ctor": "Float64Array",
-      "array": [
-        126.213,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ],
-      "__type__": "TypedArray"
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "New Node",
-    "_parent": {
-      "__id__": 3022
-    },
-    "_prefab": null,
-    "_trs": {
-      "ctor": "Float64Array",
-      "array": [
-        -99.42,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ],
-      "__type__": "TypedArray"
-    }
-  },
-  {
-    "__type__": "sp.Skeleton",
-    "defaultSkin": "mz-1",
-    "_preCacheMode": 0,
-    "premultipliedAlpha": false,
-    "node": {
-      "__id__": 3022
-    },
-    "_materials": [
-      {
-        "__uuid__": "7afd064b-113f-480e-b793-8817d19f63c3"
-      }
-    ],
-    "_N$skeletonData": {
-      "__uuid__": "7dcbcaf2-5061-42ae-a78a-92dc8e22774a"
-    }
-  },
-  {
-    "__type__": "cc.RigidBody",
-    "_type": 0,
-    "node": {
-      "__id__": 3022
-    }
-  },
-  {
-    "__type__": "cc.PhysicsPolygonCollider",
-    "tag": 1,
-    "points": [
-      {
-        "y": -10,
-        "x": -60.9,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -48.8,
-        "x": 4.4,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": 3.2,
-        "x": 89.1,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": 37.4,
-        "x": 21.5,
-        "__type__": "cc.Vec2"
-      }
-    ],
-    "node": {
-      "__id__": 3022
-    }
-  },
-  {
-    "__type__": "cc.PhysicsPolygonCollider",
-    "_enabled": false,
-    "tag": 2,
-    "points": [
-      {
-        "y": -10,
-        "x": -60.9,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -48.8,
-        "x": 4.4,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": 3.2,
-        "x": 89.1,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": 37.4,
-        "x": 21.5,
-        "__type__": "cc.Vec2"
-      }
-    ],
-    "node": {
-      "__id__": 3022
-    }
-  },
-  {
-    "__type__": "cc.PhysicsPolygonCollider",
-    "_enabled": false,
-    "tag": 3,
-    "points": [
-      {
-        "y": -10,
-        "x": -60.9,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -48.8,
-        "x": 4.4,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": 3.2,
-        "x": 89.1,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": 37.4,
-        "x": 21.5,
-        "__type__": "cc.Vec2"
-      }
-    ],
-    "node": {
-      "__id__": 3022
-    }
-  },
-  {
-    "__type__": "b2aad3bNc5PDKfEF0+JtNiz",
-    "ID": 28,
-    "ndMove": [
-      {
-        "__id__": 3025
-      },
-      {
-        "__id__": 3026
-      }
-    ],
-    "ndLockList": [
-      {
-        "__id__": 2999
-      },
-      {
-        "__id__": 3008
-      },
-      {
-        "__id__": 3015
-      }
-    ],
-    "ndAniMain": {
-      "__id__": 3027
-    },
-    "ndHp": {
-      "__id__": 3023
-    },
-    "ndEffect": {
-      "__id__": 3024
-    },
-    "node": {
-      "__id__": 3022
-    },
-    "purchaseSide": "default",
-    "purchaseOffset": {
-      "__type__": "cc.Vec2",
-      "x": -5.11,
-      "y": 35.74
-    },
-    "purchaseOverride": false,
-    "renderAfter": "top",
-    "renderLayerOrder": 13
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "2",
-    "_groupIndex": 1,
-    "_parent": {
-      "__id__": 3
-    },
-    "_children": [
-      {
-        "__id__": 3034
-      },
-      {
-        "__id__": 3043
-      },
-      {
-        "__id__": 3050
-      }
-    ],
-    "_prefab": null,
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -354.77133696937415,
-        -472.2153716336538,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "groupIndex": 1,
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "ndLv0",
-    "_groupIndex": 1,
-    "_children": [
-      {
-        "__id__": 3035
-      },
-      {
-        "__id__": 3037
-      },
-      {
-        "__id__": 3039
-      }
-    ],
-    "_components": [
-      {
-        "__id__": 3041
-      },
-      {
-        "__id__": 3042
-      }
-    ],
-    "_prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 171,
-      "height": 100
-    },
-    "_trs": {
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ],
-      "__type__": "TypedArray"
-    },
-    "_parent": {
-      "__id__": 3033
-    },
-    "groupIndex": 1,
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "sprPro",
-    "_groupIndex": 1,
-    "_parent": {
-      "__id__": 3034
-    },
-    "_components": [
-      {
-        "__id__": 3036
-      }
-    ],
-    "_prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 165,
-      "height": 94
-    },
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Sprite",
-    "_type": 3,
-    "_fillType": 1,
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_spriteFrame": {
-      "__uuid__": "cc7b2c38-a240-4451-95ad-7924ed3f8025"
-    },
-    "node": {
-      "__id__": 3035
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "ndLock",
-    "_groupIndex": 1,
-    "_parent": {
-      "__id__": 3034
-    },
-    "_components": [
-      {
-        "__id__": 3038
-      }
-    ],
-    "_prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 171,
-      "height": 100
-    },
-    "_trs": {
-      "ctor": "Float64Array",
-      "array": [
-        -90.379,
-        55.289,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ],
-      "__type__": "TypedArray"
-    },
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Sprite",
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_spriteFrame": {
-      "__uuid__": "0b12ddfe-6a93-44fe-b93b-ec41664a6c6d"
-    },
-    "node": {
-      "__id__": 3037
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "spAni",
-    "_active": false,
-    "_parent": {
-      "__id__": 3034
-    },
-    "_components": [
-      {
-        "__id__": 3040
-      }
-    ],
-    "_prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 187,
-      "height": 134
-    }
-  },
-  {
-    "__type__": "sp.Skeleton",
-    "defaultSkin": "default",
-    "defaultAnimation": "animation",
-    "_preCacheMode": 0,
-    "loop": false,
-    "premultipliedAlpha": false,
-    "_animationName": "animation",
-    "_playTimes": 1,
-    "_N$enableBatch": true,
-    "_materials": [
-      {
-        "__uuid__": "7afd064b-113f-480e-b793-8817d19f63c3"
-      }
-    ],
-    "_N$skeletonData": {
-      "__uuid__": "0ce4990d-5cf4-4bbc-b132-6d35eae49f64"
-    },
-    "node": {
-      "__id__": 3039
-    }
-  },
-  {
-    "__type__": "cc.Sprite",
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_spriteFrame": {
-      "__uuid__": "15ff80d1-cb19-4992-9636-7e6d3ba584d3"
-    },
-    "node": {
-      "__id__": 3034
-    }
-  },
-  {
-    "__type__": "cc.PolygonCollider",
-    "points": [
-      {
-        "y": 49.5,
-        "x": 6.300000000000068,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -1.1000000000000227,
-        "x": -81.69999999999999,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -9.600000000000023,
-        "x": -82.5,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -51.50000000000006,
-        "x": -9.199999999999932,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -3,
-        "x": 81.5,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": 14,
-        "x": 82.5,
-        "__type__": "cc.Vec2"
-      }
-    ],
-    "node": {
-      "__id__": 3034
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "ndLv1",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
-      {
-        "__id__": 3044
-      },
-      {
-        "__id__": 3046
-      }
-    ],
-    "_components": [
-      {
-        "__id__": 3048
-      },
-      {
-        "__id__": 3049
-      }
-    ],
-    "_prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 171,
-      "height": 100
-    },
-    "_trs": {
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ],
-      "__type__": "TypedArray"
-    },
-    "_parent": {
-      "__id__": 3033
-    },
-    "groupIndex": 1,
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "sprPro",
-    "_groupIndex": 1,
-    "_parent": {
-      "__id__": 3043
-    },
-    "_components": [
-      {
-        "__id__": 3045
-      }
-    ],
-    "_prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 165,
-      "height": 94
-    },
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Sprite",
-    "_type": 3,
-    "_fillType": 1,
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_spriteFrame": {
-      "__uuid__": "cc7b2c38-a240-4451-95ad-7924ed3f8025"
-    },
-    "node": {
-      "__id__": 3044
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "spAni",
-    "_active": false,
-    "_parent": {
-      "__id__": 3043
-    },
-    "_components": [
-      {
-        "__id__": 3047
-      }
-    ],
-    "_prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 187,
-      "height": 134
-    }
-  },
-  {
-    "__type__": "sp.Skeleton",
-    "defaultSkin": "default",
-    "defaultAnimation": "animation",
-    "_preCacheMode": 0,
-    "loop": false,
-    "premultipliedAlpha": false,
-    "_animationName": "animation",
-    "_playTimes": 1,
-    "_N$enableBatch": true,
-    "_materials": [
-      {
-        "__uuid__": "7afd064b-113f-480e-b793-8817d19f63c3"
-      }
-    ],
-    "_N$skeletonData": {
-      "__uuid__": "0ce4990d-5cf4-4bbc-b132-6d35eae49f64"
-    },
-    "node": {
-      "__id__": 3046
-    }
-  },
-  {
-    "__type__": "cc.Sprite",
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_spriteFrame": {
-      "__uuid__": "15ff80d1-cb19-4992-9636-7e6d3ba584d3"
-    },
-    "node": {
-      "__id__": 3043
-    }
-  },
-  {
-    "__type__": "cc.PolygonCollider",
-    "points": [
-      {
-        "y": 49.5,
-        "x": 6.300000000000068,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -1.1000000000000227,
-        "x": -81.69999999999999,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -9.600000000000023,
-        "x": -82.5,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -51.50000000000006,
-        "x": -9.199999999999932,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -3,
-        "x": 81.5,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": 14,
-        "x": 82.5,
-        "__type__": "cc.Vec2"
-      }
-    ],
-    "node": {
-      "__id__": 3043
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "ndLv2",
-    "_active": false,
-    "_groupIndex": 1,
-    "_children": [
-      {
-        "__id__": 3051
-      },
-      {
-        "__id__": 3053
-      }
-    ],
-    "_components": [
-      {
-        "__id__": 3055
-      },
-      {
-        "__id__": 3056
-      }
-    ],
-    "_prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 171,
-      "height": 100
-    },
-    "_trs": {
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ],
-      "__type__": "TypedArray"
-    },
-    "_parent": {
-      "__id__": 3033
-    },
-    "groupIndex": 1,
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "sprPro",
-    "_groupIndex": 1,
-    "_parent": {
-      "__id__": 3050
-    },
-    "_components": [
-      {
-        "__id__": 3052
-      }
-    ],
-    "_prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 165,
-      "height": 94
-    },
-    "groupIndex": 1
-  },
-  {
-    "__type__": "cc.Sprite",
-    "_type": 3,
-    "_fillType": 1,
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_spriteFrame": {
-      "__uuid__": "cc7b2c38-a240-4451-95ad-7924ed3f8025"
-    },
-    "node": {
-      "__id__": 3051
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "spAni",
-    "_active": false,
-    "_parent": {
-      "__id__": 3050
-    },
-    "_components": [
-      {
-        "__id__": 3054
-      }
-    ],
-    "_prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 187,
-      "height": 134
-    }
-  },
-  {
-    "__type__": "sp.Skeleton",
-    "defaultSkin": "default",
-    "defaultAnimation": "animation",
-    "_preCacheMode": 0,
-    "loop": false,
-    "premultipliedAlpha": false,
-    "_animationName": "animation",
-    "_playTimes": 1,
-    "_N$enableBatch": true,
-    "_materials": [
-      {
-        "__uuid__": "7afd064b-113f-480e-b793-8817d19f63c3"
-      }
-    ],
-    "_N$skeletonData": {
-      "__uuid__": "0ce4990d-5cf4-4bbc-b132-6d35eae49f64"
-    },
-    "node": {
-      "__id__": 3053
-    }
-  },
-  {
-    "__type__": "cc.Sprite",
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_spriteFrame": {
-      "__uuid__": "15ff80d1-cb19-4992-9636-7e6d3ba584d3"
-    },
-    "node": {
-      "__id__": 3050
-    }
-  },
-  {
-    "__type__": "cc.PolygonCollider",
-    "points": [
-      {
-        "y": 49.5,
-        "x": 6.300000000000068,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -1.1000000000000227,
-        "x": -81.69999999999999,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -9.600000000000023,
-        "x": -82.5,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -51.50000000000006,
-        "x": -9.199999999999932,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": -3,
-        "x": 81.5,
-        "__type__": "cc.Vec2"
-      },
-      {
-        "y": 14,
-        "x": 82.5,
-        "__type__": "cc.Vec2"
-      }
-    ],
-    "node": {
-      "__id__": 3050
-    }
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "Tower 4",
-    "_groupIndex": 1,
-    "_parent": {
-      "__id__": 6
-    },
-    "_children": [
-      {
-        "__id__": 3058
-      },
-      {
-        "__id__": 3059
-      },
-      {
-        "__id__": 3060
-      },
-      {
-        "__id__": 3061
-      }
-    ],
-    "_components": [
-      {
-        "__id__": 3062
-      },
-      {
-        "__id__": 3063
-      },
-      {
-        "__id__": 3064
-      },
-      {
-        "__id__": 3065
-      },
-      {
-        "__id__": 3066
-      },
-      {
-        "__id__": 3067
-      }
-    ],
-    "_prefab": null,
-    "_contentSize": {
-      "__type__": "cc.Size",
       "width": 187,
       "height": 230.5
     },
@@ -114212,7 +113250,7 @@
     "_name": "ndHP",
     "_groupIndex": 1,
     "_parent": {
-      "__id__": 3057
+      "__id__": 3022
     },
     "_prefab": null,
     "_trs": {
@@ -114238,7 +113276,7 @@
     "_name": "ndEffect",
     "_groupIndex": 1,
     "_parent": {
-      "__id__": 3057
+      "__id__": 3022
     },
     "_prefab": null,
     "groupIndex": 1
@@ -114248,7 +113286,7 @@
     "_name": "ndArrow",
     "_groupIndex": 1,
     "_parent": {
-      "__id__": 3057
+      "__id__": 3022
     },
     "_prefab": null,
     "_trs": {
@@ -114273,7 +113311,7 @@
     "__type__": "cc.Node",
     "_name": "New Node",
     "_parent": {
-      "__id__": 3057
+      "__id__": 3022
     },
     "_prefab": null,
     "_trs": {
@@ -114299,7 +113337,7 @@
     "_preCacheMode": 0,
     "premultipliedAlpha": false,
     "node": {
-      "__id__": 3057
+      "__id__": 3022
     },
     "_materials": [
       {
@@ -114314,7 +113352,7 @@
     "__type__": "cc.RigidBody",
     "_type": 0,
     "node": {
-      "__id__": 3057
+      "__id__": 3022
     }
   },
   {
@@ -114348,7 +113386,7 @@
       }
     ],
     "node": {
-      "__id__": 3057
+      "__id__": 3022
     }
   },
   {
@@ -114383,7 +113421,7 @@
       }
     ],
     "node": {
-      "__id__": 3057
+      "__id__": 3022
     }
   },
   {
@@ -114418,7 +113456,7 @@
       }
     ],
     "node": {
-      "__id__": 3057
+      "__id__": 3022
     }
   },
   {
@@ -114426,34 +113464,34 @@
     "ID": 29,
     "ndMove": [
       {
-        "__id__": 3061
+        "__id__": 3026
       }
     ],
     "ndLockList": [
       {
-        "__id__": 3034
+        "__id__": 2999
       },
       {
-        "__id__": 3043
+        "__id__": 3008
       },
       {
-        "__id__": 3050
+        "__id__": 3015
       }
     ],
     "ndShot": {
-      "__id__": 3060
+      "__id__": 3025
     },
     "ndAniMain": {
-      "__id__": 3062
+      "__id__": 3027
     },
     "ndHp": {
-      "__id__": 3058
+      "__id__": 3023
     },
     "ndEffect": {
-      "__id__": 3059
+      "__id__": 3024
     },
     "node": {
-      "__id__": 3057
+      "__id__": 3022
     },
     "purchaseSide": "default",
     "purchaseOffset": {
@@ -114474,21 +113512,21 @@
     },
     "_children": [
       {
-        "__id__": 3069
+        "__id__": 3034
       },
       {
-        "__id__": 3071
+        "__id__": 3036
       },
       {
-        "__id__": 3073
+        "__id__": 3038
       },
       {
-        "__id__": 3075
+        "__id__": 3040
       }
     ],
     "_components": [
       {
-        "__id__": 3077
+        "__id__": 3042
       }
     ],
     "_prefab": null,
@@ -114531,11 +113569,11 @@
     "_name": "wg_syh4_jdd",
     "_groupIndex": 1,
     "_parent": {
-      "__id__": 3068
+      "__id__": 3033
     },
     "_components": [
       {
-        "__id__": 3070
+        "__id__": 3035
       }
     ],
     "_prefab": null,
@@ -114574,7 +113612,7 @@
       "__uuid__": "a4a468ad-1d70-4997-91d1-293c8c54fe90"
     },
     "node": {
-      "__id__": 3069
+      "__id__": 3034
     }
   },
   {
@@ -114582,11 +113620,11 @@
     "_name": "sprPro",
     "_groupIndex": 1,
     "_parent": {
-      "__id__": 3068
+      "__id__": 3033
     },
     "_components": [
       {
-        "__id__": 3072
+        "__id__": 3037
       }
     ],
     "_prefab": null,
@@ -114619,7 +113657,7 @@
     "_sizeMode": 0,
     "_fillType": 1,
     "node": {
-      "__id__": 3071
+      "__id__": 3036
     },
     "_materials": [
       {
@@ -114640,11 +113678,11 @@
     "_name": "wqyl_qbdj",
     "_groupIndex": 1,
     "_parent": {
-      "__id__": 3068
+      "__id__": 3033
     },
     "_components": [
       {
-        "__id__": 3074
+        "__id__": 3039
       }
     ],
     "_prefab": null,
@@ -114687,7 +113725,7 @@
       "__uuid__": "54ee97f5-58ae-47d4-abfa-9cb7c1a1e82f"
     },
     "node": {
-      "__id__": 3073
+      "__id__": 3038
     }
   },
   {
@@ -114695,11 +113733,11 @@
     "_name": "wg_zy_sp",
     "_groupIndex": 1,
     "_parent": {
-      "__id__": 3068
+      "__id__": 3033
     },
     "_components": [
       {
-        "__id__": 3076
+        "__id__": 3041
       }
     ],
     "_prefab": null,
@@ -114737,16 +113775,16 @@
       "__uuid__": "483baacd-6c97-4c7b-9248-139f4a8b852e"
     },
     "node": {
-      "__id__": 3075
+      "__id__": 3040
     }
   },
   {
     "__type__": "5d4beCxEsRPw7bYr67m5myu",
     "sprPro": {
-      "__id__": 3072
+      "__id__": 3037
     },
     "node": {
-      "__id__": 3068
+      "__id__": 3033
     }
   },
   {
@@ -115318,6 +114356,111 @@
     },
     "_children": [
       {
+        "__id__": 3056
+      },
+      {
+        "__id__": 3057
+      },
+      {
+        "__id__": 3058
+      },
+      {
+        "__id__": 3059
+      },
+      {
+        "__id__": 3060
+      },
+      {
+        "__id__": 3061
+      },
+      {
+        "__id__": 3062
+      },
+      {
+        "__id__": 3063
+      },
+      {
+        "__id__": 3064
+      },
+      {
+        "__id__": 3065
+      },
+      {
+        "__id__": 3066
+      },
+      {
+        "__id__": 3067
+      },
+      {
+        "__id__": 3068
+      },
+      {
+        "__id__": 3069
+      },
+      {
+        "__id__": 3070
+      },
+      {
+        "__id__": 3071
+      },
+      {
+        "__id__": 3072
+      },
+      {
+        "__id__": 3073
+      },
+      {
+        "__id__": 3074
+      },
+      {
+        "__id__": 3075
+      },
+      {
+        "__id__": 3076
+      },
+      {
+        "__id__": 3077
+      },
+      {
+        "__id__": 3078
+      },
+      {
+        "__id__": 3079
+      },
+      {
+        "__id__": 3080
+      },
+      {
+        "__id__": 3081
+      },
+      {
+        "__id__": 3082
+      },
+      {
+        "__id__": 3083
+      },
+      {
+        "__id__": 3084
+      },
+      {
+        "__id__": 3085
+      },
+      {
+        "__id__": 3086
+      },
+      {
+        "__id__": 3087
+      },
+      {
+        "__id__": 3088
+      },
+      {
+        "__id__": 3089
+      },
+      {
+        "__id__": 3090
+      },
+      {
         "__id__": 3091
       },
       {
@@ -115379,104 +114522,11 @@
       },
       {
         "__id__": 3111
-      },
-      {
-        "__id__": 3112
-      },
-      {
-        "__id__": 3113
-      },
-      {
-        "__id__": 3114
-      },
-      {
-        "__id__": 3115
-      },
-      {
-        "__id__": 3116
-      },
-      {
-        "__id__": 3117
-      },
-      {
-        "__id__": 3118
-      },
-      {
-        "__id__": 3119
-      },
-      {
-        "__id__": 3120
-      },
-      {
-        "__id__": 3121
-      },
-      {
-        "__id__": 3122
-      },
-      {
-        "__id__": 3123
-      },
-      {
-        "__id__": 3124
-      },
-      {
-        "__id__": 3125
-      },
-      {
-        "__id__": 3126
-      },
-      {
-        "__id__": 3127
-      },
-      {
-        "__id__": 3128
-      },
-      {
-        "__id__": 3129
-      },
-      {
-        "__id__": 3130
-      },
-      {
-        "__id__": 3131
-      },
-      {
-        "__id__": 3132
-      },
-      {
-        "__id__": 3133
-      },
-      {
-        "__id__": 3134
-      },
-      {
-        "__id__": 3135
-      },
-      {
-        "__id__": 3136
-      },
-      {
-        "__id__": 3137
-      },
-      {
-        "__id__": 3138
-      },
-      {
-        "__id__": 3139
-      },
-      {
-        "__id__": 3140
-      },
-      {
-        "__id__": 3141
-      },
-      {
-        "__id__": 3142
       }
     ],
     "_components": [
       {
-        "__id__": 3090
+        "__id__": 3055
       }
     ],
     "_active": true,
@@ -115524,17 +114574,17 @@
   },
   {
     "__type__": "ef20dGN+M5C6JKo/CVJ9bIM",
-    "graphs": "[{\"id\":\"legacy-route-792\",\"name\":\"Spawns 1–3 · Route 1\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-792-0\",\"nodes\":[{\"id\":\"legacy-route-792-0\",\"goal\":false,\"x\":-594.6421532059401,\"y\":1192.9429722128111},{\"id\":\"legacy-route-792-1\",\"goal\":false,\"x\":-722.6640166162688,\"y\":1035.5176528148945},{\"id\":\"legacy-route-792-2\",\"goal\":false,\"x\":-588.9840958164459,\"y\":719.0627346122791},{\"id\":\"node-1\",\"x\":235.83126330702618,\"y\":564.7135627093755,\"goal\":false},{\"id\":\"node-2\",\"x\":197.0453222533801,\"y\":267.7933805504322,\"goal\":false},{\"id\":\"legacy-route-792-3\",\"goal\":true,\"x\":80.24319319707429,\"y\":-42.12949960895443}],\"edges\":[{\"id\":\"legacy-route-792-edge-0\",\"from\":\"legacy-route-792-0\",\"to\":\"legacy-route-792-1\",\"weight\":1},{\"id\":\"legacy-route-792-edge-1\",\"from\":\"legacy-route-792-1\",\"to\":\"legacy-route-792-2\",\"weight\":1},{\"id\":\"legacy-route-792-edge-2\",\"from\":\"legacy-route-792-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-792-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":0},{\"id\":\"legacy-route-807\",\"name\":\"Spawns 1–3 · Route 2\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-807-0\",\"nodes\":[{\"id\":\"legacy-route-807-0\",\"goal\":false,\"x\":-705.1650862097081,\"y\":1075.9186902088215},{\"id\":\"legacy-route-807-1\",\"goal\":false,\"x\":-587.4359574116585,\"y\":736.4555988046989},{\"id\":\"legacy-route-807-2\",\"goal\":false,\"x\":-325.4749548144512,\"y\":731.0505196045215},{\"id\":\"legacy-route-807-3\",\"goal\":false,\"x\":212.65861620305867,\"y\":581.6438963919321},{\"id\":\"legacy-route-807-4\",\"goal\":false,\"x\":583.8264178115699,\"y\":415.03346377920957},{\"id\":\"legacy-route-807-5\",\"goal\":false,\"x\":474.8609207998227,\"y\":48.837560377746854},{\"id\":\"legacy-route-807-6\",\"goal\":true,\"x\":15.863465594325902,\"y\":-37.37289820704831}],\"edges\":[{\"id\":\"legacy-route-807-edge-0\",\"from\":\"legacy-route-807-0\",\"to\":\"legacy-route-807-1\",\"weight\":1},{\"id\":\"legacy-route-807-edge-1\",\"from\":\"legacy-route-807-1\",\"to\":\"legacy-route-807-2\",\"weight\":1},{\"id\":\"legacy-route-807-edge-2\",\"from\":\"legacy-route-807-2\",\"to\":\"legacy-route-807-3\",\"weight\":1},{\"id\":\"legacy-route-807-edge-3\",\"from\":\"legacy-route-807-3\",\"to\":\"legacy-route-807-4\",\"weight\":1},{\"id\":\"legacy-route-807-edge-4\",\"from\":\"legacy-route-807-4\",\"to\":\"legacy-route-807-5\",\"weight\":1},{\"id\":\"legacy-route-807-edge-5\",\"from\":\"legacy-route-807-5\",\"to\":\"legacy-route-807-6\",\"weight\":1}],\"requiresAnyBuilding\":[14,15,10],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":1},{\"id\":\"legacy-route-873\",\"name\":\"Spawns 1–3 · Route 3\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-873-0\",\"nodes\":[{\"id\":\"legacy-route-873-0\",\"goal\":false,\"x\":-516.6259652032803,\"y\":1228.050256814008},{\"id\":\"legacy-route-873-1\",\"goal\":false,\"x\":-691.4575414152049,\"y\":1104.4319522172436},{\"id\":\"legacy-route-873-2\",\"goal\":false,\"x\":-612.350962606073,\"y\":752.4529792223418},{\"id\":\"node-1\",\"x\":-436.6352211097302,\"y\":644.0703878182192,\"goal\":false},{\"id\":\"node-2\",\"x\":-47.1147567512744,\"y\":608.0828693167786,\"goal\":false},{\"id\":\"node-5\",\"x\":130.55701949107683,\"y\":500.5905523380606,\"goal\":false},{\"id\":\"node-6\",\"x\":242.1476291130282,\"y\":449.44493344879015,\"goal\":false},{\"id\":\"node-3\",\"x\":231.51287753081263,\"y\":303.37961915628364,\"goal\":false},{\"id\":\"node-4\",\"x\":-403.4839712545417,\"y\":191.98649277743255,\"goal\":false},{\"id\":\"legacy-route-873-3\",\"goal\":true,\"x\":23.839606596320706,\"y\":-39.0314552054968}],\"edges\":[{\"id\":\"legacy-route-873-edge-0\",\"from\":\"legacy-route-873-0\",\"to\":\"legacy-route-873-1\",\"weight\":1},{\"id\":\"legacy-route-873-edge-1\",\"from\":\"legacy-route-873-1\",\"to\":\"legacy-route-873-2\",\"weight\":1},{\"id\":\"legacy-route-873-edge-2\",\"from\":\"legacy-route-873-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-5\",\"weight\":1},{\"id\":\"edge-5\",\"from\":\"node-5\",\"to\":\"node-6\",\"weight\":1},{\"id\":\"edge-6\",\"from\":\"node-6\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"node-4\",\"weight\":1},{\"id\":\"edge-4\",\"from\":\"node-4\",\"to\":\"legacy-route-873-3\",\"weight\":1}],\"requiresAnyBuilding\":[24],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":2},{\"id\":\"legacy-route-888\",\"name\":\"Spawns 4–6 · Route 1\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-888-0\",\"nodes\":[{\"id\":\"legacy-route-888-0\",\"goal\":false,\"x\":254.3487520106389,\"y\":-1073.273219420081},{\"id\":\"node-1\",\"x\":-235.67684120859985,\"y\":-986.4508369217432,\"goal\":false},{\"id\":\"node-2\",\"x\":-435.8303297166899,\"y\":-753.2002548661025,\"goal\":false},{\"id\":\"node-3\",\"x\":-413.68171276656795,\"y\":-537.754459034913,\"goal\":false},{\"id\":\"legacy-route-888-1\",\"goal\":false,\"x\":-253.70449701174715,\"y\":-382.1210740057628},{\"id\":\"legacy-route-888-2\",\"goal\":true,\"x\":-6.84923240611738,\"y\":-57.8376136058514}],\"edges\":[{\"id\":\"legacy-route-888-edge-0\",\"from\":\"legacy-route-888-0\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"legacy-route-888-1\",\"weight\":1},{\"id\":\"legacy-route-888-edge-1\",\"from\":\"legacy-route-888-1\",\"to\":\"legacy-route-888-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":3},{\"id\":\"legacy-route-900\",\"name\":\"Spawns 4–6 · Route 2\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-900-0\",\"nodes\":[{\"id\":\"legacy-route-900-0\",\"goal\":false,\"x\":262.15037081090486,\"y\":-1082.3751080203913},{\"id\":\"legacy-route-900-1\",\"goal\":false,\"x\":-212.76376681179147,\"y\":-986.293533623583},{\"id\":\"node-1\",\"x\":-469.67305582531174,\"y\":-997.4025410241593,\"goal\":false},{\"id\":\"node-2\",\"x\":-544.8166385302544,\"y\":-382.7283501033026,\"goal\":false},{\"id\":\"legacy-route-900-2\",\"goal\":false,\"x\":-118.05607841808609,\"y\":-233.55074759831555},{\"id\":\"legacy-route-900-4\",\"goal\":true,\"x\":-16.826470006649316,\"y\":-72.96812100642771}],\"edges\":[{\"id\":\"legacy-route-900-edge-0\",\"from\":\"legacy-route-900-0\",\"to\":\"legacy-route-900-1\",\"weight\":1},{\"id\":\"legacy-route-900-edge-1\",\"from\":\"legacy-route-900-1\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-900-2\",\"weight\":1},{\"id\":\"legacy-route-900-edge-2\",\"from\":\"legacy-route-900-2\",\"to\":\"legacy-route-900-4\",\"weight\":1}],\"requiresAnyBuilding\":[18,3],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":4},{\"id\":\"legacy-route-918\",\"name\":\"Spawn 7, Spawn 8, Spawn 9 · Route 1\",\"spawnIds\":[7,8,13],\"entry\":\"legacy-route-918-0\",\"nodes\":[{\"id\":\"legacy-route-918-0\",\"goal\":false,\"x\":-543.4684104489465,\"y\":-940.8479817397804},{\"id\":\"node-1\",\"x\":-434.8423331084413,\"y\":-604.4581256216632,\"goal\":false},{\"id\":\"legacy-route-918-1\",\"goal\":false,\"x\":-254.96641469313602,\"y\":-394.6829374387004},{\"id\":\"legacy-route-918-2\",\"goal\":true,\"x\":-44.66675534595905,\"y\":-60.781714117288516}],\"edges\":[{\"id\":\"legacy-route-918-edge-0\",\"from\":\"legacy-route-918-0\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-918-1\",\"weight\":1},{\"id\":\"legacy-route-918-edge-1\",\"from\":\"legacy-route-918-1\",\"to\":\"legacy-route-918-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":6},{\"id\":\"legacy-route-930\",\"name\":\"Spawn 7, Spawn 8, Spawn 9 · Route 2\",\"spawnIds\":[7,8,13],\"entry\":\"legacy-route-930-0\",\"nodes\":[{\"id\":\"legacy-route-930-0\",\"goal\":false,\"x\":-610.3829152310502,\"y\":-928.9409180540632},{\"id\":\"node-1\",\"x\":-468.74767844855137,\"y\":-770.0838271146575,\"goal\":false},{\"id\":\"legacy-route-930-1\",\"goal\":false,\"x\":-436.26342021411125,\"y\":-569.4879951567333},{\"id\":\"legacy-route-930-2\",\"goal\":false,\"x\":-563.1914445061165,\"y\":-392.4459296232791},{\"id\":\"legacy-route-930-3\",\"goal\":false,\"x\":-51.87864759022477,\"y\":-278.1837887713249},{\"id\":\"legacy-route-930-4\",\"goal\":true,\"x\":17.212708091833917,\"y\":-60.94848871859173}],\"edges\":[{\"id\":\"legacy-route-930-edge-0\",\"from\":\"legacy-route-930-0\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-930-1\",\"weight\":1},{\"id\":\"legacy-route-930-edge-1\",\"from\":\"legacy-route-930-1\",\"to\":\"legacy-route-930-2\",\"weight\":1},{\"id\":\"legacy-route-930-edge-2\",\"from\":\"legacy-route-930-2\",\"to\":\"legacy-route-930-3\",\"weight\":1},{\"id\":\"legacy-route-930-edge-3\",\"from\":\"legacy-route-930-3\",\"to\":\"legacy-route-930-4\",\"weight\":1}],\"requiresAnyBuilding\":[18],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":7},{\"id\":\"path-1\",\"name\":\"Spawns 4-6 Route 3\",\"spawnIds\":[4],\"entry\":\"entry-13\",\"nodes\":[{\"id\":\"entry-13\",\"x\":256.81581774931226,\"y\":-1059.1795885878864},{\"id\":\"node-1\",\"x\":-220.89025979416394,\"y\":-988.266784562136,\"goal\":false},{\"id\":\"node-2\",\"x\":-423.6753046908453,\"y\":-807.3701242862999,\"goal\":false},{\"id\":\"node-5\",\"x\":-272.78673667205203,\"y\":-597.4136896567749,\"goal\":false},{\"id\":\"node-3\",\"x\":-9.391241777672889,\"y\":-612.4711087784219,\"goal\":false},{\"id\":\"node-4\",\"x\":447.7251494244507,\"y\":-283.7997484008045,\"goal\":false},{\"id\":\"goal-13\",\"x\":28.535969204840786,\"y\":13.835218355961672,\"goal\":true}],\"edges\":[{\"id\":\"edge-13\",\"from\":\"entry-13\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-5\",\"weight\":1},{\"id\":\"edge-5\",\"from\":\"node-5\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"node-4\",\"weight\":1},{\"id\":\"edge-4\",\"from\":\"node-4\",\"to\":\"goal-13\",\"weight\":1}],\"legacy\":false,\"requiresAnyBuilding\":[22,23],\"editorOrder\":5}]",
+    "graphs": "[{\"id\":\"legacy-route-792\",\"name\":\"Spawns 1–3 · Route 1\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-792-0\",\"nodes\":[{\"id\":\"legacy-route-792-0\",\"goal\":false,\"x\":-600.5121463913721,\"y\":1198.812965398243},{\"id\":\"legacy-route-792-1\",\"goal\":false,\"x\":-681.5740643182451,\"y\":1061.9326221493384},{\"id\":\"node-3\",\"x\":-664.6290459945054,\"y\":881.6926886026608,\"goal\":false},{\"id\":\"legacy-route-792-2\",\"goal\":false,\"x\":-588.9840958164459,\"y\":719.0627346122791},{\"id\":\"node-1\",\"x\":235.83126330702618,\"y\":564.7135627093755,\"goal\":false},{\"id\":\"node-2\",\"x\":197.0453222533801,\"y\":267.7933805504322,\"goal\":false},{\"id\":\"legacy-route-792-3\",\"goal\":true,\"x\":80.24319319707429,\"y\":-42.12949960895443}],\"edges\":[{\"id\":\"legacy-route-792-edge-0\",\"from\":\"legacy-route-792-0\",\"to\":\"legacy-route-792-1\",\"weight\":1},{\"id\":\"legacy-route-792-edge-1\",\"from\":\"legacy-route-792-1\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"legacy-route-792-2\",\"weight\":1},{\"id\":\"legacy-route-792-edge-2\",\"from\":\"legacy-route-792-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-792-3\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":0},{\"id\":\"legacy-route-807\",\"name\":\"Spawns 1–3 · Route 2\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-807-0\",\"nodes\":[{\"id\":\"legacy-route-807-0\",\"goal\":false,\"x\":-570.1552429447729,\"y\":1193.3185539174608},{\"id\":\"node-1\",\"x\":-669.7804945524111,\"y\":1105.7669128114471,\"goal\":false},{\"id\":\"node-2\",\"x\":-666.7631816873426,\"y\":903.5012762517771,\"goal\":false},{\"id\":\"legacy-route-807-1\",\"goal\":false,\"x\":-587.4359574116585,\"y\":736.4555988046989},{\"id\":\"legacy-route-807-2\",\"goal\":false,\"x\":-381.2398900760549,\"y\":660.6106013793378},{\"id\":\"legacy-route-807-3\",\"goal\":false,\"x\":212.65861620305867,\"y\":581.6438963919321},{\"id\":\"legacy-route-807-4\",\"goal\":false,\"x\":583.8264178115699,\"y\":415.03346377920957},{\"id\":\"legacy-route-807-5\",\"goal\":false,\"x\":474.8609207998227,\"y\":48.837560377746854},{\"id\":\"legacy-route-807-6\",\"goal\":true,\"x\":15.863465594325902,\"y\":-37.37289820704831}],\"edges\":[{\"id\":\"legacy-route-807-edge-0\",\"from\":\"legacy-route-807-0\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-807-1\",\"weight\":1},{\"id\":\"legacy-route-807-edge-1\",\"from\":\"legacy-route-807-1\",\"to\":\"legacy-route-807-2\",\"weight\":1},{\"id\":\"legacy-route-807-edge-2\",\"from\":\"legacy-route-807-2\",\"to\":\"legacy-route-807-3\",\"weight\":1},{\"id\":\"legacy-route-807-edge-3\",\"from\":\"legacy-route-807-3\",\"to\":\"legacy-route-807-4\",\"weight\":1},{\"id\":\"legacy-route-807-edge-4\",\"from\":\"legacy-route-807-4\",\"to\":\"legacy-route-807-5\",\"weight\":1},{\"id\":\"legacy-route-807-edge-5\",\"from\":\"legacy-route-807-5\",\"to\":\"legacy-route-807-6\",\"weight\":1}],\"requiresAnyBuilding\":[14,15,10],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":1},{\"id\":\"legacy-route-873\",\"name\":\"Spawns 1–3 · Route 3\",\"spawnIds\":[1,2,3],\"entry\":\"legacy-route-873-0\",\"nodes\":[{\"id\":\"legacy-route-873-0\",\"goal\":false,\"x\":-516.6259652032803,\"y\":1228.050256814008},{\"id\":\"legacy-route-873-1\",\"goal\":false,\"x\":-676.782558451625,\"y\":1101.4969556245276},{\"id\":\"node-7\",\"x\":-673.916726456009,\"y\":918.1699776452867,\"goal\":false},{\"id\":\"legacy-route-873-2\",\"goal\":false,\"x\":-600.6109762352091,\"y\":755.3879758150578},{\"id\":\"node-1\",\"x\":-395.5452688117064,\"y\":661.6803673745151,\"goal\":false},{\"id\":\"node-2\",\"x\":-47.1147567512744,\"y\":608.0828693167786,\"goal\":false},{\"id\":\"node-5\",\"x\":200.99693771626042,\"y\":571.0304705632443,\"goal\":false},{\"id\":\"node-6\",\"x\":242.1476291130282,\"y\":449.44493344879015,\"goal\":false},{\"id\":\"node-3\",\"x\":213.90289797451672,\"y\":332.7295850834435,\"goal\":false},{\"id\":\"node-4\",\"x\":-447.5089201452814,\"y\":109.806588181385,\"goal\":false},{\"id\":\"legacy-route-873-3\",\"goal\":true,\"x\":23.839606596320706,\"y\":-39.0314552054968}],\"edges\":[{\"id\":\"legacy-route-873-edge-0\",\"from\":\"legacy-route-873-0\",\"to\":\"legacy-route-873-1\",\"weight\":1},{\"id\":\"legacy-route-873-edge-1\",\"from\":\"legacy-route-873-1\",\"to\":\"node-7\",\"weight\":1},{\"id\":\"edge-7\",\"from\":\"node-7\",\"to\":\"legacy-route-873-2\",\"weight\":1},{\"id\":\"legacy-route-873-edge-2\",\"from\":\"legacy-route-873-2\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-5\",\"weight\":1},{\"id\":\"edge-5\",\"from\":\"node-5\",\"to\":\"node-6\",\"weight\":1},{\"id\":\"edge-6\",\"from\":\"node-6\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"node-4\",\"weight\":1},{\"id\":\"edge-4\",\"from\":\"node-4\",\"to\":\"legacy-route-873-3\",\"weight\":1}],\"requiresAnyBuilding\":[24],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":2},{\"id\":\"legacy-route-888\",\"name\":\"Spawns 4–6 · Route 1\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-888-0\",\"nodes\":[{\"id\":\"legacy-route-888-0\",\"goal\":false,\"x\":254.3487520106389,\"y\":-1073.273219420081},{\"id\":\"node-1\",\"x\":-235.67684120859985,\"y\":-986.4508369217432,\"goal\":false},{\"id\":\"node-2\",\"x\":-435.8303297166899,\"y\":-753.2002548661025,\"goal\":false},{\"id\":\"node-3\",\"x\":-413.68171276656795,\"y\":-537.754459034913,\"goal\":false},{\"id\":\"legacy-route-888-1\",\"goal\":false,\"x\":-253.70449701174715,\"y\":-382.1210740057628},{\"id\":\"legacy-route-888-2\",\"goal\":true,\"x\":-6.84923240611738,\"y\":-57.8376136058514}],\"edges\":[{\"id\":\"legacy-route-888-edge-0\",\"from\":\"legacy-route-888-0\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"legacy-route-888-1\",\"weight\":1},{\"id\":\"legacy-route-888-edge-1\",\"from\":\"legacy-route-888-1\",\"to\":\"legacy-route-888-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":3},{\"id\":\"legacy-route-900\",\"name\":\"Spawns 4–6 · Route 2\",\"spawnIds\":[4,5,6],\"entry\":\"legacy-route-900-0\",\"nodes\":[{\"id\":\"legacy-route-900-0\",\"goal\":false,\"x\":262.15037081090486,\"y\":-1082.3751080203913},{\"id\":\"legacy-route-900-1\",\"goal\":false,\"x\":-212.76376681179147,\"y\":-986.293533623583},{\"id\":\"node-1\",\"x\":-469.67305582531174,\"y\":-997.4025410241593,\"goal\":false},{\"id\":\"node-2\",\"x\":-544.8166385302544,\"y\":-382.7283501033026,\"goal\":false},{\"id\":\"legacy-route-900-2\",\"goal\":false,\"x\":-118.05607841808609,\"y\":-233.55074759831555},{\"id\":\"legacy-route-900-4\",\"goal\":true,\"x\":-16.826470006649316,\"y\":-72.96812100642771}],\"edges\":[{\"id\":\"legacy-route-900-edge-0\",\"from\":\"legacy-route-900-0\",\"to\":\"legacy-route-900-1\",\"weight\":1},{\"id\":\"legacy-route-900-edge-1\",\"from\":\"legacy-route-900-1\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"legacy-route-900-2\",\"weight\":1},{\"id\":\"legacy-route-900-edge-2\",\"from\":\"legacy-route-900-2\",\"to\":\"legacy-route-900-4\",\"weight\":1}],\"requiresAnyBuilding\":[18,3],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":4},{\"id\":\"legacy-route-918\",\"name\":\"Spawn 7, Spawn 8, Spawn 9 · Route 1\",\"spawnIds\":[7,8,13],\"entry\":\"legacy-route-918-0\",\"nodes\":[{\"id\":\"legacy-route-918-0\",\"goal\":false,\"x\":-543.4684104489465,\"y\":-940.8479817397804},{\"id\":\"node-1\",\"x\":-434.8423331084413,\"y\":-604.4581256216632,\"goal\":false},{\"id\":\"legacy-route-918-1\",\"goal\":false,\"x\":-254.96641469313602,\"y\":-394.6829374387004},{\"id\":\"legacy-route-918-2\",\"goal\":true,\"x\":-44.66675534595905,\"y\":-60.781714117288516}],\"edges\":[{\"id\":\"legacy-route-918-edge-0\",\"from\":\"legacy-route-918-0\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-918-1\",\"weight\":1},{\"id\":\"legacy-route-918-edge-1\",\"from\":\"legacy-route-918-1\",\"to\":\"legacy-route-918-2\",\"weight\":1}],\"requiresAnyBuilding\":[],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":6},{\"id\":\"legacy-route-930\",\"name\":\"Spawn 7, Spawn 8, Spawn 9 · Route 2\",\"spawnIds\":[7,8,13],\"entry\":\"legacy-route-930-0\",\"nodes\":[{\"id\":\"legacy-route-930-0\",\"goal\":false,\"x\":-610.3829152310502,\"y\":-928.9409180540632},{\"id\":\"node-1\",\"x\":-468.74767844855137,\"y\":-770.0838271146575,\"goal\":false},{\"id\":\"legacy-route-930-1\",\"goal\":false,\"x\":-436.26342021411125,\"y\":-569.4879951567333},{\"id\":\"legacy-route-930-2\",\"goal\":false,\"x\":-563.1914445061165,\"y\":-392.4459296232791},{\"id\":\"legacy-route-930-3\",\"goal\":false,\"x\":-51.87864759022477,\"y\":-278.1837887713249},{\"id\":\"legacy-route-930-4\",\"goal\":true,\"x\":17.212708091833917,\"y\":-60.94848871859173}],\"edges\":[{\"id\":\"legacy-route-930-edge-0\",\"from\":\"legacy-route-930-0\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"legacy-route-930-1\",\"weight\":1},{\"id\":\"legacy-route-930-edge-1\",\"from\":\"legacy-route-930-1\",\"to\":\"legacy-route-930-2\",\"weight\":1},{\"id\":\"legacy-route-930-edge-2\",\"from\":\"legacy-route-930-2\",\"to\":\"legacy-route-930-3\",\"weight\":1},{\"id\":\"legacy-route-930-edge-3\",\"from\":\"legacy-route-930-3\",\"to\":\"legacy-route-930-4\",\"weight\":1}],\"requiresAnyBuilding\":[18],\"legacy\":true,\"nameFromSpawns\":true,\"editorOrder\":7},{\"id\":\"path-1\",\"name\":\"Spawns 4-6 Route 3\",\"spawnIds\":[4],\"entry\":\"entry-13\",\"nodes\":[{\"id\":\"entry-13\",\"x\":256.81581774931226,\"y\":-1059.1795885878864},{\"id\":\"node-1\",\"x\":-220.89025979416394,\"y\":-988.266784562136,\"goal\":false},{\"id\":\"node-2\",\"x\":-423.6753046908453,\"y\":-807.3701242862999,\"goal\":false},{\"id\":\"node-5\",\"x\":-272.78673667205203,\"y\":-597.4136896567749,\"goal\":false},{\"id\":\"node-3\",\"x\":-9.391241777672889,\"y\":-612.4711087784219,\"goal\":false},{\"id\":\"node-4\",\"x\":447.7251494244507,\"y\":-283.7997484008045,\"goal\":false},{\"id\":\"goal-13\",\"x\":28.535969204840786,\"y\":13.835218355961672,\"goal\":true}],\"edges\":[{\"id\":\"edge-13\",\"from\":\"entry-13\",\"to\":\"node-1\",\"weight\":1},{\"id\":\"edge-1\",\"from\":\"node-1\",\"to\":\"node-2\",\"weight\":1},{\"id\":\"edge-2\",\"from\":\"node-2\",\"to\":\"node-5\",\"weight\":1},{\"id\":\"edge-5\",\"from\":\"node-5\",\"to\":\"node-3\",\"weight\":1},{\"id\":\"edge-3\",\"from\":\"node-3\",\"to\":\"node-4\",\"weight\":1},{\"id\":\"edge-4\",\"from\":\"node-4\",\"to\":\"goal-13\",\"weight\":1}],\"legacy\":false,\"requiresAnyBuilding\":[22,23],\"editorOrder\":5}]",
     "spawns": "[{\"id\":1,\"name\":\"Spawn 1\",\"x\":-443.3142279937939,\"y\":1387.683027005098,\"enabled\":true,\"radius\":150},{\"id\":2,\"name\":\"Spawn 2\",\"x\":-321.1002331882085,\"y\":1409.284792001773,\"enabled\":true,\"radius\":150},{\"id\":3,\"name\":\"Spawn 3\",\"x\":-322.4217753855045,\"y\":1292.6392054010194,\"enabled\":true,\"radius\":150},{\"id\":4,\"name\":\"Spawn 4\",\"x\":344.474060237635,\"y\":-1396.8793752232284,\"enabled\":true,\"radius\":150},{\"id\":5,\"name\":\"Spawn 5\",\"x\":414.61646844246695,\"y\":-1448.0197364273954,\"enabled\":true,\"radius\":150},{\"id\":6,\"name\":\"Spawn 6\",\"x\":294.1097086402061,\"y\":-1436.2074692245583,\"enabled\":true,\"radius\":150},{\"id\":7,\"name\":\"Spawn 7\",\"x\":-881.0090532281046,\"y\":-949.9595081826672,\"enabled\":true,\"radius\":90.2},{\"id\":8,\"name\":\"Spawn 8\",\"x\":-808.6928304287254,\"y\":-938.8993001844407,\"enabled\":true,\"radius\":113.9},{\"id\":13,\"name\":\"Spawn 9\",\"x\":-780,\"y\":-891.3533160910149,\"radius\":150,\"enabled\":true,\"graphId\":null}]",
     "node": {
-      "__id__": 3089
+      "__id__": 3054
     }
   },
   {
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-legacy-route-792-0",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -115560,8 +114610,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -594.6421532059401,
-        1192.9429722128111,
+        -600.5121463913721,
+        1198.812965398243,
         0,
         0,
         0,
@@ -115585,7 +114635,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-legacy-route-792-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -115611,8 +114661,59 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -722.6640166162688,
-        1035.5176528148945,
+        -681.5740643182451,
+        1061.9326221493384,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-16-legacy-route-792-node-3",
+    "_parent": {
+      "__id__": 3054
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -664.6290459945054,
+        881.6926886026608,
         0,
         0,
         0,
@@ -115636,7 +114737,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-legacy-route-792-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -115687,7 +114788,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-node-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -115738,7 +114839,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-node-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -115789,7 +114890,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-792-legacy-route-792-3",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -115840,7 +114941,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-0",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -115866,8 +114967,110 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -705.1650862097081,
-        1075.9186902088215,
+        -570.1552429447729,
+        1193.3185539174608,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-16-legacy-route-807-node-1",
+    "_parent": {
+      "__id__": 3054
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -669.7804945524111,
+        1105.7669128114471,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-16-legacy-route-807-node-2",
+    "_parent": {
+      "__id__": 3054
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -666.7631816873426,
+        903.5012762517771,
         0,
         0,
         0,
@@ -115891,7 +115094,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -115942,7 +115145,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -115968,8 +115171,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -325.4749548144512,
-        731.0505196045215,
+        -381.2398900760549,
+        660.6106013793378,
         0,
         0,
         0,
@@ -115993,7 +115196,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-3",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116044,7 +115247,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-4",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116095,7 +115298,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-5",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116146,7 +115349,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-807-legacy-route-807-6",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116197,7 +115400,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-legacy-route-873-0",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116248,7 +115451,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-legacy-route-873-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116274,8 +115477,59 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -691.4575414152049,
-        1104.4319522172436,
+        -676.782558451625,
+        1101.4969556245276,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "point-16-legacy-route-873-node-7",
+    "_parent": {
+      "__id__": 3054
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -673.916726456009,
+        918.1699776452867,
         0,
         0,
         0,
@@ -116299,7 +115553,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-legacy-route-873-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116325,8 +115579,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -612.350962606073,
-        752.4529792223418,
+        -600.6109762352091,
+        755.3879758150578,
         0,
         0,
         0,
@@ -116350,7 +115604,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-node-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116376,8 +115630,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -436.6352211097302,
-        644.0703878182192,
+        -395.5452688117064,
+        661.6803673745151,
         0,
         0,
         0,
@@ -116401,7 +115655,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-node-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116452,7 +115706,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-node-5",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116478,8 +115732,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        130.55701949107683,
-        500.5905523380606,
+        200.99693771626042,
+        571.0304705632443,
         0,
         0,
         0,
@@ -116503,7 +115757,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-node-6",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116554,7 +115808,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-node-3",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116580,8 +115834,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        231.51287753081263,
-        303.37961915628364,
+        213.90289797451672,
+        332.7295850834435,
         0,
         0,
         0,
@@ -116605,7 +115859,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-node-4",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116631,8 +115885,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -403.4839712545417,
-        191.98649277743255,
+        -447.5089201452814,
+        109.806588181385,
         0,
         0,
         0,
@@ -116656,7 +115910,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-873-legacy-route-873-3",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116707,7 +115961,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-888-legacy-route-888-0",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116758,7 +116012,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-888-node-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116809,7 +116063,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-888-node-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116860,7 +116114,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-888-node-3",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116911,7 +116165,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-888-legacy-route-888-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -116962,7 +116216,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-888-legacy-route-888-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117013,7 +116267,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-legacy-route-900-0",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117064,7 +116318,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-legacy-route-900-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117115,7 +116369,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-node-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117166,7 +116420,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-node-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117217,7 +116471,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-legacy-route-900-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117268,7 +116522,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-900-legacy-route-900-4",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117319,7 +116573,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-918-legacy-route-918-0",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117370,7 +116624,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-918-node-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117421,7 +116675,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-918-legacy-route-918-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117472,7 +116726,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-918-legacy-route-918-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117523,7 +116777,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-legacy-route-930-0",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117574,7 +116828,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-node-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117625,7 +116879,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-legacy-route-930-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117676,7 +116930,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-legacy-route-930-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117727,7 +116981,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-legacy-route-930-3",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117778,7 +117032,7 @@
     "__type__": "cc.Node",
     "_name": "point-16-legacy-route-930-legacy-route-930-4",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117829,7 +117083,7 @@
     "__type__": "cc.Node",
     "_name": "point-6-path-1-entry-13",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117880,7 +117134,7 @@
     "__type__": "cc.Node",
     "_name": "point-6-path-1-node-1",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117931,7 +117185,7 @@
     "__type__": "cc.Node",
     "_name": "point-6-path-1-node-2",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -117982,7 +117236,7 @@
     "__type__": "cc.Node",
     "_name": "point-6-path-1-node-5",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -118033,7 +117287,7 @@
     "__type__": "cc.Node",
     "_name": "point-6-path-1-node-3",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -118084,7 +117338,7 @@
     "__type__": "cc.Node",
     "_name": "point-6-path-1-node-4",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],
@@ -118135,7 +117389,7 @@
     "__type__": "cc.Node",
     "_name": "point-6-path-1-goal-13",
     "_parent": {
-      "__id__": 3089
+      "__id__": 3054
     },
     "_children": [],
     "_components": [],

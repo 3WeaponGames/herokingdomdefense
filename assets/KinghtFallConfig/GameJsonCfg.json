@@ -18735,10 +18735,6 @@
           27
         ],
         [
-          4,
-          28
-        ],
-        [
           2,
           29
         ]
@@ -18900,7 +18896,7 @@
             {
               "unitId": 101666,
               "spawnId": 3,
-              "count": 4,
+              "count": 2,
               "startSeconds": 7.5,
               "intervalSeconds": 3.875,
               "id": "entry-3"
@@ -18956,7 +18952,7 @@
             {
               "unitId": 101666,
               "spawnId": 3,
-              "count": 3,
+              "count": 2,
               "startSeconds": 3.5,
               "intervalSeconds": 3.875,
               "id": "entry-2"
@@ -18973,7 +18969,7 @@
             {
               "unitId": 101767,
               "spawnId": 2,
-              "count": 3,
+              "count": 2,
               "startSeconds": 17.875,
               "intervalSeconds": 3.75,
               "id": "entry-4"
@@ -19104,15 +19100,6 @@
             },
             {
               "unitId": 91037,
-              "spawnId": 8,
-              "count": 3,
-              "startSeconds": 2.375,
-              "intervalSeconds": 3.375,
-              "id": "entry-4",
-              "unitGroupId": "unit-group-1"
-            },
-            {
-              "unitId": 91037,
               "spawnId": 4,
               "count": 4,
               "startSeconds": 11,
@@ -19221,17 +19208,8 @@
               "id": "entry-6"
             },
             {
-              "unitId": 91037,
-              "spawnId": 8,
-              "count": 7,
-              "startSeconds": 18.125,
-              "intervalSeconds": 1.625,
-              "id": "entry-7",
-              "unitGroupId": "unit-group-0"
-            },
-            {
               "unitId": 101663,
-              "spawnId": 7,
+              "spawnId": 3,
               "count": 2,
               "startSeconds": 20.375,
               "intervalSeconds": 4,
@@ -19263,6 +19241,16 @@
               "intervalSeconds": 3.75,
               "id": "entry-10",
               "unitGroupId": "unit-group-1"
+            },
+            {
+              "count": 5,
+              "startSeconds": 15,
+              "intervalSeconds": 0.5,
+              "unitId": 91037,
+              "spawnId": 7,
+              "unitGroupId": "unit-group-0",
+              "id": "entry-3",
+              "editorManualTiming": true
             }
           ],
           "editorTimingBalance": {
@@ -19359,10 +19347,21 @@
             {
               "unitId": 91157,
               "spawnId": 6,
-              "count": 2,
+              "count": 1,
               "startSeconds": 40.5,
               "intervalSeconds": 4.125,
-              "id": "entry-12"
+              "id": "entry-12",
+              "unitGroupId": "unit-group-1"
+            },
+            {
+              "count": 1,
+              "startSeconds": 19,
+              "intervalSeconds": 0.5,
+              "unitId": 91157,
+              "spawnId": 2,
+              "unitGroupId": "unit-group-1",
+              "id": "entry-1",
+              "editorManualTiming": true
             }
           ],
           "editorTimingBalance": {
@@ -59549,7 +59548,7 @@
       "prefab": "Monster1_Slime_Purple",
       "loadIcon": "@icon/icons/monster-roster/monster1/slime-purple",
       "AttackType": 1,
-      "Health": 30,
+      "Health": 35,
       "AttackDamage": 8.3,
       "AttackInterval": 0.58,
       "AttackRange": 215,
@@ -76446,6 +76445,9 @@
       "BehaviorTemplate": 90001,
       "Guide": {
         "description": "[[loc:data.unitguide.91151.description]]"
+      },
+      "EnemyTargeting": {
+        "mode": "hero"
       }
     },
     "101657": {
@@ -102419,7 +102421,7 @@
           "created": true,
           "role": "skirmisher",
           "stats": {
-            "Health": 30,
+            "Health": 35,
             "AttackDamage": 8.3,
             "AttackInterval": 0.58,
             "Speed": 92,
@@ -102435,7 +102437,8 @@
             "custom": {
               "attack": 0.1916667
             }
-          }
+          },
+          "omitted": []
         },
         "100249": {
           "baseId": 91038,
@@ -111101,10 +111104,14 @@
             "AttackDamage": 6,
             "AttackInterval": 1.18,
             "Speed": 120,
-            "AttackRange": 42
+            "AttackRange": 42,
+            "EnemyTargeting": {
+              "mode": "hero"
+            }
           },
           "visual": {},
-          "fightingProfile": true
+          "fightingProfile": true,
+          "omitted": []
         },
         "101657": {
           "baseId": 91151,
