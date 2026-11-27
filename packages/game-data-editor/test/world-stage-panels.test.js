@@ -982,8 +982,9 @@ test('dropping a unit beside a card inserts it in the correct column order',()=>
  const f=fixture();f.state.tab='Waves';f.panels.right();
  const cards=descendants(f.context.right).filter(node=>node.classList.contains('world-wave-unit-card'));
  const [first,second,third]=cards;
- first.offsetTop=second.offsetTop=0;
- first.getBoundingClientRect=()=>({left:20,width:280,top:0,height:100});
+ cards.forEach((card,index)=>{
+  card.getBoundingClientRect=()=>({left:20+(index%2)*291,width:280,top:Math.floor(index/2)*411,height:index===0?400:100});
+ });
  const grip=descendants(third).find(node=>node.classList.contains('world-wave-drag-handle'));
  const rightHalf={...dragEvent(10),clientX:250};
  grip.ondragstart(dragEvent());
@@ -992,6 +993,24 @@ test('dropping a unit beside a card inserts it in the correct column order',()=>
  assert(first.classList.contains('world-card-drop-after'));
  first.ondrop(rightHalf);
  assert.deepEqual(f.state.snap.value.config.WaveCfg[0].editorUnitOrder,['a','c','b','d']);
+ assert.equal(f.edits(),1);
+});
+
+test('the wave grid accepts release in the blank space below a short card',()=>{
+ const f=fixture();f.state.tab='Waves';f.panels.right();
+ const cards=descendants(f.context.right).filter(node=>node.classList.contains('world-wave-unit-card'));
+ const [first,second,third,fourth]=cards,list=first.parentNode;
+ cards.forEach((card,index)=>{
+  card.getBoundingClientRect=()=>({left:20+(index%2)*291,width:280,top:Math.floor(index/2)*411,height:index===0?400:100});
+ });
+ const handle=descendants(fourth).find(node=>node.classList.contains('world-wave-drag-handle'));
+ const over={...dragEvent(250),clientX:340},release={...dragEvent(250),clientX:575};
+ handle.ondragstart(dragEvent());
+ list.ondragover(over);
+ assert(over.prevented&&second.classList.contains('world-card-drop-before'));
+ list.ondrop(release);
+ assert(release.prevented);
+ assert.deepEqual(f.state.snap.value.config.WaveCfg[0].editorUnitOrder,['a','b','d','c']);
  assert.equal(f.edits(),1);
 });
 

@@ -146,7 +146,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   };
  }
  function commitSpawnRadiusDrag(d,value){
-  const ids=d.ids||['spawn:'+d.spawnRadius],changes=ids.map(id=>({id,before:stageEntity(d.before,id),after:stageEntity(value,id)})).filter(change=>change.before&&change.after&&change.before.radius!==change.after.radius);
+  const changes=d.ids.map(id=>({id,before:stageEntity(d.before,id),after:stageEntity(value,id)})).filter(change=>change.before&&change.after&&change.before.radius!==change.after.radius);
   if(d.latestSnapshot)state.snap=d.latestSnapshot;else state.snap.value=d.before;
   if(!changes.length){render();return Promise.resolve();}
   return edit(stage=>{for(const change of changes){const target=stageEntity(stage,change.id);if(!target||target.radius!==change.before.radius||target.x!==change.before.x||target.y!==change.before.y)throw Error('This spawn changed while resizing. Review it and try again.');target.radius=change.after.radius;}});
@@ -186,12 +186,14 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  function stageTaskPosition(stage){return TaskPosition.resolve(stage.tasksPosition,stage.hero,state.map&&state.map.size);}
  function setStageTaskPosition(stage,point){stage.tasksPosition=Object.assign({},stage.tasksPosition,{x:point.x,y:point.y});}
  function stageEntity(stage,id,graphId){const [kind,key]=selectionParts(id);if(kind==='hero')return stage.hero;if(kind==='tasks-position')return stageTaskPosition(stage);if(kind==='building')return stage.buildings.find(b=>b.id===Number(key));if(kind==='purchase'){const b=stage.buildings.find(b=>b.id===Number(key));return b&&purchaseCenter(b);}if(kind==='barracks-spawn'){const b=stage.buildings.find(b=>b.id===Number(key)&&b.kind===3),layout=b&&barracksSpawnLayout(b);return layout&&layout.position;}if(kind==='special')return stage.specials.find(b=>b.id===key);if(kind==='spawn')return stage.spawns.find(p=>p.id===Number(key));const graph=stage.graphs.find(g=>g.id===graphId);return kind==='node'&&graph?graph.nodes.find(n=>n.id===key):null;}
- function startLayoutDrag(point,pointerId){
-  const stage=placementStage(),graphId=state.tab==='Paths'?state.graph:null,positions=state.selection.flatMap(id=>{
+ function startLayoutDrag(point,pointerId,resizeSpawn){
+  const stage=placementStage(),graphId=state.tab==='Paths'?state.graph:null;
+  const ids=resizeSpawn?['spawn:'+resizeSpawn.id]:state.selection;
+  const positions=ids.flatMap(id=>{
    const placement=stageEntity(stage,id,graphId);
    return placement?[{id,beforeX:placement.x,beforeY:placement.y,x:placement.x,y:placement.y}]:[];
   });
-  const drag=state.drag={positions,start:point,dx:0,dy:0,pointerId,key:currentKey(),mapId:stage.mapId,graphId};
+  const drag=state.drag={positions,start:point,dx:0,dy:0,pointerId,key:currentKey(),mapId:stage.mapId,graphId,resizeSpawn};
   layoutView=null;
   canvas.style.cursor='grabbing';
   // Pointer capture can be lost across a docked panel. Track the release in
@@ -216,46 +218,74 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   const dx=point.x-drag.start.x,dy=point.y-drag.start.y;
   if(!Number.isFinite(dx)||!Number.isFinite(dy)||dx===drag.dx&&dy===drag.dy)return;
   drag.dx=dx;drag.dy=dy;
-  for(const position of drag.positions){position.x=position.beforeX+dx;position.y=position.beforeY+dy;}
+  if(drag.resizeSpawn){
+   const position=drag.positions[0],{x,y,radius}=drag.resizeSpawn;
+   if(dx||dy){
+    position.beforeRadius=radius;
+    position.radius=Math.round(Math.min(1500,Math.hypot(point.x-x,point.y-y))*10)/10;
+   }else delete position.radius;
+  }else{
+   for(const position of drag.positions){position.x=position.beforeX+dx;position.y=position.beforeY+dy;}
+  }
   layoutView=null;state.nav=null;
   draw();
  }
  function commitLayoutDrag(drag){
-  const moves=drag.positions.filter(position=>position.x!==position.beforeX||position.y!==position.beforeY);
+  const moves=drag.positions.filter(position=>position.x!==position.beforeX||position.y!==position.beforeY||
+   position.radius!==undefined&&position.radius!==position.beforeRadius);
   state.drag=null;drag.cleanup();layoutView=null;
   if(!moves.length){draw();flushShared();return;}
   return submitLayoutEdit(drag.key,drag.mapId,{type:'move',moves,graphId:drag.graphId});
  }
- function reorderStageCards(collection,edit){
-  const stage=placementStage(),change={type:'order',collection,...edit};
-  try{
-   if(stage.id!==edit.stageId)throw Error('Choose the current stage before moving cards.');
-   if(StageLayoutEdit.apply(stage,change,true)===stage)return;
-   return submitLayoutEdit(currentKey(),stage.mapId,change);
-  }catch(error){message(error.message,true);}
+ function editStageCards({stageId,...edit}){
+  const stage=placementStage();
+  if(stage.id!==stageId){message('Choose the current stage before moving cards.',true);return;}
+  return submitLayoutEdit(currentKey(),stage.mapId,edit);
+ }
+ function layoutEditOn(stage,edit,strict=false){
+  return StageLayoutEdit.apply(stage,edit,strict,{map:state.map,interval:state.catalog.interval});
+ }
+ function refreshLayoutCards(edit){
+  if(edit.type==='wave-order')stagePanels.refreshWave(edit.waveIndex,true);
+  if(edit.type==='order'||edit.type==='spawn-group'&&state.tab==='Spawns')refreshStageCards();
+  if(edit.type==='spawn-group'&&state.tab==='Spawns'){
+   const scroll=right.scrollTop;renderRight();right.scrollTop=scroll;
+  }
  }
  function submitLayoutEdit(key,mapId,edit){
+  const stage=placementStage();
+  try{
+   if(stage.mapId!==mapId||currentKey()!==key)throw Error('The stage map changed while you were dragging.');
+   if(layoutEditOn(stage,edit,true)===stage){draw();flushShared();return;}
+  }catch(error){message(error.message,true);draw();flushShared();return;}
   const request={key,mapId,edit,origin:draftEditOrigin};
   pendingLayoutEdits.push(request);layoutView=null;
-  if(edit.type==='order')refreshStageCards();
+  refreshLayoutCards(edit);
   refreshSaveButtonState();draw();
   return enqueue(async()=>{
+   let applied=false;
    try{
     const active=state.drag;
     const previous=active&&active.ids&&active.before?active.latestSnapshot||{...state.snap,value:active.before}:state.snap;
-    const value=StageLayoutEdit.apply(previous.value,edit,true);
+    if(previous.value.mapId!==mapId)throw Error('The stage map changed while you were dragging.');
+    const value=layoutEditOn(previous.value,edit,true);
+    if(value===previous.value){applied=true;return;}
     const result=await options.ipc('world-stage-layout-edit',{...request,version:previous.version});
     if(result.key!==request.key||result.version!==previous.version+1)throw Error('The editor returned a different stage draft.');
     apply({...previous,...result,value},false,edit);
+    applied=true;
    }finally{
     pendingLayoutEdits.splice(pendingLayoutEdits.indexOf(request),1);layoutView=null;
-    if(!state.closed){refreshSaveButtonState();draw();}
+    if(!state.closed){
+     if(!applied||edit.type==='wave-order')refreshLayoutCards(edit);
+     refreshSaveButtonState();draw();
+    }
    }
   }).finally(flushShared);
  }
  function refreshStageCards(){
   const scroll=left.scrollTop,focus=document.activeElement?.dataset;
-  const key=['graphId','buildingId','specialId'].find(key=>focus?.[key]);
+  const key=['graphId','buildingId','specialId','spawnId'].find(key=>focus?.[key]);
   renderLeft();left.scrollTop=scroll;
   if(key){
    const card=Array.from(left.querySelectorAll('button')).find(card=>card.dataset[key]===focus[key]);
@@ -492,8 +522,8 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   if(!stageMode||!value||!drag?.positions&&!pendingLayoutEdits.length)return value;
   if(!layoutView||layoutView.base!==value){
    let draft=value;
-   for(const request of pendingLayoutEdits)if(request.key===snapshot.key)draft=StageLayoutEdit.apply(draft,request.edit);
-   if(drag?.positions)draft=StageLayoutEdit.apply(draft,{type:'move',moves:drag.positions,graphId:drag.graphId});
+   for(const request of pendingLayoutEdits)if(request.key===snapshot.key)draft=layoutEditOn(draft,request.edit);
+   if(drag?.positions)draft=layoutEditOn(draft,{type:'move',moves:drag.positions,graphId:drag.graphId});
    layoutView={base:value,value:draft};
   }
   return layoutView.value;
@@ -630,7 +660,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  if(!stageMode&&state.snap&&s.key!==currentKey()){clearPlacementPreview();state.selection=[];state.layerSelection=false;state.solo=null;state.groupId=null;state.groupData=null;state.groupPreview=null;}
  if(stageMode&&state.drag&&(state.drag.wallRotation||state.drag.spawnRadiusScrub||state.drag.barracksSpawn)&&state.drag.initializing){state.snap=s;state.nav=null;return;}
  if(stageMode&&state.drag&&state.drag.ids&&state.drag.before){
-  const drag=state.drag,value=layoutEdit?StageLayoutEdit.apply(state.snap.value,layoutEdit):state.snap.value;
+  const drag=state.drag,value=layoutEdit?layoutEditOn(state.snap.value,layoutEdit):state.snap.value;
   drag.latestSnapshot=s;if(layoutEdit&&drag.working)drag.working=value;
   state.snap={...s,value};state.nav=null;draw();return;
  }
@@ -639,7 +669,11 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  if(s.result&&s.result.placedGroup){state.selection=s.result.selection;state.layer=s.result.layerId;state.expanded['o:'+state.layer]=true;state.solo=null;state.brushCursor=null;state.tool='group';}
  state.nav=null;
  if(layoutEdit){
-  if(!state.loading){const focus=top.contains(document.activeElement)?captureFocus():null;renderTop();restoreFocus(focus);refreshTransformFields(true);message((s.dirty?'Unsaved draft':'Saved data')+' · Stage layout · '+s.issues.length+' validation issue(s)');}
+  if(!state.loading){
+   stagePanels.refreshDraftActions();stagePanels.renderValidation();
+   if(layoutEdit.type==='move')refreshTransformFields(true);
+   message((s.dirty?'Unsaved draft':'Saved data')+' · Stage layout · '+s.issues.length+' validation issue(s)');
+  }
   return;
  }
  if(stageMode)notifyView();else setMap(s.value);
@@ -1038,7 +1072,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  const buildingRenderer=BuildingRenderer.create({onLoad:()=>{artworkRevision++;draw();},onError:error=>message(error.message,true)});
  let profilePopup=null;
  function manageUnitProfiles(id,onSaved,onSelect){if(profilePopup)profilePopup.close();const context=currentContext();profilePopup=require('../units/profile-client').open(root,{id,ipc:options.ipc,onSelect,onSaved:async()=>{if(!isCurrent(context))return;const catalog=await options.ipc('world-catalog');if(!isCurrent(context))return;syncCatalog(catalog);if(onSaved)onSaved(catalog.units);render();},onClose:()=>profilePopup=null});return profilePopup;}
- const stagePanels=stageMode?StagePanels.create({ipc:options.ipc,state,el,button,field,select,note,section,edit,editWave,render,draw,top,tabs,left,right,load,fit,startPreview,closePreview,replaceStage,action,refresh:refreshWorld,discard,save,cancelDrag,prepareImages,buildingPalette,stageLayout:placementStage,reorderStageCards,refreshPathSelection,editMap:()=>options.ipc('world-focus-map',{id:values().mapId}),jsonField,patchSelected,spawnRadiusScrubber,remove,newPath,insertPathNode,removePathNode,navigation,modal,unitPicker:(dialog,config)=>UnitPicker.mount(dialog,Object.assign({},config,{el,button,field,ipc:options.ipc,manageProfiles:config.manageProfiles===false?null:manageUnitProfiles})),unitField:(parent,units,id,change,switchUnit,profileAction)=>UnitPicker.unitField({el,button,field,manageProfiles:manageUnitProfiles,openUnitEditor:id=>options.ipc('open-unit-editor',{id})},parent,units,id,change,switchUnit,profileAction),buildingInspector:renderBuildingInspector,
+ const stagePanels=stageMode?StagePanels.create({ipc:options.ipc,state,el,button,field,select,note,section,edit,editWave,render,draw,top,tabs,left,right,load,fit,startPreview,closePreview,replaceStage,action,refresh:refreshWorld,discard,save,cancelDrag,prepareImages,buildingPalette,stageLayout:placementStage,editStageCards,refreshPathSelection,editMap:()=>options.ipc('world-focus-map',{id:values().mapId}),jsonField,patchSelected,spawnRadiusScrubber,remove,newPath,insertPathNode,removePathNode,navigation,modal,unitPicker:(dialog,config)=>UnitPicker.mount(dialog,Object.assign({},config,{el,button,field,ipc:options.ipc,manageProfiles:config.manageProfiles===false?null:manageUnitProfiles})),unitField:(parent,units,id,change,switchUnit,profileAction)=>UnitPicker.unitField({el,button,field,manageProfiles:manageUnitProfiles,openUnitEditor:id=>options.ipc('open-unit-editor',{id})},parent,units,id,change,switchUnit,profileAction),buildingInspector:renderBuildingInspector,
   createWaveModelGallery:()=>UnitModels.create(right,id=>options.ipc('world-unit-preview',{id}))}):null;
  function gateRecord(record,kind,id){const open=stageMode?state.openGatePreviews.has(id):state.gate==='open';if(!record||kind!==6||!open)return record;return Object.assign({},record,{blockers:record.openBlockers||record.blockers,skeletons:(record.skeletons||[]).map(d=>Object.assign({},d,{animation:GateFacing.animation(d.json,'open',record.wallOpening),poseTime:'end'}))});}
  function buildingLevel(building){return building.kind===1?state.previewHall:state.previewBuildingLevel;}
@@ -1164,9 +1198,9 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
     if(cacheTerrain)stageRasters.draw(out,'terrain',[],paintTerrain);else paintTerrain(out);
     if(placementSnapshot())drawStageArtwork(map,objects,out,cacheScenery);else renderer.drawObjects(out,map,state.images,objects);
    };
-   if(cacheScenery&&!animated&&state.tab==='Paths'){
+   if(cacheScenery&&!animated&&['Paths','Spawns','Waves'].includes(state.tab)){
     const stage=placementStage(),pose=JSON.stringify([state.previewHall,state.previewBuildingLevel,Array.from(state.openGatePreviews),Array.from(state.barracksPreviews)]);
-    stageRasters.draw(ctx,'path-artwork',[stage.buildings,stage.specials,state.snap.buildingPreview,pose],paintStage);
+    stageRasters.draw(ctx,'static-stage-artwork',[stage.buildings,stage.specials,state.snap.buildingPreview,pose],paintStage);
    }else paintStage(ctx);
    if(!stageMode)for(const id of state.selection.slice(0,30))drawSelection(map,id);
    if(state.showBlockers){
@@ -1205,7 +1239,8 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
     const layout=barracksSpawnLayout(object);
     if(!layout)continue;
     value=Math.round(layout.position[text==='Destination X'?'x':'y']*1000)/1000;
-   }else if(key)value=key==='wallRotation'?wallAngle(object):chosen?.kind==='barracks-spawn'&&['x','y'].includes(key)?Math.round(object[key]*1000)/1000:object[key];
+   }else if(key==='radius')value=object.radius??0;
+   else if(key)value=key==='wallRotation'?wallAngle(object):chosen?.kind==='barracks-spawn'&&['x','y'].includes(key)?Math.round(object[key]*1000)/1000:object[key];
    else continue;
    if(input.value!==String(value))input.value=value;
    if(committed)input.dataset.modelValue=input.value;
@@ -1284,7 +1319,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   if(r.step&&r.step.length){ctx.strokeStyle='#ffe18a';ctx.lineWidth=2/state.zoom;ctx.setLineDash([4/state.zoom,3/state.zoom]);polygon(r.step.map(p=>buildingPosition(b,p)));ctx.stroke();ctx.setLineDash([]);}drawGateFacing(b);
   if(firstUpgradeCardsVisible())drawFirstUpgradeCard(b,r);
  }
- function spawnRadiusHandle(){if(!stageMode||state.tab!=='Spawns')return null;const id=state.selection.find(id=>id.startsWith('spawn:')),spawn=id&&values().spawns.find(s=>'spawn:'+s.id===id);return spawn?{spawn,point:{x:spawn.x+Math.max(spawn.radius||0,26/state.zoom),y:spawn.y}}:null;}
+ function spawnRadiusHandle(){if(!stageMode||state.tab!=='Spawns')return null;const id=state.selection.find(id=>id.startsWith('spawn:')),spawn=id&&placementStage().spawns.find(s=>'spawn:'+s.id===id);return spawn?{spawn,point:{x:spawn.x+Math.max(spawn.radius||0,26/state.zoom),y:spawn.y}}:null;}
  function drawSpawnCircle(spawn,color){const selected=state.selection.includes('spawn:'+spawn.id),radius=spawn.radius||0;if(radius>0){ctx.save();ctx.fillStyle=color+'12';ctx.strokeStyle=color;ctx.lineWidth=(selected?2:1)/state.zoom;ctx.setLineDash([5/state.zoom,4/state.zoom]);ctx.beginPath();ctx.arc(spawn.x,spawn.y,radius,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();}if(selected&&state.tab==='Spawns'){const h=spawnRadiusHandle();if(h){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=1/state.zoom;ctx.beginPath();ctx.moveTo(spawn.x,spawn.y);ctx.lineTo(h.point.x,h.point.y);ctx.stroke();circle(h.point,'#ffe08a','',6/state.zoom);ctx.restore();}}}
  function drawBarracksSpawnMarkers(){
   for(const {building,layout}of barracksSpawnMarkers()){
@@ -1351,7 +1386,15 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
  }else for(const item of decorationOrder(map).slice().reverse())if(picking.hit(item.o,item.layer,p,assets,state.images))return item.o.id;
  return null;
 }
- function refreshSaveButtonState(){if(!stageMode||!state.snap)return;const saveButton=top.querySelector('[data-action="save"]');if(!saveButton)return;const pending=Array.from(root.querySelectorAll('input[data-model-value]')).some(input=>input.type!=='checkbox'&&input.closest('label')&&input.closest('label').dataset.focusContext===focusContext()&&input.value!==input.dataset.modelValue);saveButton.disabled=!state.snap.dirty&&!pending&&!pendingLayoutEdits.length;}
+ function refreshSaveButtonState(){
+  if(!stageMode||!state.snap)return;
+  const saveButton=top.querySelector('[data-action="save"]');
+  if(!saveButton)return;
+  if(state.snap.dirty||pendingLayoutEdits.length){saveButton.disabled=false;return;}
+  const context=focusContext();
+  saveButton.disabled=!Array.from(root.querySelectorAll('input[data-model-value]')).some(input=>
+   input.type!=='checkbox'&&input.value!==input.dataset.modelValue&&input.closest('label')?.dataset.focusContext===context);
+ }
  root.addEventListener('input',()=>{if(!activeDialog)refreshSaveButtonState();});
  // Let Chromium finish its native focus transition before replacing form controls.
  root.addEventListener('change',()=>{if(changeTimer!==null)clearTimeout(changeTimer);changeTimer=setTimeout(()=>{changeTimer=null;if(deferredRender){deferredRender=false;render();}},0);},true);
@@ -1373,7 +1416,8 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   state.tool='select';
   edit(stage=>setStageTaskPosition(stage,point));return;
  }
- const radiusHandle=event.button===0&&spawnRadiusHandle();if(radiusHandle&&Math.hypot(raw.x-radiusHandle.point.x,raw.y-radiusHandle.point.y)<=10/state.zoom){state.drag={spawnRadius:radiusHandle.spawn.id,ids:['spawn:'+radiusHandle.spawn.id],start:raw,before:clone(values()),pointerId:event.pointerId,context:currentContext()};return;}
+ const radiusHandle=event.button===0&&spawnRadiusHandle();
+ if(radiusHandle&&Math.hypot(raw.x-radiusHandle.point.x,raw.y-radiusHandle.point.y)<=10/state.zoom){startLayoutDrag(raw,event.pointerId,radiusHandle.spawn);return;}
  if(event.button===2){
   const before=clone(values()),working=clone(before);state.drag={deleteObjects:true,before,working,last:raw,pointerId:event.pointerId};sweepDelete(state.drag,raw);return;
  }
@@ -1436,7 +1480,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
 if(stageMode&&state.tool==='building'){const choice=buildingChoice(),asset=choice&&choice.placement;if(!asset){message('Choose a building.',true);return;}edit(s=>{if(asset.kind===1&&!asset.special&&s.buildings.some(b=>b.kind===1))throw Error('Select and move the existing main hall.');const copy=StageNames.prepareBuilding(s,clone(asset));copy.origin={x:copy.x,y:copy.y};copy.x=p.x;copy.y=p.y;copy.enabled=true;copy.unlock=1;if(copy.special){copy.id='offer-'+s.nextSpecial++;s.specials.push(copy);state.selection=['special:'+copy.id];}else{copy.id=s.nextBuilding++;s.buildings.push(copy);state.selection=['building:'+copy.id];}});return;}
 if(stageMode&&state.tool==='spawn'){edit(s=>{Object.assign(s,M.newSpawn(s,p,state.map));state.spawn=s.spawns[s.spawns.length-1].id;state.graph=s.graphs[s.graphs.length-1].id;state.selection=['spawn:'+state.spawn];});return;}
 if(stageMode&&state.tool==='node'){const graphId=state.graph;edit(s=>{const g=s.graphs.find(g=>g.id===graphId);if(!g)throw Error('Select a path first.');const id=uniqueId(g.nodes,'node-');g.nodes.push({id,x:p.x,y:p.y,goal:false});state.selection=['node:'+id];});return;}
- const target=hit(stageMode&&['Buildings','Paths'].includes(state.tab)?raw:point);
+ const target=hit(stageMode&&['Buildings','Paths','Spawns'].includes(state.tab)?raw:point);
  if(!stageMode&&state.tool==='delete'){if(target){state.layerSelection=false;state.selection=[target];remove();}return;}
  if(stageMode&&state.tool==='connect'){if(!target||!target.startsWith('node:'))return;const node=target.slice(5);if(!state.connect){state.connect=node;message('Select the destination node.');}else{const from=state.connect,graphId=state.graph;state.connect=null;edit(s=>{if(from===node)throw Error('A node cannot connect to itself.');const g=s.graphs.find(g=>g.id===graphId);if(!g||!g.nodes.some(n=>n.id===from)||!g.nodes.some(n=>n.id===node))throw Error('Select two existing points on the same path.');if(g.edges.some(e=>e.from===from&&e.to===node))throw Error('These points are already connected.');g.edges.push({id:uniqueId(g.edges,'edge-'),from,to:node,weight:1});g.nodes.find(n=>n.id===from).goal=false;});}return;}
  if(!stageMode&&(state.tool==='layer'||state.tool==='select'&&state.layerSelection&&(state.selection.includes(target)||!state.selection.length))){dragLayer(point,event.pointerId);return;}
@@ -1453,9 +1497,10 @@ if(stageMode&&state.tool==='node'){const graphId=state.graph;edit(s=>{const g=s.
   if(stageMode&&state.selection.some(id=>{const object=stageEntity(values(),id,state.graph);return object&&(!Number.isFinite(object.x)||!Number.isFinite(object.y));})){renderRight();draw();message('Fix the selected coordinates in the inspector before dragging.',true);return;}
   const moveBuilding=state.tab==='Buildings'&&/^(building|special):/.test(target)&&state.selection.every(id=>/^(building|special):/.test(id));
   const movePoint=state.tab==='Paths'&&target.startsWith('node:')&&state.selection.every(id=>id.startsWith('node:'));
-  if(stageMode&&(moveBuilding||movePoint)){
+  const moveSpawn=state.tab==='Spawns'&&target.startsWith('spawn:')&&state.selection.every(id=>id.startsWith('spawn:'));
+  if(stageMode&&(moveBuilding||movePoint||moveSpawn)){
    startLayoutDrag(point,event.pointerId);
-   if(state.selection!==previousSelection){renderRight();if(moveBuilding)refreshStageCards();}
+   if(state.selection!==previousSelection){renderRight();if(moveBuilding||moveSpawn)refreshStageCards();}
    draw();return;
   }
   state.drag={start:point,before:clone(values()),ids:state.selection.slice(),graphId:state.graph,pointerId:event.pointerId,context:currentContext(),purchaseField:target.startsWith('purchase:')?Number(target.slice(9)):null};if(state.drag.purchaseField)state.drag.purchaseLayout=purchaseLayout(values().buildings.find(b=>b.id===state.drag.purchaseField));renderRight();renderLayerPane();draw();
@@ -1472,8 +1517,7 @@ if(stageMode&&state.tool==='node'){const graphId=state.graph;edit(s=>{const g=s.
   return;
  }
  if(d.barracksSpawn){updateBarracksSpawnDrag(d,point);return;}
- if(d.positions){moveLayoutDrag(d,point);return;}
- if(d.spawnRadius){if(raw.x===d.start.x&&raw.y===d.start.y)return;if(!d.working)d.working=clone(d.before);const spawn=d.working.spawns.find(s=>s.id===d.spawnRadius);spawn.radius=Math.round(Math.min(1500,Math.hypot(raw.x-spawn.x,raw.y-spawn.y))*10)/10;SpawnBounds.constrain(spawn,state.map,true);state.snap.value=d.working;refreshTransformFields();draw();return;}
+ if(d.positions){moveLayoutDrag(d,d.resizeSpawn?raw:point);return;}
  if(d.deleteObjects){sweepDelete(d,raw);return;}
  if(d.gizmo){if(!d.working)d.working=clone(d.before);Gizmos.update(d.gizmo,raw,!!event.shiftKey);if(d.layer)transformLayer(d);else Selection.transformInto(d.working,d.before,d.ids,d.gizmo.pivot,d.gizmo.scale,d.gizmo.rotation);state.snap.value=d.working;if(!stageMode)state.map=d.working;refreshTransformFields();draw();return;}
  if(d.pan){const p=screen(event);state.pan={x:d.before.x+p.x-d.start.x,y:d.before.y+p.y-d.start.y};draw();return;}
@@ -1500,7 +1544,6 @@ if(stageMode&&state.tool==='node'){const graphId=state.graph;edit(s=>{const g=s.
  if(d.positions){commitLayoutDrag(d);return;}
  state.drag=null;
  if(d.pan){flushShared();return;}
- if(d.spawnRadius){commitSpawnRadiusDrag(d,values()).finally(flushShared);return;}
  if(d.stroke&&d.maskId){edit(map=>maskStroke(map,d.maskId,d.stroke));flushShared();return;}
  if(d.stroke){edit(map=>{if(d.shadow){const result=ShadowPaint.stroke(map,d.stroke,d.target);Object.assign(map,result.map);state.ground=result.id;}else Object.assign(map,M.stroke(map,d.target,d.stroke));});flushShared();return;}
  if(d.box){

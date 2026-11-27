@@ -6,6 +6,14 @@ async function verify(){
  const map=M.createMap('Map01','Gesture test','forest');map.size=map.playable={width:600,height:700};
  const graph=(id,offset)=>({id,name:id,spawnIds:[1],entry:'point:first',nodes:[{id:'point:first',x:-150+offset,y:200},{id:'point:mid',x:offset,y:100},{id:'point:last',x:150+offset,y:0,goal:true}],edges:[{id:'segment:first',from:'point:first',to:'point:mid',weight:1},{id:'segment:last',from:'point:mid',to:'point:last',weight:1}],requiresAnyBuilding:[]});
  let value={id:'A-1',variant:'A',level:1,name:'Gestures',mapId:map.id,hero:{x:-180,y:-200},buildings:[{id:1,kind:1,name:'Main Hall',enabled:true,unlock:1,x:-180,y:-100,scale:1,angle:0},{id:2,kind:6,name:'Gate',enabled:true,unlock:1,x:0,y:-100,scale:1,angle:0},{id:3,kind:2,name:'Tower',enabled:true,unlock:1,x:180,y:-100,scale:1,angle:0}],specials:[{id:'offer:archer',name:'Archer offer',enabled:false,x:140,y:-220,sprites:[]}],spawns:[{id:1,name:'Entrance',enabled:true,x:-180,y:230}],graphs:[graph('route:main',0),graph('route:other',10)],nextBuilding:4,nextSpecial:1,nextSpawn:2,config:{Level:1,WaveCfg:[{id:1,Wave:1,HealthCoefficient:1,AttackCoefficient:1,StartSliver:1,CommerceSliver:0,SpawnTimeline:[]}]}};
+ value.spawns[0].radius=30;
+ value.spawns.push({id:2,name:'Side',enabled:true,x:0,y:230},{id:13,name:'Far side',enabled:true,x:140,y:230});
+ value.nextSpawn=14;
+ value.spawnGroups=[{id:'north',spawnIds:[1]},{id:'south',spawnIds:[2]}];
+ const timeline=value.config.WaveCfg[0].SpawnTimeline;
+ for(const id of ['a','a-side','b','c','d']){
+  timeline.push({id,unitId:1,spawnId:id==='a-side'?2:1,count:3,startSeconds:0,intervalSeconds:.5,...(id.startsWith('a')?{unitGroupId:'first-card'}:{})});
+ }
  const original=clone(value);let version=1,holdLayout=null;const undo=[],redo=[],calls=[];
  const snapshot=key=>({key,version,value:clone(key.startsWith('map:')?map:value),dirty:version>1,issues:[],affected:[],canUndo:!!undo.length,canRedo:!!redo.length,buildingPreview:{buildings:{},images:{},errors:[],runtimePath:null}});
  const catalog=()=>({version,maps:[{id:map.id,name:map.name}],stages:[{id:value.id,variant:'A',level:1,name:'Gestures',mapId:map.id,waves:1}],units:[{id:1,name:'Infantry'}],library:[],images:{},buildingLooks:{},interval:.5});
@@ -16,8 +24,15 @@ async function verify(){
    assert(q.version===version&&q.mapId===map.id,'layout edit uses the current draft revision and map');
    assert(!Object.prototype.hasOwnProperty.call(q,'value'),'layout IPC sends a small edit');
    if(holdLayout){const blocker=holdLayout;holdLayout=null;await blocker;}
-   const next=Layout.apply(value,q.edit,true);undo.push(value);value=next;version++;redo.length=0;
+   const next=Layout.apply(value,q.edit,true,{map});undo.push(value);value=next;version++;redo.length=0;
    const {value:ignored,buildingPreview,...metadata}=snapshot(q.key);return metadata;
+  }
+  if(name==='world-wave-change'){
+   assert(q.version===version,'wave fields use the latest draft revision');
+   undo.push(value);
+   const WaveCfg=value.config.WaveCfg.slice();WaveCfg[q.waveIndex]=clone(q.wave);
+   value={...value,config:{...value.config,WaveCfg}};version++;redo.length=0;
+   const {value:ignored,buildingPreview,...metadata}=snapshot(q.key);return {...metadata,waveIndex:q.waveIndex,wave:clone(q.wave)};
   }
   if(name==='world-change'){assert(q.version===version,'each gesture uses the current draft revision');undo.push(clone(value));value=clone(q.value);version++;redo.length=0;return snapshot(q.key);}
   if(name==='world-undo'){redo.push(clone(value));value=undo.pop();version++;return snapshot(q.key);}
@@ -47,6 +62,77 @@ async function verify(){
   await click('Undo');assert(JSON.stringify(value.tasksPosition)===JSON.stringify(placed),'Undo restores the original Tasks position');
   field('Y').value='120';field('Y').onchange();await settle();
   assert(value.tasksPosition.y===120&&JSON.stringify(value.hero)===JSON.stringify(original.hero),'editing the King coordinates preserves Hero start');
+  const layoutLoads=calls.filter(name=>name==='world-load').length,spawn=clone(value.spawns[0]),moveVersion=version;
+  const limit={x:map.size.width/2-spawn.radius,y:spawn.y+10};
+  let allow;
+  holdLayout=new Promise(resolve=>allow=resolve);
+  try{
+   canvas.onpointerdown(event(spawn));
+   assert(state.drag?.positions[0].id==='spawn:1','spawn markers use the lightweight drag path');
+   canvas.onpointermove(event({x:limit.x+100,y:limit.y}));await raf();
+   assert(near(field('X').value,limit.x)&&near(field('Y').value,limit.y),'the spawn marker and its radius are clamped before release');
+   canvas.onpointerup(event({x:limit.x+100,y:limit.y}));await raf();
+   assert(version===moveVersion&&near(field('X').value,limit.x),'spawn coordinates stay at the drop before the draft response');
+   const next={x:limit.x-45,y:limit.y-20};
+   canvas.onpointerdown(event(limit));canvas.onpointerup(event(next));await raf();
+   assert(near(field('X').value,next.x)&&near(field('Y').value,next.y),'the pending spawn can be dragged again without waiting');
+   canvas.onpointerdown(event({x:next.x+Math.max(30,26/state.zoom),y:next.y}));
+   assert(state.drag?.resizeSpawn?.id===1,'the radius handle follows the pending spawn position');
+   canvas.onpointerup(event({x:next.x+50,y:next.y}));await raf();
+   assert(near(field('Spawn radius').value,50)&&near(field('X').value,next.x),'resizing uses the new spawn center before either move returns');
+  }finally{allow();}
+  await settle();
+  assert(version===moveVersion+3&&near(value.spawns[0].x,limit.x-45)&&value.spawns[0].radius===50,'spawn movement and radius changes commit in order');
+  const sidebar=root.querySelector('.world-side');
+  const spawnCard=id=>sidebar.querySelector('[data-spawn-id="'+id+'"]');
+  const groupList=id=>sidebar.querySelector('[data-spawn-group-id="'+id+'"]');
+  const gesture=(x=0,y=0)=>({clientX:x,clientY:y,stopPropagation(){},preventDefault(){this.accepted=true;}});
+  const groupDrop=(id,group)=>{
+   spawnCard(id).ondragstart(gesture());const over=gesture();
+   groupList(group).ondragover(over);
+   assert(over.accepted&&groupList(group).classList.contains('world-spawn-group-drop'),'the destination spawn group accepts the drop');
+   groupList(group).ondrop(gesture());
+  };
+  const groupVersion=version;
+  holdLayout=new Promise(resolve=>allow=resolve);
+  try{
+   groupDrop(1,'south');
+   assert(version===groupVersion&&spawnCard(1).parentNode===groupList('south')&&field('Spawn group').value==='south','group membership and the inspector update immediately');
+   groupDrop(1,'');
+   assert(spawnCard(1).parentNode===groupList('')&&groupList('north').textContent.includes('(empty)'),'a second drop into Ungrouped uses the pending membership');
+  }finally{allow();}
+  await settle();
+  assert(version===groupVersion+2&&!value.spawnGroups.some(group=>group.spawnIds.includes(1)),'rapid group drops persist in their original order');
+  assert(calls.filter(name=>name==='world-load').length===layoutLoads,'spawn drags perform no full stage reload');
+  await click('Undo');assert(spawnCard(1).parentNode===groupList('south'),'Undo restores the previous spawn group');
+  await click('Waves');
+  const inspector=root.querySelector('.world-inspector');
+  inspector.style.setProperty('--world-wave-inspector-width','650px');await raf();
+  const waveGrid=root.querySelector('.world-wave-unit-list');
+  const cards=()=>Array.from(waveGrid.children),cardIds=()=>cards().map(card=>card.dataset.entryId).join(',');
+  const [tall,short,,last]=cards(),shortRect=short.getBoundingClientRect(),tallRect=tall.getBoundingClientRect();
+  assert(shortRect.left>tallRect.left&&shortRect.bottom<tallRect.bottom,'the wave grid has two columns with different card heights');
+  const waveVersion=version,waveLoads=calls.filter(name=>name==='world-load').length;
+  const schedule=JSON.stringify(value.config.WaveCfg[0].SpawnTimeline);
+  holdLayout=new Promise(resolve=>allow=resolve);
+  try{
+   last.querySelector('.world-wave-drag-handle').ondragstart(gesture());
+   const gap=gesture(shortRect.right-10,(shortRect.bottom+tallRect.bottom)/2);
+   waveGrid.ondragover(gap);
+   assert(gap.accepted&&short.classList.contains('world-card-drop-after'),'the grid shows the slot below a shorter card');
+   waveGrid.ondrop(gap);
+   assert(cardIds()==='a,b,d,c'&&version===waveVersion&&cards()[2]===last,'a drop in blank grid space reorders existing cards before IPC returns');
+   tall.querySelector('.world-wave-drag-handle').onkeydown({key:'ArrowDown',altKey:true,...gesture()});
+   assert(cardIds()==='b,a,d,c'&&version===waveVersion,'another reorder uses the visible pending card order');
+  }finally{allow();}
+  await settle();
+  assert(value.config.WaveCfg[0].editorUnitOrder.join(',')==='b,a,d,c'&&JSON.stringify(value.config.WaveCfg[0].SpawnTimeline)===schedule,'wave reordering only changes the saved card order in the draft');
+  assert(calls.filter(name=>name==='world-load').length===waveLoads,'wave card drops do not reload the stage');
+  const count=field('Count');count.value='5';await count.onchange();await settle();
+  assert(value.config.WaveCfg[0].SpawnTimeline.find(row=>row.id==='b').count===5&&cardIds()==='b,a,d,c','counts still edit the right card after reordering');
+  await click('Undo');
+  await click('Undo');
+  assert(root.querySelector('.world-wave-unit-list').children[0].dataset.entryId==='a','Undo restores the previous wave card order');
   await click('Paths');
   await press(current().nodes[1]);assert(state.selection[0]==='node:point:mid'&&field('X'),'colon-containing node IDs select their exact point');const pendingX=field('X'),unchangedVersion=version;pendingX.focus();pendingX.value='25';pendingX.dispatchEvent(new Event('input',{bubbles:true}));assert(find('Save').disabled===false&&version===unchangedVersion,'a pending first field edit enables Save without writing data');pendingX.onchange();await settle();assert(current().nodes.find(n=>n.id==='point:mid').x===25,'position editing preserves the complete authored node ID');
   const edge=current().edges[0],a=current().nodes[0],b=current().nodes[1];await press({x:a.x+(b.x-a.x)*.3,y:a.y+(b.y-a.y)*.3});assert(state.selection[0]==='edge:'+edge.id,'colon-containing connection IDs select their complete connection');field('Branch weight').value='3';field('Branch weight').onchange();await settle();assert(current().edges.find(e=>e.id==='segment:first').weight===3,'connection settings edit colon-containing edge IDs');
