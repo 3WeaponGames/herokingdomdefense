@@ -35,6 +35,26 @@ test('inserting at a goal uses its preceding segment and splitting keeps conditi
  const one=stage();graph(one).edges[0].requiresAnyBuilding=[4];const inserted=P.insertNode(one,'path','start');assert.deepEqual(graph(one).edges[0],{id:'first',from:'start',to:inserted,weight:3,future:{keep:[1]},requiresAnyBuilding:[4]});assert(!graph(one).edges.find(edge=>edge.from===inserted).requiresAnyBuilding);
 });
 
+test('splitting a clicked branch uses its position, retains the branch settings and can be removed',()=>{
+ for(const weight of [3,0]){
+  const s=stage(),connection=graph(s).edges[0];
+  connection.weight=weight;connection.requiresAnyBuilding=[4];
+  graph(s).nodes.push({id:'other',x:0,y:-100,goal:true});
+  graph(s).edges.push({id:'fallback',from:'start',to:'other',weight:2});
+  const before=clone(s),id=P.insertOnEdge(s,'path',connection,.25);
+  assert.deepEqual(graph(s).nodes.find(node=>node.id===id),{id,x:25,y:12.5,goal:false});
+  assert.deepEqual(graph(s).edges[0],{...connection,to:id});
+  assert.deepEqual(graph(s).edges[1],{id:'edge-1',from:id,to:'middle',weight:1});
+  assert.deepEqual(M.graphIssues(graph(s)),[]);
+  for(const built of [[],[4]])for(const random of [.1,.8])assert.deepEqual(route(s,built,random).filter(node=>node!==id),route(before,built,random));
+  const split=clone(s);
+  assert.throws(()=>P.insertOnEdge(s,'path',connection,.7),/connection changed/);
+  assert.deepEqual(s,split);
+  assert.equal(P.removeNode(s,'path',id),'middle');
+  assert.deepEqual(s,before);
+ }
+});
+
 test('removing a linear interior stitches incoming probability and both compatible metadata records',()=>{
  const s=stage(),before=clone(s),selected=P.removeNode(s,'path','middle');assert.equal(selected,'goal');assert.deepEqual(graph(s).nodes,before.graphs[0].nodes.filter(node=>node.id!=='middle'));assert.deepEqual(graph(s).edges,[{id:'first',from:'start',to:'goal',weight:3,future:{keep:[1]},presentation:{color:'blue'}}]);assert.equal(graph(s).entry,'start');assert.deepEqual(M.graphIssues(graph(s)),[]);assert.deepEqual(s.future,before.future);
 });

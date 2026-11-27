@@ -750,14 +750,39 @@ test('path cards drag in the draft without changing routing order or the selecte
  f.panels.left();assert.deepEqual(descendants(f.context.left).filter(element=>element.dataset.graphId).map(row=>row.dataset.graphId),['two','one']);
 });
 
-test('building cards support the same drag order and keyboard moves without changing construction identifiers',()=>{
- const f=fixture();f.state.tab='Buildings';f.state.snap.value.buildings=[{id:1,name:'Main Hall 1',kind:1},{id:4,name:'House 1',kind:4},{id:8,name:'Tower 1',kind:2}];f.state.selection=['building:4'];f.panels.left();
- let rows=descendants(f.context.left).filter(element=>element.dataset.buildingId);
- rows[2].ondragstart(dragEvent());rows[0].ondrop(dragEvent());
- assert.deepEqual(f.state.snap.value.buildings.map(building=>building.id),[1,4,8]);assert.deepEqual(f.state.selection,['building:4']);
- f.panels.left();rows=descendants(f.context.left).filter(element=>element.dataset.buildingId);assert.deepEqual(rows.map(row=>row.dataset.buildingId),[8,1,4]);
- rows[1].onkeydown({...dragEvent(),key:'ArrowUp',altKey:true});
- assert.deepEqual(require('../worlds/stage-card-order').ordered(f.state.snap.value.buildings).map(building=>building.id),[1,8,4]);assert.equal(f.edits(),2);
+test('placed building cards sort by type and then natural name while retaining their placement IDs and data',()=>{
+ const f=fixture();f.state.tab='Buildings';
+ const stage=f.state.snap.value;
+ stage.buildings=[
+  {id:1,name:'Main Hall 1',kind:1,editorOrder:0},
+  {id:8,name:'Tower 10',kind:2,editorOrder:1},
+  {id:6,name:'tower 2',kind:2,editorOrder:2},
+  {id:4,name:'House 1',kind:4,enabled:false},
+  {id:5,name:'Barracks 1',kind:3},
+  {id:7,name:'Mill 1',kind:5},
+  {id:9,name:'Wall / Gate 1',kind:6}
+ ];
+ stage.graphs[0].requiresAnyBuilding=[8,99];
+ const before=clone(stage),cards=()=>descendants(f.context.left).filter(element=>element.dataset.buildingId);
+ f.panels.left();
+ assert.deepEqual(cards().map(card=>card.dataset.buildingId),[1,4,7,5,6,8,9]);
+ assert(cards().every(card=>!card.draggable));
+ cards()[5].onclick();assert.deepEqual(f.state.selection,['building:8']);
+ assert.deepEqual(stage,before);assert.equal(f.edits(),0);
+ f.context.edit(draft=>{draft.buildings.find(building=>building.id===8).name='Basic Tower';});
+ f.panels.left();
+ assert.deepEqual(cards().map(card=>card.dataset.buildingId),[1,4,7,5,8,6,9]);
+ assert.equal(cards()[4].attributes['aria-current'],'true');
+ assert.deepEqual(f.state.snap.value.buildings.map(building=>building.id),[1,8,6,4,5,7,9]);
+ const draft=f.state.snap.value;
+ const names=cards().map(card=>draft.buildings.find(building=>building.id===card.dataset.buildingId).name);
+ f.state.tab='Paths';f.panels.right();
+ const checklist=descendants(f.context.right).find(element=>element.tagName==='details'&&element.children[0].textContent==='Conditional route');
+ const choices=descendants(checklist).filter(element=>element.fieldName);
+ assert.deepEqual(choices.map(choice=>choice.fieldName),[...names,'Missing building 99']);
+ assert.deepEqual(choices.filter(choice=>choice.checked).map(choice=>choice.fieldName),['Basic Tower','Missing building 99']);
+ assert.deepEqual(draft.graphs[0].requiresAnyBuilding,[8,99]);
+ assert.equal(f.edits(),1);
 });
 
 test('the Buildings list selects the single Silver offer and keeps other merchant types',()=>{

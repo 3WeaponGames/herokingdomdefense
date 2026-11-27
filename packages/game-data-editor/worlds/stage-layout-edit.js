@@ -83,11 +83,34 @@ function reorderWave(stage,edit,interval,strict){
  WaveCfg[waveIndex]={...wave,editorUnitOrder:order};
  return {...stage,config:{...stage.config,WaveCfg}};
 }
+function setPathCondition(stage,edit,strict){
+ const {graphId,edgeId,buildingId,enabled}=edit;
+ const graphIndex=stage.graphs.findIndex(graph=>graph.id===graphId),graph=stage.graphs[graphIndex];
+ const edgeIndex=edgeId==null||!Array.isArray(graph?.edges)?-1:graph.edges.findIndex(edge=>edge.id===edgeId);
+ const owner=edgeId==null?graph:graph?.edges?.[edgeIndex];
+ const saved=owner?.requiresAnyBuilding;
+ if(!owner||!stage.buildings.some(building=>building.id===buildingId)||typeof enabled!=='boolean'||saved!=null&&!Array.isArray(saved)){
+  if(strict)throw Error('The route, connection or building conditions changed. Review the current checklist and try again.');
+  return stage;
+ }
+ const current=saved||[];
+ if(current.includes(buildingId)===enabled)return stage;
+ const requiresAnyBuilding=enabled?current.concat(buildingId):current.filter(id=>id!==buildingId);
+ const graphs=stage.graphs.slice();
+ if(edgeId==null)graphs[graphIndex]={...graph,requiresAnyBuilding};
+ else{
+  const edges=graph.edges.slice();
+  edges[edgeIndex]={...owner,requiresAnyBuilding};
+  graphs[graphIndex]={...graph,edges};
+ }
+ return {...stage,graphs};
+}
 function apply(stage,edit,checkPositions=false,{map,interval=.5}={}){
  if(edit?.type==='move')return move(stage,edit.moves,edit.graphId,checkPositions,map);
  if(edit?.type==='order')return reorder(stage,edit,checkPositions);
  if(edit?.type==='spawn-group')return transferSpawn(stage,edit,checkPositions);
  if(edit?.type==='wave-order')return reorderWave(stage,edit,interval,checkPositions);
+ if(edit?.type==='path-condition')return setPathCondition(stage,edit,checkPositions);
  throw Error('Choose a stage item to move.');
 }
 module.exports={apply};

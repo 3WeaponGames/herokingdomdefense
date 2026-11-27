@@ -135,7 +135,24 @@ async function verify(){
   assert(root.querySelector('.world-wave-unit-list').children[0].dataset.entryId==='a','Undo restores the previous wave card order');
   await click('Paths');
   await press(current().nodes[1]);assert(state.selection[0]==='node:point:mid'&&field('X'),'colon-containing node IDs select their exact point');const pendingX=field('X'),unchangedVersion=version;pendingX.focus();pendingX.value='25';pendingX.dispatchEvent(new Event('input',{bubbles:true}));assert(find('Save').disabled===false&&version===unchangedVersion,'a pending first field edit enables Save without writing data');pendingX.onchange();await settle();assert(current().nodes.find(n=>n.id==='point:mid').x===25,'position editing preserves the complete authored node ID');
-  const edge=current().edges[0],a=current().nodes[0],b=current().nodes[1];await press({x:a.x+(b.x-a.x)*.3,y:a.y+(b.y-a.y)*.3});assert(state.selection[0]==='edge:'+edge.id,'colon-containing connection IDs select their complete connection');field('Branch weight').value='3';field('Branch weight').onchange();await settle();assert(current().edges.find(e=>e.id==='segment:first').weight===3,'connection settings edit colon-containing edge IDs');
+  const edge=current().edges[0],a=current().nodes[0],b=current().nodes[1];await press({x:a.x+(b.x-a.x)*.3,y:a.y+(b.y-a.y)*.3},{ctrlKey:true});assert(state.selection[0]==='edge:'+edge.id,'Ctrl-click selects the complete connection ID');field('Branch weight').value='3';field('Branch weight').onchange();await settle();assert(current().edges.find(e=>e.id==='segment:first').weight===3,'connection settings edit colon-containing edge IDs');
+  const towerCheck=title=>{
+   const panel=Array.from(root.querySelectorAll('.world-inspector details')).find(details=>details.querySelector('summary').textContent===title);
+   return Array.from(panel.querySelectorAll('label')).find(label=>label.textContent==='Tower').querySelector('input');
+  };
+  const routeCheck=towerCheck('Conditional route'),connectionCheck=towerCheck('Selected connection');
+  const conditionVersion=version,conditionChanges=calls.filter(name=>name==='world-change').length;
+  let releaseCondition;holdLayout=new Promise(resolve=>releaseCondition=resolve);
+  try{
+   routeCheck.click();await raf();
+   assert(routeCheck.checked&&root.querySelector('[data-graph-id="route:main"]').textContent.includes('Requires: Tower')&&version===conditionVersion,'a route checkbox and its card update before the draft reply');
+   connectionCheck.click();routeCheck.click();await raf();
+   assert(connectionCheck.checked&&!routeCheck.checked&&routeCheck.isConnected&&version===conditionVersion,'checking and unchecking several conditions works during a pending update');
+  }finally{releaseCondition();}
+  await settle();
+  assert(version===conditionVersion+3&&!current().requiresAnyBuilding.length&&current().edges[0].requiresAnyBuilding.join(',')==='3','all queued checkbox changes apply in order to their own route or connection');
+  assert(calls.filter(name=>name==='world-change').length===conditionChanges,'building checkboxes use lightweight layout edits');
+  await click('Undo');await click('Undo');await click('Undo');
   await press(current().nodes[1]);let release;state.pending=new Promise(resolve=>release=resolve);field('Y').value='125';field('Y').onchange();await graphButton('route:other').onclick();assert(state.graph==='route:other','path navigation can occur while an edit is queued');release();await settle();assert(value.graphs[0].nodes.find(n=>n.id==='point:mid').y===125&&value.graphs[1].nodes.find(n=>n.id==='point:mid').y===100,'queued point changes stay with the original graph');
   await graphButton('route:main').onclick();await settle();await click('Add point');const now=Date.now;Date.now=()=>7;try{await press({x:-80,y:30});await press({x:80,y:30});}finally{Date.now=now;}assert(new Set(current().nodes.map(n=>n.id)).size===current().nodes.length,'rapid point creation cannot produce duplicate IDs');
   await click('Select / move');state.selection=[];const first=current().nodes.find(n=>n.id==='point:first'),mid=current().nodes.find(n=>n.id==='point:mid'),start={x:Math.min(first.x,mid.x)-30,y:Math.max(first.y,mid.y)+30},end={x:Math.max(first.x,mid.x)+30,y:Math.min(first.y,mid.y)-30};canvas.onpointerdown(event(start));canvas.onpointermove(event(end));canvas.onpointerup(event(end));await settle();assert(state.selection.includes('node:point:first')&&state.selection.includes('node:point:mid'),'box selection selects points on the active path');
@@ -146,7 +163,10 @@ async function verify(){
   assert(cardOrder()[0]==='route:other'&&version===orderVersion,'a path card moves immediately on drop');
   await settle();assert(value.graphs[0].id==='route:main'&&value.graphs[1].editorOrder===0,'reordering path cards preserves authored route order');
   await click('Undo');assert(cardOrder()[0]==='route:main','Undo restores the path card order');
-  await click('Buildings');await press(value.buildings[1]);await press(value.buildings[2],{shiftKey:true});assert(state.selection.length===2&&field('Wall rotation'),'wall and tower can be selected together');field('Wall rotation').value='13';field('Wall rotation').onchange();await settle();assert(value.buildings[1].wallRotation===13&&value.buildings[2].wallRotation===undefined,'wall-only rotation never writes wall metadata onto a selected tower');
+  const buildingVersion=version;await click('Buildings');
+  const buildingCards=Array.from(root.querySelectorAll('[data-building-id]'));
+  assert(buildingCards.map(card=>card.dataset.buildingId).join(',')==='1,3,2'&&buildingCards.every(card=>!card.draggable)&&version===buildingVersion,'the native Buildings sidebar sorts placed buildings by type without editing the draft');
+  await press(value.buildings[1]);await press(value.buildings[2],{shiftKey:true});assert(state.selection.length===2&&field('Wall rotation'),'wall and tower can be selected together');field('Wall rotation').value='13';field('Wall rotation').onchange();await settle();assert(value.buildings[1].wallRotation===13&&value.buildings[2].wallRotation===undefined,'wall-only rotation never writes wall metadata onto a selected tower');
   await press(value.buildings[2]);await press(value.buildings[0],{shiftKey:true});field('Available at hall level').value='3';field('Available at hall level').onchange();await settle();assert(value.buildings[2].unlock===3&&value.buildings[0].unlock===1,'bulk unlock changes keep the main hall available from level one');
   const offerButton=Array.from(root.querySelectorAll('.world-side button')).find(b=>b.textContent.includes('Archer offer'));assert(!!offerButton,'disabled recruitment offers remain discoverable');await offerButton.onclick();await settle();assert(state.selection[0]==='special:offer:archer'&&field('Enabled').checked===false,'disabled offer selection preserves its authored identifier and state');const offerStart=clone(value.specials[0]);canvas.onpointerdown(event(offerStart));canvas.onpointermove(event({x:offerStart.x+20,y:offerStart.y+10}));canvas.onpointerup();await settle();assert(Math.abs(value.specials[0].x-offerStart.x-20)<1e-7&&value.specials[0].enabled===false,'a selected disabled placement can be positioned without enabling it');field('Enabled').checked=true;field('Enabled').onchange();await settle();assert(value.specials[0].enabled===true,'offer availability can be explicitly changed in its inspector');
   const tower=clone(value.buildings[2]),firstDrop={x:tower.x+30,y:tower.y+20},secondDrop={x:tower.x+55,y:tower.y+35};

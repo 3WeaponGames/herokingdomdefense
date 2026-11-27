@@ -3,13 +3,18 @@
 const M=require('../worlds/model'),Client=require('../worlds/client');
 
 async function verify(){
- const checks=[],calls=[],consoleErrors=[],strokes=[],labels=[],labelBoxes=[];
+ const checks=[],calls=[],consoleErrors=[],strokes=[],circleFills=[],labels=[],labelBoxes=[];
  const assert=(value,label)=>{if(!value)throw Error(label);checks.push(label);},same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
  const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms)),raf=()=>new Promise(resolve=>requestAnimationFrame(resolve));
  const wait=async(predicate,label)=>{for(let i=0;i<200&&!predicate();i++)await pause(10);if(!predicate())throw Error(label);};
  const graph={id:'main',name:'Main approach',spawnIds:[1],entry:'start',future:{keep:17},nodes:[{id:'start',x:-110,y:140},{id:'middle',x:0,y:20,future:{keep:true}},{id:'goal',x:110,y:-100,goal:true}],edges:[{id:'first',from:'start',to:'middle',weight:3,future:{keep:'first'}},{id:'last',from:'middle',to:'goal',weight:7,future:{keep:'last'}}]};
  const other={id:'alternate',name:'Alternate approach',spawnIds:[1],entry:'other-start',nodes:[{id:'other-start',x:-110,y:-160},{id:'other-goal',x:110,y:-160,goal:true}],edges:[{id:'other-edge',from:'other-start',to:'other-goal',weight:11}]};
- const source={id:'A-1',variant:'A',level:1,name:'Path workflow',mapId:'Map01',hero:{x:140,y:-190},buildings:[],specials:[],spawns:[{id:1,name:'West entrance',x:-150,y:180,enabled:true,graphId:'main'}],graphs:[graph,other],nextSpawn:2,nextBuilding:1,nextSpecial:1,config:{Level:1,Name:'Path workflow',WaveCfg:[{Wave:1,HealthCoefficient:1,AttackCoefficient:1,StartSliver:5,CommerceSliver:1,WaveReward:[],SpawnTimeline:[{id:'wave-group',spawnId:1,unitId:1,count:3,startSeconds:0,intervalSeconds:.5}]}]}};
+ const buildings=[
+  {id:1,kind:1,name:'Main Hall 1',enabled:true,unlock:1,x:110,y:-100,scale:1,angle:0},
+  {id:2,kind:2,name:'West lookout',enabled:true,unlock:2,x:96,y:-94,scale:1,angle:0},
+  {id:3,kind:2,name:'Disabled tower',enabled:false,unlock:1,x:-100,y:0,scale:1,angle:0}
+ ];
+ const source={id:'A-1',variant:'A',level:1,name:'Path workflow',mapId:'Map01',hero:{x:140,y:-190},buildings,specials:[],spawns:[{id:1,name:'West entrance',x:-150,y:180,enabled:true,graphId:'main'}],graphs:[graph,other],nextSpawn:2,nextBuilding:4,nextSpecial:1,config:{Level:1,Name:'Path workflow',WaveCfg:[{Wave:1,HealthCoefficient:1,AttackCoefficient:1,StartSliver:5,CommerceSliver:1,WaveReward:[],SpawnTimeline:[{id:'wave-group',spawnId:1,unitId:1,count:3,startSeconds:0,intervalSeconds:.5}]}]}};
  Object.assign(source.spawns[0],{x:-212,y:262});
  source.spawns.push({id:2,name:'East reinforcement entrance',x:-209,y:260,enabled:true,graphId:null},{id:3,name:'Reserve entrance',x:-206,y:258,enabled:true,graphId:null});source.nextSpawn=4;
  source.config.WaveCfg.push({...M.clone(source.config.WaveCfg[0]),Wave:2,SpawnTimeline:[{id:'second-wave-group',spawnId:2,unitId:1,count:7,startSeconds:0,intervalSeconds:.5}]});
@@ -45,35 +50,47 @@ async function verify(){
   const button=(text,parent)=>Array.from((parent||root).querySelectorAll('button')).find(node=>node.textContent.trim()===text);
   const click=async(text,parent)=>{const node=button(text,parent);if(!node)throw Error('Missing '+text);if(node.disabled)throw Error('Disabled '+text);await node.onclick();await settle();};
   const current=()=>state.snap.value.graphs.find(route=>route.id==='main'),selected=()=>state.selection.find(id=>id.startsWith('node:'))?.slice(5);
-  const point=(x,y,options)=>{const r=canvas.getBoundingClientRect();return Object.assign({clientX:r.left+canvas.width/2+state.pan.x+x*state.zoom,clientY:r.top+canvas.height/2+state.pan.y-y*state.zoom,button:0,pointerId:31,isPrimary:true,preventDefault(){}},options||{});};
+  const point=(x,y,options)=>{const r=canvas.getBoundingClientRect(),view=canvas.parentElement;return Object.assign({clientX:r.left+(view.clientWidth/2+state.pan.x+x*state.zoom)*r.width/view.clientWidth,clientY:r.top+(view.clientHeight/2+state.pan.y-y*state.zoom)*r.height/view.clientHeight,button:0,pointerId:31,isPrimary:true,preventDefault(){}},options||{});};
   const nodeClick=async(id,options)=>{const node=current().nodes.find(node=>node.id===id);if(!node)throw Error('Missing path point '+id);canvas.onpointerdown(point(node.x,node.y,options));if(state.drag)canvas.onpointerup();await settle();};
   const key=async(target,shift)=>{target.focus();const event=new KeyboardEvent('keydown',{key:'z',ctrlKey:true,shiftKey:!!shift,bubbles:true,cancelable:true});target.dispatchEvent(event);await settle();return event;};
   const original={};let path=[];
-  for(const name of ['beginPath','moveTo','lineTo','arc','stroke','fillText','fillRect'])original[name]=ctx[name];
+  for(const name of ['clearRect','beginPath','moveTo','lineTo','arc','stroke','fill','fillText','fillRect'])original[name]=ctx[name];
+  ctx.clearRect=function(){strokes.length=circleFills.length=labels.length=labelBoxes.length=0;return original.clearRect.apply(this,arguments);};
   ctx.beginPath=function(){path=[];return original.beginPath.apply(this,arguments);};
   for(const name of ['moveTo','lineTo','arc'])ctx[name]=function(){path.push({op:name,args:Array.from(arguments)});return original[name].apply(this,arguments);};
   ctx.stroke=function(){strokes.push({color:this.strokeStyle,lineWidth:this.lineWidth,path:path.map(command=>({op:command.op,args:command.args.slice()}))});return original.stroke.apply(this,arguments);};
+  ctx.fill=function(){const arc=path.find(command=>command.op==='arc');if(arc)circleFills.push({x:arc.args[0],y:arc.args[1],color:this.fillStyle});return original.fill.apply(this,arguments);};
   ctx.fillRect=function(x,y,width,height){if(height===18&&this.font==='11px Arial')labelBoxes.push({x,y,width,height,color:this.fillStyle});return original.fillRect.apply(this,arguments);};
   ctx.fillText=function(text,x,y){labels.push(String(text));const box=labelBoxes[labelBoxes.length-1];if(box&&x===box.x+5&&y===box.y+12)box.label=String(text);return original.fillText.apply(this,arguments);};
   restoreContext=()=>{for(const [name,fn]of Object.entries(original))ctx[name]=fn;};
-  const repaint=async()=>{strokes.length=labels.length=labelBoxes.length=0;canvas.onwheel(Object.assign(point(0,0),{deltaY:0,preventDefault(){}}));await settle();};
-  const cyan=color=>{const match=/^#([0-9a-f]{6})$/i.exec(color);if(!match)return false;const n=parseInt(match[1],16),r=n>>16,g=n>>8&255,b=n&255;return r<160&&g>160&&b>170;};
-  const yellow=color=>{const match=/^#([0-9a-f]{6})$/i.exec(color);if(!match)return false;const n=parseInt(match[1],16);return(n>>16)>180&&(n>>8&255)>130&&(n&255)<160;};
+  const repaint=async()=>{strokes.length=circleFills.length=labels.length=labelBoxes.length=0;canvas.onwheel(Object.assign(point(0,0),{deltaY:0,preventDefault(){}}));await settle();};
 
   const pristine=JSON.stringify(value),browseVersion=version;
   for(const tab of ['Paths','Waves','Spawns','Paths'])await click(tab);
+  await click('Buildings');await repaint();
+  const namesRow=Array.from(root.querySelectorAll('.world-stage-tab-tools label')).find(label=>label.textContent==='Building names');
+  const namesToggle=namesRow.querySelector('input[type="checkbox"]');
+  assert(namesRow.previousElementSibling.textContent==='First-upgrade cards'&&namesRow.nextElementSibling.textContent==='Blockers','the Building names checkbox sits beside the other map overlays');
+  assert(!namesToggle.checked&&!labelBoxes.length,'Buildings opens with its building names hidden');
+  namesToggle.click();await settle();await repaint();
+  const visibleNames=buildings.filter(building=>building.enabled).map(building=>building.name);
+  assert(same(labelBoxes.map(box=>box.label),visibleNames),'turning on Building names labels the visible placements');
+  namesToggle.click();await settle();await repaint();
+  assert(!labelBoxes.length,'turning off Building names removes the labels');
   await click('Spawns');await repaint();
-  const spawnBoxes=labelBoxes.map(box=>({...box})),bounds={left:Math.max(0,canvas.width/2+state.pan.x-map.size.width/2*state.zoom),right:Math.min(canvas.width,canvas.width/2+state.pan.x+map.size.width/2*state.zoom),top:Math.max(0,canvas.height/2+state.pan.y-map.size.height/2*state.zoom),bottom:Math.min(canvas.height,canvas.height/2+state.pan.y+map.size.height/2*state.zoom)};
+  const unselectedSpawn=source.spawns[1];
+  assert(circleFills.some(fill=>fill.x===unselectedSpawn.x&&fill.y===unselectedSpawn.y&&fill.color==='#76bfe7'),'unselected spawn markers remain blue');
+  const spawnBoxes=labelBoxes.map(box=>({...box})),bounds={left:Math.max(0,canvas.clientWidth/2+state.pan.x-map.size.width/2*state.zoom),right:Math.min(canvas.clientWidth,canvas.clientWidth/2+state.pan.x+map.size.width/2*state.zoom),top:Math.max(0,canvas.clientHeight/2+state.pan.y-map.size.height/2*state.zoom),bottom:Math.min(canvas.clientHeight,canvas.clientHeight/2+state.pan.y+map.size.height/2*state.zoom)};
   assert(spawnBoxes.length===3&&source.spawns.every(spawn=>spawnBoxes.some(box=>box.label===spawn.name)),'all three tightly clustered spawn markers receive real Canvas label panels');
   assert(spawnBoxes.every((a,i)=>spawnBoxes.slice(i+1).every(b=>a.x+a.width<=b.x||b.x+b.width<=a.x||a.y+a.height<=b.y||b.y+b.height<=a.y)),'clustered spawn label panel bounds never overlap');
   assert(spawnBoxes.every(box=>box.x>=bounds.left&&box.y>=bounds.top&&box.x+box.width<=bounds.right&&box.y+box.height<=bounds.bottom),'spawn labels near a map corner stay inside both the artwork and Canvas bounds');
-  await click('Waves');await repaint();
+  await click('Waves');await click('Fit map');await repaint();
   assert(labelBoxes.length===1&&labelBoxes[0].label==='West entrance · 3 units','the selected wave labels only its populated spawn and displays its total unit count');
   assert(!strokes.some(stroke=>stroke.path.some(command=>command.op==='arc'&&source.spawns.slice(1).some(spawn=>command.args[0]===spawn.x&&command.args[1]===spawn.y))),'Waves hides marker circles for spawn points with no selected-wave units');
   const secondWave=root.querySelector('[data-wave-index="1"]');if(!secondWave)throw Error('Missing second wave selector');await secondWave.onclick();await settle();await repaint();
   assert(labelBoxes.length===1&&labelBoxes[0].label==='East reinforcement entrance · 7 units','switching waves replaces spawn marker labels and counts with the selected wave');
   assert(!strokes.some(stroke=>stroke.path.some(command=>command.op==='arc'&&[source.spawns[0],source.spawns[2]].some(spawn=>command.args[0]===spawn.x&&command.args[1]===spawn.y))),'wave switching removes the previous spawn marker and keeps unused reserve spawns hidden');
-  await click('Paths');
+  await click('Paths');await click('Fit map');
   assert(JSON.stringify(value)===pristine&&version===browseVersion&&!undo.length,'opening and browsing path, spawn and wave panels does not write drafts');
   assert(calls.every(call=>!['world-change','world-save','world-undo','world-redo'].includes(call.name)),'browsing performs no mutation, Save or history IPC');
   assert(!!root.querySelector('.world-path-list')&&!root.querySelector('.world-wave-list,.world-wave-editor,[data-entry-id]'),'Paths contains the path list and no wave editing UI');
@@ -82,17 +99,42 @@ async function verify(){
   await nodeClick('middle');
   assert(selected()==='middle'&&!state.drag&&version===browseVersion,'selecting a path point does not create a draft edit');
   await repaint();
-  const routeStrokes=strokes.filter(stroke=>cyan(stroke.color));
-  assert(routeStrokes.some(stroke=>stroke.path.some(command=>command.op==='moveTo'&&command.args[0]===-110&&command.args[1]===140)),'the selected route draws cyan path segments on real Canvas');
+  const conditions=Array.from(root.querySelectorAll('.world-inspector details')).find(panel=>panel.querySelector('summary').textContent==='Conditional route');
+  const conditionNames=Array.from(conditions.querySelectorAll('label span'),span=>span.textContent);
+  const buildingBoxes=labelBoxes.filter(box=>conditionNames.includes(box.label));
+  assert(same(buildingBoxes.map(box=>box.label),visibleNames),'Paths labels the visible building placements with their conditional route names');
+  const goal=point(110,-100),boundsRect=canvas.getBoundingClientRect(),goalX=goal.clientX-boundsRect.left,goalY=goal.clientY-boundsRect.top;
+  assert(buildingBoxes.every(box=>box.x>=goalX+34||box.x+box.width<=goalX-12||box.y>=goalY+12||box.y+box.height<=goalY-12),'building labels leave space for the nearby goal marker and its text');
+  const routeStrokes=strokes.filter(stroke=>stroke.color==='#ff8d42');
+  assert(routeStrokes.some(stroke=>stroke.path.some(command=>command.op==='moveTo'&&command.args[0]===-110&&command.args[1]===140)),'the selected route draws orange path segments on real Canvas');
   assert(!routeStrokes.some(stroke=>stroke.path.some(command=>['moveTo','lineTo'].includes(command.op)&&command.args[1]===-160)),'unselected routes are absent from the Canvas path overlay');
-  assert(routeStrokes.reduce((count,stroke)=>count+stroke.path.filter(command=>command.op==='lineTo').length,0)>=6,'selected cyan route segments include direction arrowheads');
+  assert(routeStrokes.reduce((count,stroke)=>count+stroke.path.filter(command=>command.op==='lineTo').length,0)>=6,'orange route segments include direction arrowheads');
+  assert(current().nodes.every(node=>circleFills.some(fill=>fill.x===node.x&&fill.y===node.y&&fill.color===(node.goal?'#ffbb77':'#ff8d42'))),'all path points use orange fills');
   assert(!labels.some(label=>['3','7','11'].includes(label)),'edge branch weights are not drawn as labels on the map');
-  assert(strokes.some(stroke=>yellow(stroke.color)&&stroke.path.some(command=>command.op==='arc'&&command.args[0]===0&&command.args[1]===20&&command.args[2]>8/state.zoom)),'the selected path point has a visible yellow selection ring');
+  assert(strokes.some(stroke=>stroke.color==='#ffda45'&&stroke.path.some(command=>command.op==='arc'&&command.args[0]===0&&command.args[1]===20&&command.args[2]>8/state.zoom)),'the selected path point has a visible yellow selection ring');
 
   const beforeConnection=version;
-  canvas.onpointerdown(point(-88,116));if(state.drag)canvas.onpointerup();await settle();
-  assert(state.selection.includes('edge:first')&&root.querySelector('.world-inspector').textContent.includes('Selected connection'),'clicking away from the midpoint selects the connection and opens its inspector');
-  assert(version===beforeConnection&&!state.drag,'clicking a path connection does not create a draft edit');
+  canvas.onpointerdown(point(-88,116,{ctrlKey:true}));if(state.drag)canvas.onpointerup();await settle();
+  assert(state.selection.includes('edge:first')&&root.querySelector('.world-inspector').textContent.includes('Selected connection'),'Ctrl-click opens the connection settings');
+  assert(version===beforeConnection&&!state.drag,'inspecting a path connection does not create a draft edit');
+
+  const beforeLine=M.clone(current()),lineClick=point(-82.5+3.6/state.zoom,110+3.3/state.zoom);
+  canvas.onpointerdown(lineClick);canvas.onpointerup(point(-40,60));await settle();
+  assert(version===beforeConnection&&same(current(),beforeLine),'dragging from a path segment does not add a point');
+  canvas.onpointerdown(lineClick);canvas.onpointerup(lineClick);await settle();
+  const clickedId=selected(),clickedNode=current().nodes.find(node=>node.id===clickedId);
+  assert(version===beforeConnection+1&&clickedNode&&Math.abs(clickedNode.x+82.5)<1e-7&&Math.abs(clickedNode.y-110)<1e-7,'a left-click inserts and selects a point at the cursor projection on the segment');
+  assert(same(current().edges.find(edge=>edge.id==='first'),{...beforeLine.edges[0],to:clickedId})&&current().edges.some(edge=>edge.from===clickedId&&edge.to==='middle'),'the inserted point splits the clicked segment and retains its authored settings');
+  await nodeClick(clickedId,{button:2});
+  assert(version===beforeConnection+2&&same(current(),beforeLine),'right-clicking the inserted point restores the original segment');
+
+  const nearFraction=12/(state.zoom*Math.hypot(110,120));
+  const nearStart=point(-110+nearFraction*110,140-nearFraction*120);
+  canvas.onpointerdown(nearStart);canvas.onpointerup(nearStart);await settle();
+  assert(version===beforeConnection+3&&current().nodes.length===4,'the visible line remains clickable just outside the start marker');
+  await nodeClick(selected(),{button:2});
+  assert(same(current(),beforeLine),'right-click selects the new point even near its neighbor');
+
   const spawnRow=Array.from(root.querySelectorAll('.world-path-spawns label')).find(row=>row.querySelector('span')&&row.querySelector('span').textContent==='West entrance');
   const assignment=spawnRow&&spawnRow.querySelector('input[type="checkbox"]');if(!assignment)throw Error('Missing path spawn assignment');
   assignment.checked=false;await assignment.onchange();await settle();

@@ -14,6 +14,16 @@ const STAGE_SECTIONS=[
 ];
 const cleanName=value=>String(value||'').replace(/^\s*(?:Stage\s+)?\d+(?:[.)]\s*|\s*[—–:-]\s*)/i,'').trim();
 const spawnRanges=Names.spawnRanges,pathTitle=Names.pathName;
+// Main Hall, House, Mill, Barracks, Tower, Wall / Gate.
+const buildingTypeOrder={1:0,4:1,5:2,3:3,2:4,6:5};
+const buildingNameOrder=new Intl.Collator('en',{numeric:true,sensitivity:'base'});
+function orderedBuildings(buildings){
+ return buildings.slice().sort((a,b)=>{
+  const typeA=buildingTypeOrder[a.kind]??Number.MAX_SAFE_INTEGER;
+  const typeB=buildingTypeOrder[b.kind]??Number.MAX_SAFE_INTEGER;
+  return typeA-typeB||buildingNameOrder.compare(a.name??'',b.name??'');
+ });
+}
 const isWaveRow=wave=>wave&&typeof wave==='object'&&!Array.isArray(wave);
 const waveLabel=(wave,index)=>'Wave '+(wave&&wave.Wave||index+1);
 function pathSubtitle(stage,graph){const required=graph.requiresAnyBuilding||[],condition=Model.legacyUnavailable(graph)?'Unavailable legacy route':!Array.isArray(required)?'Invalid building conditions':required.length?'Requires: '+required.map(id=>{const building=stage.buildings.find(building=>building.id===id);return building?building.name:'Building '+id;}).join(' or '):'Always available';return graph.nodes.length+(graph.nodes.length===1?' point · ':' points · ')+condition;}
@@ -31,7 +41,7 @@ function create(c){
    busy:()=>!!(state.closed||state.loading||state.snap.busy||options.busy?.())});
  }
  const reorder=collection=>c.editStageCards&&(edit=>c.editStageCards({type:'order',collection,...edit}));
- state.stageSearch='';state.waveSpawnFilter='all';state.showFirstUpgradeCards=false;
+ state.stageSearch='';state.waveSpawnFilter='all';state.showFirstUpgradeCards=false;state.showBuildingNames=false;
  const expanded=state.stageDetails||(state.stageDetails=Object.create(null));
  // Tokens are editor-only: wave rows deliberately retain their authored format.
  // A queued handler may compose our own edits, but never follow a shifted row.
@@ -124,6 +134,7 @@ function create(c){
   if(state.tab==='Buildings'){
    const cards=field(tools,'First-upgrade cards',state.showFirstUpgradeCards,value=>{state.showFirstUpgradeCards=value;c.prepareImages();draw();});
    cards.title='Show the in-game name cards for the building plots available at this hall level.';
+   field(tools,'Building names',state.showBuildingNames,value=>{state.showBuildingNames=value;draw();});
   }
   if(state.tab!=='Waves'){field(tools,'Blockers',state.showBlockers,value=>{state.showBlockers=value;render();});field(tools,'Snap',state.snapGrid,value=>state.snapGrid=Math.max(0,value));}
   if(state.tab!=='Waves'&&state.showBlockers){const legend=el('span',undefined,'world-blocker-legend');legend.appendChild(el('span','Map','world-map-blocker-key'));legend.appendChild(el('span','Buildings','world-building-blocker-key'));tools.appendChild(legend);}
@@ -134,7 +145,15 @@ function create(c){
    section(parent,'Stages');const search=el('input');search.type='search';search.placeholder='Find a stage…';search.setAttribute('aria-label','Find a stage');search.value=state.stageSearch;parent.appendChild(search);const rows=el('div',undefined,'world-stage-list');parent.appendChild(rows);for(const row of catalog().stages)stageButton(rows,row);const filter=()=>{state.stageSearch=search.value;for(const row of rows.children)row.hidden=!row.textContent.toLowerCase().includes(search.value.toLowerCase());};search.oninput=filter;filter();return;
   }
   if(state.tab==='Buildings'){
-   section(parent,'Placed buildings');note(parent,'Drag cards to rearrange them.');const rows=el('div',undefined,'world-building-list'),cards=[];parent.appendChild(rows);for(const b of CardOrder.ordered(stage().buildings)){const item=button(rows,b.name+(b.enabled===false?' · Disabled':''),()=>{c.cancelDrag();state.tool='select';state.selection=['building:'+b.id];render();},state.selection.includes('building:'+b.id));item.dataset.buildingId=b.id;item.setAttribute('aria-current',String(state.selection[0]==='building:'+b.id));item.setAttribute('aria-pressed',String(state.selection.includes('building:'+b.id)));cards.push({id:b.id,node:item});}draggable(rows,cards,s=>s.buildings,{commit:reorder('buildings')});
+   section(parent,'Placed buildings');
+   const rows=el('div',undefined,'world-building-list');
+   parent.appendChild(rows);
+   for(const b of orderedBuildings(stage().buildings)){
+    const item=button(rows,b.name+(b.enabled===false?' · Disabled':''),()=>{c.cancelDrag();state.tool='select';state.selection=['building:'+b.id];render();},state.selection.includes('building:'+b.id));
+    item.dataset.buildingId=b.id;
+    item.setAttribute('aria-current',String(state.selection[0]==='building:'+b.id));
+    item.setAttribute('aria-pressed',String(state.selection.includes('building:'+b.id)));
+   }
    const offers=stage().specials||[];
    if(offers.length){
     section(parent,'Recruit and merchant offers');
@@ -386,10 +405,18 @@ function create(c){
  }
  function sameCondition(a,b){return a===b||!!a&&!!b&&typeof a==='object'&&typeof b==='object'&&JSON.stringify(a)===JSON.stringify(b);}
  function eachTimedGroup(s,visit){for(const wave of Array.isArray(s.config.WaveCfg)?s.config.WaveCfg:[])if(wave&&Array.isArray(wave.SpawnTimeline))for(const entry of wave.SpawnTimeline)if(entry&&typeof entry==='object'&&!Array.isArray(entry))visit(entry);}
- function conditionFields(parent,value,change){
+ function conditionFields(parent,value,change,scope){
   if(value!==undefined&&value!==null&&!Array.isArray(value)){note(parent,'The saved building conditions are not a list. Clear them explicitly to repair this route.',true);button(parent,'Clear invalid conditions',()=>change(current=>{if(JSON.stringify(current)!==JSON.stringify(value))throw Error('Building conditions changed. Reopen this route before clearing them.');return [];}));return;}
-  const ids=value||[],known=stage().buildings,options=known.concat(Array.from(new Set(ids)).filter(id=>!known.some(building=>building.id===id)).map(id=>({id,name:'Missing building '+id})));
-  for(const building of options)field(parent,building.name,ids.includes(building.id),enabled=>change(current=>{if(current!==undefined&&current!==null&&!Array.isArray(current))throw Error('Building conditions changed. Reopen this route before editing them.');const latest=current||[];return enabled?(latest.some(id=>sameCondition(id,building.id))?latest:latest.concat(building.id)):latest.filter(id=>!sameCondition(id,building.id));}));
+  const ids=value||[],source=stage(),known=orderedBuildings(source.buildings);
+  const options=known.concat(Array.from(new Set(ids)).filter(id=>!known.some(building=>building.id===id)).map(id=>({id,name:'Missing building '+id})));
+  for(const building of options)field(parent,building.name,ids.includes(building.id),enabled=>{
+   if(c.editStageCards&&known.includes(building))return c.editStageCards({stageId:source.id,type:'path-condition',...scope,buildingId:building.id,enabled});
+   return change(current=>{
+    if(current!==undefined&&current!==null&&!Array.isArray(current))throw Error('Building conditions changed. Reopen this route before editing them.');
+    const latest=current||[];
+    return enabled?(latest.some(id=>sameCondition(id,building.id))?latest:latest.concat(building.id)):latest.filter(id=>!sameCondition(id,building.id));
+   });
+  });
  }
  function pathInspector(){
   const graph=stage().graphs.find(g=>g.id===state.graph);section(c.right,graph?pathTitle(stage(),graph):'Path');if(!graph){note(c.right,'Choose a path on the left, or create a new one.');return;}
@@ -397,11 +424,27 @@ function create(c){
   field(c.right,'Route spread',graph.spread===undefined?'spawn':'custom',value=>edit(s=>{const route=s.graphs.find(g=>g.id===graph.id);if(value==='spawn')delete route.spread;else if(route.spread===undefined)route.spread=60;}),[{value:'spawn',label:'Use spawn radius'},{value:'custom',label:'Custom half-width'}]);
   if(graph.spread!==undefined){const width=field(c.right,'Path half-width',numericValue(graph.spread),value=>{if(!Number.isFinite(value)||value<0||value>1500)throw Error('Choose a width from 0 to 1500.');return edit(s=>s.graphs.find(g=>g.id===graph.id).spread=value);});width.min='0';width.max='1500';}
   note(c.right,'Enemies retain a lane based on their spawn position. Lanes tighten around obstacles and keep the same branches and final goal. Width 0 follows the center line.');
-  note(c.right,'Cyan arrows show travel direction. Yellow marks the selected point. Ctrl-click inserts the next point; right-click removes it.');
+  note(c.right,'Orange arrows show travel direction. Click a line to insert a point. Ctrl-click a line for its connection settings. Right-click a point to remove it.');
   const selected=state.selection.find(id=>id.startsWith('node:')),node=selected&&graph.nodes.find(n=>'node:'+n.id===selected);
   section(c.right,'Selected point');if(node){const at=Paths.availability(stage(),graph.id,node.id);field(c.right,'X',numericValue(node.x),value=>c.patchSelected('x',Number(value)));field(c.right,'Y',numericValue(node.y),value=>c.patchSelected('y',Number(value)));field(c.right,'Goal',!!node.goal,value=>c.patchSelected('goal',value));button(c.right,'Use as start',()=>edit(s=>s.graphs.find(g=>g.id===graph.id).entry=node.id));const add=button(c.right,node.goal?'Insert point before goal':'Insert next point',()=>c.insertPathNode(node.id));add.disabled=!at.insert;add.title=at.insertReason||'Ctrl-click this point';const remove=button(c.right,'Remove point',()=>c.removePathNode(node.id));remove.disabled=!at.remove;remove.title=at.removeReason||'Right-click this point';}else note(c.right,'Click a path point to move it or edit it here.');
-  const edgeId=state.selection.find(id=>id.startsWith('edge:')),edge=edgeId&&graph.edges.find(e=>'edge:'+e.id===edgeId);if(edge){const options=details('Selected connection','path:'+graph.id+':edge:'+edge.id,true);c.right.appendChild(options);field(options,'Branch weight',numericValue(edge.weight),value=>c.patchSelected('weight',Number(value)));note(options,'Weights matter only when a point has multiple outgoing branches. Equal weights choose branches equally.');note(options,'Available when any selected building exists. Leave all unchecked for an unconditional connection.');conditionFields(options,edge.requiresAnyBuilding,update=>edit(s=>{const connection=s.graphs.find(g=>g.id===graph.id).edges.find(e=>e.id===edge.id);connection.requiresAnyBuilding=update(connection.requiresAnyBuilding);}));}
-  const advanced=details('Conditional route','path:'+graph.id+':conditions');c.right.appendChild(advanced);note(advanced,'Leave empty for the normal route. Choose buildings only for an alternate route that becomes available when one exists.');if(Model.legacyUnavailable(graph))note(advanced,'The original all-zero building condition keeps this legacy route unavailable. Its data is retained; change the conditions explicitly to enable it.',true);conditionFields(advanced,graph.requiresAnyBuilding,update=>edit(s=>{const route=s.graphs.find(g=>g.id===graph.id);route.requiresAnyBuilding=update(route.requiresAnyBuilding);}));
+  const edgeId=state.selection.find(id=>id.startsWith('edge:')),edge=edgeId&&graph.edges.find(e=>'edge:'+e.id===edgeId);
+  if(edge){
+   const options=details('Selected connection','path:'+graph.id+':edge:'+edge.id,true);
+   c.right.appendChild(options);field(options,'Branch weight',numericValue(edge.weight),value=>c.patchSelected('weight',Number(value)));
+   note(options,'Weights matter only when a point has multiple outgoing branches. Equal weights choose branches equally.');
+   note(options,'Available when any selected building exists. Leave all unchecked for an unconditional connection.');
+   conditionFields(options,edge.requiresAnyBuilding,update=>edit(s=>{
+    const connection=s.graphs.find(g=>g.id===graph.id).edges.find(e=>e.id===edge.id);
+    connection.requiresAnyBuilding=update(connection.requiresAnyBuilding);
+   }),{graphId:graph.id,edgeId:edge.id});
+  }
+  const advanced=details('Conditional route','path:'+graph.id+':conditions');c.right.appendChild(advanced);
+  note(advanced,'Leave empty for the normal route. Choose buildings only for an alternate route that becomes available when one exists.');
+  if(Model.legacyUnavailable(graph))note(advanced,'The original all-zero building condition keeps this legacy route unavailable. Its data is retained; change the conditions explicitly to enable it.',true);
+  conditionFields(advanced,graph.requiresAnyBuilding,update=>edit(s=>{
+   const route=s.graphs.find(g=>g.id===graph.id);
+   route.requiresAnyBuilding=update(route.requiresAnyBuilding);
+  }),{graphId:graph.id});
   const test=details('Test movement','path:'+graph.id+':movement');c.right.appendChild(test);const previewSpawns=stage().spawns.filter(spawn=>spawn.enabled!==false&&graph.spawnIds.includes(spawn.id));if(!previewSpawns.some(spawn=>spawn.id===state.spawn))state.spawn=previewSpawns.length?previewSpawns[0].id:null;const spawnChoice=field(test,'Preview spawn',state.spawn===null?'':state.spawn,value=>{state.spawn=Number(value);state.nav=null;draw();},previewSpawns.length?previewSpawns.map(spawn=>({value:spawn.id,label:spawn.name})):[{value:'',label:'No enabled assigned spawns'}]);spawnChoice.disabled=!previewSpawns.length;field(test,'Unit radius',state.radius,value=>{state.radius=Math.max(1,value);state.nav=null;draw();});button(test,'Calculate approach',c.navigation).disabled=!previewSpawns.length;note(test,previewSpawns.length?'The calculated approach is yellow. A closed attackable gate is a valid destination.':'Assign this path to an enabled spawn before testing its movement.');button(c.right,'Duplicate path',()=>{c.cancelDrag();return edit(s=>{state.graph=Paths.duplicatePath(s,graph.id);state.selection=[];state.connect=null;state.tool='select';});});button(c.right,'Delete path',()=>edit(s=>{s.graphs=s.graphs.filter(g=>g.id!==graph.id);for(const spawn of s.spawns)if(spawn.graphId===graph.id)spawn.graphId=null;eachTimedGroup(s,entry=>{if(entry.routeGraphId===graph.id)entry.routeGraphId=null;});state.graph=null;state.selection=[];}));
  }
  function numericValue(value){return value===null||value===undefined||value===''?NaN:Number(value);}

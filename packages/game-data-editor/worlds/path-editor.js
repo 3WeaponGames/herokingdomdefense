@@ -24,10 +24,14 @@ function validate(before,after){
 function insertPlan(stage,graphId,nodeId){
  const plan=locate(stage,graphId,nodeId),graph=plan.graph,node=graph.nodes.find(node=>node.id===nodeId),candidates=graph.edges.filter(edge=>edge.weight>0&&(node.goal?edge.to===nodeId:edge.from===nodeId));
  if(candidates.length!==1)throw Error(node.goal?'Select a goal with one predecessor to insert a point before it.':'Select a point with one next segment; choose a branch point farther along that segment.');
- const edge=candidates[0],from=graph.nodes.find(node=>node.id===edge.from),to=graph.nodes.find(node=>node.id===edge.to);
+ return splitSegment(plan,candidates[0],.5,graph.nodes.indexOf(node)+(node.goal?0:1));
+}
+function splitSegment(plan,edge,fraction,nodeIndex){
+ const graph=plan.graph,from=graph.nodes.find(node=>node.id===edge.from),to=graph.nodes.find(node=>node.id===edge.to);
  if(![from.x,from.y,to.x,to.y].every(Number.isFinite))throw Error('Both neighboring points need finite positions.');
- const added={id:unique(graph.nodes,'node-'),x:from.x/2+to.x/2,y:from.y/2+to.y/2,goal:false},second={id:unique(graph.edges,'edge-'),from:added.id,to:edge.to,weight:1};
- edge.to=added.id;graph.edges.splice(graph.edges.indexOf(edge)+1,0,second);graph.nodes.splice(graph.nodes.indexOf(node)+(node.goal?0:1),0,added);
+ const added={id:unique(graph.nodes,'node-'),x:from.x*(1-fraction)+to.x*fraction,y:from.y*(1-fraction)+to.y*fraction,goal:false};
+ const second={id:unique(graph.edges,'edge-'),from:added.id,to:edge.to,weight:1};
+ edge.to=added.id;graph.edges.splice(graph.edges.indexOf(edge)+1,0,second);graph.nodes.splice(nodeIndex,0,added);
  validate(plan.before,graph);return Object.assign(plan,{selected:added.id});
 }
 function stitch(incoming,outgoing){
@@ -44,7 +48,8 @@ function stitch(incoming,outgoing){
  result.to=outgoing.to;return result;
 }
 function removePlan(stage,graphId,nodeId){
- const plan=locate(stage,graphId,nodeId),graph=plan.graph,node=graph.nodes.find(node=>node.id===nodeId),incoming=graph.edges.filter(edge=>edge.weight>0&&edge.to===nodeId),outgoing=graph.edges.filter(edge=>edge.weight>0&&edge.from===nodeId);let selected;
+ const plan=locate(stage,graphId,nodeId),graph=plan.graph,node=graph.nodes.find(node=>node.id===nodeId);
+ const predecessors=graph.edges.filter(edge=>edge.to===nodeId),incoming=predecessors.filter(edge=>edge.weight>0),outgoing=graph.edges.filter(edge=>edge.weight>0&&edge.from===nodeId);let selected;
  if(graph.nodes.length===1)throw Error('Keep at least one point as the path entry and goal.');
  if(nodeId===graph.entry){
   if(node.goal||incoming.length||outgoing.length!==1||outgoing[0].weight<=0||condition(outgoing[0]).length)throw Error('The entry can only be removed when it leads directly to one unconditional next point.');
@@ -55,14 +60,23 @@ function removePlan(stage,graphId,nodeId){
   if(branches.length!==1)throw Error('Removing this goal would cut off another branch. Select an interior point instead.');
   previous.goal=true;selected=previous.id;
  }else{
-  if(incoming.length!==1||outgoing.length!==1||incoming[0].weight<=0||outgoing[0].weight<=0)throw Error('Only a linear point can be removed safely. Keep branch and join points, or edit their segments explicitly.');
-  const replacement=stitch(incoming[0],outgoing[0]);graph.edges[graph.edges.indexOf(incoming[0])]=replacement;selected=outgoing[0].to;
+  const links=incoming.length?incoming:predecessors;
+  if(links.length!==1||outgoing.length!==1)throw Error('Only a linear point can be removed safely. Keep branch and join points, or edit their segments explicitly.');
+  const replacement=stitch(links[0],outgoing[0]);graph.edges[graph.edges.indexOf(links[0])]=replacement;selected=outgoing[0].to;
  }
  graph.nodes=graph.nodes.filter(value=>value.id!==nodeId);graph.edges=graph.edges.filter(edge=>edge.from!==nodeId&&edge.to!==nodeId);
  validate(plan.before,graph);return Object.assign(plan,{selected});
 }
 function commit(stage,plan){stage.graphs[plan.index]=plan.graph;return plan.selected;}
 function insertNode(stage,graphId,nodeId){return commit(stage,insertPlan(stage,graphId,nodeId));}
+function insertOnEdge(stage,graphId,connection,fraction){
+ const plan=locate(stage,graphId,connection.from),graph=plan.graph;
+ const edge=graph.edges.find(edge=>edge.id===connection.id&&edge.from===connection.from&&edge.to===connection.to);
+ if(!edge)throw Error('This connection changed. Click the current path segment to insert a point.');
+ if(!Number.isFinite(fraction)||fraction<=0||fraction>=1)throw Error('Click between the two points on the path segment.');
+ const nodeIndex=graph.nodes.findIndex(node=>node.id===edge.from)+1;
+ return commit(stage,splitSegment(plan,edge,fraction,nodeIndex));
+}
 function removeNode(stage,graphId,nodeId){return commit(stage,removePlan(stage,graphId,nodeId));}
 function availability(stage,graphId,nodeId){const result={insert:true,remove:true,insertReason:'',removeReason:''};for(const [key,plan]of [['insert',insertPlan],['remove',removePlan]])try{plan(stage,graphId,nodeId);}catch(error){result[key]=false;result[key+'Reason']=error.message;}return result;}
 function duplicatePath(stage,graphId){
@@ -73,4 +87,4 @@ function duplicatePath(stage,graphId){
  // Point/edge IDs are scoped to their graph; retain their topology and metadata.
  stage.graphs.push(copy);Names.refreshPaths(stage);CardOrder.move(stage.graphs,copy.id,graphId,true);return copy.id;
 }
-module.exports={insertNode,removeNode,availability,duplicatePath};
+module.exports={insertNode,insertOnEdge,removeNode,availability,duplicatePath};
