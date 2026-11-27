@@ -29,6 +29,7 @@ function areaStretch(visual) { return Math.sqrt(sizeMultiplier(visual && visual.
 function sample(frame, source, visual) {
   var parts = [];
   var area = areaStretch(visual), size = sizeMultiplier(visual && visual.spearScale);
+  var longitudinalScale = size * sizeMultiplier(visual && visual.spearLengthScale);
   function accent(x, y, width, alpha) {
     parts.push({ kind: "Accent", source: flick, fraction: 1, x: x * area, y: y * area, angle: -.08 * 180 / Math.PI, width: width * area, height: 2 * area, alpha: alpha });
   }
@@ -54,9 +55,9 @@ function sample(frame, source, visual) {
       alpha = age <= fade ? .62 - .09 * (age - 4) / (fade - 4) : .53 * (1 - Math.max(0, age - hold) / 4);
     }
     var width = Math.round(jabLength * 4 * fraction) / 4;
-    var reach = width * area, length = width * size, radians = angle * Math.PI / 180;
-    // The area controls the jab path. Offset the rear of the sprite to keep
-    // its tip on the wind as either of the two size settings changes.
+    var reach = width * area, length = width * longitudinalScale, radians = angle * Math.PI / 180;
+    // The stretch moves the rear of the sprite along the jab direction and
+    // keeps its tip at the end of the wind.
     var rear = reach - length, across = y * area;
     parts.push({ kind: "Wind", source: wind, fraction: fraction, x: 0, y: across, angle: angle, width: reach, height: windHeight * lift * area, alpha: alpha });
     parts.push({ kind: "Spear", source: source, fraction: fraction, x: rear * Math.cos(radians), y: across + rear * Math.sin(radians), angle: angle, width: length, height: source.height * scale * size, alpha: alpha });
@@ -234,11 +235,13 @@ function paint(record, renderer, accents, cc) {
   }
   view.node.active = true;
   var index = frameIndex(record.entity.age, record.entity.clip), visual = record.entity.visual, tint = visual.color || "#ffffff";
-  if (index === view.index && tint === view.tint && visual.areaScale === view.areaScale && visual.spearScale === view.spearScale) return true;
+  if (index === view.index && tint === view.tint && visual.areaScale === view.areaScale &&
+      visual.spearScale === view.spearScale && visual.spearLengthScale === view.spearLengthScale) return true;
   view.index = index;
   view.tint = tint;
   view.areaScale = visual.areaScale;
   view.spearScale = visual.spearScale;
+  view.spearLengthScale = visual.spearLengthScale;
   var color = cc.color(tint), parts = sample(index, source, visual);
   parts.forEach(function (part, i) {
     var sprite = view.sprites[i];

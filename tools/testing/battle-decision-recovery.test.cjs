@@ -7,7 +7,7 @@ const noop = () => {};
 
 function battle() {
   const h = fixture(), stages = { Prepare: 0, Fight: 2, Transition: 3, End: 4 };
-  const ids = { UIBuff: 'perk', UISuspend: 'pause', UIGameEnd: 'result', UIGameBack: 'retry', UIHome: 'home' };
+  const ids = { UIBuff: 'perk', UISuspend: 'pause', UIGameEnd: 'result', UIGameBack: 'retry', UIHome: 'home', UIEndlessResult: 'endless-result' };
   const outcome = { perks: [], rounds: 0, checkpoints: 0, settlements: 0, restarts: 0 };
   const player = { getMissionData: () => ({ addAchNum: noop }), getGameData: () => ({
     readyForNewBattle: () => true, beginSettlement() { outcome.settlements++; return { id: 'one' }; }
@@ -57,6 +57,82 @@ function failAndKeep(h, index, id) {
   assert(!h.ui.uistatck.has(id)); h.requests[index].done(null, h.assetFor(id));
   assert(!h.ui.uistatck.has(id), 'obsolete success cannot skip Retry');
 }
+
+function startDusk(h) {
+  const { u, cc } = h, game = u.ctrGame;
+  const tint = { color: 'daylight' };
+  game.ndBg.children.push(tint);
+  game.gameData.getBulidList = () => [];
+  game.gameData.startRoundGame = noop;
+  u.playBattleMusic = noop;
+  u.btnStartFight = {};
+  u.btnAddCoin = {};
+  const tween = {
+    set: () => tween,
+    to: (_seconds, _properties, options) => { tween.update = options.onUpdate; return tween; },
+    call: callback => { tween.complete = callback; return tween; },
+    start: noop
+  };
+  cc.tween = () => tween;
+  cc.Color = function (red) { this.red = red; };
+  u.startRoundGame();
+  return { game, tint, tween };
+}
+
+test('ending Endless from Pause while dusk is playing retires the wave start', () => {
+  const h = battle(), reasons = [];
+  const { game, tint, tween } = startDusk(h);
+  h.u._endless = true;
+  h.u._endlessRun = {};
+  h.u.finishEndless = reason => reasons.push(reason);
+  h.u.openPause();
+  h.requests[0].done(null, h.assetFor('pause'));
+  assert(h.ui.uistatck.get('pause').breakCall());
+  assert.deepEqual(reasons, ['quit']);
+  tween.update(null, .8);
+  tween.complete();
+  assert.equal(game.gameStatus, 4);
+  assert.equal(tint.color, 'daylight');
+  assert.equal(h.u.isPauset, true);
+});
+
+test('dusk completes in the same paused battle and ignores a destroyed or restarted one', () => {
+  for (const change of ['pause', 'destroy', 'restart', 'new game']) {
+    const h = battle(), { game, tint, tween } = startDusk(h);
+    const pause = {};
+    if (change === 'pause') h.u.onPauseGame(true, pause);
+    if (change === 'destroy') h.u.onDestroy();
+    if (change === 'restart') game._combatEpoch++;
+    if (change === 'new game') h.u.ctrGame = { ...game };
+    tween.update(null, .8);
+    tween.complete();
+    assert.equal(game.gameStatus, change === 'pause' ? 2 : 3, change);
+    assert.equal(tint.color === 'daylight', change !== 'pause', change);
+    if (change === 'pause') {
+      assert(h.u.isPauset);
+      h.u.onPauseGame(false, pause);
+      assert.equal(h.u.isPauset, false);
+    }
+  }
+});
+
+test('cancelling an Endless result load returns to the lobby after settling the run', () => {
+  const h = battle(), actions = [];
+  h.u._endless = true;
+  h.u._endlessRun = {};
+  h.u.finishEndless = reason => actions.push(reason);
+  h.u.closeUI = () => actions.push('close');
+  h.u.onGameOver(false);
+  h.flush();
+  assert.deepEqual(actions, ['defeat']);
+  assert.equal(h.requests.length, 1);
+  h.requests[0].done(Error('controlled Endless result prefab failure'));
+  assert(h.paused());
+  h.resources.resolveRuntimeRecovery(false);
+  assert.deepEqual(actions, ['defeat', 'close']);
+  assert.equal(h.paused(), false);
+  assert.equal(h.blocked(), false);
+});
 
 test('a mandatory perk survives repeated failure and Cancel, then grants and advances exactly once', () => {
   const h = battle(); h.u.endRoundGame(); h.u.endRoundGame(); h.flush();

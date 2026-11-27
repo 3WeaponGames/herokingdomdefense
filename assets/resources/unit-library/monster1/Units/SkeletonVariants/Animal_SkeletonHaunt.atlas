@@ -4,80 +4,80 @@ size: 2048,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-Animal_SkeletonHaunt_Hit
-  rotate: false
-  xy: 2, 2
-  size: 236, 213
-  orig: 236, 213
-  offset: 0, 0
-  index: -1
-Animal_SkeletonHaunt_Hit_2
-  rotate: false
-  xy: 242, 2
-  size: 236, 213
-  orig: 236, 213
-  offset: 0, 0
-  index: -1
-Animal_SkeletonHaunt_Head
-  rotate: false
-  xy: 482, 2
-  size: 196, 173
-  orig: 196, 173
-  offset: 0, 0
-  index: -1
-Animal_SkeletonHaunt_Attack
-  rotate: false
-  xy: 682, 2
-  size: 199, 166
-  orig: 199, 166
-  offset: 0, 0
-  index: -1
-u_089c80803f91d43458945d5fd19208dd
-  rotate: false
-  xy: 885, 2
-  size: 113, 161
-  orig: 113, 161
-  offset: 0, 0
-  index: -1
-Animal_SkeletonHaunt_Body
-  rotate: false
-  xy: 1002, 2
-  size: 166, 108
-  orig: 166, 108
-  offset: 0, 0
-  index: -1
-Animal_SkeletonHaunt_Tail
-  rotate: false
-  xy: 1172, 2
-  size: 60, 72
-  orig: 60, 72
-  offset: 0, 0
-  index: -1
 u_10d4f622f508d71479ef6f7d59ece04e
   rotate: false
-  xy: 1236, 2
+  xy: 2, 2
   size: 215, 70
   orig: 215, 70
   offset: 0, 0
   index: -1
-Animal_SkeletonHaunt_Arm
+Animal_SkeletonHaunt_Tail
   rotate: false
-  xy: 1455, 2
-  size: 36, 31
-  orig: 36, 31
+  xy: 221, 2
+  size: 76, 55
+  orig: 76, 55
   offset: 0, 0
   index: -1
-Animal_SkeletonHaunt_Arm2
+Animal_SkeletonHaunt_Body
   rotate: false
-  xy: 1495, 2
-  size: 36, 31
-  orig: 36, 31
+  xy: 301, 2
+  size: 182, 156
+  orig: 182, 156
   offset: 0, 0
   index: -1
 Animal_SkeletonHaunt_Leg
   rotate: false
-  xy: 1535, 2
-  size: 35, 28
-  orig: 35, 28
+  xy: 487, 2
+  size: 134, 108
+  orig: 134, 108
+  offset: 0, 0
+  index: -1
+Animal_SkeletonHaunt_Arm2
+  rotate: false
+  xy: 625, 2
+  size: 76, 51
+  orig: 76, 51
+  offset: 0, 0
+  index: -1
+Animal_SkeletonHaunt_Arm
+  rotate: false
+  xy: 705, 2
+  size: 70, 48
+  orig: 70, 48
+  offset: 0, 0
+  index: -1
+Animal_SkeletonHaunt_Head
+  rotate: false
+  xy: 779, 2
+  size: 205, 184
+  orig: 205, 184
+  offset: 0, 0
+  index: -1
+Animal_SkeletonHaunt_Attack
+  rotate: false
+  xy: 988, 2
+  size: 205, 184
+  orig: 205, 184
+  offset: 0, 0
+  index: -1
+Animal_SkeletonHaunt_Hit
+  rotate: false
+  xy: 1197, 2
+  size: 276, 164
+  orig: 276, 164
+  offset: 0, 0
+  index: -1
+Animal_SkeletonHaunt_Hit_2
+  rotate: false
+  xy: 1477, 2
+  size: 276, 164
+  orig: 276, 164
+  offset: 0, 0
+  index: -1
+u_089c80803f91d43458945d5fd19208dd
+  rotate: false
+  xy: 1757, 2
+  size: 113, 161
+  orig: 113, 161
   offset: 0, 0
   index: -1

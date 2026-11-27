@@ -16,12 +16,13 @@ function fixture(t,primary={},secondary={}){
  return {root,service,bytes,req,change,commits:()=>commits};
 }
 
-test('Vanguard cast area and spear size are separate draft controls that save to both configs',t=>{
+test('Vanguard cast area, spear size and spear length are separate draft controls that save to both configs',t=>{
  const f=fixture(t),before=f.bytes();
  const Authoring=require('../../assets/_script/HeroSkillAuthoring');
  const snapshot=f.service.snapshot(),source=snapshot.fields.vanguard,settings=snapshot.effective.vanguard;
  const fields=Authoring.fields('vanguard','active',source,settings).visual;
- const edits=[{path:'visual.castAreaScale',value:.5},{path:'visual.castSpearScale',value:.35}];
+ const edits=[{path:'visual.castAreaScale',value:.5},{path:'visual.castSpearScale',value:.35},{path:'visual.castSpearLengthScale',value:1.5}];
+ assert.equal(fields.find(field=>field.path==='visual.castSpearLengthScale')?.label,'Spear length');
  for(const {path} of edits){
   const visible=fields.find(field=>field.path===path);
   assert.equal(visible?.group,'Cast effect');
@@ -33,9 +34,9 @@ test('Vanguard cast area and spear size are separate draft controls that save to
  const draft=f.service.changeMany(f.req({style:'vanguard',changes:edits}));
  assert.deepEqual(f.bytes(),before);
  const projected=Settings.resourceVisual(draft.effective.vanguard.visual,'castResource');
- assert.equal(projected.areaScale,.5);assert.equal(projected.spearScale,.35);
+ assert.equal(projected.areaScale,.5);assert.equal(projected.spearScale,.35);assert.equal(projected.spearLengthScale,1.5);
  assert(f.service.save(f.req()).result.saved);
- for(const text of f.bytes())assert.deepEqual(JSON.parse(text).HeroSkills.vanguard.visual,{castAreaScale:.5,castSpearScale:.35});
+ for(const text of f.bytes())assert.deepEqual(JSON.parse(text).HeroSkills.vanguard.visual,{castAreaScale:.5,castSpearScale:.35,castSpearLengthScale:1.5});
 });
 
 test('enemy skill visuals use the shared draft and publish to the battle config',t=>{

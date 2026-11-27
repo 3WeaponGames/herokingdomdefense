@@ -32,7 +32,7 @@ function button(root, name, icon, caption, red) {
 exports.stat = function (text, value) { require("SettingsPanelStyle").body(text, 29, !!value, value ? "#ffdf77" : "#f7f6ee"); };
 exports.layout = function (owner) {
   var root = owner.node.getChildByName("root"), meta = owner.menuMetadata || {};
-  var exitCaption = meta.mode === "wallDefense" || !meta.mode && owner._stats ? "pause.endBattle" : "pause.saveAndExit";
+  var exitCaption = meta.mode === "endless" || meta.mode === "wallDefense" || !meta.mode && owner._stats ? "pause.endBattle" : "pause.saveAndExit";
   var campaign = meta.mode === "campaign" || !meta.mode && !owner._stats;
   var canRestartWave = campaign && (typeof meta.canRestartWave === "function" ? meta.canRestartWave() : meta.canRestartWave);
   var restartCaption = campaign ? canRestartWave ? "pause.restartStageWave" : "pause.restartStage" : "pause.restart";

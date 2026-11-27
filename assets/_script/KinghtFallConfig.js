@@ -37,6 +37,7 @@ exports.BattleAssetLoadOptions = { idleTimeoutMs: 120000, retryOnce: true };
   t.UIGame = "KinghtFallUIGame";
   t.UIGameBack = "KinghtFallUIGameBack";
   t.UIGameEnd = "KinghtFallUIGameEnd";
+  t.UIEndlessResult = "KinghtFallUIEndlessResult";
   t.UIBuildSel = "KinghtFallUIBuildSel";
   t.UISuspend = "KinghtFallUISuspend";
   t.UIBuff = "KinghtFallUIBuff";
@@ -203,6 +204,13 @@ exports.KinghtFallUICF = ((i = {})[o.UIHome] = {
   showMult: false,
   zIndex: $z1Appcfg.OrderLayer.pop,
   bundleName: exp_KinghtFallBundelName.Prefab
+}, i[o.UIEndlessResult] = {
+  prefab: "ui/GAD_UIResult",
+  name: "GAD_UIResult",
+  showTop: false,
+  showMult: false,
+  zIndex: $z1Appcfg.OrderLayer.pop,
+  bundleName: "gad_prefabs"
 }, i[o.UIBuildSel] = {
   prefab: "gamePop/KinghtFallUIBuildSel",
   name: "KinghtFallUIBuildSel",

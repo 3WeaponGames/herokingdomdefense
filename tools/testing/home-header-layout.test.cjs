@@ -18,14 +18,6 @@ test('clicking the energy counter opens the energy panel that owns the countdown
  for(const key of ['ndPower','ndGold','ndDiamond'])top[key]={on:(event,callback)=>{assert.equal(event,'end');handlers[key]=callback;}};
  const opened=[];top.openUI=(...args)=>opened.push(args);top.initBtnListener();handlers.ndPower();assert.deepEqual(opened,[['energy']]);
 });
-test('the legacy mode display shows Best Wave after the configured unlock threshold',()=>{
- const bindings=[],user={data:{wallDefenseBestWave:12}},Home=load('KinghtFallHomeBattleCtrl',{BaseCtrl:{default:function(){}},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user})}},TestMode:{TestMode:{getInstance:()=>({shouldBypassAdLimits:()=>false})}},LanguageMgr:{LanguageMgr:{getInstance:()=>({bindLabel(label,key,values){bindings.push([key,...values]);label.string='Best Wave '+values[0];},t:(_key,values)=>values[0]+'s'})}}}),home=new Home();
- const label={string:''},nodes={labName:{active:true},labInfo:{active:true},labBestWave:{active:true,getComponent:()=>label},ndMask:{active:true},Layout:{active:true,getChildByName:()=>({getComponent:()=>({})})}},node={getChildByName:name=>nodes[name]};
- home.onSubView(node,3,3,100000,0,30);assert(nodes.labName.active&&nodes.labInfo.active);assert.equal(nodes.labBestWave.active,false);assert.equal(bindings.length,0);
- home.onSubView(node,4,3,100000,0,30);assert(!nodes.labName.active&&!nodes.labInfo.active);assert(nodes.labBestWave.active);assert.equal(label.string,'Best Wave 12');assert.equal(nodes.ndMask.active,false);
- home.onSubView(node,4,3,100000,99000,30);assert(nodes.Layout.active&&nodes.labBestWave.active);assert(!nodes.labName.active&&!nodes.labInfo.active);
- home.onSubView(node,1,3,100000,0,30);assert(nodes.labName.active&&nodes.labInfo.active);assert.equal(nodes.labBestWave.active,false);
-});
 test('authored currency spacing, tower placement, click bounds and localized caption left edges stay consistent',()=>{
  const top=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/home/KinghtFallUITop.prefab'))),home=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/home/homectrl/KinghtFallHomeBattleCtrl.prefab'))),catalog=require('../../assets/resources/localization/catalog.json');
  const tops=['ndPower','ndGold','ndDiam'].map(name=>{const node=top.find(n=>n._name===name);return top[node._components.find(r=>top[r.__id__].__type__==='cc.Widget').__id__]._top;});assert(tops.every(value=>value>55&&value<56));assert(!top.some(n=>n._name==='labTime'));assert.equal(home[336]._active,false);

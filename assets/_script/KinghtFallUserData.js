@@ -128,6 +128,14 @@ var exp_KinghtFallUserData = function (t) {
     data.curStage = Math.max(1, Math.floor(data.curStage));
     data.maxStage = Math.max(data.curStage, Math.floor(data.maxStage));
     data.wallDefenseBestWave = Math.floor(data.wallDefenseBestWave);
+    if (data.endlessBestWaves !== undefined) {
+      var best = data.endlessBestWaves;
+      if (!best || typeof best !== "object" || Array.isArray(best)) delete data.endlessBestWaves;
+      else Object.keys(best).forEach(function (stage) {
+        if (!/^stage[1-9]\d*$/.test(stage) || !Number.isSafeInteger(Number(stage.slice(5))) ||
+            !Number.isSafeInteger(best[stage]) || best[stage] < 0) delete best[stage];
+      });
+    }
     var admission = data.wallDefenseAdmission;
     if (admission && (typeof admission.id !== "string" || !admission.id || admission.id.length > 160 || typeof admission.cost !== "number" || !isFinite(admission.cost) || admission.cost <= 0 || typeof admission.used !== "boolean")) delete data.wallDefenseAdmission;
     var rules = require("GAD_RewardRules");

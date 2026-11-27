@@ -161,6 +161,50 @@ test('reward-grid taps inspect their own Relic while currency icons do not open 
   assert.equal(h.ui.uistatck.get('details').cfg.ID,second.ID);
 });
 
+test('deep Endless results keep every reward reachable above the save status and Return Home',()=>{
+  const h=setup(), panel=h.result, prefab={}, scrolls=[];
+  class Mask {}
+  Mask.Type={RECT:1};
+  class ScrollView {
+    constructor(){scrolls.push(this);}
+    getScrollOffset(){return h.cc.v2(0,this.offset||0);}
+    getMaxScrollOffset(){return h.cc.v2(0,this.content.height-this.node.height);}
+    stopAutoScroll(){}
+    scrollToOffset(offset){this.offset=offset.y;this.content.setPosition(0,this.node.height/2+offset.y);}
+  }
+  Object.assign(h.cc,{Mask,ScrollView});
+  h.cc.instantiate=()=>{const node=new h.cc.Node('reward');node.ui={initView:noop,onDestroy:noop};return node;};
+  const relics=config.TreasureCfg;
+  let awarded=relics.map(relic=>({id:relic.goodID,num:1}));
+  panel.init(false,{getResult:()=>({activeMilliseconds:60000,clearedWaves:500,saved:true,awarded,unlockedGoods:[]})});
+  panel.lblStats={};panel.lblSaved={};panel._rewardPrefab=prefab;
+  const content=panel.ndRewards=new h.cc.Node('RewardItems');content.parent=panel.node;
+  content.setContentSize(600,360);content.setPosition(0,60);
+  content.destroyAllChildren=function(){this.children.slice().forEach(child=>child.destroy());};
+
+  panel.refreshResult();
+  const [scroll]=scrolls, viewport=scroll.node, top=viewport.getPosition().y+viewport.height/2;
+  const savedStatusTop=-337+44/2;
+  assert.equal(content.parent,viewport);
+  assert.equal(scroll.cancelInnerEvents,true);
+  assert.equal(scroll.horizontal,false);
+  assert.equal(scroll.vertical,true);
+  assert(top-viewport.height>savedStatusTop);
+  assert.equal(top+content.children[0].getPosition().y,60,'first row retains its authored height');
+  assert.equal(content.children.length,awarded.length);
+  scroll.scrollToOffset(scroll.getMaxScrollOffset());
+  const last=content.children.at(-1), lastY=top+scroll.offset+last.getPosition().y;
+  assert(lastY-95/2>top-viewport.height && lastY+95/2<top);
+  last.handlers.end({stopPropagation:noop});
+  assert.equal(h.requests.length,1,'the last reward still opens its relic details');
+
+  awarded=awarded.slice(0,2);
+  panel.refreshResult();
+  assert.equal(scrolls.length,1,'save recovery reuses the viewport');
+  assert.equal(scroll.vertical,false);
+  assert.equal(scroll.offset,0);
+});
+
 test('Relic descriptions show eligible styles and current applicability without changing ownership or loadout',()=>{
  const h=setup(),panel=h.detail(),spear=config.TreasureCfg.find(row=>row.ID===120024),melee=config.TreasureCfg.find(row=>row.ID===120018);
  h.userData.heroWeapon={selected:'fighter'};const before=JSON.stringify(h.userData),owned=JSON.stringify(h.owned);

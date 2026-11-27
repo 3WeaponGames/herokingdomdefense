@@ -97,17 +97,22 @@ function install(home) {
   var legacy = home.btnSubBg.children[0]; legacy.active = false; legacy.parent = home.node;
   disable(home.btnSubBg, cc.Layout); disable(home.btnSubBg, cc.Sprite); disable(home.btnSubBg, cc.Widget);
   home.btnSubBg.parent = home.node; home.btnSubBg.setPosition(0, 0);
-  var defense = state.defense = cc.instantiate(home.btnBattle); defense.name = "WallDefenseButton"; defense.parent = home.btnSubBg; defense._isLobbyMode = true;
-  defense.getChildByName("mask").active = false;
-  lockButtonSize(home.btnBattle); lockButtonSize(defense);
+  var endless = state.endless = cc.instantiate(home.btnBattle); endless.name = "EndlessButton"; endless.parent = home.btnSubBg;
+  endless.getChildByName("mask").active = false;
+  lockButtonSize(home.btnBattle); lockButtonSize(endless);
   applyModeSkin(home.btnBattle, home.btnBattle.getComponent(cc.Sprite).spriteFrame);
-  applyModeSkin(defense, home.wallDefenseButtonFrame);
+  applyModeSkin(endless, home.wallDefenseButtonFrame);
   paintCostPlate(home.btnBattle, "#da9300");
-  bind(home.btnBattle.getChildByName("labName"), "lobby.campaign"); bind(defense.getChildByName("labName"), "lobby.wallDefense");
-  var caption = state.defenseCaption = new cc.Node("WallDefenseStatus"); caption.parent = home.node; caption.setContentSize(341, 38);
+  var endlessTitle = endless.getChildByName("labName");
+  endlessTitle.getComponent(cc.Label)._localizedFontRole = "display";
+  bind(home.btnBattle.getChildByName("labName"), "lobby.campaign"); bind(endlessTitle, "lobby.endless");
+  var caption = state.endlessCaption = new cc.Node("EndlessBestWave"); caption.parent = home.node;
   var label = caption.addComponent(cc.Label); label.fontSize = 26; label.lineHeight = 32; label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
+  label._localizedFontRole = "body"; label.verticalAlign = cc.Label.VerticalAlign.CENTER;
+  label.overflow = cc.Label.Overflow.SHRINK; label.enableWrapText = false;
+  caption.setContentSize(341, 38);
   var outline = caption.addComponent(cc.LabelOutline); outline.color = cc.Color.BLACK; outline.width = 2;
-  if (!require("GAD_Configs").GADConfig.LobbyAvailable) modeState(home, false);
+  modeState(home, false);
   var legacyTray = home.node.getChildByName("ndBtnRight");
   disable(legacyTray, cc.Sprite);
   // The old sidebar is now transparent and overlaps the reward carousel.
@@ -185,8 +190,8 @@ function layout(home) {
     home.ndBoxShow.setScale(geometry.stageScale); home.ndBoxShow.setPosition(geometry.center, geometry.stageY - 166 * geometry.stageScale);
     layoutStage(home, bounds, points, geometry);
     home.btnBattle.setScale(geometry.buttonScale); home.btnBattle.setPosition(geometry.buttonRight, geometry.buttonY);
-    state.defense.setScale(geometry.buttonScale); state.defense.setPosition(geometry.buttonLeft, geometry.buttonY);
-    state.defenseCaption.setPosition(geometry.buttonLeft, geometry.buttonY - 73 * geometry.buttonScale - 21);
+    state.endless.setScale(geometry.buttonScale); state.endless.setPosition(geometry.buttonLeft, geometry.buttonY);
+    state.endlessCaption.setPosition(geometry.buttonLeft, geometry.buttonY - 73 * geometry.buttonScale - 21);
   }
   refresh(home);
 }
@@ -232,22 +237,19 @@ function refresh(home) {
   state.left.rewardBadge.active = flags.left; state.right.rewardBadge.active = flags.right;
   arrowState(state.left, offset > 1); arrowState(state.right, offset < state.scroll.getMaxScrollOffset().x - 1);
 }
-function modeState(home, unlocked, best, unlockStage) {
+function modeState(home, unlocked, best) {
   var state = home._lobby; if (!state) return;
-  var config = require("GAD_Configs").GADConfig, comingSoon = !config.LobbyAvailable;
-  var playable = !comingSoon && unlocked;
-  paintMode(state.defense, playable);
-  state.defenseCaption.active = !playable;
-  var button = state.defense.getComponent(cc.Button); if (button) button.interactable = comingSoon || unlocked;
-  var key = comingSoon ? "common.comingSoon" : playable ? "lobby.wallBestWave" : "lobby.wallUnlock";
-  var value = comingSoon ? "" : playable ? best : unlockStage;
-  if (state.status !== key + value) {
-    state.status = key + value;
-    bind(state.defenseCaption, key, comingSoon ? undefined : [value]);
+  paintMode(state.endless, unlocked);
+  var button = state.endless.getComponent(cc.Button);
+  if (button) button.interactable = true;
+  state.endlessCaption.active = unlocked;
+  if (unlocked && state.best !== best) {
+    state.best = best;
+    bind(state.endlessCaption, "lobby.endlessBestWave", [best]);
   }
-  var cost = state.defense.getChildByName("Layout"); cost.active = !comingSoon;
-  state.defense.getChildByName("labName").y = comingSoon ? 0 : 30;
-  if (!comingSoon) cost.getChildByName("labNum").getComponent(cc.Label).string = String(config.EnergyCost);
+  var cost = state.endless.getChildByName("Layout"); cost.active = unlocked;
+  state.endless.getChildByName("labName").y = unlocked ? 30 : 0;
+  if (unlocked) cost.getChildByName("labNum").getComponent(cc.Label).string = String(require("GAD_Configs").GADConfig.EnergyCost);
 }
 exports.install = install;
 exports.layout = layout;

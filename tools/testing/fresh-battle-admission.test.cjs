@@ -6,6 +6,9 @@ const fs = require('node:fs'), path = require('node:path'), vm = require('node:v
 const { harness, config } = require('./persistence-harness.cjs');
 const RelicRuntime = require('../../assets/_script/RelicRuntime');
 const AuthoredSpawnPlan = require('../../assets/_script/AuthoredSpawnPlan');
+const EndlessWaves = require('../../assets/_script/EndlessWaves');
+const GAD_Configs = require('../../assets/_script/GAD_Configs');
+const survivalConfig = require('../../assets/gad_configs/GameJsonCfg.json');
 const scripts = path.resolve(__dirname, '../../assets/_script');
 const cost = Number(config.ParameterCfg[60010].Value), stage = 2;
 const battleConfig = { exports: {}, require: () => ({ OrderLayer: { main: 3 } }) };
@@ -33,8 +36,8 @@ function fixture(saved, { native = false } = {}) {
   Object.assign(data, { getLevelCfgById: id => id <= config.GameTools.campaignStageLimit ? config.LevelCfg[id - 1] : undefined, getGameTask: id => config.InGameTaskCfg[id - 1],
     getParamsCfgById: id => config.ParameterCfg[id].Value, getTreasureCfg: () => config.TreasureCfg });
   const gameConfig = { KinghtFallUIID: ids, KinghtFallBundelName: { IconMap: 'maps' }, KinghtFallParameter: { FollowMode: 0, InitGold: 0 }, KinghtFallAudioId: {}, KinghtFallEventName: {} };
-  Object.assign(modules, { RelicEligibility: require("../../assets/_script/RelicEligibility"), RelicRuntime, AuthoredSpawnPlan, KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton(player) }, KinghtFallDataMgr: { KinghtFallDataMgr: singleton(data) },
-    KinghtFallEnum: enums, KinghtFallConfig: gameConfig, Config: { UIID: { UINONE: 'none', UITouch: 'touch' } }, Appcfg: { BaseEventName: { ShowTransition: 'transition', blocktouch: 'input', OpenUI: 'open' } },
+  Object.assign(modules, { RelicEligibility: require("../../assets/_script/RelicEligibility"), RelicRuntime, AuthoredSpawnPlan, EndlessWaves, GAD_Configs, KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton(player) }, KinghtFallDataMgr: { KinghtFallDataMgr: singleton(data) },
+    KinghtFallEnum: enums, KinghtFallConfig: gameConfig, Config: { UIID: { UINONE: 'none', UITouch: 'touch', UITips: 'tips' } }, Appcfg: { BaseEventName: { ShowTransition: 'transition', blocktouch: 'input', OpenUI: 'open' } },
     EventMgr: { EventMgr: singleton({ emit: (...args) => events.push(args) }) }, KinghtFallModle: { default: singleton({ randomArray: (list, count) => list.slice(0, count) }), KinghtFallGameStage: {} },
     TestMode: { TestMode: singleton({ setGameplayTarget() {}, removeGameplayTarget() {}, readGameplayInput: () => ({ pause: true, x: 1 }) }) },
     BattleHud: { layoutFooter() {} },
@@ -45,7 +48,7 @@ function fixture(saved, { native = false } = {}) {
   const real = new Set(['BattleMusic','EnemyStageProfiles','ArgsParseUtils','ResourceMgr','UIMgr','BaseUI','KinghtFallHomeBattleCtrl','KinghtFallUIGame','KinghtFallGameCtrlData','KinghtFallGameCtrl','GameplayAdOwner']);
   // Resource/renderer readiness is tested by stage-asset-warmup.test.cjs.
   // This boundary retains real ResourceMgr delivery/retry and journal admission.
-  modules.StageAssetWarmup={create(view,_config,level){return{dispose(){},reveal(){},run(){return{then(done){view.loadPrefab('maps',level.prefab,done);return{catch(){}};}};}};}};
+  modules.StageAssetWarmup={create(view,_config,level){return{assets:{'gad_configs/GameJsonCfg:json':{json:survivalConfig}},dispose(){},reveal(){},run(){return{then(done){view.loadPrefab('maps',level.prefab,done);return{catch(){}};}};}};}};
   function load(name) {
     if (modules[name]) return modules[name]; if (!real.has(name)) return { default: function Component() {} };
     const exports = modules[name] = {};
@@ -65,7 +68,7 @@ function fixture(saved, { native = false } = {}) {
   const transition = { generation: 1 }; manager.captureOpenTransition = () => transition;
   manager.cancelOpenTransition = token => { if (!token || token === transition) transitions.push('cancel'); };
   const Home = load('KinghtFallHomeBattleCtrl').default, UI = load('KinghtFallUIGame').default;
-  const home = Object.assign(Object.create(Home.prototype), { node: homeView.node, selectStage: stage, costEnergy: cost,
+  const home = Object.assign(Object.create(Home.prototype), { node: homeView.node, cfgList: config.LevelCfg, selectStage: stage, costEnergy: cost, T: key => key,
     sendEvent(name, on, callback) { scheduled.push(callback); } });
   function openBattleView(viewNode) {
     game = Object.assign(Object.create(load('KinghtFallGameCtrl').default.prototype), { _combatEpoch: 0, ctrPlay: { initData() {}, ndAgg: {} },
@@ -109,6 +112,67 @@ test('fresh entry waits through transition, prefab and map loads, then journals 
   assert.equal(f.earnedSilver(), config.LevelCfg[stage - 1].WaveCfg[0].StartSliver);
   assert.equal(f.player.gameData.getCoin(), f.earnedSilver()); assert.deepEqual(f.input, ['bound','events']);
   const reload = harness(f.disk.persist()); assert.equal(reload.player.udata.getPowerNum(), 100 - cost); assert.equal(reload.player.gameData.hasSave(stage), true);
+});
+
+test('Endless rejects a two-star stage and admits a three-star stage alongside its campaign checkpoint', () => {
+  const f = fixture(), p = f.player;
+  f.user.data.stageInfo[stage - 1] = 3;
+  const open = f.manager.openUI, notices = [];
+  f.manager.openUI = (...args) => notices.push(args);
+  f.home.onStartEndless();
+  assert.deepEqual(notices, [['tips', 'none', 'lobby.endlessUnlock']]);
+  assert.equal(f.scheduled.length, 0);
+  assert.equal(f.user.getPowerNum(), 100);
+  f.manager.openUI = open;
+  f.user.data.stageInfo[stage - 1] = 7;
+  const checkpoint = { levelNum: stage, roundNum: 3, coin: 77, buildingLevel: [], buffList: [], businessList: {} };
+  assert(p.gameData.setCheckpoint(checkpoint));
+
+  f.home.onStartEndless();
+  f.home.onStartEndless();
+  assert.equal(f.scheduled.length, 1);
+  f.scheduled.shift()();
+  f.prefabReady();
+  assert.equal(f.user.getPowerNum(), 100);
+  assert.equal(f.view().ctrGame, null);
+  f.mapReady();
+  const view = f.view();
+  assert.equal(view.isPauset, false);
+  assert.equal(view.ctrGame.gameData.round, 1);
+  assert.equal(view._endlessRun.endlessStage, stage);
+  assert.equal(f.user.getPowerNum(), 90);
+  assert.equal(f.user.getStage(), 1);
+  assert.equal(p.gameData.getRoundNum(stage), 3);
+  view.ctrGame.saveGame();
+  assert.equal(p.gameData.getCoin(stage), 77);
+  view._endlessRun.clear(1);
+  view.closeUI();
+  assert.equal(f.homeView.node.active, true);
+  assert.equal(f.home._returningEndlessStage, stage);
+  assert.equal(EndlessWaves.bestWave(f.user.data, stage), 1);
+  assert.equal(p.gameData.getRoundNum(stage), 3);
+});
+
+test('leaving the selected stage or closing before an Endless map is ready does not consume its entry', () => {
+  for (const action of ['reselect', 'cancel-warmup', 'lose-unlock', 'map-throws']) {
+    const f = fixture();
+    f.user.data.stageInfo[stage - 1] = 7;
+    f.home.onStartEndless();
+    if (action === 'reselect') f.home.selectStage = 1;
+    f.scheduled.shift()();
+    if (action === 'reselect') assert.equal(f.requests.length, 0);
+    else {
+      f.prefabReady();
+      if (action === 'cancel-warmup') f.view().closeUI();
+      else if (action === 'lose-unlock') f.user.data.stageInfo[stage - 1] = 3;
+      else f.breakMap();
+      f.mapReady();
+    }
+    assert.equal(f.homeView.node.active, true);
+    assert.equal(f.user.getPowerNum(), 100);
+    assert.equal(f.user.data.wallDefenseAdmission, undefined);
+    assert.equal(f.errors.length, 0, 'the partially mounted map cannot retry on the same view');
+  }
 });
 
 test('cancel, retired home/stage and map reload or close leave the original admission state intact', () => {

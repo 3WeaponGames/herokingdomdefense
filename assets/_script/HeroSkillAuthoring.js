@@ -22,6 +22,7 @@ var TUNING={
   guardian:{active:["cooldown","shieldHealth","shieldDuration","tauntDuration","tauntRadius"],passive:["allyReduction","allyRadius"]}
 };
 var SLOT_NAMES={passive:"Passive aura",beam:"Channel beam",mark:"Target mark",buff:"Buff aura",taunt:"Taunted enemy",shield:"Body shield",target:"Target electricity",channelHit:"Target electricity",cast:"Cast effect",castSecondary:"Second cast effect",defense:"Shield cast",physicalShield:"Shield loop",presence:"Protected ally"};
+var SPEAR_SIZE_LABELS={castAreaScale:"VFX area",castSpearScale:"Spear sprite size",castSpearLengthScale:"Spear length"};
 var SLOT_MAP={
   fighter:{active:["buff","cast"],passive:["passive"]},
   vanguard:{active:["cast"],passive:["buff"]},
@@ -56,7 +57,8 @@ function fields(style,id,source,effective,catalogs){
   ["tuning","visual","audio"].forEach(function(group){
     (source&&source[group]||[]).forEach(function(original){
       var field=Object.assign({},original),key=field.key||String(field.path||"").split(".").pop(),slot=slotOf(key);
-      if((key==="castAreaScale"||key==="castSpearScale")&&!equippedSpear)return;
+      var spearSizeLabel=SPEAR_SIZE_LABELS[key];
+      if(spearSizeLabel&&!equippedSpear)return;
       if(field.type==="description"){if(field.entry===id){field.group="Skill description";result.tuning.push(field);}return;}
       if(group==="visual"&&field.type==="effect-animation"){
         var resourceKey=(field.resourcePath||field.path.replace(/Animation$/,"")).split(".").pop(),resource=currentVisual[resourceKey],kind=currentVisual[resourceKey+"Kind"];
@@ -101,8 +103,7 @@ function fields(style,id,source,effective,catalogs){
         }
       }
       if(style==='vanguard'&&id==='active'&&group==='visual'){
-        if(key==='castAreaScale')field.label='VFX area';
-        if(key==='castSpearScale')field.label='Spear sprite size';
+        if(spearSizeLabel)field.label=spearSizeLabel;
         if(/^(?:cast)?[Oo]ffset[XY]$/.test(key)){field.label=(key.indexOf('cast')===0?'Cast effect ':'Arc ')+(key.slice(-1)==='X'?'along spear offset':'across spear offset');field.help='Offset from the spearhead in the spear’s own axes. This placement rotates and mirrors with the spear, so the same fit works in every direction.';}
         if(key==='castRotation')field.help='Additional artwork rotation around its attachment point at the spearhead.';
         if(key==='rotation')field.help='Rotate the spear aim, the center-bottom arc pivot and the attached cast effect together.';

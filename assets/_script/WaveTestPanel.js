@@ -10,7 +10,7 @@ var WIDTH = 704, ROWS_PER_PAGE = 8;
 function canOpen(ui) {
   var game = ui.ctrGame, data = game && game.gameData, level = data && data.levelCfg;
   var phases = require("KinghtFallModle").KinghtFallGameStage;
-  return !!(level && level.WaveCfg && level.WaveCfg[data.round - 1] && game.ndMain && game.ndPath &&
+  return !!(level && !data.endless && level.WaveCfg && level.WaveCfg[data.round - 1] && game.ndMain && game.ndPath &&
     ui.ctrUI && ui.ctrUI.node && ui.canBreak && !ui.isclose && !ui.isPauset && !ui._isEntryLoading &&
     !ui._enemyGuide && !ui._battleDialog && !ui._unitTestPanel && !ui._restartPending &&
     (game.gameStatus === phases.Prepare || ui.isWaveInProgress()));

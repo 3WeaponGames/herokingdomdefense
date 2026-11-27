@@ -28,7 +28,7 @@ function battleObjective(task) {
   return typeof id === "string" && Array.isArray(task.targets) ? require("BattleTaskObjectives").definition(id) : null;
 }
 var def_KinghtFallGameCtrlData = function () {
-  function _ctor(t, e, restoring, restartSetup, taskCheckpoint) {
+  function _ctor(t, e, restoring, restartSetup, taskCheckpoint, endless) {
     this.bulidPointMap = {};
     this.obstacles = [];
     this.talentAdd = {};
@@ -48,13 +48,15 @@ var def_KinghtFallGameCtrlData = function () {
     this.addTime = {};
     this._restoringCheckpoint = !!restoring;
     this.ctrPar = t;
+    this.endless = endless;
     this.levelCfg = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getLevelCfgById(e);
     require("EnemyStageProfiles").activate(this.levelCfg);
     this.initData(restoring, restartSetup, taskCheckpoint);
   }
   _ctor.prototype.createTaskInfo = function (checkpoint) {
-    var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
     var task = { index: 0, list: [], reward: [], stage: 0 };
+    if (this.endless) return task;
+    var manager = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
     // A resumed run always owns its original order. Checkpoints from before
     // reward snapshots keep the legacy pool's payout for each saved position.
     if (checkpoint) {
@@ -255,17 +257,25 @@ var def_KinghtFallGameCtrlData = function () {
     this._advisorFinalClaimPending = false;
     this.round++;
     if (this._waveTest && this._waveTest.round !== this.round) this._waveTest = null;
-    var t = this.levelCfg.WaveCfg[this.round - 1];
+    var t = this.getWaveAt(this.round);
     if (!restoring) this.coin += t.StartSliver;
     if (!restoring && t.StartSliver > 0 && BattleSounds.effect) BattleSounds.effect("battle-silver-reward", null, { game: this.ctrPar });
     this.videoCoin = t.CommerceSliver;
-    if (!restoring) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, t.StartSliver);
+    if (!restoring && (!this.endless || this.endlessRun)) $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, t.StartSliver);
     this.resetEnemyWave(this.getEnemyWave());
+  };
+  _ctor.prototype.getWaveAt = function (round) {
+    var authored = this.levelCfg.WaveCfg;
+    if (!this.endless || round <= authored.length) return authored[round - 1];
+    if (!this._generatedWave || this._generatedWave.Wave !== round) {
+      this._generatedWave = require("EndlessWaves").waveAt(this.levelCfg, round);
+    }
+    return this._generatedWave;
   };
   _ctor.prototype.getEnemyWave = function () {
     var test = this._waveTest;
     return test && test.round === this.round && test.stage === this.levelCfg.Level
-      ? test.wave : this.levelCfg.WaveCfg[this.round - 1];
+      ? test.wave : this.getWaveAt(this.round);
   };
   _ctor.prototype.resetEnemyWave = function (wave) {
     var plan = require("AuthoredSpawnPlan");
@@ -277,7 +287,7 @@ var def_KinghtFallGameCtrlData = function () {
   _ctor.prototype.setWaveTest = function (test) {
     if (test && (test.round !== this.round || test.stage !== this.levelCfg.Level)) return false;
     if ((this._waveTest || null) === test) return true;
-    this.resetEnemyWave(test ? test.wave : this.levelCfg.WaveCfg[this.round - 1]);
+    this.resetEnemyWave(test ? test.wave : this.getWaveAt(this.round));
     this._waveTest = test;
     return true;
   };
@@ -302,7 +312,7 @@ var def_KinghtFallGameCtrlData = function () {
       this.soldierList = [];
       this.businessAdd = {};
     } else {
-      var o = this.levelCfg.WaveCfg[this.round - 1];
+      var o = this.getWaveAt(this.round);
       if (!restoring) {
         this.coin -= o.StartSliver;
         $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getMissionData().addAchNum($z1KinghtFallEnum.KinghtFallEnumAchiEnum.GetSliver, -o.StartSliver);
@@ -654,6 +664,8 @@ var def_KinghtFallGameCtrlData = function () {
     }
   };
   _ctor.prototype.tryEndGame = function () {
+    if (this.endless && (!this.endlessRun || this.endlessRun.result ||
+        this.ctrPar.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Fight)) return;
     var data=this,owner=this.ctrPar,ownerNode=owner&&owner.node,ownedData=owner&&owner.gameData,epoch=owner&&owner._combatEpoch;
     var ui=typeof $z1KinghtFallUIGame!=="undefined"?$z1KinghtFallUIGame.default.instance:null,uiNode=ui&&ui.node,uiGeneration=ui&&ui._resourceGeneration;
     var hero=owner&&owner.ctrPlay,heroNode=hero&&hero.node,heroGeneration=heroNode&&heroNode._combatGeneration;
@@ -706,6 +718,11 @@ var def_KinghtFallGameCtrlData = function () {
           this._relicRoundCommitPending = true;
           return;
         }
+      }
+      if (this.endless) {
+        this.endlessRun.clear(round);
+        $z1EventMgr.EventMgr.getInstance().emit($z1KinghtFallConfig.KinghtFallEventName.RoundEnd);
+        return;
       }
       this.finishBattleTaskWave();
       if (!current()) return;

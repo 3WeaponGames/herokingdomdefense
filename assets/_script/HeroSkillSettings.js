@@ -13,7 +13,7 @@ var styles = [
   {id:"guardian",name:"Guardian",weapon:"Hammer and shield",skill:"Iron Bulwark"}
 ];
 var VISUAL = {arcDegrees:120,originX:0,originY:0,targetX:0,targetY:0,offsetX:0,offsetY:0,rotation:0,scale:1,opacity:1,lineWidth:0,color:"",effectDuration:.35,resource:"",resourceAnimation:"",resourcePlaybackRate:1,showBuiltin:true,animation:"",animationPlayback:1,holdTime:-1,impactResource:"",impactResourceAnimation:"",impactPlaybackRate:1,impactScale:1,impactDuration:.35,impactDelay:0,impactOffsetX:0,impactOffsetY:0,impactRotation:0,impactOpacity:1,impactColor:""};
-var VANGUARD_SIZE = {castAreaScale:1,castSpearScale:1};
+var VANGUARD_SIZE = {castAreaScale:1,castSpearScale:1,castSpearLengthScale:1};
 EFFECT_SLOTS.forEach(function(slot){
   if(slot!=="cast")VISUAL[slot+"Delay"]=0;
   VISUAL[slot+"Resource"]="";VISUAL[slot+"ResourceAnimation"]="";
@@ -88,7 +88,8 @@ var VISUAL_HELP = {
   arcStartWidth:"Width in world units of the flat rear hit-area edge for Vanguard. The sides join its rounded outer arc. Set to 0 for a pointed cone.",
   castScale:"Size of the complete skill VFX. The gold hit boundary has separate gameplay size controls.",
   castAreaScale:"Area covered by the jab paths, wind and accents. 0.5 covers half the source area.",
-  castSpearScale:"Size of each spear sprite. 0.35 uses 35% of its source length and width. Each tip follows its wind.",
+  castSpearScale:"Base size of each spear sprite. 0.35 uses 35% of its source dimensions before the spear length adjustment.",
+  castSpearLengthScale:"Stretches each spear along the jab direction. 1.50 adds 50% to its length at the current sprite thickness.",
   castScaleX:"Horizontal size multiplier for the complete effect. Changes artwork only.",
   castScaleY:"Vertical size multiplier for the complete effect. Changes artwork only.",
   castOffsetX:"World-space horizontal artwork offset from its cast attachment. Does not move the damage origin.",
@@ -268,6 +269,7 @@ function resourceVisual(value,prefix){
   if(slot==="cast"){
     if(value.castAreaScale!==undefined)result.areaScale=value.castAreaScale;
     if(value.castSpearScale!==undefined)result.spearScale=value.castSpearScale;
+    if(value.castSpearLengthScale!==undefined)result.spearLengthScale=value.castSpearLengthScale;
   }
   return result;
 }

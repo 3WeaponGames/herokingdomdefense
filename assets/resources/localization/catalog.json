@@ -6182,6 +6182,22 @@
       "en": "Campaign",
       "zh": "战役"
     },
+    "lobby.endless": {
+      "en": "Endless",
+      "zh": "无尽模式"
+    },
+    "lobby.endlessUnlock": {
+      "en": "Clear this stage with 3 stars.",
+      "zh": "三星通关本关卡后解锁。"
+    },
+    "lobby.endlessBestWave": {
+      "en": "Best wave {0}",
+      "zh": "最佳波次：{0}"
+    },
+    "endless.wave": {
+      "en": "Endless · Wave {0}",
+      "zh": "无尽模式 · 第{0}波"
+    },
     "lobby.wallDefense": {
       "en": "Wall Defense",
       "zh": "城墙防御"
@@ -9403,18 +9419,18 @@
       "context": "Skeleton roster · monster1/Bird_Skeleton"
     },
     "data.unitguide.91165.description": {
-      "en": "A bone-beaked bird that swoops down on rattling wings.",
-      "zh": "一只长着骨喙的骷髅鸟，拍动骨翼俯冲而下。",
+      "en": "A horned skeletal owl with lavender wings and bright mint-green eyes. It swoops down on rattling wings.",
+      "zh": "一只长着淡紫色骨翼和薄荷绿眼睛的角鸮，振动骨翼俯冲而下。",
       "context": "Enemy guide appearance · Skeleton Bird"
     },
     "data.monster-roster.91166.name": {
       "en": "Skeleton Haunt",
-      "zh": "骷髅狐灵",
+      "zh": "骷髅狼灵",
       "context": "Skeleton roster · monster1/Animal_SkeletonHaunt"
     },
     "data.unitguide.91166.description": {
-      "en": "An undead fox with long ears, a bony tail and a swift pounce.",
-      "zh": "长耳骨尾的不死狐灵，擅长迅猛地扑击。",
+      "en": "A skeletal wolf with charcoal bones and bright yellow eyes. It attacks with a swift pounce.",
+      "zh": "一只长着炭灰色骨骼和亮黄色眼睛的骷髅狼，擅长迅猛扑击。",
       "context": "Enemy guide appearance · Skeleton Haunt"
     },
     "data.monster-roster.91167.name": {

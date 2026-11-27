@@ -23,6 +23,7 @@ var exp_KinghtFallPlayerMgr = function () {
     return this.instance;
   };
   _ctor.prototype.preload = function (t) {
+    this._pendingEndlessResult = null;
     this.udata = new $z1KinghtFallUserData.KinghtFallUserData();
     this.udata.getData();
     this.missionData = new $z1KinghtFallMissionData.KinghtFallMissionData();
@@ -50,13 +51,26 @@ var exp_KinghtFallPlayerMgr = function () {
     return [this.udata, this.missionData, this.dailyData, this.guideData, this.gameData].filter(function (record) { return !!record && !!record.data; });
   };
   _ctor.prototype.rewardJournalKey = function () { return this.udata.gameKey + ".rewardJournal"; };
+  _ctor.prototype.endlessPendingKey = function () { return this.udata.gameKey + ".endlessPending"; };
+  _ctor.prototype.readPendingEndlessResult = function () {
+    var raw = $z1CacheUtils.CacheUtils.getData(this.endlessPendingKey());
+    if (!raw) return null;
+    var result = JSON.parse(raw);
+    if (!require("GAD_RewardRules").validResult(result) || result.endlessStage === undefined) throw Error("Invalid pending Endless result");
+    return result;
+  };
   _ctor.prototype.rewardSaveFailure = function () {
     this.rewardStorageCheckPending = true;
     $z1EventMgr.EventMgr.getInstance().emit("SaveFailed", { key: this.rewardJournalKey() });
   };
   _ctor.prototype.retryRewardRecovery = function () {
-    if (this.pendingRewardJournal) return this.restorePendingRewards();
-    if (this.udata && this.udata.data.wallDefensePending) return !!this.settleWallDefense(this.udata.data.wallDefensePending);
+    if (this.pendingRewardJournal && !this.restorePendingRewards()) return false;
+    if (this.udata && this.udata.data.wallDefensePending && !this.settleWallDefense(this.udata.data.wallDefensePending)) return false;
+    var endless;
+    try { endless = this.udata && this.readPendingEndlessResult(); }
+    catch (error) { this.rewardSaveFailure(); return false; }
+    if (endless && !this.settleEndlessRun(endless)) return false;
+    if (this._pendingEndlessResult && !this.settleEndlessRun(this._pendingEndlessResult)) return false;
     if (!this.rewardStorageCheckPending) return true;
     // If journaling failed before any award, the claim remains available. Probe
     // only an empty journal so recovery can clear the notice without erasing it.
@@ -188,7 +202,9 @@ var exp_KinghtFallPlayerMgr = function () {
     var player = this, previouslyOwned = new Set(data.treasureInfo.map(function (row) { return row.id; }));
     var awarded = this.claimRewards(result.rewards, 1, null, function (actual) {
       var staged = player.udata.data;
-      staged.wallDefenseBestWave = Math.max(staged.wallDefenseBestWave || 0, result.clearedWaves);
+      if (result.endlessStage !== undefined) {
+        require("EndlessWaves").recordBestWave(staged, result.endlessStage, result.clearedWaves);
+      } else staged.wallDefenseBestWave = Math.max(staged.wallDefenseBestWave || 0, result.clearedWaves);
       staged.wallDefenseReceipt = { id: result.id, sequence: result.sequence, result: JSON.parse(JSON.stringify(result)),
         awarded: actual.map(function (reward) { return { id: reward.id, num: reward.num }; }),
         unlockedGoods: result.drops.filter(function (drop) { return !previouslyOwned.has(drop.itemID); }).map(function (drop) { return drop.goodID; }) };
@@ -199,6 +215,43 @@ var exp_KinghtFallPlayerMgr = function () {
       return player.udata.data.wallDefensePending && player.udata.data.wallDefensePending.id === result.id && (!current || current.sequence < result.sequence);
     });
     return awarded === null ? false : this.udata.data.wallDefenseReceipt;
+  };
+  _ctor.prototype.settleEndlessRun = function (result) {
+    if (!require("GAD_RewardRules").validResult(result) || result.endlessStage === undefined) return false;
+    var receipt = this.udata.data.wallDefenseReceipt, waiting = this._pendingEndlessResult;
+    var settled = !!receipt && receipt.sequence >= result.sequence;
+    if (!settled && waiting && waiting.id !== result.id && (!receipt || waiting.sequence > receipt.sequence)) return false;
+    var stored;
+    try { stored = this.readPendingEndlessResult(); }
+    catch (error) {
+      if (!settled) {
+        this._pendingEndlessResult = result;
+        this.rewardSaveFailure();
+      }
+      return settled;
+    }
+    if (!settled) {
+      if (stored && stored.id !== result.id && (!receipt || stored.sequence > receipt.sequence)) return false;
+      this._pendingEndlessResult = result;
+      settled = !!this.settleWallDefense(result);
+    }
+    if (settled && this._pendingEndlessResult && this._pendingEndlessResult.id === result.id) this._pendingEndlessResult = null;
+    try {
+      // Settlement can emit SaveRecovered and start another save. Check the
+      // key again before replacing or clearing a roll owned by that callback.
+      stored = this.readPendingEndlessResult();
+      var key = this.endlessPendingKey(), cache = $z1CacheUtils.CacheUtils;
+      if (settled) {
+        if (stored && stored.id === result.id) cache.removeData(key);
+      } else {
+        receipt = this.udata.data.wallDefenseReceipt;
+        var needsFallback = !stored || stored.id !== result.id && receipt && receipt.sequence >= stored.sequence;
+        if (needsFallback && cache.saveData(key, JSON.stringify(result)) === false) this.rewardSaveFailure();
+      }
+    } catch (error) {
+      if (!settled) this.rewardSaveFailure();
+    }
+    return settled;
   };
   _ctor.prototype.grantAdRewards = function (rewards, position) {
     if (!this.restorePendingRewards()) return false;

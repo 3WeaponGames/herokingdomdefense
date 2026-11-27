@@ -100,13 +100,15 @@ var def_KinghtFallUIBuff = function (t) {
   _ctor.prototype.start = function () {
     var t = this;
     this.initData();
-    if (this._customPerkPool && this.canOutBuff.length === 0) {
+    if ((this._customPerkPool || this._endless) && this.canOutBuff.length === 0) {
       var emptyGeneration = this._resourceGeneration;
       this._decisionPending = true;
       this.scheduleOnce(function () {
         if (t.isclose || t._resourceGeneration !== emptyGeneration) return;
-        var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
-        if (guide.getGroupId() === 3 && !require("TutorialFlow").state(guide, 4, 0)) return;
+        if (!t._endless) {
+          var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+          if (guide.getGroupId() === 3 && !require("TutorialFlow").state(guide, 4, 0)) return;
+        }
         t.finishDecision(t.callBack, [], emptyGeneration);
       }, 0);
       return;
@@ -171,6 +173,7 @@ var def_KinghtFallUIBuff = function (t) {
   _ctor.prototype.initData = function () {
     var t = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getBuffCfgList();
     var custom = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().data.GameTools;
+    this._endless = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.endless;
     this._customPerkPool = !!(custom && custom.perks && Object.keys(custom.perks).length);
     var e = function (t) {
       var e = $z1KinghtFallUIGame.default.instance.ctrGame.gameData.buffList;
@@ -416,6 +419,7 @@ var def_KinghtFallUIBuff = function (t) {
     }
   };
   _ctor.prototype.startGuide = function () {
+    if (this._endless) return;
     var flow = require("TutorialFlow");
     if (!flow.active(this) || this._tutorialOpen) return;
     if ($z1PlatformSetting.PlatformSetting.currentPlatform != $z1BasePlatform.Platform.WEB_LINK) {

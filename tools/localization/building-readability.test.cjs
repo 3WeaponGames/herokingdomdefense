@@ -10,7 +10,8 @@ function fixture(){
   const cc={Node,Label,LabelOutline:Outline,Color:{BLACK:'black'}},language={code:'en',getCurrentLanguage(){return this.code;},t(key,values){assert.equal(key,'format.battle.waveCompletionSilver');return '+'+values[0]+' silver on completion';}};
   const refresh=vm.runInNewContext('('+body+')',{cc,require(name){assert.equal(name,'LanguageMgr');return {LanguageMgr:{getInstance:()=>language}};}});
   const button=new Node('button');button.fitter={enabled:true,invalidate(){this.invalidated=true;}};for(let i=0;i<5;i++){const node=new Node('legacy-'+i);node.parent=button;}
-  const game={coin:5,round:1,levelCfg:{WaveCfg:[{StartSliver:5},{StartSliver:7},{StartSliver:12}]}},ui={btnStartFight:button,ctrGame:{gameData:game}};
+  const game={coin:5,round:1,levelCfg:{WaveCfg:[{StartSliver:5},{StartSliver:7},{StartSliver:12}]},
+    getWaveAt(round){return this.levelCfg.WaveCfg[round-1];}},ui={btnStartFight:button,ctrGame:{gameData:game}};
   return{ui,button,game,language,refresh:()=>refresh.call(ui)};
 }
 test('English separates the action from the real wave reward and leaves player data untouched',()=>{

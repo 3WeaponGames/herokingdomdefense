@@ -202,6 +202,8 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype.init = function (levelId, freshEntry, restartSetup, waveTest) {
     this.levelId = levelId;
     this._freshEntry = freshEntry || null;
+    this._endless = !!freshEntry && freshEntry.mode === "endless";
+    this._endlessRun = null;
     this._restartPending = false;
     this._restartSetup = restartSetup ? JSON.parse(JSON.stringify(restartSetup)) : null;
     this._restartWaveTest = waveTest || null;
@@ -243,7 +245,7 @@ var def_KinghtFallUIGame = function (t) {
         game._stageAssets=stageAssets;
         if (entry) {
           t.ctrGame = game;
-          game.initData(levelId);
+          game.initData(levelId, t._endless);
           t.initBtnEvent();
           t.initEvent();
         } else {
@@ -273,7 +275,34 @@ var def_KinghtFallUIGame = function (t) {
         if (BattleSounds.start) BattleSounds.start(game);
         if (entry) t.initView();
       }
-      if (entry) {
+      if (t._endless) {
+        var endless = require("EndlessWaves"), survival = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+        var rewardAsset = stageAssets.assets["gad_configs/GameJsonCfg:json"];
+        var settings = rewardAsset && rewardAsset.json.wallDefenseRewards;
+        function eligible() {
+          var user = survival.getUserData(), reserved = user.data.wallDefenseAdmission;
+          return !t.isclose && t._freshEntry === entry && endless.unlocked(config, user) &&
+            (!entry.admissionId || reserved && reserved.id === entry.admissionId && !reserved.used);
+        }
+        var admission = null;
+        if (!settings) throw Error("Missing Endless reward settings");
+        try {
+          if (eligible() && survival.retryRewardRecovery() && eligible()) {
+            prepareMap();
+            admission = survival.admitWallDefense(entry.cost, eligible);
+          }
+        } catch (error) { console.error('Could not start Endless', error && (error.stack || error.message) || String(error)); }
+        if (t.isclose) return;
+        t._freshEntry = null;
+        if (!admission) {
+          $z1UIMgr.UIMgr.getInstance().cancelOpenTransition(entry.transition);
+          t.closeUI();
+          return;
+        }
+        var receipt = survival.getUserData().data.wallDefenseReceipt;
+        t._endlessRun = game.gameData.endlessRun = new endless.Run(levelId, admission, receipt ? receipt.sequence : 0, settings);
+        $z1AudioMgr.AudioMgr.getInstance().playEffectFree($z1KinghtFallConfig.KinghtFallAudioId.set_of, undefined, undefined, { game: game });
+      } else if (entry) {
         var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
         var checkpoint = player.getGameData(), admitted = false;
         try {
@@ -477,11 +506,15 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.openBattleDialog = function (dialog, id, onOpened, first, second, third, fourth, fifth) {
     var ui = this;
+    var endlessResult = this._endlessRun && id === $z1KinghtFallConfig.KinghtFallUIID.UIEndlessResult;
     dialog.request = $z1UIMgr.UIMgr.getInstance().openUIWithOwner(id, this.uid, {
       parent: this,
-      recoveryCancelAllowed: dialog.kind === 'pause',
+      recoveryCancelAllowed: dialog.kind === 'pause' || !!endlessResult,
       isCurrent: dialog.isCurrent,
-      onCancel: function () { ui.finishBattleDialog(dialog); },
+      onCancel: function () {
+        if (endlessResult && dialog.isCurrent()) ui.closeUI();
+        else ui.finishBattleDialog(dialog);
+      },
       onOpened: function (node) { dialog.node = node; if (onOpened) onOpened(node); }
     }, first, second, third, fourth, fifth);
   };
@@ -494,12 +527,15 @@ var def_KinghtFallUIGame = function (t) {
     this.openBattleDialog(dialog, $z1KinghtFallConfig.KinghtFallUIID.UISuspend, null, function (mode) {
       return self.restartPausedBattle(dialog, mode);
     }, function () {
-      if (!dialog.isCurrent() || self.ctrGame.saveGame() === false) return false;
+      if (!dialog.isCurrent()) return false;
+      if (self._endless) return self.onGameOver(false, undefined, "quit");
+      if (self.ctrGame.saveGame() === false) return false;
       self.closeUI();
     }, function () { self.finishBattleDialog(dialog); }, null, {
-      mode: "campaign", canRestartWave: function () { return self.isWaveInProgress(); }, stageTitle: function () {
+      mode: self._endless ? "endless" : "campaign", canRestartWave: function () { return self.isWaveInProgress(); }, stageTitle: function () {
         var title = self.ndLevelInfo && self.ndLevelInfo.getChildByName("labName");
-        return title ? title.getComponent(cc.Label).string : self.T(self.ctrGame.gameData.levelCfg.Name);
+        var stageName = title ? title.getComponent(cc.Label).string : self.T(self.ctrGame.gameData.levelCfg.Name);
+        return self._endless ? self.T("lobby.endless") + " · " + stageName : stageName;
       }
     });
   };
@@ -508,7 +544,7 @@ var def_KinghtFallUIGame = function (t) {
       this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Transition);
   };
   _ctor.prototype.clearPausedStageForTest = function (dialog, stars) {
-    if (!TestMode.getInstance().isAvailable() || !dialog || dialog !== this._battleDialog ||
+    if (this._endless || !TestMode.getInstance().isAvailable() || !dialog || dialog !== this._battleDialog ||
         dialog.kind !== "wave-test" || !dialog.isCurrent() || !dialog.paused ||
         !this._pauseOwners || !this._pauseOwners.has(dialog) || !this.canBreak || this._restartPending) return false;
     var game = this.ctrGame, data = game.gameData;
@@ -533,14 +569,24 @@ var def_KinghtFallUIGame = function (t) {
     if (!dialog || !dialog.isCurrent() || this._restartPending) return false;
     mode = mode || "stage";
     if (mode !== "stage" && mode !== "wave" || mode === "wave" && !this.isWaveInProgress()) return false;
-    var record = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData();
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
     var game = this.ctrGame, stage = game.gameData.levelCfg.Level;
-    var test = mode === "wave" ? (waveTest === undefined ? game.gameData._waveTest : waveTest) : null;
-    if (!record.readyForNewBattle()) return false;
-    var snapshot = game.getRestartCheckpoint(mode);
-    // One durable checkpoint write precedes any teardown. A failed save leaves
-    // the original paused battle intact, including its previous stage save.
-    if (!snapshot || record.setCheckpoint(snapshot) === false) return false;
+    var entry = null, setup = null, test = null;
+    if (this._endless) {
+      var run = this._endlessRun;
+      if (mode !== "stage" || !run || run.result || !player.retryRewardRecovery()) return false;
+      var reserved = player.getUserData().data.wallDefenseAdmission;
+      if (!reserved || reserved.id !== run.admissionId || reserved.used) return false;
+      entry = { mode: "endless", cost: reserved.cost, admissionId: reserved.id };
+    } else {
+      var record = player.getGameData();
+      test = mode === "wave" ? (waveTest === undefined ? game.gameData._waveTest : waveTest) : null;
+      if (!record.readyForNewBattle()) return false;
+      var snapshot = game.getRestartCheckpoint(mode);
+      // Save the replacement checkpoint before tearing down this battle.
+      if (!snapshot || record.setCheckpoint(snapshot) === false) return false;
+      setup = snapshot.restartSetup;
+    }
     this._restartPending = true;
     game._restartRetired = true;
     game._combatEpoch++;
@@ -552,7 +598,7 @@ var def_KinghtFallUIGame = function (t) {
     var generation = manager._campaignRestartGeneration = (manager._campaignRestartGeneration || 0) + 1;
     // Recreate the entire game prefab. Typed barracks, actors, queues, timers,
     // projectiles and callbacks belong to the discarded controller, not the new run.
-    // No freshEntry argument: the original paid admission is reused.
+    // Endless reuses its reserved admission. Campaign reopens the checkpoint.
     this.cache = false;
     var previousNode = this.node;
     if (manager.uichace && manager.uichace.get(this.uid) === this) manager.uichace.delete(this.uid);
@@ -565,13 +611,18 @@ var def_KinghtFallUIGame = function (t) {
       if (cc.isValid(previousNode)) { cc.director.once(cc.Director.EVENT_AFTER_DRAW, reopen); return; }
       var args = [$z1KinghtFallConfig.KinghtFallUIID.UIGame, $z1KinghtFallConfig.KinghtFallUIID.UIHome, {
         isCurrent: function () { return manager._campaignRestartGeneration === generation; },
+        onCancel: function () {
+          if (!entry || manager._campaignRestartGeneration !== generation) return;
+          var home = manager.getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome);
+          if (home && home.node) home.node.active = true;
+        },
         onOpened: function () {
           // The old game's onClose reveals Home. Match regular campaign entry
           // once the replacement opens so its HUD cannot show through the map.
           var home = manager.getUIById($z1KinghtFallConfig.KinghtFallUIID.UIHome);
           if (home && home.node) home.node.active = false;
         }
-      }, stage, null, snapshot.restartSetup];
+      }, stage, entry, setup];
       if (test) args.push(test);
       manager.openUIWithOwner.apply(manager, args);
     }
@@ -580,6 +631,11 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.onClose = function () {
     GameplayAdOwner.cancel(this);
+    if (this._endless && this._freshEntry) {
+      $z1UIMgr.UIMgr.getInstance().cancelOpenTransition(this._freshEntry.transition);
+      this._freshEntry = null;
+    }
+    if (!this._restartPending && this._endlessRun && !this._endlessRun.result) this.finishEndless("quit");
     if(this._stageAssets){if(this._stageAssets.retire)this._stageAssets.retire();else this._stageAssets.dispose();this._stageAssets=null;}
     if (this.ctrGame) $z1AudioMgr.AudioMgr.getInstance().stopOwnedEffects(this.ctrGame);
     if (this.ctrGame && BattleSounds.dispose) BattleSounds.dispose(this.ctrGame);
@@ -604,8 +660,13 @@ var def_KinghtFallUIGame = function (t) {
     if (this._battleHud) require("BattleHud").dispose(this);
     if (this.btnAgg) require("FollowButtonArtwork").dispose(this.btnAgg);
     if (this.btnFollow) require("FollowButtonArtwork").dispose(this.btnFollow);
-    try { this.cancelBattleDialog(); }
-    finally { t.prototype.onDestroy.call(this); }
+    try {
+      // Scene destruction can bypass onClose. A deliberate restart keeps its admission.
+      if (!this._restartPending && this._endlessRun && !this._endlessRun.result) this.finishEndless("quit");
+    } finally {
+      try { this.cancelBattleDialog(); }
+      finally { t.prototype.onDestroy.call(this); }
+    }
   };
   _ctor.prototype.onEnable = function () {
     if (this.ctrGame) TestMode.getInstance().setGameplayTarget(this);
@@ -619,6 +680,7 @@ var def_KinghtFallUIGame = function (t) {
     require("LanguageMgr").LanguageMgr.getInstance().offChange(this._refreshStartBattleCaption, this);
   };
   _ctor.prototype.onRestart = function (t) {
+    if (this._endless) return false;
     if (!$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().readyForNewBattle()) return false;
     GameplayAdOwner.cancel(this);
     if (this._enemyGuide) require("EnemyGuide").close(this, true);
@@ -695,8 +757,9 @@ var def_KinghtFallUIGame = function (t) {
     }
     this.btnAddCoin.active = !this.isGet && this.ctrGame.gameData.baseBuild.getLevel() >= 1;
     this.btnAddCoin.getChildByName("lay1").getChildByName("labNum").getComponent(cc.Label).string = "" + this.ctrGame.gameData.videoCoin;
-    if (this.ctrGame.gameData.levelCfg.WaveCfg[this.ctrGame.gameData.round]) {
-      this.btnStartFight.getChildByName("labNum").getComponent(cc.Label).string = "+" + this.ctrGame.gameData.levelCfg.WaveCfg[this.ctrGame.gameData.round].StartSliver;
+    var next = this.ctrGame.gameData.getWaveAt(this.ctrGame.gameData.round + 1);
+    if (next) {
+      this.btnStartFight.getChildByName("labNum").getComponent(cc.Label).string = "+" + next.StartSliver;
     } else {
       this.btnStartFight.children[1].x = 0;
       this.btnStartFight.children[2].active = false;
@@ -721,7 +784,7 @@ var def_KinghtFallUIGame = function (t) {
     var english = language.getCurrentLanguage() === "en";
     var button = this.btnStartFight, children = button.children;
     var fitter = button.getComponent("PaddedTextBackground");
-    var next = this.ctrGame.gameData.levelCfg.WaveCfg[this.ctrGame.gameData.round];
+    var next = this.ctrGame.gameData.getWaveAt(this.ctrGame.gameData.round + 1);
     if (fitter) fitter.enabled = !english;
     children[1].active = !english;
     children[2].active = children[3].active = !english && !!next;
@@ -775,7 +838,12 @@ var def_KinghtFallUIGame = function (t) {
       }
     });
   };
-  _ctor.prototype.onGameOver = function (t, testChallengeMask) {
+  _ctor.prototype.finishEndless = function (reason) {
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    var treasures = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfg();
+    this._endlessRun.finish(reason, player, treasures);
+  };
+  _ctor.prototype.onGameOver = function (t, testChallengeMask, endReason) {
     var e = this, dialog = this.beginBattleDialog('end');
     if (!dialog) return;
     if (BattleSounds.dispose) BattleSounds.dispose(this.ctrGame);
@@ -785,9 +853,20 @@ var def_KinghtFallUIGame = function (t) {
     this.ctrGame.onPauseGame();
     this.canBreak = false;
     this.ctrUI.setRevive(0);
+    if (this._endlessRun) {
+      dialog.paused = true;
+      this.onPauseGame(true, dialog);
+      this.finishEndless(endReason || "defeat");
+    }
     this.scheduleOnce(function () {
       if (!dialog.isCurrent()) return;
-      if (t) {
+      if (e._endlessRun) {
+        var run = e._endlessRun, player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+        e.openBattleDialog(dialog, $z1KinghtFallConfig.KinghtFallUIID.UIEndlessResult, null, endReason === "quit", {
+          getResult: function () { return run.getResult(player); },
+          exit: function () { if (dialog.isCurrent()) e.closeUI(); }
+        });
+      } else if (t) {
         e.openBattleDialog(dialog, $z1KinghtFallConfig.KinghtFallUIID.UIGameEnd, null, t, testChallengeMask);
       } else {
         $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.fail_X_Y, e.ctrGame.gameData.levelCfg.Level + "_" + e.ctrGame.gameData.round);
@@ -806,6 +885,7 @@ var def_KinghtFallUIGame = function (t) {
         });
       }
     }, 1);
+    return true;
   };
   _ctor.prototype.onReviveShow = function (t) {
     this.ctrGame.gameStatus != $z1KinghtFallModle.KinghtFallGameStage.End && this.ctrUI.setRevive(t);
@@ -819,7 +899,14 @@ var def_KinghtFallUIGame = function (t) {
     if (this.ctrGame._unitTest) this.ctrGame._unitTest.dispose();
     if (this.ctrGame.captureWaveStart) this.ctrGame.captureWaveStart();
     if (BattleSounds.wave) BattleSounds.wave(this.ctrGame, "start");
-    var t = this;
+    var t = this, game = this.ctrGame, data = game.gameData;
+    var generation = this._resourceGeneration, epoch = game._combatEpoch, round = data.round;
+    var phases = $z1KinghtFallModle.KinghtFallGameStage;
+    function ownsDusk() {
+      return !t.isclose && cc.isValid(t, true) && t._resourceGeneration === generation &&
+        t.ctrGame === game && cc.isValid(game, true) && game.gameData === data &&
+        game._combatEpoch === epoch && data.round === round && game.gameStatus === phases.Transition;
+    }
     if (this._enemyGuide) require("EnemyGuide").close(this);
     var nightStrength = $z1KinghtFallConfig.KinghtFallParameter.BattleNightStrength;
     this.btnBuildInfo.active = false;
@@ -827,7 +914,7 @@ var def_KinghtFallUIGame = function (t) {
     this.btnAddCoin.active = false;
     this.ctrUI.ndLight.active = true;
     this.isGet = false;
-    this.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.Transition;
+    game.gameStatus = phases.Transition;
     // Planning portraits belong to the preview, never to the spawn queue that
     // continues draining during combat. Hide them before the transition starts.
     this._expandedUpcomingGroup = null;
@@ -843,16 +930,18 @@ var def_KinghtFallUIGame = function (t) {
       opacity: Math.round(255 * nightStrength)
     }, {
       onUpdate: function (e, n) {
+        if (!ownsDusk()) return;
         var i = Math.round(255 - 99 * nightStrength * n);
-        t.ctrGame.ndBg.children.forEach(function (t) {
+        game.ndBg.children.forEach(function (t) {
           t.color = new cc.Color(i, i, i);
         });
-        t.ctrGame.gameData.obstacles.forEach(function (t) {
+        data.obstacles.forEach(function (t) {
           t.node.color = new cc.Color(i, i, i);
         });
       }
     }).call(function () {
-      t.ctrGame.gameStatus = $z1KinghtFallModle.KinghtFallGameStage.Fight;
+      if (!ownsDusk()) return;
+      game.gameStatus = phases.Fight;
       t.initView();
     }).start();
     this.ctrGame.ctrPlay.ndRange.active = true;
@@ -948,10 +1037,11 @@ var def_KinghtFallUIGame = function (t) {
     }, 1);
   };
   _ctor.prototype.initView = function () {
-    var t;
+    var data = this.ctrGame.gameData;
     if (this.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Fight) {
       var e = this.ctrGame.gameData.getBulidList();
-      var n = (null === (t = this.ctrGame.gameData.levelCfg.WaveCfg[this.ctrGame.gameData.round]) || undefined === t ? undefined : t.StartSliver) || 0;
+      var next = data.getWaveAt(data.round + 1);
+      var n = next && next.StartSliver || 0;
       for (var i = 0; i < e.length; i++) {
         var a = e[i];
         switch (a.buildCfg.enumValue) {
@@ -967,7 +1057,9 @@ var def_KinghtFallUIGame = function (t) {
       this.ndCoin.getChildByName("labNum").getComponent(cc.Label).string = "" + this.ctrGame.gameData.coin;
     }
     this.ndLevelInfo.getChildByName("labName").getComponent(cc.Label).string = this.T(this.ctrGame.gameData.levelCfg.Name);
-    this.ndLevelInfo.getChildByName("labOrder").getComponent(cc.Label).string = $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle02), this.ctrGame.gameData.round + "/" + this.ctrGame.gameData.levelCfg.WaveCfg.length);
+    this.ndLevelInfo.getChildByName("labOrder").getComponent(cc.Label).string = this._endless
+      ? require("LanguageMgr").LanguageMgr.getInstance().t("endless.wave", [data.round])
+      : $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle02), data.round + "/" + data.levelCfg.WaveCfg.length);
     var task = this.ctrGame.gameData.taskInfo, current = task.index < task.list.length;
     if (current) {
       var id = task.list[task.index];
@@ -1339,6 +1431,7 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype.update = function (t) {
     this._updateTestControls();
     if (!this.isPauset) {
+      if (this._endlessRun && this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight) this._endlessRun.tick(t);
       t = Math.min(t, .1);
       this.ctrUI.upGuide();
       this.ctrGame.onUpdate(t * this.speed);
@@ -1411,6 +1504,7 @@ var def_KinghtFallUIGame = function (t) {
     }
   };
   _ctor.prototype.startGuide = function (tip) {
+    if (this._endless) return;
     var flow = require("TutorialFlow");
     if (!flow.active(this) || $z1PlatformSetting.PlatformSetting.currentPlatform === $z1BasePlatform.Platform.WEB_LINK) return;
     if (this._battleHud) require("BattleHud").layout(this);

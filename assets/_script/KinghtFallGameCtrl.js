@@ -144,7 +144,7 @@ var def_KinghtFallGameCtrl = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
-  _ctor.prototype.initData = function (t) {
+  _ctor.prototype.initData = function (t, endless) {
     GameplayAdOwner.retire(this);
     if (this._unitTest) this._unitTest.dispose();
     if (typeof cc !== "undefined" && cc.PhysicsContact) require("PhysicsContactCompat").install();
@@ -168,10 +168,10 @@ var def_KinghtFallGameCtrl = function (t) {
     this._armyFormationJob = this._followFormationJob = this._rallyFormationJob = null;
     this._separateArmyCommands = true;
     var saved = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData();
-    var restoring = saved.hasSave(t);
+    var restoring = !endless && saved.hasSave(t);
     var checkpoint = restoring && saved.getCheckpoint ? saved.getCheckpoint(t) : null;
     var tasks = restoring ? (checkpoint && checkpoint.taskList || (saved.getTaskInfo && saved.getTaskInfo(t)) || null) : undefined;
-    this.gameData = new $z1KinghtFallGameCtrlData.default(this, t, restoring, checkpoint && checkpoint.restartSetup, tasks);
+    this.gameData = new $z1KinghtFallGameCtrlData.default(this, t, restoring, checkpoint && checkpoint.restartSetup, tasks, endless);
     require("RelicRuntime").restore(this.gameData, checkpoint && checkpoint.relicState);
     this.ctrPlay.initData();
     this.ctrPlay.ndAgg.active = false;
@@ -1594,6 +1594,7 @@ var def_KinghtFallGameCtrl = function (t) {
     if (this._unitTest) this._unitTest.actors.forEach(function (actor) { if (cc.isValid(actor, true)) actor.onChangeSpeed(); });
   };
   _ctor.prototype.loadGame = function () {
+    if (this.gameData.endless) return false;
     var t = this;
     var record = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData(), stage = this.gameData.levelCfg.Level;
     if (record.hasSave(stage)) {
@@ -1640,7 +1641,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.captureWaveStart = function () {
     var data = this.gameData;
-    if (this._restartRetired || !data || !data.levelCfg || !Number.isInteger(data.round) || data.round < 1 ||
+    if (this._restartRetired || !data || data.endless || !data.levelCfg || !Number.isInteger(data.round) || data.round < 1 ||
         !Array.isArray(data.levelCfg.WaveCfg) || data.round > data.levelCfg.WaveCfg.length) return false;
     var checkpoint = JSON.parse(JSON.stringify(this.getCheckpoint()));
     // Missing legacy state must clear any relic charges saved later in combat.
@@ -1651,7 +1652,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.getRestartCheckpoint = function (mode) {
     var data = this.gameData;
-    if (this._restartRetired || !data || !data.levelCfg) return null;
+    if (this._restartRetired || !data || data.endless || !data.levelCfg) return null;
     var stage = data.levelCfg.Level;
     function preservePermanentTaskClaims(checkpoint) {
       var task = data.taskInfo;
@@ -1714,6 +1715,7 @@ var def_KinghtFallGameCtrl = function (t) {
   };
   _ctor.prototype.saveGame = function () {
     if (this._restartRetired) return false;
+    if (this.gameData.endless) return true;
     return $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGameData().setCheckpoint(this.getCheckpoint());
   };
   cc__decorate([ccp_property({

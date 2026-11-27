@@ -13,7 +13,6 @@ var placements = {
   "home.signIn.extra": { adUnitId: "", description: "Extra daily sign-in reward" },
   "home.signIn.double": { adUnitId: "", description: "Double daily sign-in reward" },
   "home.pass.premium": { adUnitId: "", description: "Unlocked pass rank premium reward" },
-  "home.defendWall.cooldown": { adUnitId: "", description: "Skip Defend the Wall entry cooldown" },
   "battle.buff.refresh": { adUnitId: "", description: "Refresh offered battle buffs" },
   "battle.buff.takeAll": { adUnitId: "", description: "Take all offered battle buffs" },
   "battle.silver.supply": { adUnitId: "", description: "Battle silver supply" },

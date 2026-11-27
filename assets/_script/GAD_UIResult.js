@@ -27,10 +27,12 @@ var def_GAD_UIResult = function (t) {
   }
   cc__extends(_ctor, t);
   _ctor.prototype.lateUpdate = function () {
-    require("BattleResultTitle").sync(this, this.resultSp, this.btnExit, true);
+    require("BattleResultTitle").sync(this, this.resultSp, this.btnExit, true, this._endlessResult ? "lobby.endless" : undefined);
   };
-  _ctor.prototype.init = function (t) {
+  _ctor.prototype.init = function (t, endlessResult) {
     this.isWin = t;
+    this._endlessResult = endlessResult || null;
+    this._rewardSignature = null;
   };
   _ctor.prototype.start = function () {
     var t = this;
@@ -38,8 +40,18 @@ var def_GAD_UIResult = function (t) {
     this.resultSp.setCompleteListener(function () {
       if (!t.isclose && cc.isValid(t.resultSp, true)) t.resultSp.setAnimation(0, "victory_idle", false);
     });
-    $z1AudioMgr.AudioMgr.getInstance().stopMusic($z1GAD_Configs.GADConfig.BgMusic);
-    $z1AudioMgr.AudioMgr.getInstance().playEffectFree(this.isWin ? $z1GAD_Configs.GAD_AudioId.victory : $z1GAD_Configs.GAD_AudioId.fail, undefined, undefined, { owner: this, game: this });
+    var audio = $z1AudioMgr.AudioMgr.getInstance(), sound;
+    if (this._endlessResult) {
+      audio.stopMusic($z1KinghtFallConfig.KinghtFallParameter.BGMusic);
+      var sounds = $z1KinghtFallConfig.KinghtFallAudioId;
+      sound = this.isWin ? sounds.game_success : sounds.game_fail;
+      var caption = this.btnExit.getChildByName("effectLabel");
+      if (caption) require("LanguageMgr").LanguageMgr.getInstance().bindLabel(caption.getComponent(cc.Label), "pause.returnHome");
+    } else {
+      audio.stopMusic($z1GAD_Configs.GADConfig.BgMusic);
+      sound = this.isWin ? $z1GAD_Configs.GAD_AudioId.victory : $z1GAD_Configs.GAD_AudioId.fail;
+    }
+    audio.playEffectFree(sound, undefined, undefined, { owner: this, game: this });
     this.addEvent("SaveRecovered", this.refreshResult);
     this.refreshResult();
     this.loadPrefab($z1KinghtFallConfig.KinghtFallBundelName.IconGood, $z1KinghtFallConfig.KinghtFallPrefabName.ItemGood, function (prefab) {
@@ -47,12 +59,13 @@ var def_GAD_UIResult = function (t) {
       t.refreshResult();
     });
     this.btnExit.on(cc.Node.EventType.TOUCH_END, function () {
-      $z1GAD_App.default.instance.exit_App(0);
+      if (t._endlessResult) t._endlessResult.exit();
+      else $z1GAD_App.default.instance.exit_App(0);
     });
   };
   _ctor.prototype.refreshResult = function () {
     if (this.isclose || !this.lblStats || !this.ndRewards) return;
-    var result = $z1GAD_PlayerMgr.default.getInstance().getResult();
+    var result = this._endlessResult ? this._endlessResult.getResult() : $z1GAD_PlayerMgr.default.getInstance().getResult();
     if (!result) return;
     var seconds = Math.floor(result.activeMilliseconds / 1000);
     var time = Math.floor(seconds / 60) + ":" + (seconds % 60 < 10 ? "0" : "") + seconds % 60;
@@ -69,11 +82,13 @@ var def_GAD_UIResult = function (t) {
     this._rewardSignature = signature;
     this.ndRewards.destroyAllChildren();
     var columns = 6, spacing = 100;
+    var firstRow = this._endlessResult ? -spacing / 2 : 0;
+    if (this._endlessResult) this.layoutEndlessRewards(Math.ceil(rows.length / columns), spacing);
     for (var i = 0; i < rows.length; i++) {
       var node = cc.instantiate(this._rewardPrefab);
       node.parent = this.ndRewards;
       var rowLength = Math.min(columns, rows.length - Math.floor(i / columns) * columns);
-      node.setPosition((i % columns - (rowLength - 1) / 2) * spacing, -Math.floor(i / columns) * spacing);
+      node.setPosition((i % columns - (rowLength - 1) / 2) * spacing, firstRow - Math.floor(i / columns) * spacing);
       node.getComponent($z1KinghtFallItemGood.default).initView(rows[i], 95);
       var relic = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getTreasureCfg().filter(function (item) { return item.goodID === rows[i].id; })[0];
       if (relic) node.on(cc.Node.EventType.TOUCH_END, this.openRelicDetails.bind(this, relic));
@@ -93,6 +108,34 @@ var def_GAD_UIResult = function (t) {
         outline.color = cc.Color.BLACK;
       }
     }
+  };
+  _ctor.prototype.layoutEndlessRewards = function (rows, spacing) {
+    var content = this.ndRewards, scroll = this._rewardScroll;
+    // Leave the save status and Return Home button outside the reward list.
+    // A small glimpse of the fifth row makes longer lists discoverable.
+    var height = 4 * spacing + 12;
+    if (!scroll) {
+      var position = content.getPosition();
+      var viewport = new cc.Node("RewardViewport");
+      viewport.parent = content.parent;
+      viewport.setSiblingIndex(content.getSiblingIndex());
+      viewport.setContentSize(content.width, height);
+      viewport.setPosition(position.x, position.y + (spacing - height) / 2);
+      viewport.addComponent(cc.Mask).type = cc.Mask.Type.RECT;
+      content.parent = viewport;
+      content.anchorY = 1;
+      content.setPosition(0, height / 2);
+      scroll = this._rewardScroll = viewport.addComponent(cc.ScrollView);
+      scroll.horizontal = false;
+      scroll.elastic = false;
+      scroll.cancelInnerEvents = true;
+      scroll.content = content;
+    }
+    var offset = scroll.getScrollOffset().y;
+    scroll.stopAutoScroll();
+    content.height = Math.max(height, rows * spacing);
+    scroll.vertical = content.height > height;
+    scroll.scrollToOffset(cc.v2(0, Math.max(0, Math.min(offset, content.height - height))), 0);
   };
   _ctor.prototype.openRelicDetails = function (relic, event) {
     if (event) event.stopPropagation();

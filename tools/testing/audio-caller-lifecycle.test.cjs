@@ -135,26 +135,16 @@ test('opening the lobby underneath the startup overlay keeps the start theme unt
  enable.call(home);assert.equal(music,0);
 });
 
-test('Wall Defense entry replaces menu music only after opening, and exit restores a single menu loop',()=>{
- for(const cancelled of [false,true]){
-  const f=adFixture(),config={KinghtFallParameter:{BGMusic:'bg'},KinghtFallAudioId:{menu_bgm:'menu'},KinghtFallUIID:{UIHome:'home'}};
-  Object.assign(f.audio.ADConf,{menu:{bundle:'audio',path:'menu'},wall:{bundle:'audio',path:'wall'}});
-  const gad={GAD_UIID:{UIGame:'wall-game',UIResult:'wall-result',UIPause:'wall-pause'},GAD_AudioId:{bgm:'wall',mission:'hit'},GADConfig:{LobbyAvailable:true,BgMusic:'wall-bg',EnergyCost:10},emGADGameState:{Over:3}};
-  f.modules.GAD_Configs=gad;f.modules.KinghtFallConfig=config;
-  f.modules.GAD_PlayerMgr={default:{getInstance:()=>({readyForRun:()=>true,reset(){},setState(){},finishRun(){}})}};
-  f.cc.systemEvent={on(){},off(){}};f.cc.SystemEvent={EventType:{KEY_UP:'keyup'}};
-  let opened;const home={initViewTogg(){},showRed(){}},homeEnable=method('KinghtFallUIHome','onEnable',{$z1Main:{default:{instance:{uiTop:{}}}},$z1AudioMgr:f.modules.AudioMgr,$z1KinghtFallConfig:config,$z1PoolMgr:{PoolMgr:{getInstance:()=>({clearPool(){}})}}});
-  const homeNode={activeInHierarchy:true};Object.defineProperty(homeNode,'active',{set(value){this.activeInHierarchy=value;if(value)homeEnable.call(home);}});
-  f.modules.UIMgr={UIMgr:{getInstance:()=>({getUIById:()=>({node:homeNode}),closeById(){},openUIWithOwner(_id,_from,owner){opened=owner.onOpened;return{cancel(){}};}})}};
-  const app=f.load('GAD_App').default.instance;app._isInited=true;app.addTouchEvent=app.removeTouchEvent=()=>{};
-  const player={getUserData:()=>({getMaxStage:()=>10,getPowerNum:()=>10,data:{}}),getDailyData:()=>({getSubTimeByIndex:()=>0,setSubTimeByIndex(){}})};
-  const context={cc:f.cc,$z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>player}},$z1GAD_App:{default:{instance:app}},$z1AudioMgr:f.modules.AudioMgr,$z1KinghtFallConfig:config,$z1UIMgr:f.modules.UIMgr,require:name=>f.modules[name]};
-  method('KinghtFallHomeBattleCtrl','EnterSubPlay',context).call({node:homeNode,_resourceGeneration:1,subPlayStage:[2],subPlayTime:[0],refreshSubView(){}},0);
-  assert.equal(f.bg.isPlaying,true,'pending entry keeps the menu loop');
-  if(cancelled)app.exit_App();opened();
-  if(cancelled){assert.equal(f.bg.isPlaying,true);assert.equal(f.audio.audioSourceMap.has('wall-bg'),false,'late entry cannot start another loop');}
-  else{assert.equal(f.bg.isPlaying,false,'menu must stop once Wall Defense owns the screen');assert.equal(f.audio.getAudioSource('wall-bg').isPlaying,true);app.exit_App();assert.equal(f.bg.isPlaying,true);assert.equal(f.bg.clip.path,'menu');assert.equal(f.audio.getAudioSource('wall-bg').isPlaying,false);}
-  assert.deepEqual(f.writes,[]);
+test('Endless results retire the campaign music and play the outcome cue',()=>{
+ for(const quit of [false,true]){
+  const f=adFixture(),config={KinghtFallParameter:{BGMusic:'bg'},KinghtFallAudioId:{game_success:'victory',game_fail:'failure'},KinghtFallBundelName:{IconGood:'goods'},KinghtFallPrefabName:{ItemGood:'good'}};
+  Object.assign(f.audio.ADConf,{victory:{bundle:'audio',path:'victory'},failure:{bundle:'audio',path:'failure'}});
+  let exit,returned=0;
+  const panel={node:{activeInHierarchy:true},_resourceGeneration:1,resultSp:{setAnimation(){},setCompleteListener(){}},btnExit:{on(_event,fn){exit=fn;},getChildByName:()=>null},addEvent(){},refreshResult(){},loadPrefab(){}};
+  method('GAD_UIResult','init').call(panel,quit,{exit(){returned++;}});
+  method('GAD_UIResult','start',{$z1AudioMgr:f.modules.AudioMgr,$z1KinghtFallConfig:config,cc:{Node:{EventType:{TOUCH_END:'end'}}}}).call(panel);
+  assert.equal(f.bg.isPlaying,false);assert.equal(f.audio.getAudioSource('effect1').clip.path,quit?'victory':'failure');
+  exit();assert.equal(returned,1);assert.deepEqual(f.writes,[]);
  }
 });
 

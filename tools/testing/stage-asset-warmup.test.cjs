@@ -105,3 +105,9 @@ test('stage admission and checkpoint creation remain behind the readiness gate',
  const source=fs.readFileSync(path.join(root,'assets/_script/KinghtFallUIGame.js'),'utf8'),start=source.slice(source.indexOf('_ctor.prototype.start ='),source.indexOf('_ctor.prototype.playPlanningMusic'));
  assert(start.indexOf('stageAssets.run().then')<start.indexOf('game.initData(levelId)'));assert(start.indexOf('stageAssets.run().then')<start.indexOf('player.purchase'));assert(start.indexOf('game._stageAssets=stageAssets')<start.indexOf('game.initMap(map)'));assert(start.indexOf('prepareMap();')<start.indexOf('stageAssets.reveal()'));
 });
+
+test('Endless prepares its survival reward config with the map assets',()=>{
+ const level=config.LevelCfg[0],key='gad_configs/GameJsonCfg:json';
+ assert(!Warm.plan(config,level,names).items.some(item=>item.key===key));
+ assert.equal(Warm.plan(config,level,names,true).items.filter(item=>item.key===key).length,1);
+});

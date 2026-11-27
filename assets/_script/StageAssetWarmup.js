@@ -24,9 +24,10 @@ function collector() {
   }
   return {items:items,add:add};
 }
-function plan(config, level, names) {
+function plan(config, level, names, endless) {
   var out = collector(), add = out.add, allies = {};
   add(names.IconMap, level.prefab, "prefab");
+  if (endless) add("gad_configs", "GameJsonCfg", "json");
   ["characters/catalog", "character-parts/catalog", "projectiles/catalog"].forEach(function (path) { add("resources", path, "json"); });
   buildingKinds(level).forEach(function (id) {
     (config.BuildEnum[id] && config.BuildEnum[id].levelList || []).forEach(function (row) {
@@ -183,7 +184,7 @@ Session.prototype.load = function (item) {
   });
 };
 Session.prototype.run = async function () {
-  var o = this.options, base = plan(o.config, o.level, o.names), self = this;
+  var o = this.options, base = plan(o.config, o.level, o.names, o.endless), self = this;
   if (o.beforePrepare) await o.beforePrepare();
   if (!this.current()) throw Error("Stage preparation cancelled");
   // Four active loads keep decoding responsive and bound transient allocations.
@@ -220,7 +221,7 @@ function create(view, config, level) {
     if(type==='prefab'){if(asset.compileCreateFunction)asset.compileCreateFunction();if(asset.data&&asset.data.getComponentsInChildren)asset.data.getComponentsInChildren(sp.Skeleton).forEach(function(r){if(r.skeletonData&&r.skeletonData.getRuntimeData)r.skeletonData.getRuntimeData();});}
     else if(type==='spine'&&asset.getRuntimeData)asset.getRuntimeData();
   }
-  var session = new Session({config:config,level:level,names:Config.KinghtFallBundelName,style:style,skills:require("HeroSkillSettings").effective(style,config),skillClips:require("HeroSkillVFXCatalog").clips,effects:require("BattleSoundCatalog").effects,prefabs:Config.KinghtFallPrefabName,audio:Config.KinghtFallAudioCF,
+  var session = new Session({config:config,level:level,names:Config.KinghtFallBundelName,endless:view._endless,style:style,skills:require("HeroSkillSettings").effective(style,config),skillClips:require("HeroSkillVFXCatalog").clips,effects:require("BattleSoundCatalog").effects,prefabs:Config.KinghtFallPrefabName,audio:Config.KinghtFallAudioCF,
     current:function () { return !view.isclose && cc.isValid(view.node,true); },
     beforePrepare:function () { return loading.waitForArtwork().then(function () { return loading.waitForDraw(); }); },
     yieldProgress:function () { return loading.yieldProgress(); },

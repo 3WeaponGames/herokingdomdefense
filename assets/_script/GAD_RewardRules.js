@@ -16,6 +16,10 @@ exports.createResult = function (run, config, treasures, inventory, random) {
     activeMilliseconds: active, clearedWaves: cleared,
     baseGold: Math.floor(active * config.goldPerMinute / 60000), crystals: Math.floor(active / (config.secondsPerCrystal * 1000)),
     rewards: [], drops: [] };
+  if (run.endlessStage !== undefined) {
+    result.endlessStage = run.endlessStage;
+    result.admissionId = run.admissionId;
+  }
   result.rewards.push({ id: config.goldID, num: result.baseGold }, { id: config.crystalID, num: result.crystals });
   var owned = {};
   inventory.forEach(function (row) { owned[row.id] = { level: row.level, frame: row.frame }; });
@@ -32,8 +36,9 @@ exports.createResult = function (run, config, treasures, inventory, random) {
     var pool = useful.length ? useful : tier;
     if (!pool.length) continue;
     var item = pool[Math.min(pool.length - 1, Math.floor(random() * pool.length))], row = owned[item.ID];
-    result.drops.push({ wave: wave, quality: quality, itemID: item.ID, goodID: item.goodID });
     var reward = result.rewards.filter(function (entry) { return entry.id === item.goodID; })[0];
+    // Keep Endless receipts bounded while still awarding every milestone.
+    if (result.endlessStage === undefined || !reward) result.drops.push({ wave: wave, quality: quality, itemID: item.ID, goodID: item.goodID });
     if (reward) reward.num++; else result.rewards.push({ id: item.goodID, num: 1 });
     if (!row) owned[item.ID] = { level: 1, frame: 0 };
     else if (needsPieces(item, row)) row.frame++;
@@ -44,6 +49,7 @@ exports.createResult = function (run, config, treasures, inventory, random) {
 exports.validResult = function (result) {
   function count(value) { return Number.isInteger(value) && value >= 0; }
   return !!result && result.version === 1 && typeof result.id === "string" && result.id.length > 0 && result.id.length < 160 &&
+    (result.endlessStage === undefined || Number.isSafeInteger(result.endlessStage) && result.endlessStage > 0) &&
     count(result.sequence) && result.sequence > 0 && typeof result.endReason === "string" &&
     count(result.activeMilliseconds) && count(result.clearedWaves) && count(result.baseGold) && count(result.crystals) &&
     Array.isArray(result.rewards) && result.rewards.length <= 1000 && result.rewards.every(function (reward) { return reward && count(reward.id) && reward.id > 0 && count(reward.num); }) &&

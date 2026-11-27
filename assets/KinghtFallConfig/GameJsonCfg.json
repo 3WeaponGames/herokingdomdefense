@@ -119819,7 +119819,8 @@
         "arcStartWidth": 116.28,
         "buffScale": 0.8,
         "castAreaScale": 0.5,
-        "castSpearScale": 0.35
+        "castSpearScale": 0.35,
+        "castSpearLengthScale": 1.5
       },
       "audio": {
         "cast": {

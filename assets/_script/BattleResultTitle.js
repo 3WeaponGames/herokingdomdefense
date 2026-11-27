@@ -3,17 +3,17 @@
 // Use the action-button font at its own resolution instead of magnifying
 // lettering packed into the animated atlas. Native/web bone attachments keep
 // the authored appearance, movement and result callbacks intact.
-exports.sync = function (owner, skeleton, button, win) {
+exports.sync = function (owner, skeleton, button, win, titleKey) {
   if (!skeleton) return;
   var manager = require("LanguageMgr").LanguageMgr.getInstance();
-  var english = manager.getCurrentLanguage() === "en";
+  var localized = titleKey || manager.getCurrentLanguage() === "en";
   var state = owner._resultTitleState || (owner._resultTitleState = {});
   var slot = win ? "shengli" : "shibai_1", boneName = win ? "sl5" : "sb3";
-  if (state.hidden && (!english || state.slot !== slot || state.skeleton !== skeleton)) {
+  if (state.hidden && (!localized || state.slot !== slot || state.skeleton !== skeleton)) {
     if (cc.isValid(state.skeleton)) state.skeleton.setAttachment(state.slot, state.slot);
     state.hidden = false;
   }
-  if (!english) {
+  if (!localized) {
     if (cc.isValid(state.node)) state.node.active = false;
     return;
   }
@@ -35,7 +35,7 @@ exports.sync = function (owner, skeleton, button, win) {
   }
   var node = state.node, text = node.getComponent(cc.Label);
   node.parent = bone;
-  var value = manager.t(win ? "art.result.victory" : "art.result.defeat").toUpperCase();
+  var value = manager.t(titleKey || (win ? "art.result.victory" : "art.result.defeat")).toUpperCase();
   if (text.string !== value) text.string = value;
   // Victory's localized bone is enlarged; compensate for that setup scale so
   // both titles have the same visible font size, while animation still scales.
@@ -47,7 +47,7 @@ exports.sync = function (owner, skeleton, button, win) {
   });
   node.setScale(.875 / scale);
   node.setPosition(.21 / scale, 7 / scale);
-  node.active = !!text.font && !text.useSystemFont;
+  node.active = !!titleKey || !!text.font && !text.useSystemFont;
   if (!node.active) return;
   var runtime = skeleton._nativeSkeleton || skeleton._skeleton;
   if (!state.hidden || state.data !== skeleton.skeletonData || state.runtime !== runtime) {

@@ -65,10 +65,20 @@ test('Vanguard jabs follow the equipped atlas and restore the held weapon layers
   near(wind()[i].node.width,48*Math.sqrt(.5));
   tip(spear).forEach((axis,k)=>near(axis,tip(wind()[i])[k]));
  });
+ const windGeometry=()=>wind().map(({node})=>[node.x,node.y,node.angle,node.width,node.height,node.opacity]);
+ const originalWind=windGeometry();
+ f.rt.settings.visual.castSpearLengthScale=1.5;
+ f.paint();
+ assert.deepEqual(windGeometry(),originalWind);
+ assert.deepEqual(spears().map(sprite=>sprite.node.opacity),oldOpacity);
+ spears().forEach((spear,i)=>{
+  near(spear.node.width,48*.35*1.5);near(spear.node.height,oldHeight*.35);
+  tip(spear).forEach((axis,k)=>near(axis,tip(wind()[i])[k]));
+ });
  f.rt.settings.visual.castAreaScale=1;
  f.paint();
  near(wind()[0].node.width,48);
- near(spears()[0].node.width,48*.35);
+ near(spears()[0].node.width,48*.35*1.5);
  const oldFrames=[...record().spearJabs.frames.values()];
  main.skeletonData=gold;
  render(81);

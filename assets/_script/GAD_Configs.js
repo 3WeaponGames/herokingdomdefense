@@ -20,7 +20,6 @@ exports.emGADHitState = exports.emGADGameState = exports.emGADRoleState = export
   t.configs = "gad_configs";
 })(r = exports.emGADBundles || (exports.emGADBundles = {}));
 exports.GADConfig = {
-  LobbyAvailable: false,
   EnergyCost: 10,
   WallWidth: 350,
   EnemyFixedWidth: 188,
