@@ -1391,15 +1391,16 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
     if(path&&!path.spawnIds.includes(spawn.id))continue;
     const total=entries.filter(e=>e.spawnId===spawn.id).reduce((n,e)=>n+e.count,0);
     if(state.tab==='Waves'&&!total)continue;
-    const color=spawn.enabled===false?'#777':spawn.id===state.spawn?'#ffd66d':'#76bfe7';
+    const selected=state.selection.includes('spawn:'+spawn.id);
+    const color=selected?'#ff8d42':'#ffd66d';
     drawSpawnCircle(spawn,color);circle(spawn,color,'');
     markers.push({point:spawn,color,label:spawn.name+(state.tab==='Waves'?' · '+total+' units':'')});
    }
    if(path){
-    const pathColor='#ff8d42',nodes=new Map(path.nodes.map(node=>[node.id,node]));ctx.strokeStyle=pathColor;ctx.lineWidth=2.5/state.zoom;
+    const pathColor='#71d6df',nodes=new Map(path.nodes.map(node=>[node.id,node]));ctx.strokeStyle=pathColor;ctx.lineWidth=2.5/state.zoom;
     const spread=path.spread===undefined?Math.max(0,...stage.spawns.filter(s=>path.spawnIds.includes(s.id)).map(s=>s.radius||0)):path.spread;if(spread>0){ctx.save();ctx.strokeStyle=pathColor+'18';ctx.lineWidth=spread*2;ctx.lineCap='round';ctx.lineJoin='round';for(const edge of path.edges){const a=nodes.get(edge.from),b=nodes.get(edge.to);if(a&&b){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}ctx.restore();}
     for(const edge of path.edges){const a=nodes.get(edge.from),b=nodes.get(edge.to);if(!a||!b)continue;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();const dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy);if(length*state.zoom>30){const x=a.x+dx*.58,y=a.y+dy*.58,ux=dx/length,uy=dy/length,size=9/state.zoom;ctx.beginPath();ctx.moveTo(x-ux*size-uy*size*.55,y-uy*size+ux*size*.55);ctx.lineTo(x,y);ctx.lineTo(x-ux*size+uy*size*.55,y-uy*size-ux*size*.55);ctx.stroke();}}
-    for(const {point,label} of pointLabels){circle(point,point.goal?'#ffbb77':pathColor,label);if(state.selection.includes('node:'+point.id)){ctx.strokeStyle='#ffda45';ctx.lineWidth=3/state.zoom;ctx.beginPath();ctx.arc(point.x,point.y,12/state.zoom,0,Math.PI*2);ctx.stroke();}}
+    for(const {point,label} of pointLabels){circle(point,point.goal?'#9bd47c':'#6ed5dc',label);if(state.selection.includes('node:'+point.id)){ctx.strokeStyle='#ffda45';ctx.lineWidth=3/state.zoom;ctx.beginPath();ctx.arc(point.x,point.y,12/state.zoom,0,Math.PI*2);ctx.stroke();}}
    }
    if(state.nav&&state.navSignature!==navigationSignature())state.nav=null;
    if(state.tab==='Paths'&&state.nav){ctx.strokeStyle='#f0cf55';ctx.lineWidth=3/state.zoom;ctx.beginPath();state.nav.points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();ctx.strokeStyle='#f0cf5580';ctx.lineWidth=1.5/state.zoom;for(const trace of state.nav.traces||[]){ctx.beginPath();trace.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();}}
@@ -1628,7 +1629,13 @@ if(stageMode&&state.tool==='node'&&!(pathTarget?.edge&&modifier)){const graphId=
   if(!stageMode){const a=d.start,b=d.current,map=Selection.soloMap(values(),state.solo),ids=new Set(state.selection);
    for(const layer of state.tab==='Ground'?groundLayers(map).map(l=>Object.assign({},l,{objects:l.images||[]})):map.layers)if(!layer.locked&&!layer.hidden&&(state.tab!=='Ground'||layer.opacity!==0))for(const object of layer.objects){if(object.opacity===0)continue;const p=M.toWorld(layer.transform,object);if(p.x>=Math.min(a.x,b.x)&&p.x<=Math.max(a.x,b.x)&&p.y>=Math.min(a.y,b.y)&&p.y<=Math.max(a.y,b.y))ids.add(object.id);}
    state.selection=Array.from(ids);
-  }else{const a=d.start,b=d.current,ids=new Set(state.selection);for(const item of stageSelectionPoints()){const p=item.point;if(p.x>=Math.min(a.x,b.x)&&p.x<=Math.max(a.x,b.x)&&p.y>=Math.min(a.y,b.y)&&p.y<=Math.max(a.y,b.y))ids.add(item.id);}state.selection=Array.from(ids);}renderRight();renderLayerPane();draw();flushShared();return;
+  }else{
+   const a=d.start,b=d.current,ids=new Set(state.selection);
+   for(const item of stageSelectionPoints()){const p=item.point;if(p.x>=Math.min(a.x,b.x)&&p.x<=Math.max(a.x,b.x)&&p.y>=Math.min(a.y,b.y)&&p.y<=Math.max(a.y,b.y))ids.add(item.id);}
+   state.selection=Array.from(ids);
+   if(state.tab==='Spawns')refreshStageCards();
+  }
+  renderRight();renderLayerPane();draw();flushShared();return;
  }
  const value=clone(values());if(stageMode&&d.ids){if(d.purchaseField)commitPurchaseDrag(d,value);else commitStageDrag(d,value);flushShared();return;}state.snap.value=d.before;if(!stageMode)state.map=d.before;
  if(JSON.stringify(value)!==JSON.stringify(d.before))edit(map=>Object.assign(map,value));else render();flushShared();
