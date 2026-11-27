@@ -1,6 +1,8 @@
 'use strict';
 const StageNames=require('./stage-names');
 const StageBiome=require('./stage-biome');
+const SpawnGroups=require('./spawn-groups');
+const StageLayoutEdit=require('./stage-layout-edit');
 const fs=require('fs'),path=require('path'),os=require('os'),crypto=require('crypto'),url=require('url');
 const UnitCatalog=require('./unit-catalog');
 const WaveCounts=require('./wave-counts');
@@ -26,6 +28,8 @@ function atomicWrite(file,content,beforeReplace,purpose='write'){
 }
 function stageFields(stage,map){
  const fields=P.unlocks(stage);
+ const groups=SpawnGroups.runtimeGroups(stage);
+ if(groups.length||Object.prototype.hasOwnProperty.call(stage.config,'SpawnGroups'))fields.SpawnGroups=groups;
  if(map.id.startsWith('map-'))fields.Map='Generated/Maps/'+map.id+'/thumbnail';
  return Object.assign(fields,{EnvironmentMapId:map.id,EnvironmentBiome:StageBiome.value(stage.config,map),StageLayoutId:stage.id,prefab:'Generated/Stages/'+stage.id});
 }
@@ -84,10 +88,10 @@ class Service{
  loadStage(stageId){this.index();const key='stage:'+stageId;if(!this.docs[key]){const parts=/^A-(\d+)$/.exec(stageId);if(!parts)throw Error('Invalid stage');const level=Number(parts[1]);if(!Number.isSafeInteger(level)||level<1||stageId!=='A-'+level)throw Error('Choose a canonical stage identifier.');const config=L.read(this.root,campaignFile).LevelCfg.find(s=>s.Level===level);if(!config)throw Error('Stage was removed');const file='authoring/worlds/stages/'+stageId+'.json';const data=fs.existsSync(path.join(this.root,file))?L.read(this.root,file):L.adaptStage(this.root,'A',level,config);data.config=clone(config);data.sourceRevision=L.hash(JSON.stringify(config));StageNames.refreshTowers(StageNames.refreshPaths(data));this.docs[key]={key,file,original:clone(data),data,revision:fingerprint(path.join(this.root,file))};this.loadMap(data.mapId);}return this.docs[key];}
  loadGroups(){return Library.load(this);}
  doc(key){if(key===Library.KEY)return this.loadGroups();return key.startsWith('map:')?this.loadMap(key.slice(4)):this.loadStage(key.slice(6));}
- snapshot(key,detachedValue,{placementPreview=false,waveIndex}={}){
+ snapshot(key,detachedValue,{placementPreview=false,waveIndex,layoutOnly=false}={}){
   const doc=this.doc(key),value=detachedValue===undefined?doc.data:detachedValue,stage=key.startsWith('stage:');
-  const issues=key===Library.KEY?Groups.validate(value,this.assetTable()):key.startsWith('map:')?M.validateMap(value,this.assetTable()):this.stageIssues(value,this.loadMap(value.mapId).data);
-  const content=waveIndex===undefined?{
+  const issues=key===Library.KEY?Groups.validate(value,this.assetTable()):key.startsWith('map:')?M.validateMap(value,this.assetTable()):this.stageIssues(value,this.loadMap(value.mapId).data,undefined,layoutOnly);
+  const content=layoutOnly?{}:waveIndex===undefined?{
    value:clone(value),stageName:stage?localizedStageName(this.root,value.config&&value.config.Name):undefined,
    globalShadowSettings:key===Library.KEY?undefined:this.shadowSettings(),
    buildingPreview:stage?require('./building-preview').describe(this,value,{buildingLevels:true,barracksTypes:!placementPreview}):undefined
@@ -95,15 +99,15 @@ class Service{
   return {version:this.version,key,...content,unitCatalogRevision:this.unitCatalogRevision||0,
    stageClipboard:this.stageClipboard?clone(this.stageClipboard.metadata):null,dirty:!equal(value,doc.original),
    canUndo:this.undo.some(x=>x.key===key),canRedo:this.redo.some(x=>x.key===key),issues,
-   sharedMapDraft:stage?this.stageSaveContext(value,issues):null,busy:this.busy,affected:key.startsWith('map:')?this.affected(value.id):[],
+   sharedMapDraft:stage?this.stageSaveContext(value,issues,layoutOnly):null,busy:this.busy,affected:key.startsWith('map:')?this.affected(value.id):[],
    drafts:Object.values(this.docs).filter(d=>!equal(d.data,d.original)).map(d=>d.key),collections:Library.summary(this),recoveryBackup:this.recoveryBackup};
  }
- stageSaveContext(stage,issues){
+ stageSaveContext(stage,issues,layoutOnly){
   const map=this.loadMap(stage.mapId);if(equal(map.data,map.original))return null;
   const affected=Array.from(new Set(this.affected(stage.mapId).concat(stage.id))),otherDrafts=affected.filter(id=>id!==stage.id&&this.docs['stage:'+id]&&!equal(this.docs['stage:'+id].data,this.docs['stage:'+id].original));
-  return {key:map.key,name:map.data.name||map.data.id,savedMapAvailable:map.original!==null,affected,stageOnlyIssues:map.original===null?['Save the new shared map with this stage.']:this.stageIssues(stage,map.original),combinedIssues:Array.from(new Set(issues.concat(M.validateMap(map.data,this.assetTable()),otherDrafts.length?['Other linked stages have unsaved drafts: '+otherDrafts.join(', ')+'. Save those stages first.']:[])))};
+  return {key:map.key,name:map.data.name||map.data.id,savedMapAvailable:map.original!==null,affected,stageOnlyIssues:map.original===null?['Save the new shared map with this stage.']:this.stageIssues(stage,map.original,undefined,layoutOnly),combinedIssues:Array.from(new Set(issues.concat(M.validateMap(map.data,this.assetTable()),otherDrafts.length?['Other linked stages have unsaved drafts: '+otherDrafts.join(', ')+'. Save those stages first.']:[])))};
  }
- stageIssues(stage,map,context){
+ stageIssues(stage,map,context,layoutOnly){
   const index=context?context.index:this.index(),issues=M.validateStage(stage,map,index.documents.A.SoldierCfg),schema=require('../lib/schema'),
    content=context?context.catalogContent:fs.readFileSync(path.join(this.root,'assets/resources/localization/catalog.json')),catalogRevision=L.hash(content),
    signature=i=>JSON.stringify([i.doc,i.path,i.message]);
@@ -112,19 +116,27 @@ class Service{
    const documents={catalog:{data:JSON.parse(content.toString('utf8').replace(/^\uFEFF/,''))},overrides:{data:index.documents.A.GameTools||{}}};
    documents.A={data:index.documents.A};
    // Signatures exclude severity; schema changes only severity for a touched path.
-   baseline={index,catalogRevision,documents,signatures:new Set(schema.validate(documents,[]).map(signature))};
+   baseline={index,catalogRevision,documents,stageConfigs:new WeakMap(),signatures:new Set(schema.validate(documents,[]).map(signature))};
    if(!context)this.stageValidation=baseline;
   }
-  // The schema is read-only. Share untouched tables and replace only this stage row.
-  const base=index.documents[stage.variant],rows=base.LevelCfg.slice(),at=rows.findIndex(s=>s.Level===stage.level);
-  if(at<0)throw Error('Stage was removed. Refresh before editing.');
-  const original=rows[at],changes=[{doc:stage.variant,path:['LevelCfg',at]}];
-  rows[at]=Object.assign(clone(stage.config),P.unlocks(stage),{prefab:'Generated/Stages/'+stage.id});
-  const documents=Object.assign({},baseline.documents);
-  documents[stage.variant]={data:Object.assign(Object.create(null),base,{LevelCfg:rows})};
-  const actual=JSONDoc.diff(original,rows[at]).map(c=>['LevelCfg',at].concat(c.path)),
-   overlap=(a,b)=>a.slice(0,Math.min(a.length,b.length)).every((v,i)=>String(v)===String(b[i]));
-  issues.push(...schema.validate(documents,changes).filter(i=>i.severity==='error'&&(!baseline.signatures.has(signature(i))||i.doc===stage.variant&&actual.some(p=>overlap(p,i.path)))).map(i=>i.message));
+  // Coordinate edits share the same configuration and unlocks. Keep checking
+  // map bounds above, and reuse campaign schema validation for that config.
+  const unlocks=P.unlocks(stage),configRevision=JSON.stringify(stage.config);
+  let checked=layoutOnly&&!context&&baseline.stageConfigs.get(stage.config);
+  if(!checked||checked.id!==stage.id||checked.configRevision!==configRevision||!equal(checked.unlocks,unlocks)){
+   const base=index.documents[stage.variant],rows=base.LevelCfg.slice(),at=rows.findIndex(s=>s.Level===stage.level);
+   if(at<0)throw Error('Stage was removed. Refresh before editing.');
+   const original=rows[at],changes=[{doc:stage.variant,path:['LevelCfg',at]}];
+   rows[at]=Object.assign(clone(stage.config),unlocks,{prefab:'Generated/Stages/'+stage.id});
+   const documents=Object.assign({},baseline.documents);
+   documents[stage.variant]={data:Object.assign(Object.create(null),base,{LevelCfg:rows})};
+   const actual=JSONDoc.diff(original,rows[at]).map(c=>['LevelCfg',at].concat(c.path)),
+    overlap=(a,b)=>a.slice(0,Math.min(a.length,b.length)).every((v,i)=>String(v)===String(b[i]));
+   const errors=schema.validate(documents,changes).filter(i=>i.severity==='error'&&(!baseline.signatures.has(signature(i))||i.doc===stage.variant&&actual.some(p=>overlap(p,i.path)))).map(i=>i.message);
+   checked={id:stage.id,configRevision,unlocks,errors};
+   if(!context)baseline.stageConfigs.set(stage.config,checked);
+  }
+  issues.push(...checked.errors);
   issues.push(...require('./stage-thumbnails').issues(this,stage.config,index.documents.A.SoldierCfg));
   return Array.from(new Set(issues));
  }
@@ -183,6 +195,15 @@ class Service{
    this.recordChange(doc,{...doc.data,config:{...doc.data.config,WaveCfg}});
   }
   return this.snapshot(key,undefined,{waveIndex});
+ }
+ editStageLayout({key,version,mapId,edit}){
+  this.expect(version);
+  if(typeof key!=='string'||!key.startsWith('stage:'))throw Error('Select a stage before moving placements.');
+  const doc=this.doc(key);
+  if(doc.data.mapId!==mapId)throw Error('The stage map changed while you were dragging.');
+  const next=StageLayoutEdit.apply(doc.data,edit,true);
+  if(next!==doc.data)this.recordChange(doc,next);
+  return this.snapshot(key,undefined,{layoutOnly:true});
  }
  recordChange(doc,value){
   this.undo.push({key:doc.key,edits:History.diff(doc.data,value)});

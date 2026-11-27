@@ -200849,198 +200849,6 @@
             },
             {
                 "__id__": 5458
-            },
-            {
-                "__id__": 5459
-            },
-            {
-                "__id__": 5460
-            },
-            {
-                "__id__": 5461
-            },
-            {
-                "__id__": 5462
-            },
-            {
-                "__id__": 5463
-            },
-            {
-                "__id__": 5464
-            },
-            {
-                "__id__": 5465
-            },
-            {
-                "__id__": 5466
-            },
-            {
-                "__id__": 5467
-            },
-            {
-                "__id__": 5468
-            },
-            {
-                "__id__": 5469
-            },
-            {
-                "__id__": 5470
-            },
-            {
-                "__id__": 5471
-            },
-            {
-                "__id__": 5472
-            },
-            {
-                "__id__": 5473
-            },
-            {
-                "__id__": 5474
-            },
-            {
-                "__id__": 5475
-            },
-            {
-                "__id__": 5476
-            },
-            {
-                "__id__": 5477
-            },
-            {
-                "__id__": 5478
-            },
-            {
-                "__id__": 5479
-            },
-            {
-                "__id__": 5480
-            },
-            {
-                "__id__": 5481
-            },
-            {
-                "__id__": 5482
-            },
-            {
-                "__id__": 5483
-            },
-            {
-                "__id__": 5484
-            },
-            {
-                "__id__": 5485
-            },
-            {
-                "__id__": 5486
-            },
-            {
-                "__id__": 5487
-            },
-            {
-                "__id__": 5488
-            },
-            {
-                "__id__": 5489
-            },
-            {
-                "__id__": 5490
-            },
-            {
-                "__id__": 5491
-            },
-            {
-                "__id__": 5492
-            },
-            {
-                "__id__": 5493
-            },
-            {
-                "__id__": 5494
-            },
-            {
-                "__id__": 5495
-            },
-            {
-                "__id__": 5496
-            },
-            {
-                "__id__": 5497
-            },
-            {
-                "__id__": 5498
-            },
-            {
-                "__id__": 5499
-            },
-            {
-                "__id__": 5500
-            },
-            {
-                "__id__": 5501
-            },
-            {
-                "__id__": 5502
-            },
-            {
-                "__id__": 5503
-            },
-            {
-                "__id__": 5504
-            },
-            {
-                "__id__": 5505
-            },
-            {
-                "__id__": 5506
-            },
-            {
-                "__id__": 5507
-            },
-            {
-                "__id__": 5508
-            },
-            {
-                "__id__": 5509
-            },
-            {
-                "__id__": 5510
-            },
-            {
-                "__id__": 5511
-            },
-            {
-                "__id__": 5512
-            },
-            {
-                "__id__": 5513
-            },
-            {
-                "__id__": 5514
-            },
-            {
-                "__id__": 5515
-            },
-            {
-                "__id__": 5516
-            },
-            {
-                "__id__": 5517
-            },
-            {
-                "__id__": 5518
-            },
-            {
-                "__id__": 5519
-            },
-            {
-                "__id__": 5520
-            },
-            {
-                "__id__": 5521
-            },
-            {
-                "__id__": 5522
             }
         ],
     "_components": [
@@ -201093,7 +200901,7 @@
   },
     {
     "__type__": "ef20dGN+M5C6JKo/CVJ9bIM",
-    "graphs": "[{\"id\":\"s09-g1-hall\",\"name\":\"South - Main Hall\",\"nameFromSpawns\":false,\"spawnIds\":[1,2,3],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":179,\"y\":-1160,\"goal\":false},{\"id\":\"p2\",\"x\":180,\"y\":-917,\"goal\":false},{\"id\":\"p3\",\"x\":204,\"y\":-684,\"goal\":false},{\"id\":\"p4\",\"x\":186,\"y\":-500,\"goal\":false},{\"id\":\"p5\",\"x\":329,\"y\":-351,\"goal\":false},{\"id\":\"p6\",\"x\":480,\"y\":-229,\"goal\":false},{\"id\":\"p7\",\"x\":359,\"y\":-127,\"goal\":false},{\"id\":\"p8\",\"x\":220.28,\"y\":-45.91,\"goal\":false},{\"id\":\"p9\",\"x\":320,\"y\":16,\"goal\":false},{\"id\":\"p10\",\"x\":300,\"y\":96,\"goal\":false},{\"id\":\"p11\",\"x\":220,\"y\":98,\"goal\":false},{\"id\":\"p12\",\"x\":54,\"y\":172,\"goal\":false},{\"id\":\"p13\",\"x\":-66,\"y\":265,\"goal\":false},{\"id\":\"p14\",\"x\":-94.74,\"y\":319.93,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1},{\"id\":\"e9\",\"from\":\"p9\",\"to\":\"p10\",\"weight\":1},{\"id\":\"e10\",\"from\":\"p10\",\"to\":\"p11\",\"weight\":1},{\"id\":\"e11\",\"from\":\"p11\",\"to\":\"p12\",\"weight\":1},{\"id\":\"e12\",\"from\":\"p12\",\"to\":\"p13\",\"weight\":1},{\"id\":\"e13\",\"from\":\"p13\",\"to\":\"p14\",\"weight\":1}],\"requiresAnyBuilding\":[],\"weight\":5,\"spread\":28},{\"id\":\"s09-g1-b22\",\"name\":\"South - Tower 5 detour\",\"nameFromSpawns\":false,\"spawnIds\":[1,2,3],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":179,\"y\":-1160,\"goal\":false},{\"id\":\"p2\",\"x\":180,\"y\":-917,\"goal\":false},{\"id\":\"p3\",\"x\":204,\"y\":-684,\"goal\":false},{\"id\":\"p4\",\"x\":186,\"y\":-500,\"goal\":false},{\"id\":\"p5\",\"x\":329,\"y\":-351,\"goal\":false},{\"id\":\"p6\",\"x\":480,\"y\":-229,\"goal\":false},{\"id\":\"p7\",\"x\":359,\"y\":-127,\"goal\":false},{\"id\":\"p8\",\"x\":220.28,\"y\":-45.91,\"goal\":false},{\"id\":\"p9\",\"x\":320,\"y\":16,\"goal\":false},{\"id\":\"p10\",\"x\":300,\"y\":96,\"goal\":false},{\"id\":\"p11\",\"x\":120,\"y\":136,\"goal\":false},{\"id\":\"p12\",\"x\":92.93,\"y\":113.19,\"goal\":false},{\"id\":\"p13\",\"x\":-94.74,\"y\":319.93,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1},{\"id\":\"e9\",\"from\":\"p9\",\"to\":\"p10\",\"weight\":1},{\"id\":\"e10\",\"from\":\"p10\",\"to\":\"p11\",\"weight\":1},{\"id\":\"e11\",\"from\":\"p11\",\"to\":\"p12\",\"weight\":1},{\"id\":\"e12\",\"from\":\"p12\",\"to\":\"p13\",\"weight\":1}],\"requiresAnyBuilding\":[22],\"weight\":2,\"spread\":28},{\"id\":\"s09-g2-hall\",\"name\":\"Southwest - Main Hall\",\"nameFromSpawns\":false,\"spawnIds\":[4,5,6],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":-705,\"y\":-949,\"goal\":false},{\"id\":\"p2\",\"x\":-651,\"y\":-738,\"goal\":false},{\"id\":\"p3\",\"x\":-580,\"y\":-564,\"goal\":false},{\"id\":\"p4\",\"x\":-603.27,\"y\":-520.93,\"goal\":false},{\"id\":\"p5\",\"x\":-620,\"y\":-364,\"goal\":false},{\"id\":\"p6\",\"x\":-593,\"y\":-340.14,\"goal\":false},{\"id\":\"p7\",\"x\":-591,\"y\":-174,\"goal\":false},{\"id\":\"p8\",\"x\":-565,\"y\":-47,\"goal\":false},{\"id\":\"p9\",\"x\":-520,\"y\":116,\"goal\":false},{\"id\":\"p10\",\"x\":-447,\"y\":138,\"goal\":false},{\"id\":\"p11\",\"x\":-331,\"y\":243,\"goal\":false},{\"id\":\"p12\",\"x\":-262,\"y\":331,\"goal\":false},{\"id\":\"p13\",\"x\":-246.95,\"y\":345.27,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1},{\"id\":\"e9\",\"from\":\"p9\",\"to\":\"p10\",\"weight\":1},{\"id\":\"e10\",\"from\":\"p10\",\"to\":\"p11\",\"weight\":1},{\"id\":\"e11\",\"from\":\"p11\",\"to\":\"p12\",\"weight\":1},{\"id\":\"e12\",\"from\":\"p12\",\"to\":\"p13\",\"weight\":1}],\"requiresAnyBuilding\":[],\"weight\":5,\"spread\":28},{\"id\":\"s09-g2-b6\",\"name\":\"Southwest - Tower 2 detour\",\"nameFromSpawns\":false,\"spawnIds\":[4,5,6],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":-705,\"y\":-949,\"goal\":false},{\"id\":\"p2\",\"x\":-651,\"y\":-738,\"goal\":false},{\"id\":\"p3\",\"x\":-580,\"y\":-564,\"goal\":false},{\"id\":\"p4\",\"x\":-603.27,\"y\":-520.93,\"goal\":false},{\"id\":\"p5\",\"x\":-620,\"y\":-364,\"goal\":false},{\"id\":\"p6\",\"x\":-580,\"y\":-324,\"goal\":false},{\"id\":\"p7\",\"x\":-549.84,\"y\":-308.06,\"goal\":false},{\"id\":\"p8\",\"x\":-565,\"y\":-47,\"goal\":false},{\"id\":\"p9\",\"x\":-520,\"y\":116,\"goal\":false},{\"id\":\"p10\",\"x\":-447,\"y\":138,\"goal\":false},{\"id\":\"p11\",\"x\":-331,\"y\":243,\"goal\":false},{\"id\":\"p12\",\"x\":-262,\"y\":331,\"goal\":false},{\"id\":\"p13\",\"x\":-246.95,\"y\":345.27,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1},{\"id\":\"e9\",\"from\":\"p9\",\"to\":\"p10\",\"weight\":1},{\"id\":\"e10\",\"from\":\"p10\",\"to\":\"p11\",\"weight\":1},{\"id\":\"e11\",\"from\":\"p11\",\"to\":\"p12\",\"weight\":1},{\"id\":\"e12\",\"from\":\"p12\",\"to\":\"p13\",\"weight\":1}],\"requiresAnyBuilding\":[6],\"weight\":2,\"spread\":28},{\"id\":\"s09-g2-b40\",\"name\":\"Southwest - Mill 2 detour\",\"nameFromSpawns\":false,\"spawnIds\":[4,5,6],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":-705,\"y\":-949,\"goal\":false},{\"id\":\"p2\",\"x\":-651,\"y\":-738,\"goal\":false},{\"id\":\"p3\",\"x\":-580,\"y\":-564,\"goal\":false},{\"id\":\"p4\",\"x\":-603.27,\"y\":-520.93,\"goal\":false},{\"id\":\"p5\",\"x\":-620,\"y\":-364,\"goal\":false},{\"id\":\"p6\",\"x\":-593,\"y\":-340.14,\"goal\":false},{\"id\":\"p7\",\"x\":-420.45,\"y\":-169.09,\"goal\":false},{\"id\":\"p8\",\"x\":-540,\"y\":76,\"goal\":false},{\"id\":\"p9\",\"x\":-520,\"y\":116,\"goal\":false},{\"id\":\"p10\",\"x\":-447,\"y\":138,\"goal\":false},{\"id\":\"p11\",\"x\":-331,\"y\":243,\"goal\":false},{\"id\":\"p12\",\"x\":-262,\"y\":331,\"goal\":false},{\"id\":\"p13\",\"x\":-246.95,\"y\":345.27,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1},{\"id\":\"e9\",\"from\":\"p9\",\"to\":\"p10\",\"weight\":1},{\"id\":\"e10\",\"from\":\"p10\",\"to\":\"p11\",\"weight\":1},{\"id\":\"e11\",\"from\":\"p11\",\"to\":\"p12\",\"weight\":1},{\"id\":\"e12\",\"from\":\"p12\",\"to\":\"p13\",\"weight\":1}],\"requiresAnyBuilding\":[40],\"weight\":2,\"spread\":28},{\"id\":\"s09-g2-b24\",\"name\":\"Southwest - Barracks 2 detour\",\"nameFromSpawns\":false,\"spawnIds\":[4,5,6],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":-705,\"y\":-949,\"goal\":false},{\"id\":\"p2\",\"x\":-651,\"y\":-738,\"goal\":false},{\"id\":\"p3\",\"x\":-580,\"y\":-564,\"goal\":false},{\"id\":\"p4\",\"x\":-603.27,\"y\":-520.93,\"goal\":false},{\"id\":\"p5\",\"x\":-620,\"y\":-364,\"goal\":false},{\"id\":\"p6\",\"x\":-593,\"y\":-340.14,\"goal\":false},{\"id\":\"p7\",\"x\":-591,\"y\":-174,\"goal\":false},{\"id\":\"p8\",\"x\":-565,\"y\":-47,\"goal\":false},{\"id\":\"p9\",\"x\":-520,\"y\":116,\"goal\":false},{\"id\":\"p10\",\"x\":-380,\"y\":296,\"goal\":false},{\"id\":\"p11\",\"x\":-357.67,\"y\":347.85,\"goal\":false},{\"id\":\"p12\",\"x\":-246.95,\"y\":345.27,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1},{\"id\":\"e9\",\"from\":\"p9\",\"to\":\"p10\",\"weight\":1},{\"id\":\"e10\",\"from\":\"p10\",\"to\":\"p11\",\"weight\":1},{\"id\":\"e11\",\"from\":\"p11\",\"to\":\"p12\",\"weight\":1}],\"requiresAnyBuilding\":[24],\"weight\":2,\"spread\":28},{\"id\":\"s09-g3-hall\",\"name\":\"East - Main Hall\",\"nameFromSpawns\":false,\"spawnIds\":[7,8,9],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":671,\"y\":87,\"goal\":false},{\"id\":\"p2\",\"x\":525,\"y\":31,\"goal\":false},{\"id\":\"p3\",\"x\":411,\"y\":40,\"goal\":false},{\"id\":\"p4\",\"x\":320,\"y\":56,\"goal\":false},{\"id\":\"p5\",\"x\":260,\"y\":167,\"goal\":false},{\"id\":\"p6\",\"x\":133,\"y\":144,\"goal\":false},{\"id\":\"p7\",\"x\":-39,\"y\":231,\"goal\":false},{\"id\":\"p8\",\"x\":-99,\"y\":300,\"goal\":false},{\"id\":\"p9\",\"x\":-105.21,\"y\":315.04,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1}],\"requiresAnyBuilding\":[],\"weight\":5,\"spread\":28},{\"id\":\"s09-g3-b4\",\"name\":\"East - Tower 1 detour\",\"nameFromSpawns\":false,\"spawnIds\":[7,8,9],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":671,\"y\":87,\"goal\":false},{\"id\":\"p2\",\"x\":525,\"y\":31,\"goal\":false},{\"id\":\"p3\",\"x\":411,\"y\":40,\"goal\":false},{\"id\":\"p4\",\"x\":320,\"y\":56,\"goal\":false},{\"id\":\"p5\",\"x\":320,\"y\":156,\"goal\":false},{\"id\":\"p6\",\"x\":342.48,\"y\":240.62,\"goal\":false},{\"id\":\"p7\",\"x\":-39,\"y\":231,\"goal\":false},{\"id\":\"p8\",\"x\":-99,\"y\":300,\"goal\":false},{\"id\":\"p9\",\"x\":-105.21,\"y\":315.04,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1}],\"requiresAnyBuilding\":[4],\"weight\":2,\"spread\":28},{\"id\":\"s09-g3-b22\",\"name\":\"East - Tower 5 detour\",\"nameFromSpawns\":false,\"spawnIds\":[7,8,9],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":671,\"y\":87,\"goal\":false},{\"id\":\"p2\",\"x\":525,\"y\":31,\"goal\":false},{\"id\":\"p3\",\"x\":411,\"y\":40,\"goal\":false},{\"id\":\"p4\",\"x\":320,\"y\":56,\"goal\":false},{\"id\":\"p5\",\"x\":300,\"y\":96,\"goal\":false},{\"id\":\"p6\",\"x\":159.68,\"y\":103.77,\"goal\":false},{\"id\":\"p7\",\"x\":-99,\"y\":300,\"goal\":false},{\"id\":\"p8\",\"x\":-105.21,\"y\":315.04,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1}],\"requiresAnyBuilding\":[22],\"weight\":2,\"spread\":28},{\"id\":\"s09-g4-hall\",\"name\":\"Northeast - Main Hall\",\"nameFromSpawns\":false,\"spawnIds\":[10,11,12],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":646,\"y\":1207,\"goal\":false},{\"id\":\"p2\",\"x\":544,\"y\":1077,\"goal\":false},{\"id\":\"p3\",\"x\":479,\"y\":952,\"goal\":false},{\"id\":\"p4\",\"x\":440,\"y\":796,\"goal\":false},{\"id\":\"p5\",\"x\":495.55,\"y\":769.86,\"goal\":false},{\"id\":\"p6\",\"x\":386,\"y\":648,\"goal\":false},{\"id\":\"p7\",\"x\":306,\"y\":486,\"goal\":false},{\"id\":\"p8\",\"x\":136,\"y\":347,\"goal\":false},{\"id\":\"p9\",\"x\":-9,\"y\":296,\"goal\":false},{\"id\":\"p10\",\"x\":-39.74,\"y\":357.87,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1},{\"id\":\"e9\",\"from\":\"p9\",\"to\":\"p10\",\"weight\":1}],\"requiresAnyBuilding\":[],\"weight\":5,\"spread\":28},{\"id\":\"s09-g4-b23\",\"name\":\"Northeast - Tower 6 detour\",\"nameFromSpawns\":false,\"spawnIds\":[10,11,12],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":646,\"y\":1207,\"goal\":false},{\"id\":\"p2\",\"x\":544,\"y\":1077,\"goal\":false},{\"id\":\"p3\",\"x\":479,\"y\":952,\"goal\":false},{\"id\":\"p4\",\"x\":495.95,\"y\":855.85,\"goal\":false},{\"id\":\"p5\",\"x\":440,\"y\":816,\"goal\":false},{\"id\":\"p6\",\"x\":306,\"y\":486,\"goal\":false},{\"id\":\"p7\",\"x\":136,\"y\":347,\"goal\":false},{\"id\":\"p8\",\"x\":-9,\"y\":296,\"goal\":false},{\"id\":\"p9\",\"x\":-39.74,\"y\":357.87,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1}],\"requiresAnyBuilding\":[23],\"weight\":2,\"spread\":28},{\"id\":\"s09-g4-b32\",\"name\":\"Northeast - Tower 8 detour\",\"nameFromSpawns\":false,\"spawnIds\":[10,11,12],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":646,\"y\":1207,\"goal\":false},{\"id\":\"p2\",\"x\":544,\"y\":1077,\"goal\":false},{\"id\":\"p3\",\"x\":479,\"y\":952,\"goal\":false},{\"id\":\"p4\",\"x\":440,\"y\":796,\"goal\":false},{\"id\":\"p5\",\"x\":495.55,\"y\":769.86,\"goal\":false},{\"id\":\"p6\",\"x\":414.48,\"y\":625.38,\"goal\":false},{\"id\":\"p7\",\"x\":320,\"y\":536,\"goal\":false},{\"id\":\"p8\",\"x\":306,\"y\":486,\"goal\":false},{\"id\":\"p9\",\"x\":136,\"y\":347,\"goal\":false},{\"id\":\"p10\",\"x\":-9,\"y\":296,\"goal\":false},{\"id\":\"p11\",\"x\":-39.74,\"y\":357.87,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1},{\"id\":\"e9\",\"from\":\"p9\",\"to\":\"p10\",\"weight\":1},{\"id\":\"e10\",\"from\":\"p10\",\"to\":\"p11\",\"weight\":1}],\"requiresAnyBuilding\":[32],\"weight\":2,\"spread\":28},{\"id\":\"s09-g4-b17\",\"name\":\"Northeast - Mill 1 detour\",\"nameFromSpawns\":false,\"spawnIds\":[10,11,12],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":646,\"y\":1207,\"goal\":false},{\"id\":\"p2\",\"x\":544,\"y\":1077,\"goal\":false},{\"id\":\"p3\",\"x\":460,\"y\":896,\"goal\":false},{\"id\":\"p4\",\"x\":220.44,\"y\":878.96,\"goal\":false},{\"id\":\"p5\",\"x\":386,\"y\":648,\"goal\":false},{\"id\":\"p6\",\"x\":306,\"y\":486,\"goal\":false},{\"id\":\"p7\",\"x\":136,\"y\":347,\"goal\":false},{\"id\":\"p8\",\"x\":-9,\"y\":296,\"goal\":false},{\"id\":\"p9\",\"x\":-39.74,\"y\":357.87,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1}],\"requiresAnyBuilding\":[17],\"weight\":2,\"spread\":28}]",
+    "graphs": "[{\"id\":\"s09-g1-hall\",\"name\":\"South - Main Hall\",\"nameFromSpawns\":false,\"spawnIds\":[1,2,3],\"requiresAnyBuilding\":[],\"weight\":5,\"spread\":28,\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":180,\"y\":-1156,\"goal\":false},{\"id\":\"p2\",\"x\":200,\"y\":-406,\"goal\":false},{\"id\":\"p3\",\"x\":0,\"y\":-186,\"goal\":false},{\"id\":\"p4\",\"x\":-30,\"y\":44,\"goal\":false},{\"id\":\"p5\",\"x\":-100,\"y\":264,\"goal\":false},{\"id\":\"p6\",\"x\":-100,\"y\":334,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1}]},{\"id\":\"s09-g2-hall\",\"name\":\"Southwest - Main Hall\",\"nameFromSpawns\":false,\"spawnIds\":[4,5,6],\"requiresAnyBuilding\":[],\"weight\":5,\"spread\":28,\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":-700,\"y\":-956,\"goal\":false},{\"id\":\"p2\",\"x\":-590,\"y\":-816,\"goal\":false},{\"id\":\"p3\",\"x\":-600,\"y\":-456,\"goal\":false},{\"id\":\"p4\",\"x\":-640,\"y\":-216,\"goal\":false},{\"id\":\"p5\",\"x\":-510,\"y\":84,\"goal\":false},{\"id\":\"p6\",\"x\":-240,\"y\":344,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1}]},{\"id\":\"s09-g3-hall\",\"name\":\"East - Main Hall\",\"nameFromSpawns\":false,\"spawnIds\":[7,8,9],\"requiresAnyBuilding\":[],\"weight\":5,\"spread\":28,\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":670,\"y\":84,\"goal\":false},{\"id\":\"p2\",\"x\":410,\"y\":24,\"goal\":false},{\"id\":\"p3\",\"x\":100,\"y\":314,\"goal\":false},{\"id\":\"p4\",\"x\":-100,\"y\":334,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1}]},{\"id\":\"s09-g4-hall\",\"name\":\"Northeast - Main Hall\",\"nameFromSpawns\":false,\"spawnIds\":[10,11,12],\"requiresAnyBuilding\":[],\"weight\":5,\"spread\":28,\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":650,\"y\":1204,\"goal\":false},{\"id\":\"p2\",\"x\":300,\"y\":594,\"goal\":false},{\"id\":\"p3\",\"x\":280,\"y\":454,\"goal\":false},{\"id\":\"p4\",\"x\":70,\"y\":344,\"goal\":false},{\"id\":\"p5\",\"x\":-50,\"y\":364,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1}]},{\"id\":\"s09-g1-b22\",\"name\":\"South - Tower 5 detour\",\"nameFromSpawns\":false,\"spawnIds\":[1,2,3],\"requiresAnyBuilding\":[22],\"weight\":2,\"spread\":28,\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":180,\"y\":-1156,\"goal\":false},{\"id\":\"p2\",\"x\":200,\"y\":-406,\"goal\":false},{\"id\":\"p3\",\"x\":0,\"y\":-186,\"goal\":false},{\"id\":\"p4\",\"x\":40,\"y\":74,\"goal\":false},{\"id\":\"p5\",\"x\":-100,\"y\":334,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1}]},{\"id\":\"s09-g4-b23\",\"name\":\"Northeast - Tower 6 detour\",\"nameFromSpawns\":false,\"spawnIds\":[10,11,12],\"requiresAnyBuilding\":[23],\"weight\":2,\"spread\":28,\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":650,\"y\":1204,\"goal\":false},{\"id\":\"p2\",\"x\":440,\"y\":844,\"goal\":false},{\"id\":\"p3\",\"x\":450,\"y\":804,\"goal\":false},{\"id\":\"p4\",\"x\":300,\"y\":644,\"goal\":false},{\"id\":\"p5\",\"x\":300,\"y\":484,\"goal\":false},{\"id\":\"p6\",\"x\":210,\"y\":384,\"goal\":false},{\"id\":\"p7\",\"x\":-50,\"y\":364,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1}]},{\"id\":\"s09-g1-b30\",\"name\":\"South - Tower 7 detour\",\"nameFromSpawns\":false,\"weight\":2,\"spread\":28,\"spawnIds\":[1,2,3],\"requiresAnyBuilding\":[30],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":180,\"y\":-1156,\"goal\":false},{\"id\":\"p2\",\"x\":200,\"y\":-406,\"goal\":false},{\"id\":\"p3\",\"x\":90,\"y\":-286,\"goal\":false},{\"id\":\"p4\",\"x\":90,\"y\":-236,\"goal\":false},{\"id\":\"p5\",\"x\":100,\"y\":-216,\"goal\":false},{\"id\":\"p6\",\"x\":70,\"y\":-226,\"goal\":false},{\"id\":\"p7\",\"x\":0,\"y\":-156,\"goal\":false},{\"id\":\"p8\",\"x\":0,\"y\":-116,\"goal\":false},{\"id\":\"p9\",\"x\":-100,\"y\":334,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1},{\"id\":\"e8\",\"from\":\"p8\",\"to\":\"p9\",\"weight\":1}]},{\"id\":\"s09-g2-b25\",\"name\":\"Southwest - House 4 detour\",\"nameFromSpawns\":false,\"weight\":2,\"spread\":28,\"spawnIds\":[4,5,6],\"requiresAnyBuilding\":[25],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":-700,\"y\":-956,\"goal\":false},{\"id\":\"p2\",\"x\":-590,\"y\":-816,\"goal\":false},{\"id\":\"p3\",\"x\":-600,\"y\":-456,\"goal\":false},{\"id\":\"p4\",\"x\":-640,\"y\":-216,\"goal\":false},{\"id\":\"p5\",\"x\":-480,\"y\":164,\"goal\":false},{\"id\":\"p6\",\"x\":-240,\"y\":344,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1}]},{\"id\":\"s09-g4-b32\",\"name\":\"Northeast - Tower 8 detour\",\"nameFromSpawns\":false,\"spawnIds\":[10,11,12],\"requiresAnyBuilding\":[32],\"weight\":2,\"spread\":28,\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":650,\"y\":1204,\"goal\":false},{\"id\":\"p2\",\"x\":300,\"y\":594,\"goal\":false},{\"id\":\"p3\",\"x\":350,\"y\":554,\"goal\":false},{\"id\":\"p4\",\"x\":370,\"y\":554,\"goal\":false},{\"id\":\"p5\",\"x\":220,\"y\":384,\"goal\":false},{\"id\":\"p6\",\"x\":-50,\"y\":364,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1}]},{\"id\":\"s09-g4-b42\",\"name\":\"Northeast - House 8 detour\",\"nameFromSpawns\":false,\"weight\":2,\"spread\":28,\"spawnIds\":[10,11,12],\"requiresAnyBuilding\":[42],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":650,\"y\":1204,\"goal\":false},{\"id\":\"p2\",\"x\":300,\"y\":694,\"goal\":false},{\"id\":\"p3\",\"x\":300,\"y\":484,\"goal\":false},{\"id\":\"p4\",\"x\":210,\"y\":384,\"goal\":false},{\"id\":\"p5\",\"x\":-50,\"y\":364,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1}]},{\"id\":\"s09-g2-b24\",\"name\":\"Southwest - Barracks 2 detour\",\"nameFromSpawns\":false,\"spawnIds\":[4,5,6],\"requiresAnyBuilding\":[24],\"weight\":2,\"spread\":28,\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":-700,\"y\":-956,\"goal\":false},{\"id\":\"p2\",\"x\":-590,\"y\":-816,\"goal\":false},{\"id\":\"p3\",\"x\":-600,\"y\":-456,\"goal\":false},{\"id\":\"p4\",\"x\":-640,\"y\":-216,\"goal\":false},{\"id\":\"p5\",\"x\":-510,\"y\":94,\"goal\":false},{\"id\":\"p6\",\"x\":-330,\"y\":314,\"goal\":false},{\"id\":\"p7\",\"x\":-340,\"y\":364,\"goal\":false},{\"id\":\"p8\",\"x\":-240,\"y\":344,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1},{\"id\":\"e6\",\"from\":\"p6\",\"to\":\"p7\",\"weight\":1},{\"id\":\"e7\",\"from\":\"p7\",\"to\":\"p8\",\"weight\":1}]},{\"id\":\"s09-g3-b4\",\"name\":\"East - Tower 1 detour\",\"nameFromSpawns\":false,\"spawnIds\":[7,8,9],\"requiresAnyBuilding\":[4],\"weight\":2,\"spread\":28,\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":670,\"y\":84,\"goal\":false},{\"id\":\"p2\",\"x\":410,\"y\":24,\"goal\":false},{\"id\":\"p3\",\"x\":310,\"y\":134,\"goal\":false},{\"id\":\"p4\",\"x\":310,\"y\":214,\"goal\":false},{\"id\":\"p5\",\"x\":350,\"y\":244,\"goal\":false},{\"id\":\"p6\",\"x\":-100,\"y\":334,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1}]},{\"id\":\"s09-g1-b7\",\"name\":\"South - Tower 3 detour\",\"nameFromSpawns\":false,\"weight\":2,\"spread\":28,\"spawnIds\":[1,2,3],\"requiresAnyBuilding\":[7],\"entry\":\"p1\",\"nodes\":[{\"id\":\"p1\",\"x\":180,\"y\":-1156,\"goal\":false},{\"id\":\"p2\",\"x\":200,\"y\":-456,\"goal\":false},{\"id\":\"p3\",\"x\":70,\"y\":-326,\"goal\":false},{\"id\":\"p4\",\"x\":-20,\"y\":-356,\"goal\":false},{\"id\":\"p5\",\"x\":0,\"y\":-116,\"goal\":false},{\"id\":\"p6\",\"x\":-100,\"y\":334,\"goal\":true}],\"edges\":[{\"id\":\"e1\",\"from\":\"p1\",\"to\":\"p2\",\"weight\":1},{\"id\":\"e2\",\"from\":\"p2\",\"to\":\"p3\",\"weight\":1},{\"id\":\"e3\",\"from\":\"p3\",\"to\":\"p4\",\"weight\":1},{\"id\":\"e4\",\"from\":\"p4\",\"to\":\"p5\",\"weight\":1},{\"id\":\"e5\",\"from\":\"p5\",\"to\":\"p6\",\"weight\":1}]}]",
     "spawns": "[{\"id\":1,\"name\":\"Spawn 1\",\"x\":232.58838887926055,\"y\":-1308.4766691977575,\"enabled\":true,\"radius\":150},{\"id\":2,\"name\":\"Spawn 2\",\"x\":171.5349459289764,\"y\":-1308.4766691977575,\"enabled\":true,\"radius\":150},{\"id\":3,\"name\":\"Spawn 3\",\"x\":208.47936654953727,\"y\":-1308.4766691977575,\"enabled\":true,\"radius\":150},{\"id\":4,\"name\":\"Spawn 4\",\"x\":-780,\"y\":-1074.5609215723669,\"enabled\":true,\"radius\":150},{\"id\":5,\"name\":\"Spawn 5\",\"x\":-780,\"y\":-1104.8409215723668,\"enabled\":true,\"radius\":150},{\"id\":6,\"name\":\"Spawn 6\",\"x\":-780,\"y\":-1056.392921572367,\"enabled\":true,\"radius\":150},{\"id\":7,\"name\":\"Spawn 7\",\"x\":788.3,\"y\":7.009806077380176,\"enabled\":true,\"radius\":141.7},{\"id\":8,\"name\":\"Spawn 8\",\"x\":780,\"y\":72.0307092896893,\"enabled\":true,\"radius\":150},{\"id\":9,\"name\":\"Spawn 9\",\"x\":780,\"y\":93.36780607738012,\"enabled\":true,\"radius\":150},{\"id\":10,\"name\":\"Spawn 10\",\"x\":721.43414988998,\"y\":1364,\"enabled\":true,\"radius\":150},{\"id\":11,\"name\":\"Spawn 11\",\"x\":752.8909840327208,\"y\":1364,\"enabled\":true,\"radius\":150},{\"id\":12,\"name\":\"Spawn 12\",\"x\":776.4836096397764,\"y\":1364,\"enabled\":true,\"radius\":150}]",
     "node": {
       "__id__": 5378
@@ -201129,8 +200937,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        179,
-        -1160,
+        180,
+        -1156,
         0,
         0,
         0,
@@ -201180,8 +200988,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        180,
-        -917,
+        200,
+        -406,
         0,
         0,
         0,
@@ -201231,8 +201039,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        204,
-        -684,
+        0,
+        -186,
         0,
         0,
         0,
@@ -201282,8 +201090,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        186,
-        -500,
+        -30,
+        44,
         0,
         0,
         0,
@@ -201333,8 +201141,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        329,
-        -351,
+        -100,
+        264,
         0,
         0,
         0,
@@ -201384,1079 +201192,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        480,
-        -229,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-11-s09-g1-hall-p7",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        359,
-        -127,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-11-s09-g1-hall-p8",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        220.28,
-        -45.91,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-11-s09-g1-hall-p9",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        320,
-        16,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-11-s09-g1-hall-p10",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        300,
-        96,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-11-s09-g1-hall-p11",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        220,
-        98,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-11-s09-g1-hall-p12",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        54,
-        172,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-11-s09-g1-hall-p13",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -66,
-        265,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-11-s09-g1-hall-p14",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -94.74,
-        319.93,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p1",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        179,
-        -1160,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p2",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        180,
-        -917,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p3",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        204,
-        -684,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p4",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        186,
-        -500,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p5",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        329,
-        -351,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p6",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        480,
-        -229,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p7",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        359,
-        -127,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p8",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        220.28,
-        -45.91,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p9",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        320,
-        16,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p10",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        300,
-        96,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p11",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        120,
-        136,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p12",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        92.93,
-        113.19,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_groupIndex": 1,
-    "groupIndex": 1
-  },
-    {
-    "__type__": "cc.Node",
-    "_name": "point-10-s09-g1-b22-p13",
-    "_parent": {
-      "__id__": 5378
-    },
-    "_children": [],
-    "_components": [],
-    "_active": true,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -94.74,
-        319.93,
+        -100,
+        334,
         0,
         0,
         0,
@@ -202506,8 +201243,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -705,
-        -949,
+        -700,
+        -956,
         0,
         0,
         0,
@@ -202557,8 +201294,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -651,
-        -738,
+        -590,
+        -816,
         0,
         0,
         0,
@@ -202608,8 +201345,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -580,
-        -564,
+        -600,
+        -456,
         0,
         0,
         0,
@@ -202659,8 +201396,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -603.27,
-        -520.93,
+        -640,
+        -216,
         0,
         0,
         0,
@@ -202710,8 +201447,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -620,
-        -364,
+        -510,
+        84,
         0,
         0,
         0,
@@ -202761,8 +201498,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -593,
-        -340.14,
+        -240,
+        344,
         0,
         0,
         0,
@@ -202784,7 +201521,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-11-s09-g2-hall-p7",
+    "_name": "point-11-s09-g3-hall-p1",
     "_parent": {
       "__id__": 5378
     },
@@ -202812,8 +201549,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -591,
-        -174,
+        670,
+        84,
         0,
         0,
         0,
@@ -202835,7 +201572,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-11-s09-g2-hall-p8",
+    "_name": "point-11-s09-g3-hall-p2",
     "_parent": {
       "__id__": 5378
     },
@@ -202863,8 +201600,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -565,
-        -47,
+        410,
+        24,
         0,
         0,
         0,
@@ -202886,7 +201623,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-11-s09-g2-hall-p9",
+    "_name": "point-11-s09-g3-hall-p3",
     "_parent": {
       "__id__": 5378
     },
@@ -202914,8 +201651,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -520,
-        116,
+        100,
+        314,
         0,
         0,
         0,
@@ -202937,7 +201674,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-11-s09-g2-hall-p10",
+    "_name": "point-11-s09-g3-hall-p4",
     "_parent": {
       "__id__": 5378
     },
@@ -202965,8 +201702,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -447,
-        138,
+        -100,
+        334,
         0,
         0,
         0,
@@ -202988,7 +201725,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-11-s09-g2-hall-p11",
+    "_name": "point-11-s09-g4-hall-p1",
     "_parent": {
       "__id__": 5378
     },
@@ -203016,8 +201753,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -331,
-        243,
+        650,
+        1204,
         0,
         0,
         0,
@@ -203039,7 +201776,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-11-s09-g2-hall-p12",
+    "_name": "point-11-s09-g4-hall-p2",
     "_parent": {
       "__id__": 5378
     },
@@ -203067,8 +201804,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -262,
-        331,
+        300,
+        594,
         0,
         0,
         0,
@@ -203090,7 +201827,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-11-s09-g2-hall-p13",
+    "_name": "point-11-s09-g4-hall-p3",
     "_parent": {
       "__id__": 5378
     },
@@ -203118,8 +201855,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -246.95,
-        345.27,
+        280,
+        454,
         0,
         0,
         0,
@@ -203141,7 +201878,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p1",
+    "_name": "point-11-s09-g4-hall-p4",
     "_parent": {
       "__id__": 5378
     },
@@ -203169,8 +201906,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -705,
-        -949,
+        70,
+        344,
         0,
         0,
         0,
@@ -203192,7 +201929,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p2",
+    "_name": "point-11-s09-g4-hall-p5",
     "_parent": {
       "__id__": 5378
     },
@@ -203220,8 +201957,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -651,
-        -738,
+        -50,
+        364,
         0,
         0,
         0,
@@ -203243,7 +201980,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p3",
+    "_name": "point-10-s09-g1-b22-p1",
     "_parent": {
       "__id__": 5378
     },
@@ -203271,8 +202008,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -580,
-        -564,
+        180,
+        -1156,
         0,
         0,
         0,
@@ -203294,7 +202031,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p4",
+    "_name": "point-10-s09-g1-b22-p2",
     "_parent": {
       "__id__": 5378
     },
@@ -203322,8 +202059,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -603.27,
-        -520.93,
+        200,
+        -406,
         0,
         0,
         0,
@@ -203345,7 +202082,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p5",
+    "_name": "point-10-s09-g1-b22-p3",
     "_parent": {
       "__id__": 5378
     },
@@ -203373,8 +202110,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -620,
-        -364,
+        0,
+        -186,
         0,
         0,
         0,
@@ -203396,7 +202133,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p6",
+    "_name": "point-10-s09-g1-b22-p4",
     "_parent": {
       "__id__": 5378
     },
@@ -203424,8 +202161,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -580,
-        -324,
+        40,
+        74,
         0,
         0,
         0,
@@ -203447,7 +202184,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p7",
+    "_name": "point-10-s09-g1-b22-p5",
     "_parent": {
       "__id__": 5378
     },
@@ -203475,8 +202212,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -549.84,
-        -308.06,
+        -100,
+        334,
         0,
         0,
         0,
@@ -203498,7 +202235,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p8",
+    "_name": "point-10-s09-g4-b23-p1",
     "_parent": {
       "__id__": 5378
     },
@@ -203526,8 +202263,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -565,
-        -47,
+        650,
+        1204,
         0,
         0,
         0,
@@ -203549,7 +202286,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p9",
+    "_name": "point-10-s09-g4-b23-p2",
     "_parent": {
       "__id__": 5378
     },
@@ -203577,8 +202314,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -520,
-        116,
+        440,
+        844,
         0,
         0,
         0,
@@ -203600,7 +202337,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p10",
+    "_name": "point-10-s09-g4-b23-p3",
     "_parent": {
       "__id__": 5378
     },
@@ -203628,8 +202365,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -447,
-        138,
+        450,
+        804,
         0,
         0,
         0,
@@ -203651,7 +202388,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p11",
+    "_name": "point-10-s09-g4-b23-p4",
     "_parent": {
       "__id__": 5378
     },
@@ -203679,8 +202416,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -331,
-        243,
+        300,
+        644,
         0,
         0,
         0,
@@ -203702,7 +202439,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p12",
+    "_name": "point-10-s09-g4-b23-p5",
     "_parent": {
       "__id__": 5378
     },
@@ -203730,8 +202467,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -262,
-        331,
+        300,
+        484,
         0,
         0,
         0,
@@ -203753,7 +202490,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-9-s09-g2-b6-p13",
+    "_name": "point-10-s09-g4-b23-p6",
     "_parent": {
       "__id__": 5378
     },
@@ -203781,8 +202518,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -246.95,
-        345.27,
+        210,
+        384,
         0,
         0,
         0,
@@ -203804,7 +202541,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p1",
+    "_name": "point-10-s09-g4-b23-p7",
     "_parent": {
       "__id__": 5378
     },
@@ -203832,8 +202569,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -705,
-        -949,
+        -50,
+        364,
         0,
         0,
         0,
@@ -203855,7 +202592,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p2",
+    "_name": "point-10-s09-g1-b30-p1",
     "_parent": {
       "__id__": 5378
     },
@@ -203883,8 +202620,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -651,
-        -738,
+        180,
+        -1156,
         0,
         0,
         0,
@@ -203906,7 +202643,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p3",
+    "_name": "point-10-s09-g1-b30-p2",
     "_parent": {
       "__id__": 5378
     },
@@ -203934,8 +202671,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -580,
-        -564,
+        200,
+        -406,
         0,
         0,
         0,
@@ -203957,7 +202694,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p4",
+    "_name": "point-10-s09-g1-b30-p3",
     "_parent": {
       "__id__": 5378
     },
@@ -203985,8 +202722,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -603.27,
-        -520.93,
+        90,
+        -286,
         0,
         0,
         0,
@@ -204008,7 +202745,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p5",
+    "_name": "point-10-s09-g1-b30-p4",
     "_parent": {
       "__id__": 5378
     },
@@ -204036,8 +202773,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -620,
-        -364,
+        90,
+        -236,
         0,
         0,
         0,
@@ -204059,7 +202796,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p6",
+    "_name": "point-10-s09-g1-b30-p5",
     "_parent": {
       "__id__": 5378
     },
@@ -204087,8 +202824,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -593,
-        -340.14,
+        100,
+        -216,
         0,
         0,
         0,
@@ -204110,7 +202847,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p7",
+    "_name": "point-10-s09-g1-b30-p6",
     "_parent": {
       "__id__": 5378
     },
@@ -204138,8 +202875,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -420.45,
-        -169.09,
+        70,
+        -226,
         0,
         0,
         0,
@@ -204161,7 +202898,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p8",
+    "_name": "point-10-s09-g1-b30-p7",
     "_parent": {
       "__id__": 5378
     },
@@ -204189,8 +202926,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -540,
-        76,
+        0,
+        -156,
         0,
         0,
         0,
@@ -204212,7 +202949,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p9",
+    "_name": "point-10-s09-g1-b30-p8",
     "_parent": {
       "__id__": 5378
     },
@@ -204240,8 +202977,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -520,
-        116,
+        0,
+        -116,
         0,
         0,
         0,
@@ -204263,7 +203000,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p10",
+    "_name": "point-10-s09-g1-b30-p9",
     "_parent": {
       "__id__": 5378
     },
@@ -204291,8 +203028,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -447,
-        138,
+        -100,
+        334,
         0,
         0,
         0,
@@ -204314,7 +203051,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p11",
+    "_name": "point-10-s09-g2-b25-p1",
     "_parent": {
       "__id__": 5378
     },
@@ -204342,8 +203079,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -331,
-        243,
+        -700,
+        -956,
         0,
         0,
         0,
@@ -204365,7 +203102,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p12",
+    "_name": "point-10-s09-g2-b25-p2",
     "_parent": {
       "__id__": 5378
     },
@@ -204393,8 +203130,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -262,
-        331,
+        -590,
+        -816,
         0,
         0,
         0,
@@ -204416,7 +203153,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b40-p13",
+    "_name": "point-10-s09-g2-b25-p3",
     "_parent": {
       "__id__": 5378
     },
@@ -204444,8 +203181,722 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -246.95,
-        345.27,
+        -600,
+        -456,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g2-b25-p4",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -640,
+        -216,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g2-b25-p5",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -480,
+        164,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g2-b25-p6",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -240,
+        344,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g4-b32-p1",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        650,
+        1204,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g4-b32-p2",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        300,
+        594,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g4-b32-p3",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        350,
+        554,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g4-b32-p4",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        370,
+        554,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g4-b32-p5",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        220,
+        384,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g4-b32-p6",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -50,
+        364,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g4-b42-p1",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        650,
+        1204,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g4-b42-p2",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        300,
+        694,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g4-b42-p3",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        300,
+        484,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g4-b42-p4",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        210,
+        384,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-10-s09-g4-b42-p5",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -50,
+        364,
         0,
         0,
         0,
@@ -204495,8 +203946,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -705,
-        -949,
+        -700,
+        -956,
         0,
         0,
         0,
@@ -204546,8 +203997,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -651,
-        -738,
+        -590,
+        -816,
         0,
         0,
         0,
@@ -204597,8 +204048,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -580,
-        -564,
+        -600,
+        -456,
         0,
         0,
         0,
@@ -204648,8 +204099,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -603.27,
-        -520.93,
+        -640,
+        -216,
         0,
         0,
         0,
@@ -204699,8 +204150,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -620,
-        -364,
+        -510,
+        94,
         0,
         0,
         0,
@@ -204750,8 +204201,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -593,
-        -340.14,
+        -330,
+        314,
         0,
         0,
         0,
@@ -204801,8 +204252,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -591,
-        -174,
+        -340,
+        364,
         0,
         0,
         0,
@@ -204852,8 +204303,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -565,
-        -47,
+        -240,
+        344,
         0,
         0,
         0,
@@ -204875,7 +204326,7 @@
   },
     {
     "__type__": "cc.Node",
-    "_name": "point-10-s09-g2-b24-p9",
+    "_name": "point-9-s09-g3-b4-p1",
     "_parent": {
       "__id__": 5378
     },
@@ -204903,8 +204354,365 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -520,
-        116,
+        670,
+        84,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-9-s09-g3-b4-p2",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        410,
+        24,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-9-s09-g3-b4-p3",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        310,
+        134,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-9-s09-g3-b4-p4",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        310,
+        214,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-9-s09-g3-b4-p5",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        350,
+        244,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-9-s09-g3-b4-p6",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        -100,
+        334,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-9-s09-g1-b7-p1",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        180,
+        -1156,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_groupIndex": 1,
+    "groupIndex": 1
+  },
+    {
+    "__type__": "cc.Node",
+    "_name": "point-9-s09-g1-b7-p2",
+    "_parent": {
+      "__id__": 5378
+    },
+    "_children": [],
+    "_components": [],
+    "_active": true,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        200,
+        -456,
         0,
         0,
         0,
@@ -204926,7 +204734,7 @@
   },
     {
         "__type__": "cc.Node",
-        "_name": "point-10-s09-g2-b24-p10",
+        "_name": "point-9-s09-g1-b7-p3",
         "_parent": {
             "__id__": 5378
         },
@@ -204954,8 +204762,8 @@
             "__type__": "TypedArray",
             "ctor": "Float64Array",
             "array": [
-                -380,
-                296,
+                70,
+                -326,
                 0,
                 0,
                 0,
@@ -204977,7 +204785,7 @@
     },
     {
         "__type__": "cc.Node",
-        "_name": "point-10-s09-g2-b24-p11",
+        "_name": "point-9-s09-g1-b7-p4",
         "_parent": {
             "__id__": 5378
         },
@@ -205005,8 +204813,8 @@
             "__type__": "TypedArray",
             "ctor": "Float64Array",
             "array": [
-                -357.67,
-                347.85,
+                -20,
+                -356,
                 0,
                 0,
                 0,
@@ -205028,7 +204836,7 @@
     },
     {
         "__type__": "cc.Node",
-        "_name": "point-10-s09-g2-b24-p12",
+        "_name": "point-9-s09-g1-b7-p5",
         "_parent": {
             "__id__": 5378
         },
@@ -205056,3225 +204864,12 @@
             "__type__": "TypedArray",
             "ctor": "Float64Array",
             "array": [
-                -246.95,
-                345.27,
                 0,
+                -116,
                 0,
                 0,
                 0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g3-hall-p1",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                671,
-                87,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g3-hall-p2",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                525,
-                31,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g3-hall-p3",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                411,
-                40,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g3-hall-p4",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                320,
-                56,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g3-hall-p5",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                260,
-                167,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g3-hall-p6",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                133,
-                144,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g3-hall-p7",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -39,
-                231,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g3-hall-p8",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -99,
-                300,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g3-hall-p9",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -105.21,
-                315.04,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-9-s09-g3-b4-p1",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                671,
-                87,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-9-s09-g3-b4-p2",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                525,
-                31,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-9-s09-g3-b4-p3",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                411,
-                40,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-9-s09-g3-b4-p4",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                320,
-                56,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-9-s09-g3-b4-p5",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                320,
-                156,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-9-s09-g3-b4-p6",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                342.48,
-                240.62,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-9-s09-g3-b4-p7",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -39,
-                231,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-9-s09-g3-b4-p8",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -99,
-                300,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-9-s09-g3-b4-p9",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -105.21,
-                315.04,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g3-b22-p1",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                671,
-                87,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g3-b22-p2",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                525,
-                31,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g3-b22-p3",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                411,
-                40,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g3-b22-p4",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                320,
-                56,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g3-b22-p5",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                300,
-                96,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g3-b22-p6",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                159.68,
-                103.77,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g3-b22-p7",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -99,
-                300,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g3-b22-p8",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -105.21,
-                315.04,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g4-hall-p1",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                646,
-                1207,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g4-hall-p2",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                544,
-                1077,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g4-hall-p3",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                479,
-                952,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g4-hall-p4",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                440,
-                796,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g4-hall-p5",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                495.55,
-                769.86,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g4-hall-p6",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                386,
-                648,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g4-hall-p7",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                306,
-                486,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g4-hall-p8",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                136,
-                347,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g4-hall-p9",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -9,
-                296,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-11-s09-g4-hall-p10",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -39.74,
-                357.87,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b23-p1",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                646,
-                1207,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b23-p2",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                544,
-                1077,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b23-p3",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                479,
-                952,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b23-p4",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                495.95,
-                855.85,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b23-p5",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                440,
-                816,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b23-p6",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                306,
-                486,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b23-p7",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                136,
-                347,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b23-p8",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -9,
-                296,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b23-p9",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -39.74,
-                357.87,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b32-p1",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                646,
-                1207,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b32-p2",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                544,
-                1077,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b32-p3",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                479,
-                952,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b32-p4",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                440,
-                796,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b32-p5",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                495.55,
-                769.86,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b32-p6",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                414.48,
-                625.38,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b32-p7",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                320,
-                536,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b32-p8",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                306,
-                486,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b32-p9",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                136,
-                347,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b32-p10",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -9,
-                296,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b32-p11",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -39.74,
-                357.87,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b17-p1",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                646,
-                1207,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b17-p2",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                544,
-                1077,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b17-p3",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                460,
-                896,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b17-p4",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                220.44,
-                878.96,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b17-p5",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                386,
-                648,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b17-p6",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                306,
-                486,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b17-p7",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                136,
-                347,
-                0,
                 0,
-                0,
-                0,
                 1,
                 1,
                 1,
@@ -208292,7 +204887,7 @@
     },
     {
         "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b17-p8",
+        "_name": "point-9-s09-g1-b7-p6",
         "_parent": {
             "__id__": 5378
         },
@@ -208320,8 +204915,8 @@
             "__type__": "TypedArray",
             "ctor": "Float64Array",
             "array": [
-                -9,
-                296,
+                -100,
+                334,
                 0,
                 0,
                 0,
@@ -208341,55 +204936,68 @@
         "_groupIndex": 1,
         "groupIndex": 1
     },
-    {
-        "__type__": "cc.Node",
-        "_name": "point-10-s09-g4-b17-p9",
-        "_parent": {
-            "__id__": 5378
-        },
-        "_children": [],
-        "_components": [],
-        "_active": true,
-        "_color": {
-            "__type__": "cc.Color",
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "_contentSize": {
-            "__type__": "cc.Size",
-            "width": 0,
-            "height": 0
-        },
-        "_anchorPoint": {
-            "__type__": "cc.Vec2",
-            "x": 0.5,
-            "y": 0.5
-        },
-        "_trs": {
-            "__type__": "TypedArray",
-            "ctor": "Float64Array",
-            "array": [
-                -39.74,
-                357.87,
-                0,
-                0,
-                0,
-                0,
-                1,
-                1,
-                1,
-                1
-            ]
-        },
-        "_eulerAngles": {
-            "__type__": "cc.Vec3",
-            "x": 0,
-            "y": 0,
-            "z": 0
-        },
-        "_groupIndex": 1,
-        "groupIndex": 1
-    }
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
 ]

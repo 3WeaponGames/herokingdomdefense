@@ -96,14 +96,16 @@ test('advancing a test day renews the shop daily deal and keeps the saved shop a
 
 for (const isNative of [false, true]) {
   test(`reset boots an empty test profile and returning reloads the saved progress (${isNative ? 'native' : 'browser'})`, () => {
-    let restarts = 0;
-    const tabStorage = new Map(), restart = () => { restarts++; };
+    const tabStorage = new Map(), events = [];
+    const expectedRestart = isNative ? 'restart VM' : 'reload page';
     function boot({ globals, modules }) {
       globals.cc.sys = { isNative, localStorage: globals.localStorage };
-      globals.cc.game.restart = restart;
-      globals.window = { location: { reload: restart }, sessionStorage: {
+      globals.cc.audioEngine = { stopAll() { events.push('stop audio engine'); } };
+      globals.cc.game.restart = () => events.push('restart VM');
+      globals.window = { location: { reload: () => events.push('reload page') }, sessionStorage: {
         getItem: key => tabStorage.get(key), setItem: (key, value) => tabStorage.set(key, value), removeItem: key => tabStorage.delete(key)
       } };
+      modules.ResourceMgr = {};
       modules.TestMode = { TestMode: { getInstance: () => ({ isAvailable: () => true }) } };
     }
     const before = harness({}, boot);
@@ -115,9 +117,9 @@ for (const isNative of [false, true]) {
     before.Cache.saveData('MUSIC', '0');
     const original = before.persist();
     before.load('RewardTestProgress').returnToSavedProgress();
-    assert.equal(restarts, 0);
+    assert.deepEqual(events, []);
     before.load('RewardTestProgress').requestNewPlayer(before.player);
-    assert.equal(restarts, 1);
+    assert.deepEqual(events, ['stop audio engine', expectedRestart]);
 
     const fresh = harness(before.persist(), context => {
       boot(context);
@@ -132,7 +134,7 @@ for (const isNative of [false, true]) {
     assert(fresh.claim('sign'));
     assert.deepEqual(fresh.persist(), original);
     fresh.load('RewardTestProgress').returnToSavedProgress();
-    assert.equal(restarts, 2);
+    assert.deepEqual(events, ['stop audio engine', expectedRestart, 'stop audio engine', expectedRestart]);
     const reopened = harness(fresh.persist(), context => {
       boot(context);
       const progress = context.load('RewardTestProgress');
@@ -148,3 +150,16 @@ for (const isNative of [false, true]) {
     assert.deepEqual(reopened.persist(), original);
   });
 }
+
+test('a failed restart clears the new profile request and unlocks audio for a retry', () => {
+  const f = harness({}, ({ globals, modules }) => {
+    globals.cc.sys = { isNative: true, localStorage: globals.localStorage };
+    globals.cc.game.restart = () => { throw Error('Could not restart'); };
+    modules.ResourceMgr = {};
+    modules.TestMode = { TestMode: { getInstance: () => ({ isAvailable: () => true }) } };
+  });
+  const before = f.persist(), audio = f.load('AudioMgr').AudioMgr.getInstance();
+  assert.throws(() => f.load('RewardTestProgress').requestNewPlayer(f.player), /Could not restart/);
+  assert.deepEqual(f.persist(), before);
+  assert.equal(audio._restarting, false);
+});

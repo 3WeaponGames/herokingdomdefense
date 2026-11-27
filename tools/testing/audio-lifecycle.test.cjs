@@ -64,6 +64,33 @@ test('Stopping music, all audio, or a named running loop cancels delayed playbac
   }
 });
 
+test('restarting stops managed and engine audio and suppresses late playback from the old session', () => {
+  const f = fixture(), audio = f.manager;
+  audio.playMusic('ready', 'bg'); f.finish(0);
+  const music = audio.getAudioSource('bg');
+  audio.playMusic('fight', 'bg');
+  audio.playEffect('hit');
+  const effect = audio.getAudioSource('effect');
+  let engineStops = 0;
+  f.cc.audioEngine = { stopAll() { assert.equal(music.isPlaying, false); engineStops++; } };
+
+  audio.setRestarting(true);
+  assert.equal(engineStops, 1);
+  f.finish(1); f.finish(2);
+  audio.playMusic('ready', 'bg');
+  audio.playEffect('hit');
+  f.emit('show');
+  assert.equal(music.plays, 1);
+  assert.equal(effect.plays, 0);
+  assert.equal(music.isPlaying, false);
+  assert.deepEqual(f.writes, []);
+
+  audio.setRestarting(false);
+  audio.playMusic('ready', 'bg');
+  assert.equal(music.plays, 2);
+  assert.equal(engineStops, 1);
+});
+
 test('Pause/resume while music loads starts once after resume and never during pause', () => {
   const f = fixture(), m = f.manager;
   m.playMusic('ready', 'bg'); m.pauseAllMusic(); f.finish(0);

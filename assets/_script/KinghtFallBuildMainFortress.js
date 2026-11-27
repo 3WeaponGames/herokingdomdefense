@@ -65,10 +65,10 @@ var def_KinghtFallBuildMainFortress = function (t) {
     var behavior = TowerCombat.settings(this.buildInfo && this.buildInfo.cfg);
     return behavior && behavior.attackType === "arrow" ? behavior : null;
   };
-  _ctor.prototype.onAttacked = function (e) {
+  _ctor.prototype.onAttacked = function (e, attacker) {
     if (!this.isDestroyed) {
       $z1KinghtFallUIGame.default.instance.ctrGame.gameTag[$z1KinghtFallEnum.KinghtFallEnumLevelChalType.NoAttack] = 1;
-      return t.prototype.onAttacked.call(this, e);
+      return t.prototype.onAttacked.call(this, e, attacker);
     }
   };
   _ctor.prototype.onDead = function () {

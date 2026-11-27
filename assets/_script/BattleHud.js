@@ -2,10 +2,12 @@
 var TaskPosition = require("StageTaskPosition");
 var GameStage = require("KinghtFallModle").KinghtFallGameStage;
 var SILVER = require("KinghtFallEnum").KinghtFallEnumGoodsCfg.SilverCoin;
-var TASK_BUBBLE_ALPHA = 240;
+var TASK_BUBBLE_ALPHA = 153; // Matches the Silver counter's background fill.
+var QUEST_MARKER_ALPHA = 240;
 var TASK_CLOSE_SIZE = 44;
 var TASK_CLOSE_INSET = 6;
 var SPEAKER_FADE_SECONDS = .4;
+var SPEAKER_PROMPT_HEIGHT = 182;
 
 function component(node, Type) { return node && node.getComponent(Type); }
 function disableFit(node) {
@@ -93,6 +95,10 @@ function install(ui) {
   markerText.parent = questMarker;
   var markerGlyph = label(markerText, 32);
   markerGlyph.enableBold = true;
+  var advisorControl = taskButton(root, "ToggleAdvisorPopup");
+  advisorControl.transition = cc.Button.Transition.NONE;
+  advisorControl.node.active = false;
+  advisorControl.node.setSiblingIndex(0);
   disableFit(ui.ndLevelInfo);
   var titleBackground = component(ui.ndLevelInfo, cc.Sprite); if (titleBackground) titleBackground.enabled = false;
   var state = ui._battleHud = {
@@ -100,17 +106,19 @@ function install(ui) {
     taskName: taskName, pendingLabel: pendingLabel,
     rewardPreview: rewardPreview, rewardNumber: rewardNumber, rewardText: rewardText, rewardSprite: rewardSprite,
     collectButton: collectButton, collectControl: collectControl, collectArt: collectArt, collectLabel: collectLabel,
-    closeControl: closeControl, closeArt: closeArt,
+    closeControl: closeControl, closeArt: closeArt, advisorControl: advisorControl,
     questMarker: questMarker, markerControl: markerControl, markerArt: markerArt, markerGlyph: markerGlyph,
-    rewardAnchor: rewardAnchor, rewardHint: rewardHint, hasTasks: false, popupClosed: false
+    rewardAnchor: rewardAnchor, rewardHint: rewardHint, hasTasks: false, popupClosed: true
   };
   function setPopupClosed(closed, control) {
-    if (ui._battleHud !== state || !control.node.activeInHierarchy || !control.interactable) return;
+    if (ui._battleHud !== state || !control.node.activeInHierarchy || !control.interactable ||
+        ui.ctrGame.gameStatus !== GameStage.Prepare) return;
     state.popupClosed = closed;
     layout(ui);
   }
   closeButton.on("click", function () { setPopupClosed(true, closeControl); });
   questMarker.on("click", function () { setPopupClosed(false, markerControl); });
+  advisorControl.node.on("click", function () { setPopupClosed(!state.popupClosed, advisorControl); });
   if (typeof sp !== "undefined" && cc.resources) {
     cc.resources.load("characters/retired-king-portrait", sp.SkeletonData, function (error, data) {
       if (error || !data || ui._battleHud !== state) return;
@@ -156,8 +164,9 @@ function fadeTaskSpeaker(ui, dt) {
     state.taskName.opacity = state.pendingLabel.opacity = state.collectLabel.opacity = state.rewardAnchor.opacity = state.rewardPreview.opacity = alpha;
   }
   speaker.active = state.hasTasks && (planning || alpha > 0);
-  state.collectControl.interactable = state.closeControl.interactable = state.markerControl.interactable =
-    state.hasTasks && planning && alpha > 0;
+  var canInteract = state.hasTasks && planning && alpha > 0;
+  state.collectControl.interactable = state.closeControl.interactable = state.markerControl.interactable = canInteract;
+  state.advisorControl.interactable = canInteract;
 }
 var nativeNode = cc.Node && cc.Node.prototype, nativeScene = cc.Scene && cc.Scene.prototype;
 var nativeToLocal = nativeNode && nativeNode.convertToNodeSpaceAR;
@@ -489,7 +498,7 @@ function paintQuestMarker(state, opacity) {
   var tint = ready ? cc.color(155, 240, 181) : cc.color(255, 214, 106);
   var art = state.markerArt;
   art.clear();
-  art.fillColor = cc.color(16, 23, 32, Math.round(TASK_BUBBLE_ALPHA * opacity / 255));
+  art.fillColor = cc.color(16, 23, 32, Math.round(QUEST_MARKER_ALPHA * opacity / 255));
   art.strokeColor = cc.color(tint.r, tint.g, tint.b, opacity);
   art.lineWidth = 3;
   art.circle(0, 0, state.questMarker.width / 2 - 1.5);
@@ -501,19 +510,28 @@ function paintQuestMarker(state, opacity) {
 }
 function layoutTaskPrompt(ui, bounds) {
   var state = ui._battleHud, task = ui.ndTask, marker = state.questMarker, king = state.king, game = ui.ctrGame;
+  var tap = state.advisorControl.node;
   var camera = game && (game.camera || cc.Camera && cc.Camera.main);
   if (!king || !king.activeInHierarchy || !king.opacity || !camera) {
-    task.active = marker.active = false;
+    task.active = marker.active = tap.active = false;
     return;
   }
   var root = ui.ctrUI.node;
   function project(y) {
     return root.convertToNodeSpaceAR(camera.getWorldToScreenPoint(king.convertToWorldSpaceAR(cc.v2(0, y))));
   }
-  var head = project(182), feet = project(0);
+  var head = project(SPEAKER_PROMPT_HEIGHT), feet = project(0);
   var visible = feet.x >= bounds.left - 24 && feet.x <= bounds.right + 24 && head.y >= bounds.bottom && feet.y <= bounds.top;
   task.active = visible && !state.popupClosed;
   marker.active = visible && state.popupClosed;
+  var scale = (head.y - feet.y) / SPEAKER_PROMPT_HEIGHT;
+  tap.active = visible && state.advisorControl.interactable && !!state.kingData && scale > 0 && Number.isFinite(scale);
+  if (tap.active) {
+    // Add a small margin around the advisor's 101 by 120 unit Spine model.
+    var width = 112 * scale, height = 132 * scale, centerY = feet.y + 60 * scale;
+    if (tap.width !== width || tap.height !== height) tap.setContentSize(width, height);
+    if (tap.x !== feet.x || tap.y !== centerY) tap.setPosition(feet.x, centerY);
+  }
   if (!visible) return;
 
   var margin = 16, gap = task.active ? 18 : 8;
@@ -581,6 +599,7 @@ function dispose(ui) {
   if (!state) return;
   if (state.king && cc.isValid(state.king, true)) state.king.destroy();
   if (cc.isValid(state.questMarker, true)) state.questMarker.destroy();
+  if (cc.isValid(state.advisorControl.node, true)) state.advisorControl.node.destroy();
   if (cc.isValid(state.rewardHint, true)) cc.Tween.stopAllByTarget(state.rewardHint);
   if (cc.isValid(ui.ndTask, true)) ui.ndTask.active = false;
 }

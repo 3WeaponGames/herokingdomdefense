@@ -297,16 +297,41 @@ function setTimingMode(stage,index,id,mode,interval){
  }
  return true;
 }
-function applyBalancedTiming(stage,index,changes,interval){
+function followingBosses(rows,unitThreats){
+ const bosses=new Set();
+ let hasRegular=false;
+ for(const row of rows){
+  if(row.count>0){
+   if(unitThreats?.get(row.unitId)?.enemyClass==='boss')bosses.add(row.id);
+   else hasRegular=true;
+  }
+ }
+ return hasRegular?bosses:new Set();
+}
+function alignBossStarts(rows,bosses){
+ if(!bosses.size)return rows;
+ let lastRegular=0;
+ for(const row of rows){
+  if(row.count>0&&!bosses.has(row.id))lastRegular=Math.max(lastRegular,row.startSeconds+(row.count-1)*row.intervalSeconds);
+ }
+ return rows.some(row=>bosses.has(row.id)&&row.startSeconds!==lastRegular)
+  ? rows.map(row=>bosses.has(row.id)&&row.startSeconds!==lastRegular?{...row,startSeconds:lastRegular}:row)
+  : rows;
+}
+function applyBalancedTiming(stage,index,changes,interval,unitThreats){
  const wave=waveAt(stage,index);
  if(!Array.isArray(changes))throw Error('Supply the proposed wave changes.');
  if(!changes.length)return false;
  const original=schedule(wave,interval),display=uniqueEntries(original);
+ const bosses=followingBosses(display,unitThreats);
  const positions=new Map(display.map((entry,at)=>[entry.id,at])),seen=new Set(),updates=new Map();
  for(const change of changes){
   const {id}=change;
-  const at=positions.get(id),entry=original[at];
-  if(!entry||seen.has(id)||isTimingManual(entry))throw Error('A proposed spawn row changed or is locked. Rebalance this wave before applying.');
+  const at=positions.get(id),entry=original[at],following=bosses.has(id);
+  if(!entry||seen.has(id)||isTimingManual(entry)&&!following)throw Error('A proposed spawn row changed or is locked. Rebalance this wave before applying.');
+  if(following&&['count','intervalSeconds'].some(field=>own(change,field)&&change[field]!==entry[field])){
+   throw Error('Balance can only change the start time of a boss that follows the last regular spawn.');
+  }
   seen.add(id);
   const updated={...entry};
   for(const field of ['count',...TIMING_FIELDS])if(own(change,field))updated[field]=change[field];
@@ -314,11 +339,17 @@ function applyBalancedTiming(stage,index,changes,interval){
   if(!timingChanged&&updated.count===entry.count)continue;
   if(!Number.isSafeInteger(updated.count)||updated.count<1)throw Error('Unit count must be a positive whole number.');
   validTiming(updated);
-  if(timingChanged)freezeTiming(updated);
+  if(timingChanged&&following&&Array.isArray(updated.inheritSpawnTiming)){
+   storeInheritance(updated,TIMING_FIELDS.filter(field=>field!=='startSeconds'&&inheritsTiming(entry,field)));
+  }else if(timingChanged)freezeTiming(updated);
   updates.set(at,updated);
  }
  if(!updates.size)return false;
  const next=original.map((entry,at)=>updates.get(at)||entry);
+ if(bosses.size){
+  const reviewed=next.map((row,at)=>row.id===display[at].id?row:{...row,id:display[at].id});
+  if(alignBossStarts(reviewed,bosses)!==reviewed)throw Error('The boss timing changed since review. Balance the wave again.');
+ }
  if(wave.SpawnTimeline===undefined)next.forEach(validTiming);
  storeSchedule(wave,next);
  return true;
@@ -374,4 +405,4 @@ function copyWaveFrom(stage,sourceIndex,destinationIndex,{groups=true,paths=true
  return true;
 }
 function removeWave(stage,index){waveAt(stage,index);const list=waves(stage);if(list.length===1)throw Error('Keep at least one wave in the stage.');const remaining=list.filter((wave,at)=>at!==index);if(remaining.some(wave=>!wave||typeof wave!=='object'||Array.isArray(wave)))throw Error('Repair the other malformed wave rows before removing this wave.');list.splice(index,1);list.forEach((wave,index)=>{wave.Wave=index+1;});return Math.min(index,list.length-1);}
-module.exports={MIN_SPAWN_INTERVAL,schedule,entries,summary,unitGroups,visibleRows,availableSpawns,spawnTiming,inheritsTiming,usesSpawnDefaults,isTimingManual,setTimingMode,applyBalancedTiming,setSpawnTiming,applySpawnDefaults,refreshSpawnTiming,preserveTimingOverrides,reconcileLegacyTimingLocks,addGroup,addSpawn,editGroup,moveGroup,removeGroup,chooseGroups,addWave,duplicateWave,copyWaveFrom,removeWave};
+module.exports={MIN_SPAWN_INTERVAL,schedule,entries,summary,unitGroups,visibleRows,availableSpawns,spawnTiming,inheritsTiming,usesSpawnDefaults,isTimingManual,setTimingMode,followingBosses,alignBossStarts,applyBalancedTiming,setSpawnTiming,applySpawnDefaults,refreshSpawnTiming,preserveTimingOverrides,reconcileLegacyTimingLocks,addGroup,addSpawn,editGroup,moveGroup,removeGroup,chooseGroups,addWave,duplicateWave,copyWaveFrom,removeWave};

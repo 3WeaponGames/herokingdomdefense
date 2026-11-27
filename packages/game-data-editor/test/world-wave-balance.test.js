@@ -60,12 +60,26 @@ test('balances the new counts and timings together with fixed Manual, elite, and
  assert.equal(after[1].routeGraphId,'one');
  assert.deepEqual(after[1].future,{keep:true});
  assert.deepEqual(after[3],original.SpawnTimeline[3]);
- const timingEdits=after.filter(row=>!Waves.isTimingManual(row)).map(({id,startSeconds,intervalSeconds})=>({id,startSeconds,intervalSeconds}));
+ assert.equal(after[5].startSeconds,Math.max(...after.slice(0,5).map(row=>row.startSeconds+(row.count-1)*row.intervalSeconds)));
+ const timingEdits=after.filter(row=>row.id!=='boss'&&!Waves.isTimingManual(row)).map(({id,startSeconds,intervalSeconds})=>({id,startSeconds,intervalSeconds}));
  assert.deepEqual(plan(source,{...options,timingEdits}).afterWave,result.afterWave);
  const draft={config:{WaveCfg:[structuredClone(source)]}};
- assert(Waves.applyBalancedTiming(draft,0,result.changes,.5));
+ assert(Waves.applyBalancedTiming(draft,0,result.changes,.5,roleThreats));
  assert.deepEqual(draft.config.WaveCfg[0],result.afterWave);
  assert.deepEqual(source,original);
+});
+
+test('boss starts follow the exact final Manual arrival and both arrivals count toward the peak cap',()=>{
+ const regular=row('regular',1,2,1.25,1.5,{unitId:5,editorManualTiming:true});
+ const boss=row('boss',2,1,8,0,{unitId:3,editorManualTiming:true});
+ const source=wave(regular,boss);
+ const options={unitThreats:roleThreats,lastSpawnLimit:3,peakCap:2};
+ const aligned=plan(source,options);
+ assert.equal(aligned.ok,true,aligned.message);
+ assert.deepEqual(aligned.changes,[{id:'boss',startSeconds:2.75}]);
+ assert.deepEqual(aligned.afterWave.SpawnTimeline,[regular,{...boss,startSeconds:2.75}]);
+ assert.equal(aligned.after.peak,2);
+ assert.equal(plan(source,{...options,peakCap:1}).reason,'peak-exceeded');
 });
 
 test('reduces the adjustable rows proportionally and keeps at least one enemy at each authored spawn',()=>{
@@ -246,7 +260,9 @@ test('role-aware timing spaces dangerous opening arrivals while preserving locks
  assert(result.tactical.after.peakBurst<result.tactical.before.peakBurst);
  assert.equal(result.tactical.after.coveredBackliners,0,'a boss is a threat and is not used as ordinary cover');
  assert.equal(result.after.lastSpawn,8);
- assert(result.changes.every(change=>['elite','air','heavy splash'].includes(change.id)));
+ assert.deepEqual(result.afterWave.SpawnTimeline[0],{...before.SpawnTimeline[0],startSeconds:8});
+ assert.deepEqual(result.afterWave.SpawnTimeline[4],before.SpawnTimeline[4]);
+ assert(result.changes.every(change=>['boss','elite','air','heavy splash'].includes(change.id)));
  assert.deepEqual(source,before);
  assert.deepEqual(plan(source,options),result);
 });
@@ -285,7 +301,7 @@ test('tactical timing spreads a large row inside the authored window',()=>{
 
 test('a hard deadline can keep an existing safe composition, while available slack allows one tactical beat',()=>{
  const source=wave(
-  row('boss',1,1,0,0,{unitId:3,editorManualTiming:true}),
+  row('fixed elite',1,1,0,0,{unitId:4,editorManualTiming:true}),
   row('elite',2,1,0,0,{unitId:4})
  );
  const tight=plan(source,{lastSpawnLimit:0,unitThreats:roleThreats});

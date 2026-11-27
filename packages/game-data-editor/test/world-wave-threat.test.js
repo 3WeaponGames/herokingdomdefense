@@ -95,6 +95,21 @@ test('the saved fighting type damage modifier adjusts estimated durability',()=>
  assert.ok(profiles.get(19).weight>profiles.get(20).weight);
 });
 
+test('regen and damage over time use scaled stats and current attack rate',()=>{
+ const onHit={poison:{percent:.1,duration:3},burn:{percent:.2,duration:.5},bleed:{percent:.15,duration:2}};
+ const config={SoldierCfg:{19:{...meleeRecord,HealthRegenPercent:.03,UnitAttack:{delivery:'melee',pattern:'single',onHit}}}};
+ const [unit]=Catalog.rows(config,{entries:{}});
+ const wave={HealthCoefficient:1.5,AttackCoefficient:1.2};
+ const profile=Threat.profile(unit,wave,4);
+ assert.equal(profile.health,72);
+ assert.equal(profile.damage,6);
+ assert.equal(profile.healthRegenPercent,.03);
+ assert.ok(Math.abs(profile.effectiveHealth-80.64)<1e-9);
+ assert.ok(Math.abs(profile.damageOverTime-2.1)<1e-9);
+ assert.ok(Math.abs(profile.sustainedDamage-8.1)<1e-9);
+ assert.ok(profile.weight>Threat.profile({...unit,healthRegenPercent:0,attack:{...unit.attack,onHit:{}}},wave,4).weight);
+});
+
 test('all six fighting roles and common special units have distinct opening priorities',()=>{
  const roles=['Vanguard','Guardian','Fighter','Skirmisher','Bruiser','Mystic'];
  const phases=roles.map(role=>Threat.profile({...fighter,unitType:role}).phase);

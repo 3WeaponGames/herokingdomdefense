@@ -43,8 +43,12 @@ var def_KinghtFallBuildWall = function (t) {
     t.prototype.onLoad.call(this);
   };
   _ctor.prototype.onPreSolve = function (contact, self, other) {
-    if (!this.isOpen || self.node !== this.node || self.tag != this.getColliderIndex()) return;
+    if (!this.isOpen || this.isDestroyed || !self || self.node !== this.node || self.tag != this.getColliderIndex()) return;
+    if (!cc.isValid(other, true)) return;
     var node = other.body ? other.body.node : other.node;
+    // A contact can outlive the unit that created it. Keep the gate solid if
+    // the other side of the contact no longer has a live node.
+    if (!cc.isValid(node, true) || !node.activeInHierarchy) return;
     var enemy = node.getComponents(cc.Component).some(function (component) {
       return component.navigationTeam === "enemy";
     });
@@ -109,7 +113,7 @@ var def_KinghtFallBuildWall = function (t) {
     return restore;
   };
   // The leaf remains an enemy obstacle while the visual gate admits allies.
-  // Use the authored points: upgrade/shut tweens temporarily shrink physics.
+  // Use the authored points while construction or upgrade grows the fixture.
   _ctor.prototype.getNavigationGateShapes = function (useLocalPoints) {
     if (this._unitTestBreach || !this.index || this.isDestroyed || !this.node.activeInHierarchy || this.wallHasGate === false) return [];
     var gate = this;
@@ -209,29 +213,24 @@ var def_KinghtFallBuildWall = function (t) {
     }
   };
   _ctor.prototype.doTime = function () {
-    var t;
-    var e = this;
     if (this._unitTestBreach || !this.index || this.isDestroyed || this.wallHasGate === false) return;
-    var n = this.hasFriendlyAtGate($z1KinghtFallUIGame.default.instance.ctrGame);
-    if (n) this._openGateCollider();
-    if (n != this.isOpen) {
-      this.isOpen = n;
-      if (BattleSounds.effect) BattleSounds.effect(this.isOpen ? "gate-open" : "gate-close", this);
-      if (this.isOpen) {
-        t = $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare ? $z1KinghtFallBuildBase.KinghtFallBuildAniName.open : $z1KinghtFallBuildBase.KinghtFallBuildAniName.open_night;
-      } else {
-        t = $z1KinghtFallUIGame.default.instance.ctrGame.gameStatus == $z1KinghtFallModle.KinghtFallGameStage.Prepare ? $z1KinghtFallBuildBase.KinghtFallBuildAniName.shut : $z1KinghtFallBuildBase.KinghtFallBuildAniName.shut_night, this.node.getComponents(cc.PhysicsPolygonCollider).forEach(function (t) {
-          e._stopColliderTween(t);
-          t.enabled = t.tag == e.getColliderIndex();
-          t.enabled && e._animateCollider(t, .1);
-        });
-      }
-      if (this.ndAniMain.animation == $z1KinghtFallBuildBase.KinghtFallBuildAniName.create || this.ndAniMain.animation == $z1KinghtFallBuildBase.KinghtFallBuildAniName.upgrade) {
-        this.ndAniMain.addAnimation(0, this._gateAnimation(this.ndAniMain, t), false), this.ndAniDown.addAnimation(0, this._gateAnimation(this.ndAniDown, t), false);
-      } else {
-        this.ndAniMain.setAnimation(0, this._gateAnimation(this.ndAniMain, t), false), this.ndAniDown.setAnimation(0, this._gateAnimation(this.ndAniDown, t), false);
-      }
-    }
+    var ui = $z1KinghtFallUIGame.default.instance;
+    var game = ui && ui.ctrGame;
+    if (!game || ui.isclose) return;
+    var open = this.hasFriendlyAtGate(game);
+    if (open === this.isOpen) return;
+    // An opening can interrupt construction. After that, the same full-size
+    // fixture blocks enemies in both states. Closing only ends friendly passage.
+    if (open) this._openGateCollider();
+    this.isOpen = open;
+    if (BattleSounds.effect) BattleSounds.effect(open ? "gate-open" : "gate-close", this);
+    var day = game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Prepare;
+    var names = $z1KinghtFallBuildBase.KinghtFallBuildAniName;
+    var animation = open ? (day ? names.open : names.open_night) : (day ? names.shut : names.shut_night);
+    var main = this.ndAniMain;
+    var method = main.animation === names.create || main.animation === names.upgrade ? "addAnimation" : "setAnimation";
+    main[method](0, this._gateAnimation(main, animation), false);
+    if (cc.isValid(this.ndAniDown, true)) this.ndAniDown[method](0, this._gateAnimation(this.ndAniDown, animation), false);
   };
   _ctor.prototype.doUpgreadAni = function () {
     if (this._buildingWorldScaleRuntime) require("BuildingWorldScale").restore(this);
@@ -274,7 +273,7 @@ var def_KinghtFallBuildWall = function (t) {
     }
     if (this.buildInfo && this.buildInfo.cfg && this.buildInfo.cfg.WorldScale !== undefined) require("BuildingWorldScale").apply(this);
   };
-  _ctor.prototype.onAttacked = function (t) {
+  _ctor.prototype.onAttacked = function (t, attacker) {
     if (!this.isDestroyed) {
       var wall = this, info = this.buildInfo, node = this.node, generation = node && node._combatGeneration, hp = this.ctrHp;
       var effect = this.ndAniEffect, effectNode = effect && effect.node, valid = cc.isValid;
@@ -286,7 +285,8 @@ var def_KinghtFallBuildWall = function (t) {
         (!game || game.gameData === data && game._combatEpoch === epoch && (!valid || valid(game, true))) &&
         (!ui || $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui._resourceGeneration === uiGeneration && ui.ctrGame === game && (!valid || valid(ui, true))); }
       if (!info || !current()) return 0;
-      info.hp -= t;
+      this._applyBuildingDamage(t, attacker, game);
+      if (!current()) return t;
       if (BattleSounds.hit) BattleSounds.hit(this, null, t);
       if (!current()) return t;
       if (info.hp <= 0 && !this.isDestroyed) {

@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),Grid=require('../../assets/_script/NavigationGrid').NavigationGrid;
 function fixture(radius=55){
  let seed=9,randoms=0,resets=0,navCalls=0;const math=Object.create(Math);math.random=()=>{randoms++;seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
- const grid=new Grid([],{minX:-500,minY:-500,maxX:500,maxY:500},16),nav={grid,refresh(){},radius(unit,sleeping){assert(unit.node);return 12;}};
+ const grid=new Grid([],{minX:-500,minY:-500,maxX:500,maxY:500},16),nav={grid,refresh(){},mapGrid(){return grid;},radius(unit,sleeping){assert(unit.node);return 12;}};
  const Navigation={get(){navCalls++;return nav;},positionOf(n){return n.position;},reset(){resets++;},prepareTerrainExit(){},usesFlightGrid(){return false;}},spec={id:1,radius,FutureField:{keep:1}},paths={spawnSpec:()=>spec},center={position:{x:-150,y:0}},game={ndPath:{getChildByName(name){return name==='Authored routes'?{getComponent:()=>paths}:center;}},ndMain:{convertToWorldSpaceAR:p=>p}};
  const points=[{position:{x:-50,y:0}},{position:{x:80,y:0}},{position:{x:200,y:40}}],unit={node:{position:{x:-150,y:0},setPosition(x,y){this.position={x,y};}},rigidBody:{active:true},bornInfo:{pathList:points,nodeIndex:0}};
  const context={exports:{},require(name){assert.equal(name,'KinghtFallNavigation');return Navigation;},Math:math,cc:{v2:(x,y)=>({x,y})}};vm.runInNewContext(fs.readFileSync(require.resolve('../../assets/_script/SpawnArea'),'utf8'),context);return {area:context.exports,game,unit,grid,spec,points,counts:()=>({randoms,resets,navCalls})};
@@ -15,6 +15,32 @@ test('runtime uses one safe area sample and detached per-enemy route points whil
 test('point spawns preserve RNG and route node identities; blocked terrain does not reject an area spawn',()=>{
  const f=fixture(0);assert.equal(f.area.prepare(f.unit,f.game,1,true),undefined);assert(f.area.apply(f.unit,f.game,1));assert.equal(f.unit.bornInfo.pathList,f.points);assert.deepEqual(f.counts(),{randoms:0,resets:0,navCalls:0});
  f.spec.radius=40;f.grid.isWalkable=()=>false;const prepared=f.area.prepare(f.unit,f.game,1,true);assert(prepared);assert(Math.hypot(prepared.start.x+150,prepared.start.y)<=40);assert(f.area.apply(f.unit,f.game,1,prepared));assert.equal(f.unit.node.position.x,prepared.start.x);assert.equal(f.unit.node.position.y,prepared.start.y);assert.equal(f.counts().resets,1);
+});
+test('authored ground spawns sample within the red-clear part of their disk even when a building covers it',()=>{
+ const {environment,Node}=require('../navigation/runtime-harness.cjs');
+ const e=environment(),game=e.game,unit=e.unit(-100,0),area=e.load('SpawnArea');
+ unit.cfg={BuildingCross:1};
+ const paths=new Node('Paths',game.ndMain),holder=new Node('Authored routes',paths);
+ new Node('ndEnemy1',paths,-100,0);
+ holder.getComponent=()=>({spawnSpec:()=>({id:1,radius:60})});
+ game.ndPath=paths;
+ const red=e.box(-100,0,30,200),building=e.box(-100,0,170,180,true);
+ const navigation=e.nav.get(game),terrain=navigation.mapGrid(),body=navigation.radius(unit,true);
+ for(let i=0;i<12;i++){
+  const placement=area.prepare(unit,game,1,true,unit.cfg);
+  assert(placement);
+  if(i%2===0)assert.equal(area.apply(unit,game,1,placement),true);
+  else assert.equal(area.apply(unit,game,1),true);
+  assert(Math.hypot(unit.node.x+100,unit.node.y)<=60);
+  assert(terrain.isWalkable(unit.node,body));
+  assert(!navigation.grid.isWalkable(unit.node,body));
+ }
+ building.node.x=-90;
+ e.nav.invalidate(game);
+ assert.equal(navigation.mapGrid(),terrain);
+ red.node.x=-120;
+ e.nav.invalidate(game);
+ assert.notEqual(navigation.mapGrid(),terrain);
 });
 test('custom zero-width routes still randomize an area spawn and unclassified inactive bodies skip navigation',()=>{
  const f=fixture();f.unit.bornInfo.pathList.routeSpread=0;const prepared=f.area.prepare(f.unit,f.game,1,true);assert(f.area.apply(f.unit,f.game,1,prepared));assert.equal(f.unit.bornInfo.pathList,f.points);

@@ -803,7 +803,7 @@
             "unitId": 101666,
             "spawnId": 4,
             "count": 5,
-            "startSeconds": 20.25,
+            "startSeconds": 15,
             "intervalSeconds": 3.875,
             "id": "entry-9"
           },
@@ -811,7 +811,7 @@
             "unitId": 91037,
             "spawnId": 6,
             "count": 6,
-            "startSeconds": 21.75,
+            "startSeconds": 16.111,
             "intervalSeconds": 2.75,
             "id": "entry-10",
             "unitGroupId": "unit-group-0"
@@ -820,7 +820,7 @@
             "unitId": 101679,
             "spawnId": 5,
             "count": 3,
-            "startSeconds": 23.875,
+            "startSeconds": 17.685,
             "intervalSeconds": 4,
             "id": "entry-11"
           },
@@ -828,7 +828,7 @@
             "unitId": 91037,
             "spawnId": 2,
             "count": 6,
-            "startSeconds": 38.125,
+            "startSeconds": 28.241,
             "intervalSeconds": 3.25,
             "id": "legacy-2-0",
             "unitGroupId": "unit-group-0"
@@ -837,7 +837,7 @@
             "unitId": 101671,
             "spawnId": 1,
             "count": 5,
-            "startSeconds": 41.125,
+            "startSeconds": 30.463,
             "intervalSeconds": 3.5,
             "id": "entry-12"
           },
@@ -845,13 +845,13 @@
             "unitId": 91157,
             "spawnId": 3,
             "count": 1,
-            "startSeconds": 51.625,
+            "startSeconds": 38.241,
             "intervalSeconds": 4.125,
             "id": "entry-13"
           },
           {
             "count": 1,
-            "startSeconds": 55.125,
+            "startSeconds": 44.491,
             "intervalSeconds": 0.5,
             "spawnId": 1,
             "unitId": 101680,
@@ -4253,7 +4253,7 @@
   "nextBuilding": 23,
   "nextSpawn": 10,
   "nextSpecial": 7,
-  "sourceRevision": "fd1dd403518a2f57707a347f0cbfdae0535aa97dae7c58b97ac73dc3e55115ae",
+  "sourceRevision": "feb2d8b74690039d00ae2ded83d202d95519e011250aef581ca2467c117336b3",
   "templates": {
     "Map01": [
       {

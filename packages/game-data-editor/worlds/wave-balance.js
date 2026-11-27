@@ -111,6 +111,15 @@ function canFit(fixed,row,start,gap,rate,cap){
  return true;
 }
 
+function fitsBossTail(fixed,choice,finale,rate,cap,limit){
+ const startSeconds=Math.max(fixed[fixed.length-1]??0,finalSpawn(choice));
+ if(finale.start!==null&&!coincident(startSeconds,finale.start))return false;
+ const last=startSeconds+finale.span;
+ if(!Number.isFinite(last)||!atMost(last,limit)||!Number.isSafeInteger(defeatTick(last,rate)))return false;
+ const arrivals=fixed.concat(finale.offsets.map(offset=>startSeconds+offset)).sort((a,b)=>a-b);
+ return canFit(arrivals,choice,choice.startSeconds,choice.intervalSeconds,rate,cap);
+}
+
 function samples(minimum,maximum,preferred,step,gridSize,nearby){
  if(!atMost(minimum,maximum))return [];
  maximum=Math.max(minimum,maximum);
@@ -175,14 +184,16 @@ function intervals(row,floor,limit,rate,keepIntervals){
  });
 }
 
-function place(groups,locked,limit,rate,cap,{keepIntervals,early,goals,spawnOneFirst,floors,pins}){
+function place(groups,locked,limit,rate,cap,{keepIntervals,early,goals,spawnOneFirst,floors,pins,finale}){
  // Reserve the other pinned arrivals while placing each stream.
  let fixed=locked.flatMap(spawnTimes).concat(pins?[...pins.values()]:[]).sort((a,b)=>a-b),opening=0,budget=MAX_EVENTS_PER_PASS,one=Infinity;
  const placed=new Map();
+ const lastGroup=groups[groups.length-1],lastRow=lastGroup?.[lastGroup.length-1];
  for(const group of groups){
   let groupOpening=Infinity;
   for(const row of group){
-   const goal=goals?.get(row.id),end=Math.min(limit,goal?.limit??limit),pin=pins?.get(row.id);
+   const tail=row===lastRow?finale:null;
+   const goal=goals?.get(row.id),end=Math.min(limit,goal?.limit??limit,finale?.start??limit),pin=pins?.get(row.id);
    const lead=spawnOneFirst&&row.spawnId!==1?snapTiming(one+TIMING_STEP,Math.ceil):0;
    const floor=Math.max(opening,lead,floors?.get(row.id)??0,pin??goal?.start??0);
    if(!Number.isFinite(floor)||(pin!==undefined&&pin<floor))return null;
@@ -195,11 +206,13 @@ function place(groups,locked,limit,rate,cap,{keepIntervals,early,goals,spawnOneF
      // The compact pass compares the best end across gaps, leaving earlier
      // defeat slots available to groups later in opening order.
      if(early&&last>=chosenEnd)break;
-     budget-=fixed.length+row.count;
+     budget-=fixed.length+row.count+(tail?.offsets.length??0);
      if(budget<0)return null;
      if(!Number.isFinite(last)||!atMost(last,end)||!Number.isSafeInteger(defeatTick(last,rate)))continue;
      if(canFit(fixed,row,start,gap,rate,cap)){
-      choice={...row,startSeconds:start,intervalSeconds:gap};
+      const candidate={...row,startSeconds:start,intervalSeconds:gap};
+      if(tail&&!fitsBossTail(fixed,candidate,tail,rate,cap,limit))continue;
+      choice=candidate;
       chosenEnd=last;
       if(!early)break candidates;
       break;
@@ -217,7 +230,7 @@ function place(groups,locked,limit,rate,cap,{keepIntervals,early,goals,spawnOneF
  return placed;
 }
 
-function placePinnedGroups(groups,locked,timing,horizons,rate,cap,spawnOneFirst,accept){
+function placePinnedGroups(groups,locked,timing,horizons,rate,cap,spawnOneFirst,finale,accept){
  const ordered=groups.flat(),{windows,floors}=timing;
  const choices=windows.filter(group=>group.auto.length).sort((a,b)=>a.time-b.time).map(({time,auto})=>{
   const candidates=spawnOneFirst&&auto.some(row=>row.spawnId===1)?auto.filter(row=>row.spawnId===1):auto.slice();
@@ -238,7 +251,7 @@ function placePinnedGroups(groups,locked,timing,horizons,rate,cap,spawnOneFirst,
     sequence.unshift({...lead,startSeconds:pins.get(lead.id)??0});
    }
    for(const early of [false,true]){
-    const placed=place([sequence],locked,horizon,rate,cap,{keepIntervals:false,early,floors,pins,spawnOneFirst});
+    const placed=place([sequence],locked,horizon,rate,cap,{keepIntervals:false,early,floors,pins,spawnOneFirst,finale});
     const result=accept(placed);
     if(result)return result;
    }
@@ -482,12 +495,14 @@ function refineTiming(rows,context,horizon,free,groups,cap,checkOrder){
     const last=finalSpawn(option);
     if(!Number.isFinite(last)||!atMost(last,horizon))continue;
     timeline[index]=option;
-    if(!GroupTiming.matches(timeline,context.groupStarts)||context.spawnOneFirst&&!opensFromSpawnOne(free.map(at=>timeline[at]))||
+    const aligned=Waves.alignBossStarts(timeline,context.bosses);
+    if(!GroupTiming.matches(aligned,context.groupStarts)||context.spawnOneFirst&&!opensFromSpawnOne(free.map(at=>timeline[at]))||
+       context.finale&&aligned.some(row=>context.bosses.has(row.id)&&!atMost(finalSpawn(row),horizon))||
        checkOrder&&!openingsAreOrdered(groups.map(group=>group.map(entry=>timeline[positions.get(entry.id)])))){
      timeline[index]=chosen;
      continue;
     }
-    const scored=tacticalScore(timeline,context);
+    const scored=tacticalScore(aligned,context);
     if(scored&&scored.peakAlive<=cap&&scored.score<current.score-.001){
      chosen=option;current=scored;improved=true;
     }
@@ -550,9 +565,10 @@ function refinePushes(rows,initial,context,horizon,free,groups,locked,cap,checkO
     goals.set(row.id,priority?{start:row===opener?0:Math.min(TIMING_STEP,follow),limit}:{start,peak,limit});
    }
   }
-  const placed=place([placement],locked,horizon,rate,cap,{keepIntervals:false,early:false,goals,spawnOneFirst});
+  const placed=place([placement],locked,horizon,rate,cap,{keepIntervals:false,early:false,goals,spawnOneFirst,finale:context.finale});
   if(!placed||checkOrder&&!openingsAreOrdered(groups.map(group=>group.map(row=>placed.get(row.id)))))continue;
-  const candidate=rows.map(row=>placed.get(row.id)||row),score=tacticalScore(candidate,context);
+  const candidate=Waves.alignBossStarts(rows.map(row=>placed.get(row.id)||row),context.bosses);
+  const score=tacticalScore(candidate,context);
   if(score&&score.peakAlive<=cap&&score.score<best.score){seed=candidate;best=score;}
  }
  return refineTiming(seed,context,horizon,free,groups,cap,checkOrder);
@@ -575,6 +591,7 @@ function plan(wave,{
  if(!original.projected)return fail('projection-unavailable','The schedule exceeds the timing projection range.');
 
  const originalEntries=Waves.entries(wave,interval);
+ const bosses=Waves.followingBosses(originalEntries,unitThreats);
  let entries=originalEntries,working=original;
  if(totalUnits!==null){
   const pool=Counts.countPool(originalEntries,unitThreats,isManual),total=Counts.targetTotal(pool,totalUnits);
@@ -587,31 +604,41 @@ function plan(wave,{
     const intervalSeconds=count>1&&row.intervalSeconds===0?TIMING_STEP:row.intervalSeconds;
     return {...row,count,intervalSeconds};
    });
-   working=project({...wave,SpawnTimeline:entries});
-   if(!working.projected)return fail('projection-unavailable','The proposed counts exceed the timing projection range.');
   }
+ }
+ entries=Waves.alignBossStarts(entries,bosses);
+ if(entries!==originalEntries){
+  if(entries.some(row=>row.count&&!Number.isFinite(finalSpawn(row))))return fail('invalid-timing','The final spawn time must be finite.');
+  working=project({...wave,SpawnTimeline:entries});
+  if(!working.projected)return fail('projection-unavailable','The proposed schedule exceeds the timing projection range.');
  }
  const baseline=working===original?before:summary(working);
  const locked=[],eligible=[];
  for(const row of entries){
-  if(!row.count)continue;
+  if(!row.count||bosses.has(row.id))continue;
   (isManual(row)?locked:eligible).push(row);
  }
  const eligibleIds=new Set(eligible.map(row=>row.id));
- const timing=GroupTiming.prepare(entries,spawnGroups,groupStarts,eligibleIds,TIMING_STEP,lastSpawnLimit);
+ const timing=GroupTiming.prepare(entries,spawnGroups,groupStarts,eligibleIds,TIMING_STEP,lastSpawnLimit,bosses);
  if(timing.error)return fail('group-start-conflict',timing.error);
+ if(bosses.size&&peakCap<=bosses.size){
+  return fail('peak-exceeded','The final regular unit and its bosses need room for at least '+(bosses.size+1)+' enemies alive.');
+ }
+ const offsets=bosses.size?entries.filter(row=>bosses.has(row.id)).flatMap(row=>spawnTimes({...row,startSeconds:0})):[];
+ const finale=bosses.size?{start:timing.bossStart,offsets,span:offsets.reduce((latest,time)=>Math.max(latest,time),0)}:null;
  if(Array.isArray(pushPeaks)&&pushPeaks.includes(null)){
   const latestStart=timing.windows.reduce((latest,group)=>Math.max(latest,group.time),0);
   const suggested=Pacing.suggestedPeaks(pushPeaks.length,working.totals.units,peakCap,defeatSeconds,lastSpawnLimit,latestStart);
   pushPeaks=pushPeaks.map((time,index)=>time??suggested[index]);
  }
- const pacing=Pacing.settings(pushPeaks,peakCap,working.totals.units,eligible.length+locked.length);
+ const pacing=Pacing.settings(pushPeaks,peakCap,working.totals.units,eligible.length+locked.length+bosses.size);
  const hasGroupTimes=timing.windows.length>0;
  const spawnOneFirst=(!!pacing||hasGroupTimes)&&eligible.some(row=>row.spawnId===1);
  const {groups,hasGroupedRows}=orderedGroups(eligible,spawnGroups,spawnOrder,spawnOneFirst);
  const checkGroupOrder=hasGroupedRows&&!hasGroupTimes;
 
  function inspectTimeline(timeline){
+  timeline=Waves.alignBossStarts(timeline,bosses);
   const auto=timeline.filter(row=>eligibleIds.has(row.id));
   if(timeline.some(row=>row.count&&!Number.isFinite(finalSpawn(row)))||auto.some(row=>!usesTimingSteps(row))){
    return fail('invalid-timing','Use nonnegative starts and intervals in '+TIMING_STEP+' s steps. Repeating rows need an interval of at least '+TIMING_STEP+' s.');
@@ -622,12 +649,18 @@ function plan(wave,{
    const {id,count,startSeconds,intervalSeconds}=timeline[index];
    const timingChanged=row.startSeconds!==startSeconds||row.intervalSeconds!==intervalSeconds;
    if(row.count!==count||timingChanged){
-    items.push({id,...(row.count!==count?{count}:{}),...(timingChanged?{startSeconds,intervalSeconds}:{})});
+    const edit={id};
+    if(row.count!==count)edit.count=count;
+    if(timingChanged){
+     edit.startSeconds=startSeconds;
+     if(!bosses.has(id))edit.intervalSeconds=intervalSeconds;
+    }
+    items.push(edit);
    }
    return items;
   },[]);
   const afterWave=edits.length?{...wave}:wave;
-  Waves.applyBalancedTiming({config:{WaveCfg:[afterWave]}},0,edits,interval);
+  Waves.applyBalancedTiming({config:{WaveCfg:[afterWave]}},0,edits,interval,unitThreats);
   const verified=project(afterWave),after=summary(verified);
   if(!verified.projected)return fail('projection-unavailable','The edited schedule exceeds the timing projection range.');
   if(after.peak>peakCap)return fail('peak-exceeded','The edited plan peaks at '+after.peak+' enemies. The cap is '+peakCap+'.');
@@ -648,8 +681,10 @@ function plan(wave,{
   context.originalOpening=firstSpawn(rows.filter(row=>row.count));
   context.spawnOneFirst=spawnOneFirst;
   context.groupStarts=timing.windows;
+  context.bosses=bosses;
+  context.finale=finale;
   if(pacing){
-   const active=orderedGroups(entries.filter(row=>row.count),spawnGroups,spawnOrder,spawnOneFirst).groups.slice(0,2);
+   const active=orderedGroups(entries.filter(row=>row.count&&!bosses.has(row.id)),spawnGroups,spawnOrder,spawnOneFirst).groups.slice(0,2);
    context.openingSides=active.map(group=>context.profiles.get(group[0].id).group);
    context.mixablePushes=Math.min(pacing.times.length,...active.map(group=>group.length));
   }
@@ -721,6 +756,7 @@ function plan(wave,{
   const current=entries===originalEntries?{ok:true,before,after:before,changes,afterWave:wave}:inspectTimeline(entries);
   return current.ok?finish(current,checkGroupOrder):current;
  }
+ if(bosses.size&&!eligible.length)return inspectTimeline(entries);
  const fixedProjection=project({...wave,SpawnTimeline:locked}),fixed=summary(fixedProjection);
  if(fixed.peak>peakCap)return fail('locked-peak',`Manual rows alone peak at ${fixed.peak} enemies at ${fixed.peakTime} s. Unlock or adjust a manual row, or raise the peak cap.`,{fixed});
  if(!fitsDeadline(fixed.lastSpawn))return fail('locked-deadline',`Manual rows spawn through ${fixed.lastSpawn} s. Unlock or adjust a manual row, or raise the last spawn limit.`,{fixed});
@@ -754,25 +790,26 @@ function plan(wave,{
   // Leave room to drain earlier streams when an explicit opening is late.
   const extra=(working.totals.units+1)*Math.max(TIMING_STEP,defeatSeconds);
   const expanded=lastSpawnLimit??Math.min(Number.MAX_VALUE,Math.max(limit,fixed.lastSpawn)+extra);
-  const planned=placePinnedGroups(groups,locked,timing,new Set([compactLimit,limit,expanded]),defeatSeconds,peakCap,spawnOneFirst,result);
+  const planned=placePinnedGroups(groups,locked,timing,new Set([compactLimit,limit,expanded]),defeatSeconds,peakCap,spawnOneFirst,finale,result);
   return planned??fail('group-start-limits','No proposal fit the set spawn-group times and wave limits. Adjust a group start, a Manual row, the peak cap, or the last-spawn limit.');
  }
  if(compactLimit<limit&&Number.isSafeInteger(defeatTick(compactLimit,defeatSeconds))){
-  const compact=result(place(groups,locked,compactLimit,defeatSeconds,peakCap,{keepIntervals:false,early:false,spawnOneFirst}));
+  const compact=result(place(groups,locked,compactLimit,defeatSeconds,peakCap,{keepIntervals:false,early:false,spawnOneFirst,finale}));
   if(compact)return compact;
  }
  if(Number.isSafeInteger(defeatTick(limit,defeatSeconds))){
   for(const options of [
    {keepIntervals:true,early:false},
    {keepIntervals:false,early:false},
+   ...(finale?[{keepIntervals:true,early:true}]:[]),
    {keepIntervals:false,early:true}
   ]){
-   const proposal=result(place(groups,locked,limit,defeatSeconds,peakCap,{...options,spawnOneFirst}));
+   const proposal=result(place(groups,locked,limit,defeatSeconds,peakCap,{...options,spawnOneFirst,finale}));
    if(proposal)return proposal;
   }
  }
  if(lastSpawnLimit>limit&&Number.isSafeInteger(defeatTick(lastSpawnLimit,defeatSeconds))){
-  const extended=result(place(groups,locked,lastSpawnLimit,defeatSeconds,peakCap,{keepIntervals:false,early:false,spawnOneFirst}));
+  const extended=result(place(groups,locked,lastSpawnLimit,defeatSeconds,peakCap,{keepIntervals:false,early:false,spawnOneFirst,finale}));
   if(extended)return extended;
  }
  const fallback=result(separateStreams(groups,fixedProjection,defeatSeconds,spawnOneFirst));

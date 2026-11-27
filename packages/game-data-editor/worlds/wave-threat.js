@@ -6,6 +6,7 @@ const Skills=require('../../../assets/_script/EnemySkills');
 const Defense=require('../../../assets/_script/FightingTypeDamage');
 const Records=require('../lib/unit-records');
 const Stats=require('./wave-stats');
+const {DEFAULT_DEFEAT_SECONDS}=require('./wave-pressure');
 
 // Positions are opening preferences for the timer. The planner still validates
 // the wave against its peak cap, deadline, spawn order and Manual timings.
@@ -18,6 +19,7 @@ const ROLES=new Map([
  ['mystic',{phase:3,weight:.22}]
 ]);
 const BASE_WAVE={HealthCoefficient:1,AttackCoefficient:1};
+const DAMAGE_EFFECTS=Object.keys(Attack.damageEffects);
 const number=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0?value:null;
 
 function recordTraits(record,id,typeDefinition){
@@ -44,7 +46,8 @@ function recordTraits(record,id,typeDefinition){
  const innate=Skills.innate(record);
  if(innate&&Skills.originalEnabled(record))skills.add(innate);
  const damageTakenMultiplier=Defense.multiplier(typeDefinition?.damageTaken);
- return {flight:Flight.isFlying({cfg:record}),attack,skills:[...skills],damageTakenMultiplier};
+ return {flight:Flight.isFlying({cfg:record}),attack,skills:[...skills],damageTakenMultiplier,
+  healthRegenPercent:number(record.HealthRegenPercent)||0};
 }
 
 // A normal melee unit with Wolf-like stats is one unit of estimated pressure.
@@ -71,7 +74,7 @@ function additionalTargets(attack){
  }
 }
 
-function profile(unit,wave=BASE_WAVE){
+function profile(unit,wave=BASE_WAVE,defeatSeconds=DEFAULT_DEFEAT_SECONDS){
  const attack=unit?.attack||{},role=typeof unit?.unitType==='string'&&unit.unitType.trim()?unit.unitType.trim().toLowerCase():'untyped';
  const roleSettings=ROLES.get(role);
  const enemyClass=unit?.enemyClass==='boss'||unit?.enemyClass==='elite'?unit.enemyClass:'normal';
@@ -83,9 +86,19 @@ function profile(unit,wave=BASE_WAVE){
  const attackRate=number(unit?.attackRate),speed=number(unit?.speed);
  const {health,damage,baseHealth,baseDamage}=Stats.resolve({health:unit?.health,damage:unit?.damage===undefined?attack.damage:unit.damage},wave);
  const defense=number(unit?.damageTakenMultiplier)||1;
- const effective=health===null?null:health/defense;
+ const healthRegenPercent=number(unit?.healthRegenPercent)||0;
+ const recoveryTime=number(defeatSeconds)??DEFAULT_DEFEAT_SECONDS;
+ const effective=health===null?null:health*(1+healthRegenPercent*recoveryTime)/defense;
  const effectiveHealth=number(effective);
- const sustained=damage!==null&&attackRate!==null?damage*attackRate:null;
+ // Hits refresh the same effect on a target. Estimate uptime from hit rate
+ // and duration, up to one active application of each effect.
+ const effectRate=DAMAGE_EFFECTS.reduce((sum,id)=>{
+  const effect=attack.onHit?.[id];
+  const uptime=Math.min(1,(attackRate??0)*(number(effect?.duration)??0));
+  return sum+(number(effect?.percent)??0)*uptime;
+ },0);
+ const damageOverTime=damage===null?null:damage*effectRate;
+ const sustained=damage!==null&&attackRate!==null?damage*attackRate+damageOverTime:null;
  const sustainedDamage=number(sustained);
  // The entire wave's multipliers affect pressure. Intrinsic stats identify its
  // heavy hitters and durable units even when every enemy receives a late boost.
@@ -106,11 +119,12 @@ function profile(unit,wave=BASE_WAVE){
  const ability=support?.28+.08*Math.min(4,skills.length):0;
  const rank=enemyClass==='boss'?1.55:enemyClass==='elite'?.68:0;
  const weight=Math.max(.5,Math.min(8,1+durability+impact+frequency+mobility+distance+coverage+control+recovery+ability+rank+(flight?.45:0)+(roleSettings?.weight??0)));
- return {weight,phase,role,enemyClass,flight,area,support,frontline,backline,heavy,durable,delivery,pattern,health,effectiveHealth,damage,attackRate,sustainedDamage,range,skills};
+ return {weight,phase,role,enemyClass,flight,area,support,frontline,backline,heavy,durable,delivery,pattern,health,effectiveHealth,damage,attackRate,sustainedDamage,range,skills,
+  healthRegenPercent,damageOverTime:number(damageOverTime)};
 }
 
-function profiles(units=[],wave){
- return new Map(units.map(unit=>[Number(unit.id),profile(unit,wave)]));
+function profiles(units=[],wave,defeatSeconds){
+ return new Map(units.map(unit=>[Number(unit.id),profile(unit,wave,defeatSeconds)]));
 }
 
 module.exports={recordTraits,profile,profiles};

@@ -6,11 +6,16 @@ const catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/locali
 const taskPatch=require('./battle-task-layout-patch.json');
 function functionAt(marker){const start=source.indexOf('function',source.indexOf(marker)),open=source.indexOf('{',start);let depth=1,end=open+1;for(;depth;end++){if(source[end]==='{')depth++;else if(source[end]==='}')depth--;}return source.slice(start,end);}
 class Label{_forceUpdateRenderData(){}}Label.Overflow={CLAMP:1,NONE:0};class Sprite{}
+Label.HorizontalAlign=Label.VerticalAlign={CENTER:1};
+class Graphics{roundRect(){} fill(){} stroke(){}}
 class Node{
   constructor(name='node',parent=null){this.name=name;this.parent=parent;this.children=[];if(parent)parent.children.push(this);this.active=true;this.x=0;this.y=0;this.width=0;this.height=0;this.anchorX=this.anchorY=0.5;this.scaleX=this.scaleY=1;this.angle=0;this.components=[];}
   get activeInHierarchy(){return this.active&&(!this.parent||this.parent.activeInHierarchy);}
   getChildByName(name){return this.children.find(x=>x.name===name);}
   getComponent(Type){const component=this.components.find(x=>x instanceof Type);if(component)component.node=this;return component;}
+  addComponent(Type){const component=new Type();component.node=this;this.components.push(component);return component;}
+  on(type,handler){(this.listeners||(this.listeners={}))[type]=handler;}
+  emit(type,event){this.listeners[type](event);}
   getPosition(){return{x:this.x,y:this.y};}
   setContentSize(width,height){this.width=width;this.height=height;}
   setPosition(x,y){if(typeof x==='object'){this.x=x.x;this.y=x.y;}else{this.x=x;this.y=y;}}
@@ -19,12 +24,16 @@ class Node{
   convertToWorldSpaceAR(point){const a=this.angle*Math.PI/180,c=Math.cos(a),s=Math.sin(a),x=point.x*this.scaleX,y=point.y*this.scaleY;const p={x:this.x+c*x-s*y,y:this.y+s*x+c*y};return this.parent?this.parent.convertToWorldSpaceAR(p):p;}
   convertToNodeSpaceAR(point){const p=this.parent?this.parent.convertToNodeSpaceAR(point):point,a=-this.angle*Math.PI/180,c=Math.cos(a),s=Math.sin(a),x=p.x-this.x,y=p.y-this.y;return{x:(c*x-s*y)/this.scaleX,y:(s*x+c*y)/this.scaleY};}
 }
-const cc={v2:(x,y)=>({x,y}),isValid:x=>!!x&&!x.destroyed,Label,Sprite,Camera:{main:{getWorldToScreenPoint:p=>p}}};
+Node.EventType={TOUCH_END:'touchend'};
+const cc={v2:(x,y)=>({x,y}),color:()=>({}),isValid:x=>!!x&&!x.destroyed,Label,Sprite,Graphics,Node,BlockInputEvents:class{},Camera:{main:{getWorldToScreenPoint:p=>p}}};
 const context={cc,$z1KinghtFallModle:{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2}},$z1KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getSoldierCfgById:id=>({loadIcon:String(id)})})}},$z1KinghtFallConfig:{KinghtFallBundelName:{Enemy:'enemy'}}};
 context.resolveEnemyPictogram=vm.runInNewContext('('+functionAt('function resolveEnemyPictogram')+')',context);
 const loadPictogram=vm.runInNewContext('('+functionAt('_ctor.prototype._loadEnemyPictogram =')+')',context);
 context.placeEnemyIndicator=vm.runInNewContext('('+functionAt('function placeEnemyIndicator')+')',context);
 context.enemyIndicatorBounds=vm.runInNewContext('('+functionAt('function enemyIndicatorBounds')+')',context);
+for(const name of ['enemyIndicatorFootprint','reserveEnemyIndicator','positionEnemyIndicator','upcomingIndicatorGroups','scaleUpcomingPortrait']){
+ context[name]=vm.runInNewContext('('+functionAt('function '+name)+')',context);
+}
 const getObstacles=vm.runInNewContext('('+functionAt('_ctor.prototype._enemyIndicatorObstacles')+')',context);
 const place=vm.runInNewContext('('+functionAt('_ctor.prototype._placeEnemyIndicator')+')',context);
 const update=vm.runInNewContext('('+functionAt('_ctor.prototype.update =')+')',context);
@@ -45,6 +54,25 @@ function liveFixture(width=750,height=1334){
  f.tick=()=>{update.call(f.state,.016);return Object.values(f.state.enemyIconInfo).filter(record=>record._guideLive&&record.ndItem.active);};
  f.count=()=>f.tick().reduce((total,record)=>total+Number(record.ndItem.getChildByName('labNum').getComponent(Label).string),0);
  f.enemies=enemies;return f;
+}
+function upcomingFixture(groups,spawns,width){
+ const f=liveFixture(width),s=f.state,pathNode=new Node('Path',f.ui),enemyQueue={};
+ for(const [id,x,y,entries] of spawns){
+  new Node('ndEnemy'+id,pathNode).setPosition(x,y);
+  enemyQueue[id]=entries||[{id:7+id,num:100}];
+ }
+ for(const name of ['_upcomingGroupToggle','_placeUpcomingGroup']){
+  s[name]=vm.runInNewContext('('+functionAt('_ctor.prototype.'+name+' =')+')',context);
+ }
+ Object.assign(s.ctrGame,{gameStatus:0,ndPath:pathNode});
+ Object.assign(s.ctrGame.gameData,{enemyQueue,baseBuild:{getLevel:()=>1},levelCfg:{SpawnGroups:groups},round:4});
+ f.paint=()=>{f.tick();return Object.keys(s.enemyIconInfo).filter(id=>s.enemyIconInfo[id].ndItem.active).map(Number);};
+ f.portrait=id=>s.enemyIconInfo[id].ndItem;
+ f.toggle=id=>s.enemyIconInfo[id].groupToggle;
+ f.tap=(id,travel=0)=>f.toggle(id).node.emit(Node.EventType.TOUCH_END,{
+  stopPropagation(){},getLocation:()=>({x:travel,y:0}),getStartLocation:()=>({x:0,y:0})
+ });
+ return f;
 }
 let passed=0;function test(name,run){run();passed++;console.log('PASS '+name);}
 test('Unobstructed targets retain their original position and offscreen centers stay within original limits',()=>{const p=context.placeEnemyIndicator,shape={minX:-65,maxX:65,minY:-65,maxY:65},limits={minX:-246,maxX:246,minY:-442,maxY:442};const a=p({x:20,y:30},shape,limits,[],12);near(a.x,20);near(a.y,30);const b=p({x:-900,y:1000},shape,limits,[],12);near(b.x,-246);near(b.y,442);});
@@ -139,7 +167,7 @@ test('Proximity uses projected UI coordinates and scales with viewport and canva
  projected.state.ctrGame.camera.getWorldToScreenPoint=p=>({x:p.x-2000,y:p.y});assert.equal(projected.count(),0,'world positions must be projected before proximity checks');
 });
 test('Stock 2D camera projections reuse matrices and retain live indicator positions and counts',()=>{
- const f=liveFixture(),savedCamera=cc.Camera;
+ const f=liveFixture(),savedCamera=cc.Camera,savedNode=cc.Node;
  const transform=(out,value,matrix)=>{
   const {x,y}=value,m=matrix.m;
   out.x=m[0]*x+m[4]*y+m[12];out.y=m[1]*x+m[5]*y+m[13];return out;
@@ -183,11 +211,11 @@ test('Stock 2D camera projections reuse matrices and retain live indicator posit
   camera.node.is3DNode=false;camera.getWorldToScreenPoint=point=>Camera.prototype.getWorldToScreenPoint.call(camera,point);
   camera.calls=camera.matrices=0;capture();assert.equal(camera.calls,f.enemies.length);
  }finally{
-  cc.Camera=savedCamera;delete cc.Node;delete cc.Mat4;delete cc.Vec2;delete cc.ENGINE_VERSION;delete Node.prototype.getWorldMatrix;
+  cc.Camera=savedCamera;cc.Node=savedNode;delete cc.Mat4;delete cc.Vec2;delete cc.ENGINE_VERSION;delete Node.prototype.getWorldMatrix;
  }
 });
 test('custom monster pictograms preserve aspect ratio, reject stale callbacks and fall back to the original icon on load failure',()=>{
- const f=fixture(),pending=[],manager=context.$z1KinghtFallDataMgr.KinghtFallDataMgr,previous=manager.getInstance;
+ const f=fixture(),pending=[],manager=context.$z1KinghtFallDataMgr.KinghtFallDataMgr,previous=manager.getInstance,color=cc.color;
  const settings={unitTypes:{wolf:{icon:'@icon/unit-library/wolf',tint:'#80c0ff'}},unitTypeAssignments:{'enemy:90001:default':'wolf','enemy:90002:default':'wolf'}};
  manager.getInstance=()=>({data:{GameTools:settings},getSoldierCfgById:id=>({loadIcon:String(id)})});cc.color=value=>value;cc.resources={load(path,type,callback){pending.push(callback);}};
  try{
@@ -196,16 +224,16 @@ test('custom monster pictograms preserve aspect ratio, reject stale callbacks an
   pending[0](null,{getOriginalSize:()=>({width:200,height:40})});assert.equal(sprite.spriteFrame,undefined);
   pending[1](null,{getOriginalSize:()=>({width:200,height:40})});near(icon.width/icon.height,5);assert(icon.width<=width&&icon.height<=height);assert.equal(icon.color,'#80c0ff');
   loadPictogram.call(f.state,record,90002);pending[2](Error('missing native texture'));assert.equal(fallback,1);assert.equal(sprite.spriteFrame.key,'icon/90002');near(icon.width,width);near(icon.height,height);assert.equal(icon.color,'#ffffff');
- }finally{manager.getInstance=previous;delete cc.resources;delete cc.color;}
+ }finally{manager.getInstance=previous;delete cc.resources;cc.color=color;}
 });
 test('every monster and boss form uses its own head through the guarded Resources loader',()=>{
  const f=fixture(),config=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),manager=context.$z1KinghtFallDataMgr.KinghtFallDataMgr,previous=manager.getInstance,pending=[];
  manager.getInstance=()=>({data:config,getSoldierCfgById:id=>config.SoldierCfg[id]});cc.resources={};
  try{f.state.loadSpriteFrame=(bundle,key,done)=>pending.push({bundle,key,done});const record={id:90001,ndItem:f.indicator()};
-  const units=Object.values(config.SoldierCfg),legacy=units.filter(unit=>unit.ID>=90001&&unit.ID<=90012),imported=units.filter(unit=>unit.MonsterSource),campaign=units.filter(unit=>unit.CampaignBaseUnit);
+  const units=Object.values(config.SoldierCfg),legacy=units.filter(unit=>unit.ID>=90001&&unit.ID<=90012),imported=units.filter(unit=>unit.MonsterSource);
   assert.deepEqual(legacy.map(unit=>unit.ID),Array.from({length:12},(_,i)=>90001+i));const importedCount=['monster1','monster2','monster3','fantasy-monsters','fantasy-bosses'].reduce((n,pack)=>n+require('../../assets/resources/unit-library/'+pack+'/catalog.json').units.length,0);assert.equal(imported.length,importedCount);
   for(const unit of units){record.id=unit.ID;loadPictogram.call(f.state,record,unit.ID);const request=pending.at(-1);assert.equal(request.bundle,'resources');assert.equal(request.key,unit.loadIcon.slice(6));assert(request.key.startsWith(unit.MonsterSource||unit.MonsterPack||unit.CampaignBaseUnit?'icons/monster-roster/':'icons/enemy-heads/'));if(unit.CampaignBaseUnit)assert.equal(unit.loadIcon,config.SoldierCfg[unit.AppearanceSourceUnit].loadIcon);}
-  assert.equal(campaign.length,127);assert.equal(pending.length,Object.keys(config.SoldierCfg).length);assert.equal(new Set(pending.map(p=>p.key)).size,12+importedCount);
+  assert.equal(pending.length,units.length);assert.equal(new Set(pending.map(p=>p.key)).size,12+importedCount);
   assert.equal(new Set(pending.slice(0,12).map(p=>p.key)).size,12,'The original twelve monster and boss portraits remain independent');
   const sprite=record.ndItem.getChildByName('sprIcon').getComponent(Sprite);
   for(const request of pending.slice(0,-1)){request.done({getOriginalSize:()=>({width:128,height:128})});assert.equal(sprite.spriteFrame,undefined);}
@@ -213,7 +241,7 @@ test('every monster and boss form uses its own head through the guarded Resource
  }finally{manager.getInstance=previous;delete cc.resources;}
 });
 test('Upcoming portraits from one side pack closer together and retain their true spawn arrows',()=>{
- const f=fixture(),markers=[-350,0,350].map(y=>({record:{ndItem:f.indicator()},target:{x:1200,y}})),rectangles=[];
+ const f=fixture(),markers=[1200,1100,1000].map(y=>({record:{ndItem:f.indicator()},target:{x:1200,y}})),rectangles=[];
  updateUpcoming.call(f.state,markers,rectangles);
  const positions=markers.map(m=>m.record.ndItem.getPosition());
  for(const marker of markers){const node=marker.record.ndItem;assert.equal(node.width,130);assert.equal(node.getChildByName('labName').active,true,'upcoming-wave captions remain available');arrowPoints(node,marker.target);const r=bounds(node,f.ui);assert(r.minX>=-359&&r.maxX<=359&&r.minY>=-651&&r.maxY<=651);near(node.x,positions[0].x);near(rectangles[markers.indexOf(marker)].maxX,359);}
@@ -236,7 +264,10 @@ test('Upcoming waves stay in vertical side lists even for centered, top and bott
  const obstacles=[{minX:-375,maxX:-220,minY:360,maxY:667},{minX:220,maxX:375,minY:300,maxY:667}],fixed=obstacles.slice();
  updateUpcoming.call(f.state,markers,obstacles);
  for(const marker of markers){const node=marker.record.ndItem,r=bounds(node,f.ui),reserved=obstacles[fixed.length+markers.indexOf(marker)];arrowPoints(node,marker.target);near(marker.target.x<0?reserved.minX:reserved.maxX,marker.target.x<0?-359:359);assert(r.maxY<=(marker.target.x<0?354:294));}
- for(const side of[-1,1]){const list=markers.filter(m=>Math.sign(m.record.ndItem.x)===side);for(let i=1;i<list.length;i++){near(list[i].record.ndItem.x,list[0].record.ndItem.x);assert(list[i].record.ndItem.y<list[i-1].record.ndItem.y);}}
+ for(const side of[-1,1]){
+  const list=markers.filter(m=>Math.sign(m.record.ndItem.x)===side).sort((a,b)=>b.target.y-a.target.y);
+  for(let i=1;i<list.length;i++){near(list[i].record.ndItem.x,list[0].record.ndItem.x);assert(list[i].record.ndItem.y<list[i-1].record.ndItem.y);}
+ }
  for(let i=fixed.length;i<obstacles.length;i++)for(let j=0;j<i;j++)assert(clear(obstacles[i],obstacles[j],j<fixed.length?12:2));
  const before=markers.map(m=>m.record.ndItem.getPosition());
  updateUpcoming.call(f.state,markers,fixed.slice());markers.forEach((m,i)=>{near(m.record.ndItem.x,before[i].x);near(m.record.ndItem.y,before[i].y);});
@@ -255,20 +286,76 @@ test('Upcoming columns follow the actual visible safe area through canvas transf
   for(const r of obstacles){assert(r.minY>=a.y+16-1e-6);assert(r.maxY<=b.y-16+1e-6);}
  }}finally{cc.view=previousView;cc.sys=previousSys;}
 });
+test('Crowded next-wave previews follow saved spawn order and open one horizontal row at a time',()=>{
+ const f=upcomingFixture([[1,3,2],[4,5,6]],[
+  [1,-1000,240,[{id:-1,num:1}]], [2,-1000,190], [3,-1000,400],
+  [4,1000,150], [5,1000,220], [6,1000,350], [13,-1000,-400]
+ ]);
+ assert.deepEqual(f.paint(),[3,4,13]);
+ assert.equal(f.toggle(3).label.string,'+1 \u203a');
+ assert.equal(f.toggle(4).label.string,'\u2039 +2');
+ assert(f.toggle(3).node.x>f.portrait(3).x && f.toggle(4).node.x<f.portrait(4).x);
+ f.tap(3,30);assert.deepEqual(f.paint(),[3,4,13]);
+ f.tap(3);assert.deepEqual(f.paint(),[2,3,4,13]);
+ near(f.portrait(2).y,f.portrait(3).y);
+ assert(f.portrait(3).x<f.portrait(2).x);
+ f.tap(4);assert.deepEqual(f.paint(),[3,4,5,6,13]);
+ for(const id of [5,6]){
+  near(f.portrait(id).y,f.portrait(4).y);
+  assert(f.portrait(id).x<f.portrait(id-1).x);
+  assert.equal(f.portrait(id).getChildByName('labName').active,false);
+ }
+ arrowPoints(f.portrait(5),{x:1000,y:220});
+ assert.equal(f.portrait(5).getChildByName('labNum').getComponent(Label).string,'100');
+ f.tap(4);assert.deepEqual(f.paint(),[3,4,13]);
+ f.tap(4);assert.deepEqual(f.paint(),[3,4,5,6,13]);
+ f.state.ctrGame.gameData.round++;
+ assert.deepEqual(f.paint(),[3,4,13],'The following wave opens collapsed');
+ delete f.state.ctrGame.gameData.enemyQueue[13];
+ delete f.state.ctrGame.gameData.enemyQueue[6];
+ assert.deepEqual(f.paint(),[2,3,4,5],'Four portraits remain separate despite their enemy counts');
+ assert.equal(f.toggle(3).node.active,false);
+ assert.equal(f.toggle(4).node.active,false);
+ assert.equal(f.portrait(5).getChildByName('labName').active,true);
+});
+test('A long expanded wave group fits the safe area in one row and restores portrait size when closed',()=>{
+ const f=upcomingFixture([[1,2,3,4,5,6]],Array.from({length:6},(_,i)=>[i+1,1000,180]),450);
+ const previousSys=cc.sys;
+ try{
+  cc.sys={getSafeAreaRect:()=>({x:-200,y:-630,width:400,height:1260})};
+  assert.deepEqual(f.paint(),[1]);
+  assert.equal(f.portrait(1).scaleX,1);
+  f.tap(1);assert.deepEqual(f.paint(),[1,2,3,4,5,6]);
+  const nodes=[1,2,3,4,5,6].map(f.portrait).concat(f.toggle(1).node);
+  for(let i=0;i<nodes.length;i++){
+   const rect=bounds(nodes[i],f.ui);
+   near(nodes[i].y,nodes[0].y);
+   assert(rect.minX>=-184-1e-6 && rect.maxX<=184+1e-6);
+   if(i)assert(clear(rect,bounds(nodes[i-1],f.ui),6));
+  }
+  assert(f.portrait(1).scaleX<1);
+  assert.equal(f.toggle(1).node.scaleX,1);
+  f.tap(1);assert.deepEqual(f.paint(),[1]);
+  assert.equal(f.portrait(1).scaleX,1);
+ }finally{cc.sys=previousSys;}
+});
 test('battle start immediately clears every marker and queued portraits stay hidden until planning resumes',()=>{
- const f=liveFixture(),s=f.state,pathNode=new Node('Path',f.ui);new Node('ndEnemy1',pathNode).setPosition(-600,650);
- Object.assign(s.ctrGame,{gameStatus:0,ndPath:pathNode,ctrPlay:{ndRange:new Node('Range')}});s.playBattleMusic=()=>{};
- Object.assign(s.ctrGame.gameData,{baseBuild:{getLevel:()=>1},enemyQueue:{1:[{id:7,num:9}]},getBulidList:()=>[],startRoundGame(){}});
- s.ctrUI.ndLight=new Node('Light');update.call(s,.016);assert(s.enemyIconInfo[1].ndItem.active);
+ const f=upcomingFixture([[1,2,3],[4,5]],[[1,-600,650],[2,-600,500],[3,-600,400],[4,600,-250],[5,600,-350]]),s=f.state;
+ s.ctrGame.ctrPlay={ndRange:new Node('Range')};s.playBattleMusic=()=>{};
+ Object.assign(s.ctrGame.gameData,{getBulidList:()=>[],startRoundGame(){}});
+ s.ctrUI.ndLight=new Node('Light');
+ assert.deepEqual(f.paint(),[1,4]);
+ f.tap(1);assert.deepEqual(f.paint(),[1,2,3,4]);
  const live={id:7,tag:true,_guideLive:true,ndItem:f.indicator()};s.enemyIconInfo['live:0']=live;live.ndItem.active=true;
  const tween={set(){return this;},to(){return this;},call(){return this;},start(){}};cc.tween=()=>tween;
  context.BattleSounds={};context.$z1AudioMgr={AudioMgr:{getInstance:()=>({playMusic(){}})}};
  Object.assign(context.$z1KinghtFallConfig,{KinghtFallParameter:{BattleNightStrength:1},KinghtFallAudioId:{}});
  const start=vm.runInNewContext('('+functionAt('_ctor.prototype.startRoundGame =')+')',context);start.call(s);
  assert.equal(s.ctrGame.gameStatus,1);assert(Object.values(s.enemyIconInfo).every(r=>!r.ndItem.active&&!r.tag),'Markers survived the synchronous start');
+ assert.equal(f.toggle(1).node.active,false);assert.equal(f.toggle(4).node.active,false);
  update.call(s,.016);assert(Object.values(s.enemyIconInfo).every(r=>!r.ndItem.active),'Transition repainted queued markers');
  s.ctrGame.gameStatus=2;update.call(s,.016);assert(Object.values(s.enemyIconInfo).every(r=>!r.ndItem.active));
  f.enemy(1800,0,7);update.call(s,.016);assert.equal(s.enemyIconInfo[1].ndItem.active,false);assert(Object.values(s.enemyIconInfo).some(r=>r._guideLive&&r.ndItem.active),'Arrived distant enemies need a live marker');
- s.ctrGame.gameStatus=0;update.call(s,.016);assert.equal(s.enemyIconInfo[1].ndItem.active,true);assert(Object.values(s.enemyIconInfo).filter(r=>r._guideLive).every(r=>!r.ndItem.active));
+ s.ctrGame.gameStatus=0;assert.deepEqual(f.paint(),[1,4]);assert(Object.values(s.enemyIconInfo).filter(r=>r._guideLive).every(r=>!r.ndItem.active));
 });
 console.log(passed+' enemy indicator HUD-layout checks passed.');

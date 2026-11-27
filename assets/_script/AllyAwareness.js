@@ -8,6 +8,10 @@ function alive(actor) { return valid(actor) && valid(actor.node) && actor.node.a
 function generation(actor) { return actor && actor.node && actor.node._combatGeneration; }
 function soldiers(game) { return game.gameData.getSoldierList ? game.gameData.getSoldierList() : game.gameData.soldiers || []; }
 function enemies(game) { return game.gameData.getEnemyList ? game.gameData.getEnemyList() : game.gameData.enemyList || game.gameData.enemies || []; }
+function isBuilding(game, actor) {
+  var buildings = game.gameData.bulidPointMap;
+  return !!buildings && buildings[actor.ID] === actor;
+}
 function enemy(game, actor, expectedGeneration, list) { return !!game && !!game.gameData && alive(actor) && (expectedGeneration === undefined || generation(actor) === expectedGeneration) && (list || enemies(game)).indexOf(actor) >= 0; }
 function sightFromConfig(cfg) { var value = cfg && cfg.SightRange; return typeof value === "number" && isFinite(value) && value >= 0 ? value : DEFAULT_SIGHT; }
 function point(actor, game) {
@@ -25,13 +29,21 @@ function currentGame(game) {
   return game.gameStatus === model.KinghtFallGameStage.Fight;
 }
 function capture(victim, attacker, game) {
-  if (!currentGame(game) || !alive(victim) || !enemy(game, attacker) || victim !== game.ctrPlay && soldiers(game).indexOf(victim) < 0) return null;
+  if (!currentGame(game) || !alive(victim) || !enemy(game, attacker)) return null;
+  var building = isBuilding(game, victim);
+  if (building ? !victim.buildInfo || !victim.getIsWork() : victim !== game.ctrPlay && soldiers(game).indexOf(victim) < 0) return null;
   var p = point(victim, game);
-  return { game: game, data: game.gameData, epoch: game._combatEpoch, hero: game.ctrPlay, heroGeneration: generation(game.ctrPlay), victim: victim, victimGeneration: generation(victim), attacker: attacker, attackerGeneration: generation(attacker), position: { x: p.x, y: p.y } };
+  return { game: game, data: game.gameData, epoch: game._combatEpoch, hero: game.ctrPlay, heroGeneration: generation(game.ctrPlay),
+    victim: victim, victimGeneration: generation(victim), buildingInfo: building ? victim.buildInfo : null,
+    attacker: attacker, attackerGeneration: generation(attacker), position: { x: p.x, y: p.y } };
 }
 function current(event, checkMembership) {
-  var game = event.game;
-  return currentGame(game) && game.gameData === event.data && game._combatEpoch === event.epoch && game.ctrPlay === event.hero && generation(event.hero) === event.heroGeneration && valid(event.victim) && valid(event.victim.node) && generation(event.victim) === event.victimGeneration && alive(event.attacker) && generation(event.attacker) === event.attackerGeneration && (checkMembership === false || (event.victim === game.ctrPlay || soldiers(game).indexOf(event.victim) >= 0) && enemies(game).indexOf(event.attacker) >= 0);
+  var game = event.game, victim = event.victim, attacker = event.attacker;
+  if (!currentGame(game) || game.gameData !== event.data || game._combatEpoch !== event.epoch || game.ctrPlay !== event.hero ||
+      generation(event.hero) !== event.heroGeneration || !valid(victim) || !valid(victim.node) || generation(victim) !== event.victimGeneration ||
+      !alive(attacker) || generation(attacker) !== event.attackerGeneration) return false;
+  if (event.buildingInfo && (victim.buildInfo !== event.buildingInfo || !isBuilding(game, victim) || !victim.getIsWork())) return false;
+  return checkMembership === false || (event.buildingInfo || victim === game.ctrPlay || soldiers(game).indexOf(victim) >= 0) && enemies(game).indexOf(attacker) >= 0;
 }
 function frameBucket(event) {
   var frame = typeof cc !== "undefined" && cc.director && cc.director.getTotalFrames && cc.director.getTotalFrames();

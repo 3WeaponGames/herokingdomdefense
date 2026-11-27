@@ -1,6 +1,7 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict');
-const {setup,hero,Node}=require('./backend-gameplay-harness.cjs');
+const {setup,hero,Node,authored}=require('./backend-gameplay-harness.cjs');
+const UnitLevelStats=require('../../assets/_script/UnitLevelStats');
 function fixture(){
  const h=setup({KinghtFallAudioMgr:{KinghtFallAudioMgr:{getInstance:()=>({playEffectFree(){},stopEffectName(){}})}},LogMgr:{LogMgr:{getInstance:()=>({info(){}})}}}),p=hero(h);
  h.g.gameStatus=h.e.stubs.KinghtFallModle.KinghtFallGameStage.Fight;h.g._combatEpoch=1;p.node.setParent(h.g.ndMain);p.node.setPosition(0,0);p.node._combatGeneration=1;p.hp=p.hpMax=100;p.time.NoDie=p.time.NoDieTime=0;
@@ -9,6 +10,90 @@ function fixture(){
  h.soldier=(x=0,y=0,type=1)=>{const u=h.e.actor('KinghtFallSoldierItem0'+type,x,y,h.g.ndMain);delete u.getFind;delete u.onFindList;delete u.isDead;u.state=0;u.cfg={...u.cfg,Speed:60};u.node._combatGeneration=1;u.rallyPoint={pos:{x,y}};u._personalRallyPoint=u.rallyPoint;u._orderTarget=null;h.d.soldierList.push(u);return u;};
  h.enemy=(x=100,y=0)=>{const e={node:new Node('enemy',h.g.ndMain,x,y),hp:1000,attackRange:200,cfg:{AttackType:1,AttackRange:200},isDead(){return this.hp<=0;},onAttacked(n){this.hp-=n;}};e.node._combatGeneration=1;h.d.enemyList.push(e);return e;};return h;
 }
+
+function structure(h, kind, type, hp = 100) {
+  const Building = h.e.load('KinghtFallBuild' + kind).default;
+  const building = new Building();
+  Object.assign(building, {
+    ID: type,
+    index: 1,
+    node: new Node('building', h.g.ndMain, 0, 0),
+    buildCfg: { enumValue: type },
+    buildInfo: { BuildID: type, cfg: { level: 1 }, hp, hpMax: hp },
+    time: { Invincible: -1 },
+    onDead() { this.isDestroyed = true; }
+  });
+  h.d.bulidPointMap[type] = building;
+  return building;
+}
+
+test('all four authored barracks families inherit their melee or ranged sight at each tier', () => {
+  const awareness = require('../../assets/_script/AllyAwareness');
+  for (const unit of Object.values(authored.AllyCfg)) {
+    for (const tier of [1, 2, 3, 4]) {
+      const cfg = UnitLevelStats.resolve(unit, authored.GameTools, tier);
+      assert.equal(awareness.sightFromConfig(cfg), cfg.AttackType === 2 ? 400 : 300, 'unit ' + cfg.ID + ' tier ' + tier);
+    }
+  }
+});
+
+test('houses, walls, towers and the hall alert idle troops within their own sight', () => {
+  for (const [kind, type] of [['Base', 4], ['Wall', 6], ['Bartizan', 2], ['MainFortress', 1]]) {
+    const h = fixture();
+    h.g.gameTag = {};
+    const building = structure(h, kind, type);
+    const melee = h.soldier(300), ranged = h.soldier(400, 0, 3);
+    const farMelee = h.soldier(301), farRanged = h.soldier(401, 0, 3), busy = h.soldier(10);
+    for (const unit of [melee, farMelee]) unit.cfg = authored.AllyCfg[90001];
+    for (const unit of [ranged, farRanged]) unit.cfg = authored.AllyCfg[90003];
+    ranged.attackRange = ranged.cfg.AttackRange;
+    const attacker = h.enemy(-100), other = h.enemy(15), post = ranged.rallyPoint;
+    busy._orderTarget = other;
+    busy._orderTargetGeneration = other.node._combatGeneration;
+
+    assert.equal(building.onAttacked(10, attacker), 10, kind);
+    assert.equal(building.buildInfo.hp, 90, kind);
+    assert.equal(melee._retaliationTarget, attacker, kind);
+    assert.equal(ranged._retaliationTarget, attacker, kind);
+    assert.equal(ranged.rallyPoint, post, kind);
+    ranged.node.getPosition(ranged.vec2_1);
+    const response = ranged.getFind();
+    assert.equal(response.tag, attacker, kind);
+    assert.equal(response.canAtt, false, kind);
+    assert.equal(farMelee._orderTarget, null, kind);
+    assert.equal(farRanged._orderTarget, null, kind);
+    assert.equal(busy._orderTarget, other, kind);
+  }
+});
+
+test('a shielded, unbuilt or replaced building cannot alert allies with a blocked or stale hit', () => {
+  const h = fixture(), tower = structure(h, 'Bartizan', 2), unit = h.soldier(30), attacker = h.enemy();
+  tower.time.Invincible = 1;
+  tower.onAttacked(10, attacker);
+  assert.equal(tower.buildInfo.hp, 100);
+  assert.equal(unit._orderTarget, null);
+  tower.time.Invincible = -1;
+  tower.onAttacked(0, attacker);
+  assert.equal(unit._orderTarget, null);
+  tower.index = 0;
+  assert.equal(h.A.capture(tower, attacker, h.g), null);
+  tower.index = 1;
+  const notice = h.A.capture(tower, attacker, h.g);
+  structure(h, 'Bartizan', 2);
+  assert.equal(h.A.notify(notice, 1), 0);
+  assert.equal(unit._orderTarget, null);
+});
+
+test('a lethal building hit alerts allies before the structure is destroyed', () => {
+  const h = fixture(), wall = structure(h, 'Wall', 6, 10), unit = h.soldier(50), attacker = h.enemy();
+  wall.onDead = function () {
+    assert.equal(unit._orderTarget, attacker);
+    this.isDestroyed = true;
+  };
+  wall.onAttacked(10, attacker);
+  assert.equal(wall.isDestroyed, true);
+});
+
 test('Creator Vec2 conversion keeps transformed observer distances finite and respects the sight boundary',()=>{
  const h=fixture(),near=h.soldier(239),far=h.soldier(241),attacker=h.enemy(-180);
  h.g.ndMain.angle=29;h.g.ndMain.scaleX=1.7;h.g.ndMain.scaleY=.8;h.g.ndMain.x=1200;h.g.ndMain.y=-900;

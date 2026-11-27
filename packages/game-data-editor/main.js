@@ -66,6 +66,7 @@ const messages={
     'world-replace-stage'(event,request){reply(event,()=>worldBroadcast(getWorlds().replaceStage(request)));},
     'world-change'(event,request){reply(event,()=>worldBroadcast(getWorlds().change(request)));},
     'world-wave-change'(event,request){reply(event,()=>worldBroadcast(getWorlds().changeWave(request),request.origin));},
+    'world-stage-layout-edit'(event,request){reply(event,()=>worldBroadcast(getWorlds().editStageLayout(request),request.origin));},
     'world-create'(event,request){reply(event,()=>worldBroadcast(getWorlds().create(request)));},
     'world-undo'(event,request){reply(event,()=>worldBroadcast(getWorlds().history(request,false)));},
     'world-redo'(event,request){reply(event,()=>worldBroadcast(getWorlds().history(request,true)));},

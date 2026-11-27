@@ -25,13 +25,18 @@ function restartStorage() {
 
 function restartWithProfile(profile) {
   var storage = restartStorage();
+  var audio;
   storage.setItem(PROFILE_RESTART_KEY, profile);
   try {
     if (storage.getItem(PROFILE_RESTART_KEY) !== profile) throw Error("Could not switch profiles.");
+    audio = require("AudioMgr").AudioMgr.getInstance();
+    audio.setRestarting(true);
     // Keep the old profile's writes isolated until its managers are gone.
+    // Native restart rebuilds the JS VM. Web restart reloads the whole page.
     if (cc.sys.isNative) cc.game.restart();
     else window.location.reload();
   } catch (error) {
+    if (audio) audio.setRestarting(false);
     storage.removeItem(PROFILE_RESTART_KEY);
     throw error;
   }
