@@ -22,20 +22,88 @@ test('the retired hero effects are absent from the catalog and rebake manifests'
  for(const id of retired)assert(!records.some(row=>row.id===id),id);
 });
 
-test('the Vanguard flipbook has a strong painted frame on each original spear contact',()=>{
+test('Vanguard shows six equal-length thrusts with readable overlap at 30 fps',()=>{
  const clip=Layout.clipFor(Settings.defaults('vanguard').visual.castResource);
  const original=Layout.clipFor(clip.source.sourceClip),timeline=require('../../assets/_script/HeroSkillTimeline');
  assert.equal(clip.source.sourceClipSha256,original.sha256);
  assert.deepEqual(clip.source.contactFrames,timeline.vanguardSchedule({}).map(time=>Math.round(time*clip.fps)));
  const png=require('../../packages/hkd-characters/lib/png-atlas');
  const sheet=png.decode(fs.readFileSync(path.join(root,'assets/resources',clip.resource+'.png')));
- for(const frame of clip.source.contactFrames){
+ const contactFrames=new Set(clip.source.contactFrames);
+ const thrustFrames=new Set(clip.source.thrustFrames);
+ const extent=Math.max(original.width,original.height);
+ const referenceLength=clip.source.lengthReference.paintedLength;
+ assert.equal(clip.source.fullExtensionPixels,Math.round(referenceLength*clip.cell/extent));
+ const tipStart=Math.round(clip.anchorX*clip.cell+.77*clip.source.fullExtensionPixels);
+ const tipEnd=Math.round(clip.anchorX*clip.cell+.91*clip.source.fullExtensionPixels);
+ const overlapStart=clip.source.thrustFrames[3]-1;
+ const overlapFrames=Math.ceil(.08*clip.fps);
+ function isWind(pixel,minimumAlpha){
+  const {rgba}=sheet;
+  return rgba[pixel+3]>=minimumAlpha&&rgba[pixel]>=245&&rgba[pixel+1]>=245&&rgba[pixel+2]>=237;
+ }
+ const strongFrames=[];
+ const peakLengths=[];
+ const headCounts=[];
+ for(let frame=0;frame<clip.frames;frame++){
   const x=frame%clip.columns*clip.cell,y=Math.floor(frame/clip.columns)*clip.cell;
-  let peak=0;
+  const silhouette=thrustFrames.has(frame)?[]:null;
+  let peak=0, painted=0, tipWind=0;
   for(let row=0;row<clip.cell;row++)for(let col=0;col<clip.cell;col++){
-   peak=Math.max(peak,sheet.rgba[((y+row)*sheet.width+x+col)*4+3]);
+   const pixel=((y+row)*sheet.width+x+col)*4;
+   const alpha=sheet.rgba[pixel+3];
+   peak=Math.max(peak,alpha);
+   if(alpha>=180)painted++;
+   if(silhouette&&alpha>=230)silhouette.push([col,row]);
+   if(silhouette&&col>=tipStart&&isWind(pixel,95))tipWind++;
   }
-  assert(peak>=230,'Contact frame '+frame+' should have a readable thrust');
+  if(silhouette){
+   assert(tipWind>=6,'Each jab should carry enough white wind near its tip');
+   let longest=0;
+   for(const [x1,y1] of silhouette)for(const [x2,y2] of silhouette){
+    longest=Math.max(longest,(x2-x1)**2+(y2-y1)**2);
+   }
+   peakLengths.push(1+Math.sqrt(longest));
+  }
+  let heads=0, threeTrails=0;
+  for(let col=tipStart;col<=tipEnd;col++){
+   let runs=0,visible=0,windRuns=0,previousWind=false;
+   for(let row=0;row<clip.cell;row++){
+    const pixel=((y+row)*sheet.width+x+col)*4;
+    const alpha=sheet.rgba[pixel+3];
+    visible=alpha>=112?visible+1:0;
+    if(visible===2)runs++;
+    const wind=isWind(pixel,65);
+    if(wind&&!previousWind)windRuns++;
+    previousWind=wind;
+   }
+   heads=Math.max(heads,runs);
+   if(windRuns===3)threeTrails++;
+  }
+  if(frame>=overlapStart&&frame<overlapStart+overlapFrames)assert(threeTrails>=2,'All three overlapping spearheads should show white wind');
+  headCounts.push(heads);
+  if(contactFrames.has(frame))assert(peak>=230,'Contact frame '+frame+' should have a readable thrust');
+  strongFrames.push(painted>=28);
+ }
+ assert.equal(thrustFrames.size,6);
+ assert([...thrustFrames].every(frame=>strongFrames[frame]));
+ assert(peakLengths.every(length=>Math.abs(length-clip.source.fullExtensionPixels)<2));
+ assert(Math.max(...peakLengths)-Math.min(...peakLengths)<2);
+ const peakHeads=clip.source.thrustFrames.map(frame=>headCounts[frame]);
+ assert.equal(peakHeads[0],1);
+ assert(peakHeads.slice(1).every(heads=>heads>=2));
+ assert.equal(Math.max(...headCounts),3);
+ const midBarrage=headCounts.slice(overlapStart,overlapStart+overlapFrames);
+ assert.deepEqual(midBarrage,Array(overlapFrames).fill(3),'Three spearheads should stay readable through the middle overlap');
+ const step=clip.fps/30;
+ for(let offset=0;offset<step;offset++){
+  let thrusts=0,previous=false;
+  for(let frame=offset;frame<clip.frames;frame+=step){
+   const strong=strongFrames[frame];
+   if(strong&&!previous)thrusts++;
+   previous=strong;
+  }
+  assert.equal(thrusts,6,'Each sampling offset should show all six thrusts');
  }
 });
 

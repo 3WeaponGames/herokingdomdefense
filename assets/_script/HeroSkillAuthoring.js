@@ -2,6 +2,7 @@
 // Authoring views select existing settings paths. They never migrate, default,
 // or mutate a saved skill merely because an inspector is opened.
 var VFXCatalog=require("./HeroSkillVFXCatalog");
+var VanguardSpear=require("./VanguardSpearVFX");
 var ACTIVE={skirmisher:"Arrow Volley",fighter:"Battle Cry",vanguard:"Spear Barrage",mystic:"Arcane Burst",bruiser:"Blood Cleave",guardian:"Iron Bulwark"};
 var PASSIVE={fighter:"Combat Stacks",vanguard:"Momentum",mystic:"Electric Channel",bruiser:"Blood Rage",guardian:"Protective Presence"};
 var NOTES={
@@ -51,9 +52,11 @@ function slots(style,id){return (SLOT_MAP[style]&&SLOT_MAP[style][id]||[]).slice
 function fields(style,id,source,effective,catalogs){
   var selected=entry(style,id),result={tuning:[],visual:[],audio:[]};if(!selected)return result;id=selected.id;
   var allowed=(TUNING[style]&&TUNING[style][id]||[]).slice(),allowedSlots=slots(style,id);var currentVisual=effective&&effective.visual||{},fullCast=!!(currentVisual.castResource||currentVisual.castSecondaryResource)&&!currentVisual.resource,authoredSpear=style==="vanguard"&&/vanguard-spear-(?:barrage|thrust)$/.test(currentVisual.castResourcePath||"");if(id==="active")allowed.push("contactDelay");
+  var equippedSpear=style==="vanguard"&&VFXCatalog.clips.some(function(clip){return VanguardSpear.selected(clip)&&(clip.uuid===currentVisual.castResource||clip.id===currentVisual.castResource);});
   ["tuning","visual","audio"].forEach(function(group){
     (source&&source[group]||[]).forEach(function(original){
       var field=Object.assign({},original),key=field.key||String(field.path||"").split(".").pop(),slot=slotOf(key);
+      if((key==="castAreaScale"||key==="castSpearScale")&&!equippedSpear)return;
       if(field.type==="description"){if(field.entry===id){field.group="Skill description";result.tuning.push(field);}return;}
       if(group==="visual"&&field.type==="effect-animation"){
         var resourceKey=(field.resourcePath||field.path.replace(/Animation$/,"")).split(".").pop(),resource=currentVisual[resourceKey],kind=currentVisual[resourceKey+"Kind"];
@@ -98,6 +101,8 @@ function fields(style,id,source,effective,catalogs){
         }
       }
       if(style==='vanguard'&&id==='active'&&group==='visual'){
+        if(key==='castAreaScale')field.label='VFX area';
+        if(key==='castSpearScale')field.label='Spear sprite size';
         if(/^(?:cast)?[Oo]ffset[XY]$/.test(key)){field.label=(key.indexOf('cast')===0?'Cast effect ':'Arc ')+(key.slice(-1)==='X'?'along spear offset':'across spear offset');field.help='Offset from the spearhead in the spear’s own axes. This placement rotates and mirrors with the spear, so the same fit works in every direction.';}
         if(key==='castRotation')field.help='Additional artwork rotation around its attachment point at the spearhead.';
         if(key==='rotation')field.help='Rotate the spear aim, the center-bottom arc pivot and the attached cast effect together.';

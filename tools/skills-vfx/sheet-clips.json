@@ -886,21 +886,21 @@
     "forwardX": 1,
     "forwardY": 0,
     "alphaBounds": [
-      27,
-      37,
-      76,
-      57
+      22,
+      29,
+      73,
+      63
     ],
-    "visibleFrames": 159,
+    "visibleFrames": 117,
     "kind": "flipbook",
     "bundle": "resources",
     "resource": "vfx/hero-skills/vanguard-spear-thrust",
     "uuid": "6a6f16d2-3a45-5fee-9a9a-b5c0edd457b9",
-    "sha256": "83245b460078180b984d3867e6bf269889c72adcdeba8384129ba1cdb44124ee",
+    "sha256": "6494e9638db0fdb0d61b30526634c5d266a70562c02cc495e3193d89abe1f6b3",
     "source": {
       "kind": "imagegen-sheet",
-      "file": "vanguard-imagegen-source.png",
-      "sha256": "396066edbe9695f341c29e27d05c4646dc4d92ea3be62810b4daf94849205162",
+      "file": "vanguard-cartoon-spearhead-source.png",
+      "sha256": "46d57f959d5c094d45f22f7f7748151968c25876e18386545bcc97134e367d24",
       "sourceClip": "vanguard-spear-barrage",
       "sourceClipSha256": "2c0ba71fdd2eafbc33d33cf20825afd55384dabb2a5fb5d8c47d832966ba3fdb",
       "contactFrames": [
@@ -909,8 +909,24 @@
         68,
         76,
         104
-      ]
+      ],
+      "thrustFrames": [
+        40,
+        52,
+        65,
+        76,
+        89,
+        104
+      ],
+      "accentFile": "vanguard-imagegen-source.png",
+      "accentSha256": "396066edbe9695f341c29e27d05c4646dc4d92ea3be62810b4daf94849205162",
+      "fullExtensionPixels": 48,
+      "lengthReference": {
+        "frame": 52,
+        "slot": "qiangaa_0000",
+        "paintedLength": 418.069
+      }
     },
-    "trimStart": 0
+    "trimStart": 0.0
   }
 ]

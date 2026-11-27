@@ -8,6 +8,7 @@ const SkillSettings=require('../../assets/_script/HeroSkillSettings');
 const Authoring=require('../../assets/_script/HeroSkillAuthoring');
 const SkillPose=require('../../assets/_script/HeroSkillPose');
 const VFXLayout=require('../../assets/_script/HeroSkillVFXLayout');
+const VanguardSpear=require('../../assets/_script/VanguardSpearVFX');
 const Projectile=require('../../assets/_script/HeroSkillProjectile');
 const Timeline=require('../../assets/_script/HeroSkillTimeline');
 const MysticTrail=require('../../assets/_script/MysticTrail');
@@ -176,6 +177,27 @@ function create(host,options){
   }
   function line(a,b,width,color){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
   function circle(p,r,color,fill){ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);if(fill){ctx.fillStyle=color;ctx.fill();}else{ctx.strokeStyle=color;ctx.stroke();}}
+  function tintEffectImage(image,key,tints){
+    if(!key||key.toLowerCase()==='#ffffff')return image;
+    if(!tints.has(key)){const tinted=document.createElement('canvas');tinted.width=image.width;tinted.height=image.height;const context=tinted.getContext('2d');context.drawImage(image,0,0);const source=context.getImageData(0,0,image.width,image.height).data,pixels=context.createImageData(image.width,image.height);pixels.data.set(multiplyPixels(source,key));context.putImageData(pixels,0,0);if(tints.size>=16)tints.delete(tints.keys().next().value);tints.set(key,tinted);}
+    const tinted=tints.get(key);tints.delete(key);tints.set(key,tinted);return tinted;
+  }
+  function weaponLayer(layer){const role=layer.description.json?._heroMaker?.role;return role===3||role===4;}
+  function drawEquippedSpear(ctx,asset,entity){
+    if(!asset.spearAccents||!VanguardSpear.applies(style,entity))return false;
+    const layer=heroLayers.find(value=>value.description.json?._heroMaker?.role===4);
+    const spear=layer&&VanguardSpear.equippedSource(layer.skeleton.findSlot(VanguardSpear.slotName));
+    if(!spear?.image)return false;
+    for(const part of VanguardSpear.sample(VanguardSpear.frameIndex(entity.age,entity.clip),spear,entity.visual)){
+      const image=part.source.image||asset.spearAccents,rect=VanguardSpear.visibleRect(part);
+      let tints=asset.spearTints.get(image);
+      if(!tints){tints=new Map();asset.spearTints.set(image,tints);}
+      ctx.save();ctx.translate(part.x,part.y);ctx.rotate(part.angle*Math.PI/180);ctx.globalAlpha*=part.alpha;
+      ctx.drawImage(tintEffectImage(image,asset.visual.color,tints),rect.x,rect.y,rect.width,rect.height,0,-part.height*part.source.anchorY,part.width,part.height);
+      ctx.restore();
+    }
+    return true;
+  }
   function customEffect(at,rotation,age,vp,loop,resource,targetContext,placement){
     const ctx=targetContext||overlay.getContext('2d');placement=placement||{};
     const asset=resource||effectAsset(),visual=asset.visual,effectImage=asset.image,effectLayers=asset.layers,effectDescriptor=asset.descriptor,tintImages=asset.tints,scale=placement.radius?1:finite(visual.scale,1),alpha=clamp(finite(visual.opacity,1),0,1),p=screen(at,vp);
@@ -184,8 +206,9 @@ function create(host,options){
     // artwork and on-hit feedback instead start with raw gameplay age.
     if(!placement.slot)age=VFXLayout.sourceTime(VFXLayout.clipFor(visual.resource),age*SkillSettings.playbackRate(resource?visual.playbackRate:visual.resourcePlaybackRate),!!loop,style,'custom');
     ctx.save();ctx.translate(p.x,p.y);ctx.rotate(-(rotation+finite(visual.resourceRotation,0))*Math.PI/180);ctx.scale(vp.scale*scale,vp.scale*scale);ctx.scale(placement.scaleX===undefined?1:placement.scaleX,placement.scaleY===undefined?1:placement.scaleY);ctx.globalAlpha=alpha*(placement.opacity===undefined?1:placement.opacity);
-    if(effectImage){let image=effectImage;
-      if(visual.color){const key=visual.color;if(!tintImages.has(key)){const tinted=document.createElement('canvas');tinted.width=image.width;tinted.height=image.height;const context=tinted.getContext('2d');context.drawImage(image,0,0);const source=context.getImageData(0,0,image.width,image.height).data,pixels=context.createImageData(image.width,image.height);pixels.data.set(multiplyPixels(source,key));context.putImageData(pixels,0,0);if(tintImages.size>=16)tintImages.delete(tintImages.keys().next().value);tintImages.set(key,tinted);}image=tintImages.get(key);tintImages.delete(key);tintImages.set(key,image);}
+    if(effectImage&&!drawEquippedSpear(ctx,asset,placement)){
+      if(VanguardSpear.applies(style,placement)){const area=VanguardSpear.areaStretch(visual);ctx.scale(area,area);}
+      const image=tintEffectImage(effectImage,visual.color,tintImages);
       const frame=flipbookFrame(SkillSettings.flipbook(visual)||effectDescriptor&&effectDescriptor.flipbook,age,image.width,image.height);if(placement.radius){const fit=placement.radius*2/Math.hypot(frame?frame.width:image.width,frame?frame.height:image.height);ctx.scale(fit,fit);}
       if(frame)ctx.drawImage(image,frame.x,frame.y,frame.width,frame.height,-frame.width*(placement.anchorX===undefined?.5:placement.anchorX),-frame.height*(1-(placement.anchorY===undefined?.5:placement.anchorY)),frame.width,frame.height);else ctx.drawImage(image,-image.width/2,-image.height/2);
     }
@@ -247,10 +270,13 @@ function create(host,options){
     if(style==='skirmisher'||style==='vanguard'){const p=screen({x:model.hero.x,y:model.hero.y+130},vp),w=60*vp.scale,h=5*vp.scale;ctx.fillStyle='#151727';ctx.fillRect(p.x-w/2,p.y,w,h);ctx.fillStyle=style==='vanguard'?'#ffab38':'#a4ee53';ctx.fillRect(p.x-w/2,p.y,w*model.state.charge,h);}
 
   }
-  function drawStyleEffects(vp){
+  function styleEntities(){
     const a=anchors(),v=style==='mystic'?MysticTrail.visual(settings.visual||{}):settings.visual||{},target=t=>t&&t.hp>0?{id:t.id,generation:0,ground:{x:t.x,y:t.y},...Projectile.add(bodyPoint(t),{x:v.targetX,y:v.targetY})}:null,marked=model.state.marked&&model.state.target;
     const frame=model.updateVFX({facing:model.bodyFace,mountGround:style==='vanguard'?mountGround():null,presenceTargets:model.allies.filter(ally=>model.state.tuning.allyReduction>0&&Math.hypot(ally.x-model.hero.x,ally.y-model.hero.y)<=core.guardianRadius(model.state.tuning,'allyRadius')).map(ally=>({id:ally.id,generation:0,...allyTorso(model.allies.indexOf(ally))})),origin:a.origin,channelTarget:target(model.channelTarget),beamTarget:target(model.beamTarget),markedTarget:marked?{id:marked.id,generation:0,...overhead(marked)}:null,taunts:model.taunts.filter(r=>r.target.hp>0).map(r=>({key:r.key,at:r.at,target:{id:r.target.id,generation:0,...overhead(r.target)}}))});
-    for(const entity of VFXLayout.entities(frame,v,model.vfxContext)){
+    return VFXLayout.entities(frame,v,model.vfxContext);
+  }
+  function drawStyleEffects(vp,entities){
+    for(const entity of entities){
       const asset=styleResources.get(entity.visual.resource);if(!asset)continue;
       asset.visual=Object.assign({},entity.visual,{scale:finite(entity.visual.scale,1)*entity.scale});
       customEffect(entity,entity.angle,entity.age,vp,entity.loop,asset,entity.behind?backCtx:ctx,entity);
@@ -260,6 +286,7 @@ function create(host,options){
     const results=await Promise.all(items.map(async item=>{const resource={descriptor:item,layers:[],image:null,tints:new Map()};
       if(item.kind==='spine'&&item.description&&item.description.layers)resource.layers=prepare(await renderer.createLayers(spine,clone(item.description.layers)));
       else if(item.url)resource.image=await new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(Error('Cannot load '+item.name+' VFX texture.'));image.src=item.url;});
+      if(item.spearAccentsUrl){resource.spearAccents=await FallbackRenderer.loadImage(item.spearAccentsUrl).catch(()=>null);resource.spearTints=new WeakMap();}
       return[item.id,resource];}));
     if(token!==styleSerial||disposed)return;styleResources.clear();for(const [id,resource]of results)styleResources.set(id,resource);
   }
@@ -276,6 +303,7 @@ function create(host,options){
     const visual={...asset.visual},rect=resourceRect({...asset,visual},age,placement,ghost);if(!rect)return;
     let scale=finite(visual.scale,1),center={x:0,y:0};
     if(placement.radius){const header=asset.layers.length&&asset.layers[0].description.json&&asset.layers[0].description.json.skeleton,fitRect=header&&header.width>0?{minX:header.x||0,minY:header.y||0,maxX:(header.x||0)+header.width,maxY:(header.y||0)+header.height}:rect;scale=placement.radius*2/Math.max(1,Math.hypot(fitRect.maxX-fitRect.minX,fitRect.maxY-fitRect.minY));if(asset.layers.length)center={x:(fitRect.minX+fitRect.maxX)/2,y:(fitRect.minY+fitRect.maxY)/2};}
+    if(VanguardSpear.applies(style,placement))scale*=VanguardSpear.areaStretch(visual);
     const sx=scale*finite(placement.scaleX,1),sy=scale*finite(placement.scaleY,1),angle=rotation+finite(visual.resourceRotation,0),local={...rect,minX:rect.minX-center.x,maxX:rect.maxX-center.x,minY:rect.minY-center.y,maxY:rect.maxY-center.y},paths={...mapping};delete paths.id;delete paths.label;
     const pivot=typeof placement.pivotX==='number'&&typeof placement.pivotY==='number'?{x:placement.pivotX,y:placement.pivotY}:name==='cast'&&style==='skirmisher'&&Timeline.usesAuthoredArrows(settings.visual)?anchors().cast:at;
     const radians=angle*Math.PI/180,pivotBasis={x:{x:Math.cos(radians)*sx,y:Math.sin(radians)*sx},y:{x:-Math.sin(radians)*sy,y:Math.cos(radians)*sy}};
@@ -329,8 +357,10 @@ function create(host,options){
   function draw(){
     if(disposed)return;resize();ctx.clearRect(0,0,overlay.width,overlay.height);backCtx.clearRect(0,0,underlay.width,underlay.height);
     if(!heroLayers.length||!spine){ctx.fillStyle='#b9c8da';ctx.font='15px sans-serif';ctx.fillText('Loading character preview…',20,32);status();return;}
-    try{effectInstances=[];pose();if(!fitted)fitted=calculateBounds();const vp=viewport(),all=heroLayers.concat(...targetLayers,...allyLayers);renderer.drawCanvas(spine,canvas,all,{width:vp.width,height:vp.height,bounds:vp.bounds,zoom:view.zoom,panX:view.panX,panY:view.panY});
-      ctx.strokeStyle='#8292a322';ctx.lineWidth=1;const ground=screen({x:0,y:0},vp);ctx.beginPath();ctx.moveTo(0,ground.y);ctx.lineTo(overlay.width,ground.y);ctx.stroke();drawGeometry(vp);drawEnemies(vp);drawEffects(vp);drawStyleEffects(vp);drawMysticTrail(vp);drawHitFeedback(vp);drawHandles(vp);status();
+    try{effectInstances=[];pose();if(!fitted)fitted=calculateBounds();const vp=viewport(),entities=styleEntities();
+      const hidden=entities.some(entity=>VanguardSpear.applies(style,entity)&&entity.visual.opacity>0&&styleResources.get(entity.visual.resource)?.image&&VanguardSpear.replacesHeldWeapons(entity.age,entity.clip));
+      const riders=hidden?heroLayers.filter(layer=>!weaponLayer(layer)):heroLayers,all=riders.concat(...targetLayers,...allyLayers);renderer.drawCanvas(spine,canvas,all,{width:vp.width,height:vp.height,bounds:vp.bounds,zoom:view.zoom,panX:view.panX,panY:view.panY});
+      ctx.strokeStyle='#8292a322';ctx.lineWidth=1;const ground=screen({x:0,y:0},vp);ctx.beginPath();ctx.moveTo(0,ground.y);ctx.lineTo(overlay.width,ground.y);ctx.stroke();drawGeometry(vp);drawEnemies(vp);drawEffects(vp);drawStyleEffects(vp,entities);drawMysticTrail(vp);drawHitFeedback(vp);drawHandles(vp);status();
     }catch(error){status(error);}
   }
   async function loadEffect(item,token){

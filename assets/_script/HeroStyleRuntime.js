@@ -228,7 +228,10 @@ Runtime.prototype.cast=function(aim,shot){
   this.skillCast={key:this.castId,at:s.time,origin:Projectile.point(this.castOrigin),direction:Projectile.point(this.castDirection),aimDirection:Projectile.point(dir),radius:cast.radius||castShape.radius,halfAngle:castShape.halfAngle,startWidth:castShape.startWidth,duration:s.active?s.active.duration:this.settings.visual.effectDuration,target:target?{id:target,node:target.node,generation:generation(target),x:point(target).x,y:point(target).y}:null};
   if(s.style==='mystic'&&target)this.skillCast.origin=Projectile.point(point(target));
   if(shot)this.skillCast.bowOffset={x:shot.origin.x-o.x,y:shot.origin.y-o.y};
-  if(s.style==='vanguard'){var ground=point(h);this.skillCast.groundOffset={x:this.castOrigin.x-ground.x,y:this.castOrigin.y-ground.y};}
+  if(s.style==='vanguard'){
+    var ground=point(h);this.skillCast.groundOffset={x:this.castOrigin.x-ground.x,y:this.castOrigin.y-ground.y};
+    this.skillCast.riderEnd=s.time+(timing.duration||0);
+  }
   Presentation.queue(this,"cast");
   if(this.state!==s||this.scope!==scope||!this.scopeCurrent(scope))return false;
   overrides.cancel(h);h.time.Attack=0;
@@ -250,7 +253,7 @@ Runtime.prototype.cast=function(aim,shot){
       if(overrides.applyAttackPlayback)overrides.applyAttackPlayback(h,"hero");
       if(this.state!==s||this.scope!==scope||!this.scopeCurrent(scope))return false;
       if(s.style==="skirmisher"&&rider.retimeAttack)rider.retimeAttack(controller,Timeline.skirmisherReleaseTime(s.tuning,this.settings.visual));
-      else if(SkillSettings.animationPlaybackRate(s.style,this.settings.visual)!==1&&rider.setAttackPlayback)rider.setAttackPlayback(controller,timing.playback);
+      else if((s.style==='vanguard'||SkillSettings.animationPlaybackRate(s.style,this.settings.visual)!==1)&&rider.setAttackPlayback)rider.setAttackPlayback(controller,timing.playback);
     }finally{delete controller._skillAnimationOverride;}
     if(this.state!==s||this.scope!==scope||!this.scopeCurrent(scope))return false;
   }
@@ -547,7 +550,11 @@ function install(hero,config){
   var rider=require("HeroMakerRider");if(rider.enableCombatMotion)rider.enableCombatMotion(hero.ctrPlayAni);
   if(hero._styleHooks)return;hero._styleHooks=true;
   wrap(hero,"onUpdata",function(base,args){
-    var rt=this._styleRuntime,state=rt.state,time=this.time,node=this.node,ownerGeneration=generation(this),rider=require('HeroMakerRider'),block=state.style==="mystic"||!!state.active,clock=time.Attack;
+    var rt=this._styleRuntime,state=rt.state,time=this.time,node=this.node,ownerGeneration=generation(this),clock=time.Attack;
+    // Extended animation playback can outlast the barrage. Give that single
+    // rider track time to finish before a basic attack can replace it.
+    var vanguardPose=state.style==="vanguard"&&rt.skillCast&&state.time<rt.skillCast.riderEnd;
+    var block=state.style==="mystic"||!!state.active||vanguardPose;
     if(block)time.Attack=-1;
     try{return base.apply(this,args);}finally{if(block&&this._styleRuntime===rt&&rt.state===state&&this.time===time&&this.node===node&&generation(this)===ownerGeneration)time.Attack=clock===-1?0:clock;}
   });

@@ -6,6 +6,8 @@ var Projectile = require("./HeroSkillProjectile");
 var MysticTrail=require("./MysticTrail");
 var Skills = require("./HeroStyleSkills");
 var VFXState=require("./HeroSkillVFXState"),VFXLayout=require("./HeroSkillVFXLayout");
+var VanguardSpear=require("./VanguardSpearVFX");
+var VANGUARD_ACCENTS={resource:VanguardSpear.accentsResource,resourceKind:"texture",resourceBundle:"resources",resourcePath:VanguardSpear.accentsResource};
 var MAX_FEEDBACK=256,MAX_IMPACTS=128;
 var STYLE_SELECTION_KEYS=[];Settings.resourcePrefixes.slice(2).forEach(function(prefix){["","Kind","Bundle","Path","Animation","Skin","PremultipliedAlpha","Frames","Columns","Cell","Fps","Loop"].forEach(function(suffix){STYLE_SELECTION_KEYS.push(prefix+suffix);});});
 function visual(runtime) {
@@ -194,6 +196,7 @@ function seekSprite(record) {
   record.sprite.spriteFrame=frame;
 }
 function dispose(record) {
+  if(record.spearJabs){VanguardSpear.clear(record.spearJabs,cc);record.spearJabs=null;}
   if(alive(record.node)&&alive(record.sprite))record.sprite.spriteFrame=null;
   if(alive(record.trailNode))record.trailNode.destroy();
   if(alive(record.node))record.node.destroy();
@@ -224,18 +227,24 @@ function prepare(runtime,s,v,owner) {
   var request=s.loadVersion=(s.loadVersion||0)+1;
   var scope=runtime.state,game=runtime.game,data=game&&game.gameData,epoch=game&&game._combatEpoch,hero=runtime.hero,heroNode=hero&&hero.node,generation=heroNode&&heroNode._combatGeneration;
   try{loadResource(v,function(error,asset){
-    if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s&&owner.trailArt!==s&&owner.mysticTrailArt!==s&&(!owner.styleArts||owner.styleArts.get(s.ownerKey)!==s)||s.resourceKey!==key||s.loadVersion!==request)return;
+    if(runtime._presentation!==owner||s!==owner&&owner.impactArt!==s&&owner.trailArt!==s&&owner.mysticTrailArt!==s&&owner.spearAccents!==s&&(!owner.styleArts||owner.styleArts.get(s.ownerKey)!==s)||s.resourceKey!==key||s.loadVersion!==request)return;
     if(runtime.state!==scope||runtime.game!==game||game&&game.gameData!==data||game&&game._combatEpoch!==epoch||runtime.hero!==hero||hero&&hero.node!==heroNode||!alive(heroNode)||heroNode._combatGeneration!==generation){s.loading=false;return;}
     s.loading=false;if(error||!asset){s.loadError=error||Error("Empty VFX asset");return;}s.asset=asset.addRef?asset.addRef():asset;
     s.nodes.forEach(function(record){initialize(record,asset,v,s);});
   });}catch(error){s.loading=false;s.loadError=error;}
 }
 function resourceKey(v){return [v.resource,v.resourceKind,v.resourceBundle,v.resourcePath,v.resourceAnimation,v.resourceSkin,v.resourcePremultipliedAlpha,v.resourceFrames,v.resourceColumns,v.resourceCell,v.resourceFps,v.resourceLoop].join("|");}
+function prepareSpearAccents(runtime,s,visual){
+  if(runtime.state.style==="vanguard"&&VanguardSpear.selected(VFXLayout.clipFor(visual.castResource))){
+    var art=s.spearAccents||(s.spearAccents={nodes:new Map(),frames:new Map()});
+    prepare(runtime,art,VANGUARD_ACCENTS,s);
+  }else if(s.spearAccents){clearArt(s.spearAccents);delete s.spearAccents;}
+}
 function attachments(hud,runtime) {
   var v=visual(runtime),iv=Settings.impactVisual(v),s=runtime._presentation,frame;
   if(typeof cc==="undefined"||!cc.Sprite)return;
   if(runtime.state.style==="mystic"){s=state(runtime);frame=advanceVFX(runtime);paintMysticTrail(hud,runtime,s,v);}
-  if(!v.resource&&!iv.resource&&!hasStyleArt(v)){if(s){clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.trailArt)clearArt(s.trailArt);if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}}return;}
+  if(!v.resource&&!iv.resource&&!hasStyleArt(v)){if(s){clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.trailArt)clearArt(s.trailArt);if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}prepareSpearAccents(runtime,s,v);VanguardSpear.hideHeldWeapons(s,null,false,cc);}return;}
   s=state(runtime);var entities=[];
   if(v.resource)prepare(runtime,s,v);else clearArt(s);
   if(v.resource&&v.resourceTrail&&cc.MotionStreak){
@@ -303,6 +312,14 @@ function paintEntities(hud,runtime,s,v,entities,parent) {
     if(entity.ground)record.node.zIndex=ground?0:-1;
     else if(entity.behind)record.node.zIndex=behindRider?-1:(runtime.hero.node.zIndex||0)-1;
     record.node.color=cc.color(view.color||"#ffffff");
+    if(record.sprite&&VanguardSpear.applies(style,entity)){
+      var controller=runtime.hero.ctrPlayAni,accents=runtime._presentation.spearAccents;
+      var equipped=VanguardSpear.paint(record,controller&&controller.spAniBow,accents&&accents.asset,cc);
+      record.sprite.enabled=!equipped;
+      if(equipped)return;
+      var area=VanguardSpear.areaStretch(view);
+      record.node.scaleX*=area;record.node.scaleY*=area;
+    }
     seek(record);
   });
   s.nodes.forEach(function(record,key){if(!keep.has(key)){dispose(record);s.nodes.delete(key);}});
@@ -391,6 +408,7 @@ function paintMysticTrail(hud,runtime,s,v){if(!s.mysticTrail)return;var parent=h
 function preload(runtime){
   if(typeof cc==="undefined"||!cc.SpriteFrame||!cc.assetManager)return;
   var v=visual(runtime);if(!hasStyleArt(v))return;var s=state(runtime),arts=s.styleArts||(s.styleArts=new Map());
+  prepareSpearAccents(runtime,s,v);
   Settings.resourcePrefixes.slice(2).map(function(prefix){return prefix.replace(/Resource$/,"");}).forEach(function(slot){
     var selected=v[slot+"Resource"];if(!selected)return;var clip=VFXLayout.clipFor(selected),seen=new Set();
     ["start","loop","end"].forEach(function(phase){VFXLayout.phaseClips(slot,clip,phase).forEach(function(part){
@@ -401,7 +419,8 @@ function preload(runtime){
   });
 }
 function styleAttachments(hud,runtime,frame){
-  var s=state(runtime),v=visual(runtime);if(frame===undefined)frame=advanceVFX(runtime);if(!frame){if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}return;}
+  var s=state(runtime),v=visual(runtime);if(frame===undefined)frame=advanceVFX(runtime);if(!frame){if(s.styleArts){s.styleArts.forEach(clearArt);s.styleArts.clear();}VanguardSpear.hideHeldWeapons(s,null,false,cc);return;}
+  prepareSpearAccents(runtime,s,v);
   var arts=s.styleArts||(s.styleArts=new Map()),groups=new Map(),entities=VFXLayout.entities(frame,v,s.vfxContext);
   entities.forEach(function(entity){var key=resourceKey(entity.visual),group=groups.get(key);if(!group){group={visual:entity.visual,entities:[]};groups.set(key,group);}group.entities.push(entity);});
   groups.forEach(function(group,key){var art=arts.get(key);if(!art){art={nodes:new Map(),frames:new Map(),ownerKey:key};arts.set(key,art);}prepare(runtime,art,group.visual,s);paintEntities(hud,runtime,art,group.visual,group.entities);});
@@ -413,13 +432,19 @@ function styleAttachments(hud,runtime,frame){
   // A style owns a small fixed phase set. Drop obsolete authored selections
   // rather than retaining every atlas visited during a long play session.
   if(arts.size>16)arts.forEach(function(art,key){if(!groups.has(key)){clearArt(art);arts.delete(key);}});
+  if(runtime.state.style==="vanguard"){
+    var cast=entities.find(function(entity){return VanguardSpear.applies(runtime.state.style,entity);});
+    var castArt=cast&&arts.get(resourceKey(cast.visual)),record=castArt&&castArt.nodes.get(cast.key);
+    var hidden=record&&record.initialized&&record.node.opacity>0&&VanguardSpear.replacesHeldWeapons(cast.age,cast.clip);
+    VanguardSpear.hideHeldWeapons(s,runtime.hero.ctrPlayAni,hidden,cc);
+  }
 }
-function suspend(runtime){var s=runtime._presentation;if(s&&s.mysticTrailView)MysticTrail.suspend(s.mysticTrailView,cc);if(s&&s.styleArts)s.styleArts.forEach(function(art){art.nodes.forEach(function(record){if(alive(record.node))record.node.active=false;});});}
+function suspend(runtime){var s=runtime._presentation;if(s&&s.mysticTrailView)MysticTrail.suspend(s.mysticTrailView,cc);if(s&&s.styleArts)s.styleArts.forEach(function(art){art.nodes.forEach(function(record){if(alive(record.node))record.node.active=false;});});if(s&&s.hiddenVanguardWeapons)VanguardSpear.hideHeldWeapons(s,null,false,cc);}
 function clearNodes(s) {s.nodes.forEach(function(record){if(typeof cc!=="undefined")dispose(record);});s.nodes.clear();s.frames.forEach(function(frame){frame.destroy();});s.frames.clear();}
 function releaseAsset(s){if(s.asset&&s.asset.decRef)s.asset.decRef();s.asset=null;}
 function clearArt(s){clearNodes(s);releaseAsset(s);s.loadVersion=(s.loadVersion||0)+1;s.resourceKey=null;s.loading=false;s.loadError=null;}
 function clear(runtime) {
-  var s=runtime._presentation;if(!s)return;s.pending=[];s.feedback=[];s.impacts=[];stopChannel(s);clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.trailArt)clearArt(s.trailArt);if(s.mysticTrailArt)clearArt(s.mysticTrailArt);if(s.mysticTrailView)MysticTrail.clear(s.mysticTrailView,cc);if(s.styleArts)s.styleArts.forEach(clearArt);
+  var s=runtime._presentation;if(!s)return;s.pending=[];s.feedback=[];s.impacts=[];stopChannel(s);clearArt(s);if(s.impactArt)clearArt(s.impactArt);if(s.trailArt)clearArt(s.trailArt);if(s.mysticTrailArt)clearArt(s.mysticTrailArt);if(s.mysticTrailView)MysticTrail.clear(s.mysticTrailView,cc);if(s.styleArts)s.styleArts.forEach(clearArt);if(s.spearAccents)clearArt(s.spearAccents);if(s.hiddenVanguardWeapons)VanguardSpear.hideHeldWeapons(s,null,false,cc);
   s.sources.forEach(function(entry){if(entry.manager.releaseAudioSource)entry.manager.releaseAudioSource(entry.key,entry.source);else entry.manager.stopSource(entry.source);});s.sources=[];delete runtime._presentation;
 }
 exports.visual=visual;exports.color=color;exports.width=width;exports.offset=offset;exports.rotated=rotated;exports.projectilePoint=projectilePoint;exports.release=release;

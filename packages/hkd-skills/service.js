@@ -2,6 +2,8 @@
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const Settings=require('../../assets/_script/HeroSkillSettings'),Authoring=require('../../assets/_script/HeroSkillAuthoring'),Document=require('../game-data-editor/lib/json-document'),Catalog=require('./catalog');
 const Enemy=require('./enemy');
+const VanguardSpear=require('../../assets/_script/VanguardSpearVFX');
+const {pathToFileURL}=require('url');
 const FILES=['assets/KinghtFallConfig/GameJsonCfg.json','assets/configs/GameJsonCfg.json'];
 const FRAME_KEYS=['Frames','Columns','Cell','Fps','Loop'];
 const RESOURCE_PREFIXES=Settings.resourcePrefixes;
@@ -257,7 +259,13 @@ class SkillService{
       const id=Object.prototype.hasOwnProperty.call(request,prefix)?request[prefix]:visual[prefix],selected=VFX.clips.find(clip=>clip.uuid===id),asset=id&&this.asset('vfx',id);
       if(!asset)continue;
       const clips=selected?VFX.clips.filter(clip=>clip.slot===selected.slot&&(clip.group===selected.group||selected.slot==='beam')):[];
-      for(const candidate of clips.length?clips.map(clip=>this.asset('vfx',clip.uuid)).filter(Boolean):[asset])if(!result.styleEffects.some(row=>row.id===candidate.id))result.styleEffects.push(Object.assign({},candidate,candidate.kind==='spine'?{description:Catalog.spine(this.root,candidate)}:{}));
+      for(const candidate of clips.length?clips.map(clip=>this.asset('vfx',clip.uuid)).filter(Boolean):[asset]){
+        if(result.styleEffects.some(row=>row.id===candidate.id))continue;
+        const descriptor={...candidate};
+        if(candidate.kind==='spine')descriptor.description=Catalog.spine(this.root,candidate);
+        if(request.style==='vanguard'&&prefix==='castResource'&&VanguardSpear.selected(selected))descriptor.spearAccentsUrl=pathToFileURL(path.join(this.root,'assets/resources',VanguardSpear.accentsResource+'.png')).href;
+        result.styleEffects.push(descriptor);
+      }
     }
     result.skill=Settings.styles.find(row=>row.id===request.style);result.settings=Settings.effective(request.style,{HeroSkills:this.data});return result;
   }

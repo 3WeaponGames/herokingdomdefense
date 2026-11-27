@@ -1,9 +1,11 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const Settings=require('../../assets/_script/HeroSkillSettings'),Core=require('../../assets/_script/HeroStyleSkills'),Catalog=require('../../assets/_script/HeroSkillVFXCatalog');
+const VanguardSpear=require('../../assets/_script/VanguardSpearVFX');
 function fixture(style,modern=false){
- class Node{constructor(name){this.name=name;this.children=[];this.x=this.y=0;this.zIndex=0;this.active=true;}setParent(parent){this.parent=parent;parent.children.push(this);}getPosition(){return{x:this.x,y:this.y};}setPosition(p){this.x=p.x;this.y=p.y;}convertToWorldSpaceAR(p){return{x:p.x+this.x,y:p.y+this.y};}convertToNodeSpaceAR(p){return{x:p.x-this.x,y:p.y-this.y};}addComponent(Type){const value=new Type();value.node=this;this.component=value;return value;}destroy(){this.destroyed=true;if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);}}
- const loads=[],assets=[],cc={Node,Sprite:class{},SpriteFrame:class{},isValid:n=>!!n&&!n.destroyed,v2:(x,y)=>({x,y}),size:(width,height)=>({width,height}),rect:(x,y,width,height)=>({x,y,width,height}),color:value=>value,resources:{load(resource,_type,done){loads.push({resource,done});}},assetManager:{}};
+ class Node{constructor(name){this.name=name;this.children=[];this.x=this.y=0;this.zIndex=0;this.active=true;}setParent(parent){this.parent=parent;parent.children.push(this);}getPosition(){return{x:this.x,y:this.y};}setPosition(p,y){this.x=typeof p==='number'?p:p.x;this.y=typeof p==='number'?y:p.y;}setContentSize(width,height){this.width=width;this.height=height;}convertToWorldSpaceAR(p){return{x:p.x+this.x,y:p.y+this.y};}convertToNodeSpaceAR(p){return{x:p.x-this.x,y:p.y-this.y};}addComponent(Type){const value=new Type();value.node=this;this.component=value;return value;}destroy(){this.destroyed=true;if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);}}
+ class SpriteFrame{constructor(texture,rect){this.texture=texture;this.rect=rect;}destroy(){this.destroyed=true;}}
+ const loads=[],assets=[],cc={Node,Sprite:class{static SizeMode={CUSTOM:0};},SpriteFrame,isValid:n=>!!n&&!n.destroyed,v2:(x,y)=>({x,y}),size:(width,height)=>({width,height}),rect:(x,y,width,height)=>({x,y,width,height}),color:value=>value,resources:{load(resource,_type,done){loads.push({resource,done});}},assetManager:{}};
  const sp={SkeletonData:class{},Skeleton:class{setAnimation(_track,name,loop){return this.track={name,loop,trackTime:0};}update(){}}};
  const exported={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../../assets/_script/HeroSkillPresentation.js'),'utf8'),{exports:exported,cc,sp,require:name=>name.startsWith('./')?require(path.join(__dirname,'../../assets/_script',name)):name==='BattleSounds'?{}:{}});
  const main=new Node('world'),hero={node:new Node('hero'),hp:500,hpMax:1000,getAttWpos:()=>({x:0,y:70})};hero.node.setParent(main);hero.node.zIndex=10;hero.node._combatGeneration=1;
@@ -12,10 +14,67 @@ function fixture(style,modern=false){
   if(style==='mystic')Settings.applyClip(v,'beamResource',Catalog.clips.find(c=>c.id==='mystic-beam-body-loop'));
   if(style==='guardian'){Settings.applyClip(v,'buffResource',Catalog.clips.find(c=>c.id==='guardian-runic-shield'));Settings.applyClip(v,'tauntResource',Catalog.clips.find(c=>c.id==='guardian-taunt-test'));Settings.applyClip(v,'shieldResource',Catalog.clips.find(c=>c.id==='guardian-body-shield-loop'));}
  }
- function finish(){for(const load of loads.splice(0)){const clip=Catalog.clips.find(c=>c.resource===load.resource);assert(clip);const asset={skeletonJson:clip.kind==='spine'?JSON.parse(fs.readFileSync(path.join(__dirname,'../../assets/resources',clip.resource+'.json'))):undefined,refs:0,clones:[],getRect:()=>({x:0,y:0,width:clip.columns*clip.cell,height:Math.ceil(clip.frames/clip.columns)*clip.cell}),addRef(){this.refs++;return this;},decRef(){this.refs--;},clone(){const frame={setRect(rect){this.rect=rect;},setOriginalSize(){},setOffset(){},destroy(){this.destroyed=true;}};this.clones.push(frame);return frame;}};assets.push(asset);load.done(null,asset);}}
+ function finish(){for(const load of loads.splice(0)){const clip=Catalog.clips.find(c=>c.resource===load.resource);assert(clip||load.resource===VanguardSpear.accentsResource);const asset={skeletonJson:clip?.kind==='spine'?JSON.parse(fs.readFileSync(path.join(__dirname,'../../assets/resources',clip.resource+'.json'))):undefined,refs:0,clones:[],getRect:()=>({x:0,y:0,width:clip.columns*clip.cell,height:Math.ceil(clip.frames/clip.columns)*clip.cell}),addRef(){this.refs++;return this;},decRef(){this.refs--;},clone(){const frame={setRect(rect){this.rect=rect;},setOriginalSize(){},setOffset(){},destroy(){this.destroyed=true;}};this.clones.push(frame);return frame;}};assets.push(asset);load.done(null,asset);}}
  function target(x=150){const node=new Node('enemy');node.x=x;node._combatGeneration=1;return{node,hp:1000};}
  return{P:exported,rt,hud,hero,main,loads,assets,finish,target,paint(){exported.attachments(hud,rt);}};
 }
+
+test('Vanguard jabs follow the equipped atlas and restore the held weapon layers after the effect',()=>{
+ const f=fixture('vanguard',true),slot={getAttachment:()=>({getPath:()=>'item_spear'})};
+ function rig(tier){
+  const page=`item-4-tier-${tier}-vanguard_wqyl_lead_gong`;
+  const texture={refs:0,addRef(){this.refs++;},decRef(){this.refs--;}};
+  const atlasText=fs.readFileSync(path.join(__dirname,'../../assets/resources/hero-items/baked',page+'.atlas'),'utf8');
+  return {atlasText,textures:[texture],textureNames:[page+'.png']};
+ }
+ const blue=rig('lv_blue'),gold=rig('lv4');
+ const main={enabled:true,findSlot:name=>name===VanguardSpear.slotName?slot:null,skeletonData:blue};
+ const offhand={enabled:true},hands={enabled:true};
+ f.hero.ctrPlayAni={spAniBow:main,spAniArrow:offhand,spAniHand:hands};
+ const clip=Catalog.clips.find(VanguardSpear.selected);
+ f.rt.skillCast={key:1,at:0,origin:{x:30,y:80},direction:{x:1,y:0},radius:155};
+ f.P.preload(f.rt);
+ assert.equal(f.loads.filter(load=>load.resource===VanguardSpear.accentsResource).length,1);
+ f.finish();
+ const art=()=>[...f.rt._presentation.styleArts.values()].find(value=>value.ownerKey.startsWith(clip.uuid+'|'));
+ const record=()=>[...art().nodes.values()][0];
+ const render=frame=>{f.rt.state.time=(frame+.01)/clip.fps;f.paint();};
+
+ render(34);
+ assert(main.enabled&&offhand.enabled);
+ render(35);
+ assert(!main.enabled&&!offhand.enabled&&hands.enabled);
+ assert.equal(record().sprite.enabled,false);
+ assert.equal(record().spearJabs.source.texture,blue.textures[0]);
+
+ render(80);
+ const accents=f.rt._presentation.spearAccents.asset;
+ const active=()=>record().spearJabs.sprites.filter(sprite=>sprite.node.active);
+ assert.equal(active().filter(sprite=>sprite.spriteFrame.texture===accents).length,3);
+ assert.deepEqual(active().filter(sprite=>sprite.spriteFrame.texture===blue.textures[0]).map(sprite=>sprite.node.width),[48,48,48]);
+ const oldFrames=[...record().spearJabs.frames.values()];
+ main.skeletonData=gold;
+ render(81);
+ assert.equal(record().spearJabs.source.texture,gold.textures[0]);
+ assert.equal(blue.textures[0].refs,0);
+ assert(oldFrames.every(frame=>frame.destroyed));
+
+ render(124);
+ assert(!main.enabled&&!offhand.enabled);
+ render(125);
+ assert(main.enabled&&offhand.enabled);
+ render(80);
+ f.P.suspend(f.rt);
+ assert(main.enabled&&offhand.enabled);
+ f.paint();
+ assert(!main.enabled&&!offhand.enabled);
+ f.rt.skillCast=null;
+ f.paint();
+ assert(main.enabled&&offhand.enabled);
+ assert.equal(gold.textures[0].refs,0);
+ f.P.clear(f.rt);
+ assert(f.assets.every(asset=>asset.refs===0));
+});
 test('Fighter draws the sprite activation once and releases its frame owner after teardown',()=>{
  const f=fixture('fighter'),state=f.rt.state;
  for(let i=0;i<9;i++)Core.onHit(state,{}, {strikeId:i});

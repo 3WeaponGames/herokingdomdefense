@@ -13,6 +13,7 @@ var styles = [
   {id:"guardian",name:"Guardian",weapon:"Hammer and shield",skill:"Iron Bulwark"}
 ];
 var VISUAL = {arcDegrees:120,originX:0,originY:0,targetX:0,targetY:0,offsetX:0,offsetY:0,rotation:0,scale:1,opacity:1,lineWidth:0,color:"",effectDuration:.35,resource:"",resourceAnimation:"",resourcePlaybackRate:1,showBuiltin:true,animation:"",animationPlayback:1,holdTime:-1,impactResource:"",impactResourceAnimation:"",impactPlaybackRate:1,impactScale:1,impactDuration:.35,impactDelay:0,impactOffsetX:0,impactOffsetY:0,impactRotation:0,impactOpacity:1,impactColor:""};
+var VANGUARD_SIZE = {castAreaScale:1,castSpearScale:1};
 EFFECT_SLOTS.forEach(function(slot){
   if(slot!=="cast")VISUAL[slot+"Delay"]=0;
   VISUAL[slot+"Resource"]="";VISUAL[slot+"ResourceAnimation"]="";
@@ -86,6 +87,8 @@ var VISUAL_HELP = {
   castSecondaryDelay:"Additional seconds after the shared cast start delay before Blood Cleave's second effect appears. Zero starts both effects together. Does not change damage timing.",
   arcStartWidth:"Width in world units of the flat rear hit-area edge for Vanguard. The sides join its rounded outer arc. Set to 0 for a pointed cone.",
   castScale:"Size of the complete skill VFX. The gold hit boundary has separate gameplay size controls.",
+  castAreaScale:"Area covered by the jab paths, wind and accents. 0.5 covers half the source area.",
+  castSpearScale:"Size of each spear sprite. 0.35 uses 35% of its source length and width. Each tip follows its wind.",
   castScaleX:"Horizontal size multiplier for the complete effect. Changes artwork only.",
   castScaleY:"Vertical size multiplier for the complete effect. Changes artwork only.",
   castOffsetX:"World-space horizontal artwork offset from its cast attachment. Does not move the damage origin.",
@@ -134,7 +137,7 @@ function tuningFields(style){
     var field=number(key,key==='explosionTime'?'Explosion / actual hit time':label(key),min,max,step,unit);if(/^(maxStacks|maxCharges|strikes)$/.test(key))field.integer=true;if(HELP[key])field.help=HELP[key];if(key==='activeDamage'&&style!=='mystic'){field.label='Active damage multiplier';field.help=style==='skirmisher'?'Bow damage per arrow. 1 is 100% of bow damage.':'Final Blood Cleave damage multiplier after its missing-HP bonus. 0.5 is half damage. The HP sacrifice and missing-HP passive are unchanged.';}if(style==='skirmisher'&&key==='contactDelay'){field.label='Additional release delay';field.help='Extra gameplay seconds before the five arrows leave the bow.';}return field;
   });
 }
-var visualFields = Object.keys(VISUAL).map(function(key){
+var visualFields = Object.keys(VISUAL).concat(Object.keys(VANGUARD_SIZE)).map(function(key){
   if(RESOURCE_PREFIXES.indexOf(key)>=0)return {path:"visual."+key,key:key,label:key==="resource"?"VFX asset":key==="impactResource"?"On-hit VFX asset":label(key.replace(/Resource$/,""))+" VFX asset",type:"vfx",emptyLabel:key==="resource"?"Built-in effect":key==="impactResource"?"No custom on-hit effect":"No "+label(key.replace(/Resource$/,"")).toLowerCase()+" effect"};
   if(/ResourceAnimation$/.test(key)||key==="resourceAnimation")return {path:"visual."+key,key:key,label:key==="resourceAnimation"?"VFX animation":"On-hit VFX animation",type:"effect-animation",emptyLabel:"Asset default",resourcePath:"visual."+key.replace(/Animation$/,"")};
   if(key==="showBuiltin")return {path:"visual.showBuiltin",key:key,label:"Show built-in effect",type:"boolean"};
@@ -189,6 +192,7 @@ function fields(style){
     return {tuning:Descriptions.fields(style).concat(tuningFields(style)),visual:volleyVisual,audio:clone(audioFields).filter(function(field){return field.phase==="cast"||field.phase==="impact";})};
   }
   var visual=clone(visualFields).filter(function(field){
+    if(Object.prototype.hasOwnProperty.call(VANGUARD_SIZE,field.key))return style==="vanguard";
     if((style==="fighter"||style==="bruiser")&&["passiveMinScale","passiveMinPlayback","passivePlayback"].indexOf(field.key)>=0||style==="bruiser"&&field.key==="passiveOpacity")return false;
     if(/(?:Pivot|Flip)[XY]$/.test(field.key))return style==="bruiser";
     if(/^channelTrail/.test(field.key))return style==="mystic";
@@ -231,7 +235,7 @@ function defaults(style){
   if(style==="mystic")result.audio.explosion=clone(AUDIO);
   var preset=VFXCatalog.presets[style]||{};Object.keys(preset).forEach(function(slot){var clip=VFXCatalog.clips.filter(function(row){return row.id===preset[slot];})[0];if(clip)applyClip(v,slot+"Resource",clip);});
   if(style==="fighter")Object.assign(v,{passiveScale:1.15,buffScale:1.65,buffColor:"#fff0d0",castScale:.8});
-  if(style==="vanguard")Object.assign(v,{buffScale:1.65,buffOffsetY:0,castScale:1,castRotation:0});
+  if(style==="vanguard")Object.assign(v,VANGUARD_SIZE,{buffScale:1.65,buffOffsetY:0,castScale:1,castRotation:0});
   if(style==="bruiser")Object.assign(v,{passiveScale:1.4,passiveScaleX:1.5,castScale:1.2});
   if(style==="mystic")Object.assign(v,{beamScale:.65,markScale:.45,channelHitScale:1,castScale:1});
   if(style==="guardian")Object.assign(v,{buffScale:1.8,tauntScale:1.1,shieldScale:1.5,shieldOffsetY:0,shieldOpacity:.85,presenceScale:1.3,presenceOffsetY:0,defenseScale:.48,physicalShieldScale:.31});
@@ -260,7 +264,12 @@ function impactVisual(value) {
 }
 function resourceVisual(value,prefix){
   var result={};["resource","resourceAnimation","resourceBundle","resourcePath","resourceKind","resourceFrames","resourceColumns","resourceCell","resourceFps","resourceLoop","resourcePremultipliedAlpha"].forEach(function(key){result[key]=value[prefix+key.slice(8)];});
-  var slot=prefix.replace(/Resource$/,"");["scale","scaleX","scaleY","rotation","opacity","color","offsetX","offsetY","pivotX","pivotY","flipX","flipY","playbackRate"].forEach(function(key){result[key]=value[slot+key.charAt(0).toUpperCase()+key.slice(1)];});return result;
+  var slot=prefix.replace(/Resource$/,"");["scale","scaleX","scaleY","rotation","opacity","color","offsetX","offsetY","pivotX","pivotY","flipX","flipY","playbackRate"].forEach(function(key){result[key]=value[slot+key.charAt(0).toUpperCase()+key.slice(1)];});
+  if(slot==="cast"){
+    if(value.castAreaScale!==undefined)result.areaScale=value.castAreaScale;
+    if(value.castSpearScale!==undefined)result.spearScale=value.castSpearScale;
+  }
+  return result;
 }
 function applyClip(value,prefix,clip){
   ["Frames","Columns","Cell","Fps","Loop","PremultipliedAlpha"].forEach(function(key){delete value[prefix+key];});
