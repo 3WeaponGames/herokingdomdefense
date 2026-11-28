@@ -10663,8 +10663,7 @@
           "Skin": "cq-rts-1",
           "Hp": 500,
           "BranchBuild": [
-            2,
-            3
+            2
           ],
           "Excursion": [
             -200,
@@ -10873,6 +10872,9 @@
           "Zoom": 0.35,
           "Skin": "cq-rts-2",
           "Hp": 700,
+          "BranchBuild": [
+            3
+          ],
           "Excursion": [
             -200,
             44
@@ -10884,7 +10886,7 @@
         {
           "ID": 6,
           "index": 3,
-          "level": 2,
+          "level": 3,
           "Name": "[[loc:data.buildenum.6.levellist.3.name]]",
           "VedioCount": 0,
           "LevelUpDescribe": "[[loc:data.buildenum.6.levellist.3.levelupdescribe]]",

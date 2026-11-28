@@ -53,7 +53,7 @@ var def_KinghtFallEnemyLong = function (t) {
       // Counter bonuses belong to the released shot, not a later pooled life.
       if (GameToolsOverrides.counters(this, n)) e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms));
       var origin = Navigation.positionOf(sourceNode, game);
-      var impact = Navigation.attackPointOf(n, game, origin, selected.polygon);
+      var impact = Navigation.attackPointOf(n, game, origin, selected.polygon, selected.wallPoint);
       var offset = n.getNavigationGateShapes && targetNode.convertToNodeSpaceAR(game.ndMain.convertToWorldSpaceAR(cc.v2(impact)));
       this.vec2_2.x = impact.x; this.vec2_2.y = impact.y;
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);

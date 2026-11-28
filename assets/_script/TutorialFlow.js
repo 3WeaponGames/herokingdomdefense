@@ -36,11 +36,15 @@ function open(owner, cfg, current, commit) {
   try {
     manager.openUIWithOwner(require("Config").UIID.UIGuide, owner.uid, {
       parent: owner,
-      isCurrent: function () { return active(owner) && owner._tutorialOpen === token && current(); },
-      onCancel: clear
+      isCurrent: cfg.isCurrent,
+      onCancel: function () {
+        var cancelledCurrent = cfg.isCurrent();
+        clear();
+        if (cancelledCurrent && cfg.onCancel) cfg.onCancel();
+      }
     }, cfg);
   } catch (error) { clear(); throw error; }
-  return true;
+  return owner._tutorialOpen === token;
 }
 function present(owner, guide, group, step, rows, cfg) {
   if (!rows[step]) return false;
@@ -77,6 +81,26 @@ function config(row) {
   cfg.deviationTipsAll = cc.v2(0, row.Offset || 0);
   return cfg;
 }
+function openingHouse(ui, guide) {
+  var game = ui.ctrGame, data = game && game.gameData, stage = data && data.levelCfg;
+  if (ui._endless || !stage || stage.Level !== 1 || data.round !== 1 || guide.getGroupId() !== 2 ||
+      !data.baseBuild || data.baseBuild.getLevel() < 1 ||
+      game.gameStatus !== require("KinghtFallModle").KinghtFallGameStage.Prepare ||
+      require("PlatformSetting").PlatformSetting.currentPlatform === require("BasePlatform").Platform.WEB_LINK) return null;
+  var house = require("KinghtFallEnum").KinghtFallEnumBuildEnum.PrivateHouse;
+  var plots = (stage.HomeLevel1Unlock || []).filter(function (spot) { return spot[0] === house; }).map(function (spot) {
+    return data.bulidPointMap && data.bulidPointMap[spot[1]];
+  }).filter(Boolean);
+  if (plots.some(function (plot) { return plot.getLevel() > 0; })) return null;
+  var first = null;
+  for (var i = 0; i < plots.length; i++) {
+    var plot = plots[i], field = plot.getPurchaseField(), cost = plot.getSell();
+    if (!visible(field) || !(cost >= 0 && cost <= data.coin)) continue;
+    if (plot.node.name === "House 1") return field;
+    if (!first) first = field;
+  }
+  return first;
+}
 function homeBlocked() {
   var manager = require("UIMgr").UIMgr.getInstance(), ids = require("KinghtFallConfig").KinghtFallUIID;
   if (!manager.getUIById) return false;
@@ -98,5 +122,6 @@ exports.tip = tip;
 exports.state = state;
 exports.scrollTo = scrollTo;
 exports.config = config;
+exports.openingHouse = openingHouse;
 exports.homeBlocked = homeBlocked;
 exports.heroHit = heroHit;

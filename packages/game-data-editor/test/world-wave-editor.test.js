@@ -4,6 +4,29 @@ const clone=value=>JSON.parse(JSON.stringify(value));
 function stage(){return{level:99,spawns:[{id:1,enabled:true},{id:2,enabled:true},{id:3,enabled:false}],graphs:[{id:'one',spawnIds:[1]},{id:'shared',spawnIds:[1,2]},{id:'two',spawnIds:[2]}],config:{Level:7,FutureStage:{keep:true},WaveCfg:[{id:7,Wave:1,HealthCoefficient:1.2,AttackCoefficient:.8,StartSliver:4,CommerceSliver:3,WaveReward:[[2001,10]],future:{keep:[1]},RefreshSoldierKind:['2#90001,99','1#90002,2;-1,1;90003,1','2#-1,1;90004,2']}]}};}
 function timed(){const s=stage();s.config.WaveCfg[0].SpawnTimeline=[{id:'first',spawnId:1,unitId:90002,count:2,startSeconds:.5,intervalSeconds:.5,routeGraphId:'one',future:{keep:[1]}},{id:'shared',spawnId:1,unitId:90003,count:1,startSeconds:3,intervalSeconds:0,routeGraphId:'shared'},{id:'other-lane',spawnId:2,unitId:90004,count:3,startSeconds:1,intervalSeconds:.5}];return s;}
 
+test('draft timing batches keep each change undoable with one recovery update',()=>{
+ const {Service}=require('../worlds/service'),original=timed(),key='stage:A-7';
+ const doc={key,data:original},source=original.config.WaveCfg[0],draft=clone(original);
+ let recoveryWrites=0;
+ const service=Object.assign(Object.create(Service.prototype),{
+  version:1,undo:[],redo:[],doc:()=>doc,persist:()=>recoveryWrites++,snapshot:()=>clone(doc.data)
+ });
+ W.editGroup(draft,0,'first',{startSeconds:1},.5);
+ const first=clone(draft.config.WaveCfg[0]);
+ W.editGroup(draft,0,'first',{intervalSeconds:2.5},.5);
+ const wave=draft.config.WaveCfg[0],change={key,version:1,waveIndex:0,intermediateWaves:[first],wave};
+ assert.throws(()=>service.changeWave({...change,wave:{...wave,Wave:2}}),/wave changed/);
+ assert.equal(doc.data,original);assert.equal(recoveryWrites,0);assert.equal(service.version,1);
+ service.changeWave(change);
+ assert.deepEqual(doc.data,draft);assert.equal(recoveryWrites,1);assert.equal(service.version,3);
+ assert.equal(service.undo.length,2);
+ assert.throws(()=>service.changeWave(change),/Another panel changed/);
+ const undo=()=>service.history({key,version:service.version},false).config.WaveCfg[0];
+ assert.deepEqual(undo(),first);assert.deepEqual(undo(),source);
+ assert.deepEqual(service.history({key,version:service.version},true).config.WaveCfg[0],first);
+ assert.deepEqual(service.history({key,version:service.version},true).config.WaveCfg[0],wave);
+});
+
 test('wave display reads all lanes and summaries without changing or aliasing timed or legacy sources',()=>{
  for(const s of [stage(),timed()]){const wave=s.config.WaveCfg[0],before=JSON.stringify(s),rows=W.entries(wave,.5),stats=W.summary(wave,.5);assert.equal(JSON.stringify(s),before);assert(rows.some(entry=>entry.spawnId===1));assert(rows.some(entry=>entry.spawnId===2));assert.deepEqual(stats.spawnIds,[1,2]);assert.equal(stats.groups,rows.length);assert.equal(stats.units,rows.reduce((sum,entry)=>sum+entry.count,0));assert.equal(stats.duration,Math.max(...rows.map(entry=>entry.startSeconds+(entry.count-1)*entry.intervalSeconds)));rows[0].count=1000;if(rows[0].future)rows[0].future.keep.push(5);assert.equal(JSON.stringify(s),before);}
  const wave=stage().config.WaveCfg[0];assert.deepEqual(W.summary(wave,.5),{units:5,groups:3,spawnIds:[1,2],duration:2});assert(!wave.SpawnTimeline);

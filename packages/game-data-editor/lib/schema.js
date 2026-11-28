@@ -44,7 +44,7 @@ const EQUIPMENT = ['Chest • HP','Helmet • HP regeneration','Secondary item �
 const RARITIES = ['Common','Rare','Epic','Legendary'];
 const BUILDINGS = {1:'Castle Keep',2:'Arrow Tower',3:'Barracks',4:'House',5:'Mill',6:'Wall'};
 // Progression can reuse an explicit native collider tag at later visual tiers.
-const BUILDING_LEVEL_CAP = {1:4,2:4,3:4,4:4,5:4,6:2};
+const BUILDING_LEVEL_CAP = {1:4,2:4,3:4,4:4,5:4,6:3};
 // Collider tags identify map geometry independently of building branch IDs.
 const BUILDING_COLLIDER_CAP = {1:3,2:3,3:10,4:3,5:3,6:3};
 function buildingLevelCap(id,level){return BUILDING_LEVEL_CAP[id];}
@@ -112,7 +112,7 @@ function descriptor(key, context) {
   if (['Health','Hp','Zoom'].indexOf(key)>=0) result.min=0.000001;
   if (['Weight','AttackDamage','AttackRange','SearchRange','Speed','DeathAni','GoldCost','lockCose','BuildSliverCost','VedioCount','vedioCount','StartSliver','CommerceSliver','EquipLevelCap','MissionNumber','MissionType'].indexOf(key)>=0) result.min=0;
   if(context.table==='BuildEnum'){
-    if(key==='level'){result.min=1;result.integer=true;const level=context.building&&context.building.levelList&&context.building.levelList[context.levelIndex];if(own(BUILDING_LEVEL_CAP,context.id))result.max=buildingLevelCap(context.id,level);result.help='Progression level used by castle unlocks. Four progression levels retain stable branch indices and reuse explicit authored collision footprints.';}
+    if(key==='level'){result.min=1;result.integer=true;const level=context.building&&context.building.levelList&&context.building.levelList[context.levelIndex];if(own(BUILDING_LEVEL_CAP,context.id))result.max=buildingLevelCap(context.id,level);result.help='Progression level used by castle unlocks. Branch indices and authored collision footprints stay independent of this level.';}
     if(['lockCose','BuildSliverCost','VedioCount'].indexOf(key)>=0)result.integer=true;
     if(key==='BuildSliverCost'){result.label='Next purchase cost (silver)';result.help='Charged while upgrading from this branch. The destination also uses this value to choose silver or reward-ad presentation.';}
     if(key==='VedioCount'){result.label='Legacy reward-ad count';result.readOnly=true;result.help='Preserved authored metadata. The current upgrade dialog does not read this count.';}
@@ -426,7 +426,12 @@ function validate(documents, changes) {
       graph[level.index]=Array.isArray(level.BranchBuild)?level.BranchBuild:[];
       if(own(level,'BranchBuild')&&(!Array.isArray(level.BranchBuild)||!level.BranchBuild.length))issue('A',q.concat('BranchBuild'),'Choose a nonempty upgrade branch list, or remove the connection for a final branch.');
       if(graph[level.index].length&&!own(level,'BuildSliverCost')&&!graph[level.index].every(index=>{const target=building.levelList.find(row=>row.index===index);return target&&typeof target.BuildCost==='number'&&Number.isFinite(target.BuildCost)&&target.BuildCost>=0;}))issue('A',q.concat('BranchBuild'),'Set a cost for each destination building level.');
-      graph[level.index].forEach((next,j)=>{if(!Number.isInteger(next)||next<1||!byIndex.has(next))issue('A',q.concat('BranchBuild',j),'Upgrade branch does not exist.');else if(graph[level.index].indexOf(next)!==j)issue('A',q.concat('BranchBuild',j),'An upgrade branch cannot be connected twice.');});
+      graph[level.index].forEach((next,j)=>{
+        const at=q.concat('BranchBuild',j),target=byIndex.get(next);
+        if(!Number.isInteger(next)||next<1||!target)issue('A',at,'Upgrade branch does not exist.');
+        else if(graph[level.index].indexOf(next)!==j)issue('A',at,'An upgrade branch cannot be connected twice.');
+        else if(id==='6'&&target.level!==level.level+1)issue('A',at,'Walls must upgrade to the next level.');
+      });
       const expected=id==='1'||id==='2'||id==='3'?3:id==='4'||id==='5'?1:0;
       if(expected&&(!Array.isArray(level.Data)||level.Data.length<expected))issue('A',q.concat('Data'),'Building properties are missing required runtime values.');
       if(Array.isArray(level.Data))level.Data.forEach((v,j)=>{const d=dataDescriptor({table:'BuildEnum',id},j);number('A',q.concat('Data',j),v,d.min,d.integer);});

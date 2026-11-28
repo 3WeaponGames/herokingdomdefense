@@ -61,7 +61,7 @@ function healingLife(actor, node, generation) {
   return (typeof cc === "undefined" || !cc.isValid || cc.isValid(actor, true) && (!node || cc.isValid(node, true))) &&
     living(actor) && actor.node === node && (!node || node._combatGeneration === generation);
 }
-function heal(actor, fraction, options) {
+function heal(actor, fraction) {
   if (!actor || !(fraction > 0)) return 0;
   var node = actor.node, generation = node && node._combatGeneration;
   var data = current(), game = data && data.ctrPar, ownedData = game && game.gameData, gameNode = game && game.node;
@@ -79,7 +79,6 @@ function heal(actor, fraction, options) {
   if (hp && (typeof cc === "undefined" || !cc.isValid || cc.isValid(hp, true) && (!hp.node || cc.isValid(hp.node, true))) && hp.setHp) hp.setHp(actor.hp, actor.hpMax);
   if (!currentHealing()) return healed;
   if (actor.upHpView) actor.upHpView();
-  if (healed > 0 && !(options && options.silent) && currentHealing()) relicSound("healing-receive", actor);
   return healed;
 }
 function boss(enemy) {

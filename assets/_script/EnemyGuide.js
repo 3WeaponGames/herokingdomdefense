@@ -17,6 +17,15 @@ function syncMarkers(ui) {
 function alive(actor) { return actor && actor.node && cc.isValid(actor.node, true) && actor.node.activeInHierarchy !== false && !actor._isPooled && (!actor.isDead || !actor.isDead()); }
 function read(actor, name, fallback) { var value = actor && actor[name] && actor[name](); return finite(value) ? value : fallback; }
 function display(value) { return finite(value) ? String(Math.round(value * 100) / 100) : language().t("enemyGuide.unknown"); }
+function modelSource(cfg, settings) {
+  var id = cfg.ProfileBaseID || cfg.ID, profiles = settings.unitProfiles;
+  var boss = profiles && profiles.bossForms && profiles.bossForms[id];
+  var form = boss ? boss.source : id;
+  if (form < 90010 || form > 90012) form = cfg.BehaviorTemplate;
+  var bossForm = form >= 90010 && form <= 90012;
+  var parent = bossForm && !cfg.prefab && manager().getSoldierCfgById(boss ? boss.profileId : 90010);
+  return { prefab: cfg.prefab || parent && parent.prefab, layer: bossForm ? "spAni" + (form - 90009) : "spAni" };
+}
 var approvedRoles = { fighter: "Fighter", skirmisher: "Skirmisher", vanguard: "Vanguard", mystic: "Mystic", bruiser: "Bruiser", guardian: "Guardian" };
 function roleName(id, role) { return role ? approvedRoles[id] === role.name ? "enemyGuide.role." + id : role.name : "enemyGuide.unknown"; }
 function typeGuide(ui, id) {
@@ -92,6 +101,7 @@ function describe(ui, id, live) {
   else if (customAttack ? customAttack.delivery === "ranged" : cfg.AttackType === 2) fallback = "enemyGuide.fallbackRanged";
   var range = finite(cfg.AttackRange) ? cfg.AttackRange : behavior === 90006 && cfg.Data ? cfg.Data[2] : behavior === 90009 && cfg.Data ? cfg.Data[1] : null;
   return { id: id, name: cfg.Name, role: roleName(roleId, role), roleId: roleId, roleIcon: role && role.icon, roleTint: role && role.tint || "#ffffff", icon: cfg.loadIcon,
+    visual: modelSource(cfg, settings),
     wave: battle.round, live: !!live, description: cfg.Guide && cfg.Guide.description || fallback, lore: cfg.Guide && cfg.Guide.lore || "",
     stats: [
       ["health", actor && finite(actor.hp) ? display(actor.hp) + " / " + display(hp) : display(hp)],
@@ -285,7 +295,7 @@ function layout(ui, state) {
   var contentWidth = width - 64, viewportHeight = height - 126 - (multiple ? 58 : 0), scale = Math.min(1, Math.max(.55, contentWidth / 600));
   layoutScroll(state, contentWidth, viewportHeight, height);
   var left = -contentWidth / 2, columnWidth = contentWidth * .45, gutter = 24 * scale, statWidth = contentWidth - columnWidth - gutter;
-  var portraitSize = Math.min(180 * scale, columnWidth - 20 * scale), profileX = left + columnWidth / 2;
+  var portraitSize = Math.min(226 * scale, columnWidth - 20 * scale), profileX = left + columnWidth / 2;
   style(state.name, 30, scale, true, cc.Label.HorizontalAlign.CENTER); style(state.role, 25, scale, true, cc.Label.HorizontalAlign.CENTER);
   var nameHeight = measure(state.name, columnWidth - 12 * scale), roleWidth = columnWidth - 60 * scale, roleHeight = measure(state.role, roleWidth);
   var typeHeight = Math.max(44 * scale, roleHeight + 14 * scale), profileHeight = portraitSize + 28 * scale + nameHeight + 14 * scale + typeHeight + 18 * scale;
@@ -305,6 +315,7 @@ function layout(ui, state) {
   state.portraitCard.setContentSize(portraitSize, portraitSize);
   state.portraitCard.setPosition(0, -profileBottom / 2 - portraitSize / 2 - 12 * scale - profileInset);
   fit(state.portrait, portraitSize, portraitSize);
+  fitModel(state);
   state.name.node.setPosition(0, -profileBottom / 2 - portraitSize - 24 * scale - nameHeight / 2 - profileInset);
   state.typeButton.setContentSize(columnWidth - 12 * scale, typeHeight);
   state.typeButton.setPosition(0, -profileBottom / 2 - portraitSize - 24 * scale - nameHeight - 12 * scale - typeHeight / 2 - profileInset);
@@ -443,6 +454,71 @@ function loadPortrait(ui, icon, done) {
     entry.callbacks.splice(0).forEach(function (callback) { callback(frame); });
   });
 }
+function fitModel(state) {
+  var preview = state.modelPreview, bounds = preview && preview.bounds;
+  if (!bounds) return;
+  var scale = Math.min(state.portraitCard.width / bounds.width, state.portraitCard.height / bounds.height) * .95;
+  preview.node.scale = scale;
+  preview.node.setPosition(-(bounds.x + bounds.width / 2) * scale, -(bounds.y + bounds.height / 2) * scale);
+}
+function settleModel(state) {
+  var preview = state.modelPreview;
+  if (!preview || preview.bounds) return;
+  var renderer = preview.renderer, bounds;
+  if (renderer._nativeSkeleton && renderer._nativeSkeleton.getBoundingBox) bounds = renderer._nativeSkeleton.getBoundingBox();
+  else if (renderer._skeleton && renderer._skeleton.getBounds) {
+    var offset = new sp.spine.Vector2(), size = new sp.spine.Vector2();
+    renderer._skeleton.getBounds(offset, size, []);
+    bounds = { x: offset.x, y: offset.y, width: size.x, height: size.y };
+  }
+  if (!bounds || !finite(bounds.x + bounds.y + bounds.width + bounds.height) || !(bounds.width > 0 && bounds.height > 0)) {
+    if (--preview.frames <= 0) { preview.node.destroy(); state.modelPreview = null; }
+    return;
+  }
+  preview.bounds = bounds;
+  fitModel(state);
+  preview.node.opacity = 255;
+  state.portrait.node.active = false;
+}
+function loadModel(ui, state, visual) {
+  if (!visual.prefab || !ui.loadPrefab || typeof sp === "undefined" || !sp.Skeleton) return;
+  var bundle = "KinghtFallEnemy", generation = ui._resourceGeneration;
+  var key = visual.prefab + ":" + visual.layer;
+  state.visualKey = key;
+  state.visualGeneration = generation;
+  function present(prefab) {
+    if (!current(ui, state) || state.visualKey !== key || state.visualGeneration !== generation || ui._resourceGeneration !== generation) return;
+    var root = prefab && prefab.data, sourceNode = root && (root.getChildByName(visual.layer) || root.getChildByName("spAni"));
+    var source = sourceNode && sourceNode.getComponent(sp.Skeleton);
+    if (!source || !source.skeletonData || state.modelPreview) return;
+    // Only copy the renderer. The prefab's combat, physics and sound
+    // components must never activate in this UI.
+    var mount = node(state.portraitCard, "FullModel");
+    mount.opacity = 1;
+    try {
+      var renderer = mount.addComponent(sp.Skeleton);
+      renderer.premultipliedAlpha = source.premultipliedAlpha;
+      renderer.skeletonData = source.skeletonData;
+      if (source.defaultSkin) renderer.setSkin(source.defaultSkin);
+      var idle = renderer.findAnimation("idle") ? "idle" : source.defaultAnimation;
+      if (idle && renderer.findAnimation(idle)) renderer.setAnimation(0, idle, false);
+      renderer.update(0);
+      renderer.updateWorldTransform();
+      renderer.paused = true;
+      state.modelPreview = { node: mount, renderer: renderer, frames: 4 };
+      settleModel(state);
+    } catch (error) {
+      mount.active = false;
+      mount.destroy();
+      state.modelPreview = null;
+      cc.warn("Enemy Guide could not display " + visual.prefab, error);
+    }
+  }
+  var assets = state.game._stageAssets && state.game._stageAssets.assets;
+  var prepared = assets && assets[bundle + "/" + visual.prefab + ":prefab"];
+  if (prepared) present(prepared);
+  else ui.loadPrefab(bundle, visual.prefab, present);
+}
 function refresh(ui, state) {
   if (!current(ui, state)) return;
   var reopenTypes = !!state.typeTooltip; closeTypes(state);
@@ -454,6 +530,17 @@ function refresh(ui, state) {
   bindText(state.page, "enemyGuide.page", [state.index + 1, state.ids.length]);
   var compactCaptions = { attackRate: "attackRateShort", movement: "movementShort", range: "rangeShort", sight: "sightShort" };
   state.stats.forEach(function (cell, index) { var key = model.stats[index][0]; bindText(cell.label, "enemyGuide." + (compactCaptions[key] || key)); bindText(cell.value, model.stats[index][1]); });
+  var visualKey = model.visual.prefab + ":" + model.visual.layer;
+  if (state.visualKey !== visualKey || state.visualGeneration !== ui._resourceGeneration) {
+    if (state.modelPreview) {
+      state.modelPreview.node.active = false;
+      state.modelPreview.node.destroy();
+      state.modelPreview = null;
+    }
+    state.visualKey = null;
+    state.portrait.node.active = true;
+    loadModel(ui, state, model.visual);
+  }
   state.portrait.spriteFrame = null;
   state.roleIcon.spriteFrame = null; state.roleIcon.node.color = cc.color(model.roleTint);
   var version = state.version;
@@ -536,7 +623,7 @@ function update(ui) {
   syncMarkers(ui);
   var state = ui._enemyGuide; if (!state) return;
   if (!current(ui, state) || ui.node && ui.node.activeInHierarchy === false) close(ui);
-  else layout(ui, state);
+  else { settleModel(state); layout(ui, state); }
 }
 exports.bind = bind; exports.open = open; exports.close = close; exports.update = update;
 exports.describe = describe; exports.describeTypes = typeGuide; exports.safeBounds = safeBounds;

@@ -14,7 +14,7 @@ async function verify(){
  for(const id of ['a','a-side','b','c','d']){
   timeline.push({id,unitId:1,spawnId:id==='a-side'?2:1,count:3,startSeconds:0,intervalSeconds:.5,...(id.startsWith('a')?{unitGroupId:'first-card'}:{})});
  }
- const original=clone(value);let version=1,holdLayout=null;const undo=[],redo=[],calls=[];
+ const original=clone(value);let version=1,holdLayout=null,holdWave=null;const undo=[],redo=[],calls=[],waveRequests=[];
  const snapshot=key=>({key,version,value:clone(key.startsWith('map:')?map:value),dirty:version>1,issues:[],affected:[],canUndo:!!undo.length,canRedo:!!redo.length,buildingPreview:{buildings:{},images:{},errors:[],runtimePath:null}});
  const catalog=()=>({version,maps:[{id:map.id,name:map.name}],stages:[{id:value.id,variant:'A',level:1,name:'Gestures',mapId:map.id,waves:1}],units:[{id:1,name:'Infantry'}],library:[],images:{},buildingLooks:{},interval:.5});
  const ipc=async(name,q)=>{
@@ -29,9 +29,14 @@ async function verify(){
   }
   if(name==='world-wave-change'){
    assert(q.version===version,'wave fields use the latest draft revision');
-   undo.push(value);
-   const WaveCfg=value.config.WaveCfg.slice();WaveCfg[q.waveIndex]=clone(q.wave);
-   value={...value,config:{...value.config,WaveCfg}};version++;redo.length=0;
+   waveRequests.push(q);
+   if(holdWave){const blocker=holdWave;holdWave=null;await blocker;}
+   for(const wave of (q.intermediateWaves||[]).concat([q.wave])){
+    undo.push(value);
+    const WaveCfg=value.config.WaveCfg.slice();WaveCfg[q.waveIndex]=clone(wave);
+    value={...value,config:{...value.config,WaveCfg}};version++;
+   }
+   redo.length=0;
    const {value:ignored,buildingPreview,...metadata}=snapshot(q.key);return {...metadata,waveIndex:q.waveIndex,wave:clone(q.wave)};
   }
   if(name==='world-change'){assert(q.version===version,'each gesture uses the current draft revision');undo.push(clone(value));value=clone(q.value);version++;redo.length=0;return snapshot(q.key);}
@@ -133,6 +138,50 @@ async function verify(){
   await click('Undo');
   await click('Undo');
   assert(root.querySelector('.world-wave-unit-list').children[0].dataset.entryId==='a','Undo restores the previous wave card order');
+  const testedCard=root.querySelector('[data-entry-id="a"].world-wave-unit-card');
+  const timing=testedCard.querySelector('details'),startInput=timing.querySelector('[aria-label="Starts at (s)"]');
+  const intervalInput=timing.querySelector('[aria-label="Interval (s)"]');
+  for(const input of [startInput,intervalInput]){
+   const row=input.closest('.world-timing-row'),presets=row.querySelector('.world-timing-presets');
+   const [choices,minus,amount,plus]=[presets,row.querySelector('.world-timing-decrease'),input,row.querySelector('.world-timing-increase')].map(node=>node.getBoundingClientRect());
+   assert(choices.right<=minus.left&&minus.right<=amount.left&&amount.right<=plus.left&&plus.right<=row.getBoundingClientRect().right,
+    'presets fit to the left of the minus, amount and plus controls');
+  }
+  const pressTiming=label=>timing.querySelector('[aria-label="'+label+'"]').click();
+  const beforeTiming=version,requestCount=waveRequests.length;
+  const waitForWaveRequest=async count=>{
+   for(let i=0;i<100&&waveRequests.length<requestCount+count;i++)await pause(10);
+   assert(waveRequests.length===requestCount+count,'queued timing batch reaches the draft API');
+  };
+  let finishFirst,finishNext;
+  holdWave=new Promise(resolve=>finishFirst=resolve);
+  try{
+   pressTiming('Increase start time by 0.5 seconds');
+   pressTiming('Increase start time by 0.5 seconds');
+   await Promise.resolve();
+   assert(startInput.value==='1'&&timing.querySelector('summary').textContent.includes('1 s / every 0.5 s · Manual')&&version===beforeTiming,
+    'timing buttons immediately update the input and linked card summary');
+   assert(!find('Save').disabled,'a queued timing change enables Save immediately');
+   await waitForWaveRequest(1);
+   holdWave=new Promise(resolve=>finishNext=resolve);
+   pressTiming('Set interval to 3 seconds');
+   pressTiming('Decrease start time by 0.5 seconds');
+   await Promise.resolve();
+   assert(startInput.value==='0.5'&&intervalInput.value==='3'&&timing.querySelector('summary').textContent.includes('0.5 s / every 3 s · Manual'),
+    'a preset and a half-second step are visible while earlier changes are still pending');
+   finishFirst();
+   await waitForWaveRequest(2);
+   assert(startInput.value==='0.5'&&intervalInput.value==='3'&&timing.querySelector('summary').textContent.includes('0.5 s / every 3 s · Manual'),
+    'an earlier draft reply keeps the latest visible timing values');
+  }finally{finishFirst();finishNext?.();}
+  await settle();
+  const editedTiming=()=>value.config.WaveCfg[0].SpawnTimeline.find(row=>row.id==='a');
+  assert(version===beforeTiming+4&&editedTiming().startSeconds===.5&&editedTiming().intervalSeconds===3&&
+   waveRequests.slice(requestCount).every(request=>request.intermediateWaves?.length===1),'four timing changes share two draft requests in order');
+  assert(startInput.isConnected&&intervalInput.isConnected,'timing updates keep the same input nodes');
+  await click('Undo');assert(editedTiming().startSeconds===1&&editedTiming().intervalSeconds===3,'Undo reverts only the most recent timing press');
+  await click('Undo');await click('Undo');await click('Undo');
+  assert(JSON.stringify(value.config.WaveCfg[0].SpawnTimeline)===schedule,'undoing each timing step restores the original schedule');
   await click('Paths');
   await press(current().nodes[1]);assert(state.selection[0]==='node:point:mid'&&field('X'),'colon-containing node IDs select their exact point');const pendingX=field('X'),unchangedVersion=version;pendingX.focus();pendingX.value='25';pendingX.dispatchEvent(new Event('input',{bubbles:true}));assert(find('Save').disabled===false&&version===unchangedVersion,'a pending first field edit enables Save without writing data');pendingX.onchange();await settle();assert(current().nodes.find(n=>n.id==='point:mid').x===25,'position editing preserves the complete authored node ID');
   const edge=current().edges[0],a=current().nodes[0],b=current().nodes[1];await press({x:a.x+(b.x-a.x)*.3,y:a.y+(b.y-a.y)*.3},{ctrlKey:true});assert(state.selection[0]==='edge:'+edge.id,'Ctrl-click selects the complete connection ID');field('Branch weight').value='3';field('Branch weight').onchange();await settle();assert(current().edges.find(e=>e.id==='segment:first').weight===3,'connection settings edit colon-containing edge IDs');

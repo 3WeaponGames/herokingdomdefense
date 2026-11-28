@@ -96,10 +96,15 @@ var def_KinghtFallGameCtrlData = function () {
       return task;
     }
     var legacy = manager.getGameTask(Number(this.levelCfg.Level) === 1 ? 1 : 2);
-    if (!checkpoint) task.list = (Number(legacy.MissionType) === 2 ?
-      $z1KinghtFallModle.default.getInstance().randomArray(legacy.MissionID, legacy.MissionNumber) : legacy.MissionID).slice();
+    if (!checkpoint) task.list = Number(legacy.MissionType) === 2 ?
+      require("BattleTaskObjectives").planStructures(this.levelCfg, (manager.data || {}).BuildEnum || {},
+        legacy.MissionID, Math.min(legacy.MissionNumber, legacy.Award.length), Math.random) : legacy.MissionID.slice();
     task.reward = legacy.Award.slice(0, task.list.length).map(function (reward) { return { id: reward[0], num: reward[1] }; });
     return task;
+  };
+  _ctor.prototype.structureTaskReady = function (index) {
+    var task = this.taskInfo, id = Number(task.list[index]);
+    return !task.authored && Number.isInteger(id) && require("BattleTaskObjectives").structureReady(id, this.getBulidList());
   };
   _ctor.prototype.hasBattleTaskStructure = function (target) {
     var kinds = $z1KinghtFallEnum.KinghtFallEnumBuildEnum;

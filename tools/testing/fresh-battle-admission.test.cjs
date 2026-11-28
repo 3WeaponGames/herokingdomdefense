@@ -36,7 +36,7 @@ function fixture(saved, { native = false } = {}) {
   Object.assign(data, { getLevelCfgById: id => id <= config.GameTools.campaignStageLimit ? config.LevelCfg[id - 1] : undefined, getGameTask: id => config.InGameTaskCfg[id - 1],
     getParamsCfgById: id => config.ParameterCfg[id].Value, getTreasureCfg: () => config.TreasureCfg });
   const gameConfig = { KinghtFallUIID: ids, KinghtFallBundelName: { IconMap: 'maps' }, KinghtFallParameter: { FollowMode: 0, InitGold: 0 }, KinghtFallAudioId: {}, KinghtFallEventName: {} };
-  Object.assign(modules, { RelicEligibility: require("../../assets/_script/RelicEligibility"), RelicRuntime, AuthoredSpawnPlan, EndlessWaves, GAD_Configs, KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton(player) }, KinghtFallDataMgr: { KinghtFallDataMgr: singleton(data) },
+  Object.assign(modules, { BattleTaskObjectives: require("../../assets/_script/BattleTaskObjectives"), RelicEligibility: require("../../assets/_script/RelicEligibility"), RelicRuntime, AuthoredSpawnPlan, EndlessWaves, GAD_Configs, KinghtFallPlayerMgr: { KinghtFallPlayerMgr: singleton(player) }, KinghtFallDataMgr: { KinghtFallDataMgr: singleton(data) },
     KinghtFallEnum: enums, KinghtFallConfig: gameConfig, Config: { UIID: { UINONE: 'none', UITouch: 'touch', UITips: 'tips' } }, Appcfg: { BaseEventName: { ShowTransition: 'transition', blocktouch: 'input', OpenUI: 'open' } },
     EventMgr: { EventMgr: singleton({ emit: (...args) => events.push(args) }) }, KinghtFallModle: { default: singleton({ randomArray: (list, count) => list.slice(0, count) }), KinghtFallGameStage: {} },
     TestMode: { TestMode: singleton({ setGameplayTarget() {}, removeGameplayTarget() {}, readGameplayInput: () => ({ pause: true, x: 1 }) }) },

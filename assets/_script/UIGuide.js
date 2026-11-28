@@ -205,7 +205,7 @@ var def_UIGuide = function (t) {
       }
     }, this.cfg.delay);
     this.node.on(cc.Node.EventType.TOUCH_START, function (e) {
-      if (t.canClose && !t.isclose) {
+      if (t.canClose && !t.isclose && !t.cfg.actionText) {
         if (t.cfg.isWeek || !t.mask.node.active) {
           return void t.resolvePress(true);
         }
@@ -215,7 +215,7 @@ var def_UIGuide = function (t) {
       }
     }, this);
     this.mask.node.getChildByName("bg").on(cc.Node.EventType.TOUCH_START, function (e) {
-      if (t.canClose && !t.isclose) {
+      if (t.canClose && !t.isclose && !t.cfg.actionText) {
         if (t.cfg.isWeek || !t.mask.node.active) {
           return void t.resolvePress(true);
         }
@@ -263,6 +263,44 @@ var def_UIGuide = function (t) {
         this.ndArr.setPosition(t);
     }
   };
+  _ctor.prototype.showAction = function (text) {
+    if (!text) {
+      if (this.actionLabel) this.actionLabel.node.parent.active = false;
+      return;
+    }
+    if (!this.actionLabel) {
+      var button = new cc.Node("Tutorial action"), width = 230, height = 52;
+      button.parent = this.tipBg;
+      button.setPosition(0, -this.tipBg.height / 2 + 40);
+      var fill = button.addComponent(cc.Graphics);
+      fill.fillColor = cc.color("#ffdc56");
+      fill.strokeColor = cc.color("#423015");
+      fill.lineWidth = 3;
+      fill.roundRect(-width / 2, -height / 2, width, height, 12);
+      fill.fill();
+      fill.stroke();
+      var caption = new cc.Node("Caption");
+      caption.parent = button;
+      var label = caption.addComponent(cc.Label);
+      label.fontSize = 26;
+      label.enableBold = true;
+      label.enableWrapText = false;
+      label.overflow = cc.Label.Overflow.SHRINK;
+      label.horizontalAlign = cc.Label.HorizontalAlign.CENTER;
+      label.verticalAlign = cc.Label.VerticalAlign.CENTER;
+      caption.color = cc.color("#30210c");
+      caption.setContentSize(width - 14, height);
+      button.setContentSize(width, height);
+      button.on(cc.Node.EventType.TOUCH_START, function (event) { event.stopPropagation(); });
+      button.on(cc.Node.EventType.TOUCH_END, function (event) {
+        event.stopPropagation();
+        if (this.canClose && this.cfg.actionText) this.resolvePress(true);
+      }, this);
+      this.actionLabel = label;
+    }
+    this.actionLabel.node.parent.active = true;
+    require("LanguageMgr").LanguageMgr.getInstance().bindLabel(this.actionLabel, text);
+  };
   _ctor.prototype.showTip = function (t) {
     if (t && t.length > 0) {
       this.tipBg.active = true;
@@ -274,6 +312,7 @@ var def_UIGuide = function (t) {
         this.tipBg.setPosition(e);
       }
       this.tipText.string = t;
+      this.showAction(this.cfg.actionText);
       if (this.dismissButton) this.dismissButton.active = !!this.cfg.onDismiss;
       if (this.cfg.showAni) {
         this.spAni.node.active = true;

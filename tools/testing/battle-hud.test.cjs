@@ -79,7 +79,7 @@ function fixture(height=1334,position){
  if(position){const marker=new Node(TaskPosition.marker);marker.parent=ndPath;marker.setPosition(position);}
  const camera={offset:{x:0,y:0},getWorldToScreenPoint(p){return{x:p.x-this.offset.x,y:p.y-this.offset.y};}};
  const ctrGame={ndMain,ndPath,camera,mapSize:{width:1300,height:1600},gameStatus:0,
-  gameData:{coin:42,round:4,levelCfg:{Name:'5. Peaceful Plains',WaveCfg:Array(10),InGameCoefficient:3},taskInfo:{index:0,list:[4,5],stage:0,reward:[{id:2003,num:2},{id:2003,num:2}]}}};
+  gameData:{coin:42,round:4,structureTaskReady:()=>false,levelCfg:{Name:'5. Peaceful Plains',WaveCfg:Array(10),InGameCoefficient:3},taskInfo:{index:0,list:[4,5],stage:0,reward:[{id:2003,num:2},{id:2003,num:2}]}}};
  const ui={ctrGame,T:translate,ctrUI:{node:parent},ndCoin:nodes[225],btnSuspend:nodes[184],btnBuildInfo:nodes[189],ndLevelInfo:nodes[236],ndTask:nodes[199],btnAddCoin:nodes[165]};
  ui.loadSpriteFrame=(bundle,icon,callback)=>iconLoads.push({bundle,icon,callback});
  const initStart=uiSource.indexOf('function () {',uiSource.indexOf('_ctor.prototype.initView = '));

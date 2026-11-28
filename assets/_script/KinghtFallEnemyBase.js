@@ -217,7 +217,7 @@ var def_KinghtFallEnemyBase = function (t) {
       var regenTicks = Math.floor(regenTime);
       frame.timers.HealthRegen = regenTime - regenTicks;
       if (regenTicks > 0 && this.hp < this.hpMax) {
-        RelicRuntime.heal(this, regen * regenTicks, { silent: true });
+        RelicRuntime.heal(this, regen * regenTicks);
         if (!attackCurrent(this, frame)) return false;
       }
     }
@@ -289,9 +289,11 @@ var def_KinghtFallEnemyBase = function (t) {
               if (!targetNode) { this.doWait(); break; }
             }
             var destination = o && o.tag ? Navigation.attackPositionOf(o, this, game) : Navigation.positionOf(targetNode, game);
-            var movement = Navigation.moveTo(this, game, destination, t, o && o.breachRoute);
-            if (o && movement.blockingWall) {
-              this._objectiveBreach = { cfg: this.cfg, goal: o.tag, generation: o.tag._combatGeneration,
+            var routeRule = !o && this.cfg.BuildingCross && targeting(this);
+            var breachRoute = o ? o.breachRoute : routeRule && routeRule.mode === "hero";
+            var movement = Navigation.moveTo(this, game, destination, t, breachRoute);
+            if (movement.blockingWall) {
+              this._objectiveBreach = { cfg: this.cfg, goal: targetNode, generation: targetNode._combatGeneration,
                 position: destination, wall: movement.blockingWall };
               Navigation.reset(this);
               break;
@@ -405,10 +407,15 @@ var def_KinghtFallEnemyBase = function (t) {
     Navigation.reset(this);
   };
   _ctor.prototype.getUpdateTarget = function () {
+    var game = $z1KinghtFallUIGame.default.instance.ctrGame;
+    var selected = this._selectUpdateTarget(game);
+    require("EnemyTargeting").assignWall(this, game, selected);
+    return selected;
+  };
+  _ctor.prototype._selectUpdateTarget = function (game) {
     var rule = targeting(this);
     var forced=!rule&&RelicCombat.tauntedTarget(this);
     if(forced)return {tag:forced.node,actor:forced,canAtt:cc.Vec2.distance(this.node.getPosition(),forced.node.getPosition())<=this.cfg.AttackRange};
-    var game = $z1KinghtFallUIGame.default.instance.ctrGame;
     // A focused hero entering sight can interrupt the route on this update.
     if (rule && rule.mode !== "priority") {
       var objective = require("EnemyTargeting").find(this, game, rule);
@@ -521,7 +528,7 @@ var def_KinghtFallEnemyBase = function (t) {
     if (n) {
       if (!attackCurrent(this, record)) return;
       var targetNode = n.node, targetGeneration = targetNode && targetNode._combatGeneration;
-      var impact = cc.v2(Navigation.attackPointOf(n, game, Navigation.positionOf(this.node, game), selected.polygon));
+      var impact = cc.v2(Navigation.attackPointOf(n, game, Navigation.positionOf(this.node, game), selected.polygon, selected.wallPoint));
       this.vec2_2.x = impact.x; this.vec2_2.y = impact.y;
       GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
       var origin = this.vec2_1.clone(), dealt = n.onAttacked(e, t);
@@ -698,16 +705,15 @@ var def_KinghtFallEnemyBase = function (t) {
         node: this.node, generation: this.node._combatGeneration, timers: this.time, cfg: this.cfg,
         ui: ui, game: game, data: game.gameData, epoch: game._combatEpoch
       };
-      var soundHp = this.hp;
+      var previousHp = this.hp;
       this.hp += t * this.hpMax;
       this.hp > this.hpMax && (this.hp = this.hpMax);
-      if (this.hp > soundHp && BattleSounds.effect) BattleSounds.effect("healing-receive", this);
       if (this.hpctrl) this.hpctrl.setHp(this.hp, this.hpMax);
       if (!visual) {
         if (this.hpctrl) this.hpctrl.showAni();
         return;
       }
-      if (this.hp <= soundHp || !incomingCurrent(this, life)) return;
+      if (this.hp <= previousHp || !incomingCurrent(this, life)) return;
       if (visual.showBuiltin) presentation.show(this, game, presentation.healingEffect);
       if (visual.resource && incomingCurrent(this, life)) presentation.show(this, game, visual);
     }

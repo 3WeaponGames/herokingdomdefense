@@ -40,3 +40,30 @@ test('a failed weapon save leaves the equipped weapon available for a retry',()=
 test('tutorial-only draws cannot be used outside the relic lesson or mixed with paid or ad draws',()=>{
  const h=harness(),before=clone(h.player.udata.data);assert.equal(draw(h),null);assert.deepEqual(clone(h.player.udata.data),before);h.player.guideData.setGuideState(5,1);assert.equal(h.player.drawTreasures(box,2,[],false,true),null);assert.equal(h.player.drawTreasures(box,1,[],true,true),null);assert.equal(h.player.drawTreasures(box,1,[{id:2002,num:100}],false,true),null);assert.equal(h.player.guideData.getGuideTips(5),0);
 });
+
+test('profile creation enables Auto Skill Cast and a returning profile keeps its choice',()=>{
+ const key='project-cocos.autoSkillCast',withControls=({globals})=>{globals.cc.sys={localStorage:globals.localStorage};};
+ const boot=saved=>{const h=harness(saved,withControls);delete h.player.udata.data;h.player.udata.getData();return h;};
+ const fresh=boot({});
+ assert.equal(fresh.storage.get(key),'1');
+ const preference=fresh.load('ControlPreferences').autoSkillCast;
+ assert.equal(preference.get(),true);
+ preference.set(false);
+ const reopened=boot(fresh.persist());
+ assert.equal(reopened.load('ControlPreferences').autoSkillCast.get(),false);
+ const saved=fresh.persist();delete saved[key];
+ const legacy=boot(saved);
+ assert.equal(legacy.load('ControlPreferences').autoSkillCast.get(),false);
+ assert.equal(legacy.storage.has(key),false);
+ const explicit=boot({[key]:'0'});
+ assert.equal(explicit.storage.get(key),'0');
+});
+
+test('starting with empty preview progress leaves the device Auto Skill Cast preference alone',()=>{
+ const h=harness({},({globals})=>{globals.cc.sys={localStorage:globals.localStorage};});
+ const user=h.player.udata;
+ assert.equal(h.Cache.previewProgress([user.gameKey],true),true);
+ delete user.data;
+ user.getData();
+ assert.equal(h.storage.has('project-cocos.autoSkillCast'),false);
+});

@@ -1638,6 +1638,8 @@ var def_KinghtFallGameCtrl = function (t) {
       }
       var s = record.getTaskInfo(stage);
       if (s) this.gameData.taskInfo = this.gameData.createTaskInfo(s);
+      var task = this.gameData.taskInfo;
+      if (task.stage === 0 && this.gameData.structureTaskReady(task.index)) task.stage = 1;
       return true;
     }
     return false;

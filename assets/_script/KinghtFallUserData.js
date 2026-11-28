@@ -75,7 +75,7 @@ var exp_KinghtFallUserData = function (t) {
     if (secondaryVersion) this.data.secondaryEquipmentVersion = secondaryVersion;
     return this.data;
   };
-  _ctor.prototype.initData = function () {
+  _ctor.prototype.initData = function (newProfile) {
     var t = false;
     this.maxPower = parseInt($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.StaminaLimit));
     this.powerRecoveryTime = 1e3 * parseInt($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.StaminaRecover));
@@ -90,6 +90,10 @@ var exp_KinghtFallUserData = function (t) {
     }
     $z1KinghtFallConfig.KinghtFallParameter.FollowMode = this.data.followMode;
     t && this.saveData();
+    if (newProfile && !this.saveBlockedByRecovery && !this.recoveryErrors) {
+      var cache = require("CacheUtils").CacheUtils;
+      if (!cache.isPreviewProgress(this.gameKey)) require("ControlPreferences").autoSkillCast.setDefault(true);
+    }
   };
   _ctor.prototype.validateSaveRecord = function (data) {
     var energyFields = {};

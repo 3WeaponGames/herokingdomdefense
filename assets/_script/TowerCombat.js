@@ -110,6 +110,7 @@ function sniperContacts(enemies, start, end, parent, hits, positionOf) {
     var previous = hits.get(actor.node);
     if (previous && previous.generation === actor.node._combatGeneration) continue;
     var position = positionOf ? positionOf(actor) : point(actor.node, parent);
+    if (!position) continue;
     var fraction = projectile.segmentEntry(position, start, end, projectile.arrowHitRadius);
     if (fraction === null) continue;
     var entry = capture(actor, position);

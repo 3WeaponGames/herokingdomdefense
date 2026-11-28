@@ -117,6 +117,50 @@ test('later stages default to two Silver per Advisor task and collect it as batt
   }
 });
 
+test('default Advisor missions draw from feasible early, mid and late tasks on every campaign stage', () => {
+  const pool = authored.InGameTaskCfg[1];
+  const construction = [[2,1,7],[3,3,9],[4,2,6],[5,8,11],[6,5,10]];
+  for (const stage of authored.LevelCfg.filter(row => row.Level > 1 && row.Level <= authored.GameTools.campaignStageLimit)) {
+    const early = stage.HomeLevel1Unlock.map(([kind]) => kind);
+    const middle = early.concat(stage.HomeLevel2Unlock.map(([kind]) => kind));
+    const seen = new Set();
+    for (let seed = 1; seed <= 80; seed++) {
+      let state = seed;
+      const tasks = BattleTaskObjectives.planStructures(stage, authored.BuildEnum, pool.MissionID, pool.MissionNumber,
+        () => ((state = Math.imul(1664525, state) + 1013904223 >>> 0) / 2 ** 32));
+      seen.add(tasks.join(','));
+      assert.equal(tasks.length, 6, 'Stage ' + stage.Level);
+      assert.equal(new Set(tasks).size, tasks.length);
+      assert(tasks.slice(0, 2).every(id => construction.some(([kind,build]) => kind !== 5 && build === id && early.includes(kind))));
+      assert.equal(tasks[2], 4);
+      for (const [kind,build,upgrade] of construction) {
+        if (tasks.includes(build)) assert(middle.includes(kind), 'The plot is available by the planned castle upgrade');
+        if (tasks.includes(upgrade)) assert(tasks.indexOf(upgrade) >= 4 && tasks.indexOf(build) >= 0 && tasks.indexOf(build) < tasks.indexOf(upgrade));
+      }
+    }
+    assert(seen.size > 1);
+  }
+});
+
+test('an already upgraded single mill completes a saved follow-up build mission without buying another', () => {
+  const disk = harness(), stage = 3, config = clone(authored);
+  const h = runtime(disk, config, stage);
+  const mill = h.data.levelCfg.HomeLevel2Unlock.find(([kind]) => kind === 5)[1];
+  buildings(h, {1:2, [mill]:2});
+  const checkpoint = h.g.getCheckpoint();
+  checkpoint.taskList = {index:0,list:[11,8],stage:0,reward:[{id:2003,num:2},{id:2003,num:2}]};
+  assert(disk.player.gameData.setCheckpoint(checkpoint));
+  assert(h.g.loadGame());
+  assert.equal(h.data.taskInfo.stage, 1);
+  const silver = h.data.coin;
+  assert.equal(claimTask(h, true), true);
+  assert.equal(h.data.taskInfo.stage, 1);
+  assert.equal(disk.player.gameData.getTaskInfo(stage).stage, 1);
+  assert.equal(claimTask(h, true), true);
+  assert.equal(h.data.coin, silver + 4);
+  assert.equal(claimTask(h, true), false);
+});
+
 test('authored Royal Advisor tasks preserve order, repeats and payouts across config edits and free retries', () => {
   const disk = harness(), config = clone(authored), stage = 3, level = config.LevelCfg[stage - 1];
   level.InGameCoefficient = 2;

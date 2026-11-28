@@ -90,9 +90,8 @@ function warmMovement(state, surface) {
 }
 function effect(id, owner, options) {
   options = options || {};
-  // All Bruiser healing paths (equipment, relics, kill perks and ally bonuses)
-  // keep their HP benefit without adding a second cartoon cue to an attack.
-  if (owner && owner._relicHero && owner.heroStyle === "bruiser" && (id === "healing-receive" || id === "life-steal")) return false;
+  // Bruiser kill healing stays silent over its confirmed contact.
+  if (owner && owner._relicHero && owner.heroStyle === "bruiser" && id === "life-steal") return false;
   var entry = entries && entries[id], state = context(owner, options);
   var closingMenu = options.menu && options.closing;
   if (!entry || entry.loop || !current(state) || !audible(state) || paused(state) && entry.group !== "signal" && entry.group !== "ui" || !closingMenu && !validNode(owner)) return false;

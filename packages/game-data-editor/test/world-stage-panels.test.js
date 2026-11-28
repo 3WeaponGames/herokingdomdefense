@@ -509,7 +509,7 @@ test('wave count and timing fields select all on click and commit once on Enter'
   {id:'a',unitId:3,spawnId:1,count:7,startSeconds:8.5,intervalSeconds:1,routeGraphId:'one',future:{keep:1},editorManualTiming:true});
 });
 
-test('spawn and wave timing fields have three step sizes on each side and timing overrides lock their row',()=>{
+test('spawn and wave timing fields set presets or step by half a second and wave overrides lock their row',()=>{
  const f=fixture(),stage=f.state.snap.value,spawn=stage.spawns[0],wave=stage.config.WaveCfg[0];
  spawn.defaultTiming={startSeconds:1.25,intervalSeconds:.75};
  Object.assign(wave.SpawnTimeline[0],{count:2,...spawn.defaultTiming,inheritSpawnTiming:['startSeconds','intervalSeconds']});
@@ -521,40 +521,43 @@ test('spawn and wave timing fields have three step sizes on each side and timing
  f.state.tab='Spawns';f.state.selection=['spawn:1'];redraw();
  const section=find(node=>node.tagName==='details'&&node.children[0].textContent==='Default timing');
  assert(section.open);assert.equal(f.edits(),0);
- const startRow=find(node=>node.classList.contains('world-timing-row'),section);
- for(const [side,labels] of [['decrease',['−0.5','−2','−5']],['increase',['+0.5','+2','+5']]]){
-  assert.deepEqual(find(node=>node.classList.contains('world-timing-'+side),startRow).children.map(node=>node.textContent),labels);
+ const rows=descendants(section).filter(node=>node.classList.contains('world-timing-row'));
+ for(const [row,presets] of [[rows[0],['1','5','10','15']],[rows[1],['1','3','5','7']]]){
+  assert.deepEqual(find(node=>node.classList.contains('world-timing-presets'),row).children.map(node=>node.textContent),presets);
+  assert.deepEqual(row.children.filter(node=>node.tagName==='button').map(node=>node.textContent),['−','+']);
  }
  step('Increase start time by 0.5 seconds',section).onclick();
  assert.equal(defaults().startSeconds,1.75);assert.equal(lane().startSeconds,1.75);
- step('Increase start time by 2 seconds',section).onclick();
- assert.equal(lane().startSeconds,3.75);
- step('Increase start time by 5 seconds',section).onclick();
- assert.equal(lane().startSeconds,8.75);
- step('Decrease start time by 5 seconds',section).onclick();
- step('Decrease start time by 2 seconds',section).onclick();
- assert.equal(lane().startSeconds,1.75);
+ step('Set start time to 5 seconds',section).onclick();
+ assert.equal(defaults().startSeconds,5);assert.equal(lane().startSeconds,5);
+ step('Decrease start time by 0.5 seconds',section).onclick();
+ assert.equal(lane().startSeconds,4.5);
  step('Decrease interval by 0.5 seconds',section).onclick();
  assert.equal(defaults().intervalSeconds,.25);assert.equal(lane().intervalSeconds,.25);
  assert(step('Decrease interval by 0.5 seconds',section).disabled);
+ step('Set interval to 3 seconds',section).onclick();
+ assert.equal(defaults().intervalSeconds,3);assert.equal(lane().intervalSeconds,3);
 
  f.state.tab='Waves';redraw();
  const card=find(node=>node.dataset.entryId==='a');
- step('Decrease start time by 0.5 seconds',card).onclick();
- assert.equal(lane().startSeconds,1.25);
+ step('Set start time to 10 seconds',card).onclick();
+ assert.equal(lane().startSeconds,10);
  assert.equal(lane().editorManualTiming,true);
  assert(!Object.hasOwn(lane(),'inheritSpawnTiming'));
- assert.equal(defaults().startSeconds,1.75);
- step('Increase interval by 5 seconds',card).onclick();
- assert.equal(lane().intervalSeconds,5.25);
- step('Decrease interval by 2 seconds',card).onclick();
- assert.equal(lane().intervalSeconds,3.25);
+ assert.equal(defaults().startSeconds,4.5);
+ step('Set interval to 7 seconds',card).onclick();
+ assert.equal(lane().intervalSeconds,7);
+ const editCount=f.edits();
+ step('Set interval to 7 seconds',card).onclick();
+ assert.equal(f.edits(),editCount);
+ step('Decrease interval by 0.5 seconds',card).onclick();
+ assert.equal(lane().intervalSeconds,6.5);
  assert(!Object.hasOwn(lane(),'inheritSpawnTiming'));
  redraw();
  const updatedCard=find(node=>node.dataset.entryId==='a');
  const reset=find(node=>node.tagName==='button'&&node.textContent==='Use spawn defaults',updatedCard);
  reset.onclick();
- assert.deepEqual([lane().startSeconds,lane().intervalSeconds],[1.75,.25]);
+ assert.deepEqual([lane().startSeconds,lane().intervalSeconds],[4.5,3]);
  assert.deepEqual(lane().inheritSpawnTiming,['startSeconds','intervalSeconds']);
  assert(!Object.hasOwn(lane(),'editorManualTiming'));
 });
@@ -644,7 +647,7 @@ test('Tasks position previews inherited task settings and customizes only the ac
  for(const level of [1,7]){
   const f=battleTaskFixture(level),before=clone(f.state.snap.value),original=clone(f.state.catalog.battleTasks);
   assert.equal(f.rows(),undefined);
-  assert.match(f.context.right.textContent,level===1?/default tasks in order/:/chooses 2 tasks at random/);
+  assert.match(f.context.right.textContent,level===1?/default tasks in order/:/up to 2 default tasks across early, mid and late phases/);
   assert.equal(f.edits(),0);
   f.button('Customize tasks').onclick();
   const expected=clone(before);expected.config.BattleTasks=original.defaults[level===1?1:2].slice(0,2);

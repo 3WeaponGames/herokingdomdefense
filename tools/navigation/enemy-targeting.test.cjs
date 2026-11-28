@@ -277,19 +277,69 @@ test('castle focus takes the shorter breach route around terrain and resumes pur
     ' with target ' + (unit.getUpdateTarget()?.tag.name || 'none'));
 });
 
-test('hero focus responds to sight immediately and ground units hit the blocking wall first', () => {
+test('ground hero focus hits a nearer blocking wall and immediately switches to an exposed hero', () => {
   const { e, game, hits, make, structure } = pursuit();
   const unit = make('hero', { AttackRange: 110, SearchRange: 20 });
   const wall = structure('Wall', -35, 0, 14, 75);
   game.ctrPlay.node.x = 90;
-  assert.equal(unit.getUpdateTarget(), null);
-  game.ctrPlay.node.x = 0;
   assert.equal(unit.getUpdateTarget().building, wall);
-  unit.doAttack();
-  e.nav.beginFrame(game);
+  game.ctrPlay.node.x = -80;
   assert.equal(unit.getUpdateTarget().actor, game.ctrPlay);
   unit.doAttack();
-  assert.deepEqual(hits, ['Wall','hero']);
+  assert(wall.getIsWork());
+  game.ctrPlay.node.x = 90;
+  unit.doAttack();
+  e.nav.beginFrame(game);
+  assert.equal(unit.getUpdateTarget(), null);
+  game.ctrPlay.node.x = 0;
+  assert.equal(unit.getUpdateTarget().actor, game.ctrPlay);
+  unit.doAttack();
+  assert.deepEqual(hits, ['hero','Wall','hero']);
+});
+
+test('hero-seeking melee units breach the nearer wall instead of taking the long path around it', () => {
+  const { e, game, hits, make, structure } = pursuit();
+  const unit = make('hero', { AttackRange: 12, SearchRange: 220, Speed: 60 });
+  unit.node.setPosition(-145, 0);
+  unit.node.addComponent(e.cc.PhysicsCircleCollider).radius = 10;
+  game.ctrPlay.node.setPosition(145, 0);
+  const wall = structure('Wall', 0, 0, 12, 250);
+  e.box(-70, 0, 30, 100);
+  const moves = [];
+  delete unit.onFindList;
+  unit.doAttackStart = () => { unit.doAttack(); unit.time.Attack = 1; };
+  for (let frame = 0; frame < 450 && !hits.includes('hero'); frame++) {
+    e.setTime(frame * 50);
+    e.nav.beginFrame(game);
+    unit.onUpdate(.05);
+    if (wall.getIsWork()) {
+      assert(unit.node.x < -6, 'the enemy cannot cross the live wall');
+      moves.push(Math.abs(unit.node.y));
+    }
+  }
+  assert(Math.max(...moves) > 50, 'the enemy goes around the terrain');
+  assert(Math.max(...moves) < 125, 'the enemy does not go around the wall');
+  assert.deepEqual(hits, ['Wall', 'hero']);
+});
+
+test('a hero seeker out of sight of the hero clears a wall on its own authored route', () => {
+  const { e, game, hits, make, structure } = pursuit();
+  const unit = make('hero', { AttackRange: 12, SearchRange: 30, Speed: 60 });
+  unit.node.setPosition(-145, 0);
+  unit.node.addComponent(e.cc.PhysicsCircleCollider).radius = 10;
+  game.ctrPlay.node.setPosition(-145, 250);
+  const wall = structure('Wall', 0, 0, 12, 250);
+  delete unit.onFindList;
+  unit.doAttackStart = () => { unit.doAttack(); unit.time.Attack = 1; };
+  assert.equal(unit.getUpdateTarget(), null);
+  for (let frame = 0; frame < 450 && unit.bornInfo.nodeIndex === 0; frame++) {
+    e.setTime(frame * 50);
+    e.nav.beginFrame(game);
+    unit.onUpdate(.05);
+    if (wall.getIsWork()) assert(unit.node.x < -6);
+  }
+  assert.deepEqual(hits, ['Wall']);
+  assert.equal(unit.bornInfo.nodeIndex, 1);
 });
 
 test('a flying ranged enemy ignores walls and stays in flight when it fires', () => {
@@ -437,9 +487,9 @@ test('an F7 batch uses saved focus and flight settings against live blockers wit
     assert(castle._unitTestRadius > 12, 'the short-range actor must reach the wall at its true body clearance');
     assert(castle.node.x < -6 && attacks.get(90001).length > 0);
     assert(attacks.get(90001).every(target => target === wall.node));
-    assert.equal(hero.bornInfo.nodeIndex, 1);
+    assert(hero.node.x < -6 && attacks.get(90002).length > 0);
+    assert(attacks.get(90002).every(target => target === wall.node));
     assert.equal(flight.bornInfo.nodeIndex, 1);
-    assert.deepEqual(attacks.get(90002), []);
     assert.deepEqual(attacks.get(90003), []);
     game.ctrPlay.node.x = 45;
     advance(140);

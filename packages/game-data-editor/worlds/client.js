@@ -21,6 +21,7 @@ function mount(container,options){
  const root=el('div',undefined,'world-tool'),style=el('style');style.textContent=require('../panel/control-theme')(fs.readFileSync(path.join(__dirname,'style.css'),'utf8'));root.appendChild(style);const top=el('div',undefined,'world-top'),tabs=el('div',undefined,'world-tabs'),main=el('div',undefined,'world-main'),left=el('aside',undefined,'world-side'),rail=el('nav',undefined,'world-toolrail'),view=el('div',undefined,'world-view'),right=el('aside',undefined,'world-inspector'),dock=el('aside',undefined,'world-dock'),layersPane=el('section',undefined,'world-layers'),bottom=el('div',undefined,'world-timeline'),status=el('div','Loading…','world-status'),canvas=el('canvas'),hint=el('div','Wheel: zoom · Middle/right drag: pan · Shift: multiple selection · Delete: remove','world-hint');canvas.tabIndex=0;view.appendChild(canvas);view.appendChild(hint);main.appendChild(left);main.appendChild(rail);main.appendChild(view);if(stageMode)main.appendChild(right);else{dock.appendChild(right);dock.appendChild(layersPane);main.appendChild(dock);}[top,tabs,main,bottom,status].forEach(n=>root.appendChild(n));container.appendChild(root);bottom.hidden=true;root.classList.toggle('world-stages',stageMode);const ctx=canvas.getContext('2d'),renderer=Renderer.create();let frame=null,animationTimer=null,resizeTimer=null,loadSerial=0,paletteUI=null,orderCache=null,activeDialog=null,dialogSerial=0,pendingShared=false,sharedScheduled=false,frozenBlockers=null,mapRequestSerial=0,changeTimer=null,deferredRender=false,pendingFit=false;const previewOwner='world-panel-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2),picking=Picking.create(),pictures=ImageRegistry.create({lookup:id=>state.catalog&&(assetTable()[id]||state.catalog.images[id]||state.extraImages&&state.extraImages[id]),onLoad:()=>{artworkRevision++;state.groupPreview=null;draw();},onError:(id,error)=>message(error.message,true)});state.images=pictures.records;canvas.setAttribute('aria-label','Map canvas');
  const draftEditOrigin=stageMode?require('crypto').randomBytes(12).toString('hex'):null;
  const pendingLayoutEdits=[];
+ let waveStepBatch=null,pendingWaveStepBatches=0;
  let layoutView=null;
  const assetMenu=AssetMenu.create(root,{busy:()=>state.closed||state.loading||state.snap&&state.snap.busy,rename:asset=>assetDialog(asset,'rename'),remove:asset=>assetDialog(asset,'delete'),error:error=>message(error.message,true)});
  const objectShadowMenu=ObjectShadowMenu.create(root,{busy:()=>state.closed||state.loading||state.snap?.busy,beforeOpen:()=>assetMenu.close(false),error:error=>message(error.message,true),assign:request=>edit(map=>Object.assign(map,ObjectShadowData.assign(map,request)))});
@@ -647,40 +648,69 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   const snap=await options.ipc('world-change',{key,version:state.snap.version,value});apply(snap);return snap;
  },strict);
 }
- function refreshWaveEdit(index){
+ function refreshWaveEdit(index,changed=true){
   if(state.closed||state.loading)return;
-  const active=document.activeElement,focused=top.contains(active)||left.contains(active)?captureFocus():null;
-  renderTop();
-  if(state.tab==='Waves'){renderLeft();stagePanels.refreshWave(index);}
-  restoreFocus(focused);
+  if(changed&&state.tab==='Waves'){
+   const active=document.activeElement,focused=top.contains(active)||left.contains(active)?captureFocus():null;
+   renderTop();renderLeft();stagePanels.refreshWave(index);restoreFocus(focused);
+  }else{
+   stagePanels.refreshDraftActions();stagePanels.renderValidation();
+  }
   message((state.snap.dirty?'Unsaved draft':'Saved data')+' · Stage layout · '+state.snap.issues.length+' validation issue(s)');
  }
- function editWave(index,fn,strict){
+ function editWave(index,fn,strict,step=false){
   if(state.loading)return edit(fn,strict);
   const key=currentKey();
-  return enqueue(async()=>{
-   const previous=state.snap,config=previous.value.config,original=config.WaveCfg[index];
+  // Join only consecutive step presses on the same wave. Other actions stay
+  // in order, and the short window lets the timing row paint before IPC.
+  if(step&&waveStepBatch?.tail===state.pending&&waveStepBatch.key===key&&waveStepBatch.index===index){
+   waveStepBatch.edits.push(fn);return waveStepBatch.result;
+  }
+  const edits=[fn],ready=step&&new Promise(resolve=>setTimeout(resolve,60));
+  const result=enqueue(async()=>{
+   if(ready)await ready;
+   if(waveStepBatch?.edits===edits)waveStepBatch=null;
+   if(state.closed||currentKey()!==key)return;
+   const previous=state.snap,config=previous.value.config;
    const WaveCfg=config.WaveCfg.slice();
-   WaveCfg[index]={...original};
    const draft={...previous.value,config:{...config,WaveCfg}};
-   fn(draft);
-   if(JSON.stringify(WaveCfg[index])===JSON.stringify(original))return previous;
+   const intermediateWaves=[];
+   for(const change of edits){
+    const before=WaveCfg[index];
+    WaveCfg[index]={...before};
+    change(draft);
+    if(JSON.stringify(WaveCfg[index])!==JSON.stringify(before))intermediateWaves.push(WaveCfg[index]);
+   }
+   if(!intermediateWaves.length)return previous;
+   const updated=WaveCfg[index]=intermediateWaves.pop();
    state.snap={...previous,value:draft,dirty:true};
    try{
     refreshWaveEdit(index);
-    const result=await options.ipc('world-wave-change',{key,version:previous.version,waveIndex:index,wave:WaveCfg[index],origin:draftEditOrigin});
+    const request={key,version:previous.version,waveIndex:index,wave:updated,origin:draftEditOrigin};
+    if(intermediateWaves.length)request.intermediateWaves=intermediateWaves;
+    const result=await options.ipc('world-wave-change',request);
     if(result.key!==key||result.waveIndex!==index||!result.wave)throw Error('The editor returned a different wave.');
     if(state.closed||state.snap.value!==draft)return;
     const {wave,waveIndex,...metadata}=result;
-    WaveCfg[waveIndex]=wave;
+    const changed=JSON.stringify(wave)!==JSON.stringify(updated);
+    if(changed)WaveCfg[waveIndex]=wave;
     state.snap={...previous,...metadata,value:draft};
-    refreshWaveEdit(index);
+    refreshWaveEdit(index,changed);
     return state.snap;
    }catch(error){
     if(!state.closed&&state.snap.value===draft){state.snap=previous;render();}
     throw error;
    }
   },strict);
+  if(!step)return result;
+  const batch={key,index,edits,tail:state.pending};
+  waveStepBatch=batch;pendingWaveStepBatches++;refreshSaveButtonState();
+  batch.result=result.finally(()=>{
+   if(waveStepBatch===batch)waveStepBatch=null;
+   pendingWaveStepBatches--;
+   if(!state.closed)refreshSaveButtonState();
+  });
+  return batch.result;
  }
  function apply(s,allowSwitch,layoutEdit){
  if(state.closed||!s)return;
@@ -1449,7 +1479,7 @@ const layerHeading=el('h3'),layerSearch=el('input'),layerList=el('div',undefined
   if(!stageMode||!state.snap)return;
   const saveButton=top.querySelector('[data-action="save"]');
   if(!saveButton)return;
-  if(state.snap.dirty||pendingLayoutEdits.length){saveButton.disabled=false;return;}
+  if(state.snap.dirty||pendingLayoutEdits.length||pendingWaveStepBatches){saveButton.disabled=false;return;}
   const context=focusContext();
   saveButton.disabled=!Array.from(root.querySelectorAll('input[data-model-value]')).some(input=>
    input.type!=='checkbox'&&input.value!==input.dataset.modelValue&&input.closest('label')?.dataset.focusContext===context);

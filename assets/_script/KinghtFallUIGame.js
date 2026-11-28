@@ -369,19 +369,7 @@ var def_KinghtFallUIGame = function (t) {
     var t = this;
     this.ctrUI.setMoveFunc(this.moveFun.bind(this));
     this.btnStartFight.on(cc.Node.EventType.TOUCH_END, function () {
-      t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
-      $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide8);
-      if (t.canStart && (t.startRoundGame(), !$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGuideTips(2))) {
-        for (var e in t.enemyIconInfo) {
-          if (Object.prototype.hasOwnProperty.call(t.enemyIconInfo, e)) {
-            var i = t.enemyIconInfo[e];
-            if (i.tagNode && i.ndItem && i.ndItem.active) {
-              n.instance.ctrUI.setGuide(i.tagNode);
-              break;
-            }
-          }
-        }
-      }
+      t._pressStartBattle();
     });
     this.btnAddCoin.on(cc.Node.EventType.TOUCH_END, function () {
       var game = t.ctrGame, data = game.gameData, amount = data.videoCoin;
@@ -774,7 +762,8 @@ var def_KinghtFallUIGame = function (t) {
     this.ctrGame.onChangeSpeed();
   };
   _ctor.prototype.initBtnView = function () {
-    this.btnStartFight.active = this.ctrGame.gameData.baseBuild.getLevel() >= 1;
+    var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+    this.btnStartFight.active = this.ctrGame.gameData.baseBuild.getLevel() >= 1 && !require("TutorialFlow").openingHouse(this, guide);
     if (1 == this.ctrGame.gameData.levelCfg.Level && this.ctrGame.gameData.round <= 3) {
       var t = true;
       var e = this.ctrGame.gameData.getBulidList();
@@ -925,6 +914,20 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.moveFun = function (t) {
     this.ctrGame.gameStatus != $z1KinghtFallModle.KinghtFallGameStage.End && this.ctrGame.moveFun(t);
+  };
+  _ctor.prototype._pressStartBattle = function () {
+    if (this.isclose || !this.canStart || this.ctrGame.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare) return;
+    var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+    if (require("TutorialFlow").openingHouse(this, guide)) return;
+    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
+    $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide8);
+    this.startRoundGame();
+    if (guide.getGuideTips(2)) return;
+    for (var id in this.enemyIconInfo) {
+      if (!Object.prototype.hasOwnProperty.call(this.enemyIconInfo, id)) continue;
+      var enemy = this.enemyIconInfo[id];
+      if (enemy.tagNode && enemy.ndItem && enemy.ndItem.active) { this.ctrUI.setGuide(enemy.tagNode); break; }
+    }
   };
   _ctor.prototype.startRoundGame = function () {
     if (this._waveTestPanel) this._waveTestPanel.close();
@@ -1096,6 +1099,7 @@ var def_KinghtFallUIGame = function (t) {
       : $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle02), data.round + "/" + data.levelCfg.WaveCfg.length);
     var task = this.ctrGame.gameData.taskInfo, current = task.index < task.list.length;
     if (current) {
+      if (task.stage === 0 && data.structureTaskReady(task.index)) task.stage = 1;
       var id = task.list[task.index];
       var description = (typeof id === "string" && Array.isArray(task.targets) &&
         require("BattleTaskObjectives").descriptionToken(id, task.targets[task.index], task.progress)) ||
@@ -1527,15 +1531,6 @@ var def_KinghtFallUIGame = function (t) {
     var e = this;
     if (t == $z1Config.UIID.UIGuide) {
       this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
-      var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGroupId();
-      var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getStepId();
-      var a = [2];
-      var o = [2];
-      for (var r = 0; r < a.length; r++) {
-        if (n == a[r] && i == o[r]) {
-          return;
-        }
-      }
       this.scheduleOnce(function () {
         e.startGuide();
       });
@@ -1552,6 +1547,7 @@ var def_KinghtFallUIGame = function (t) {
     var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
     var group = guide.getGroupId(), step = guide.getStepId(), rows = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(group);
     if (group === 2 && rows[step]) {
+      if (this.ctrGame.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare) return;
       var main = this.ctrGame.gameData.baseBuild, level = main && main.getLevel();
       // Edited maps and resumed checkpoints may already have their main hall.
       // Never require a later upgrade merely to finish the construction lesson.
@@ -1560,7 +1556,15 @@ var def_KinghtFallUIGame = function (t) {
         return;
       }
       if (step >= 2 && !(level >= 1)) return;
-      var cfg = flow.config(rows[step]), ui = this;
+      var cfg = flow.config(rows[step]), ui = this, house = step >= 2 && flow.openingHouse(this, guide);
+      function pauseForGuide(pause) {
+        ui.isPauset = pause || !!ui._legacyGamePause || !!(ui._pauseOwners && ui._pauseOwners.size);
+        if (ui.ctrGame.setAudioPaused) ui.ctrGame.setAudioPaused(ui.isPauset);
+      }
+      cfg.onCancel = function () {
+        pauseForGuide(false);
+        if (flow.visible(house)) ui.ctrUI.setGuide(house);
+      };
       switch (step) {
         case 0:
           cfg.distNode = this.ndCoin; cfg.addSize = new cc.Size(40, 0); cfg.lightType = 1;
@@ -1572,19 +1576,27 @@ var def_KinghtFallUIGame = function (t) {
           cfg.callBack = function () { if (flow.active(ui)) ui.ctrUI.setGuide(field); };
           break;
         case 2:
-          for (var id in this.enemyIconInfo) {
-            if (Object.prototype.hasOwnProperty.call(this.enemyIconInfo, id) && flow.visible(this.enemyIconInfo[id].ndItem)) { cfg.distNode = this.enemyIconInfo[id].ndItem; break; }
-          }
-          // Empty authored waves still have a readable wave heading.
-          if (!cfg.distNode) cfg.distNode = this.ndLevelInfo;
+          if (!house) { if (flow.state(guide, group, step + 1)) this.startGuide(); return; }
+          cfg.distNode = house; cfg.distCamera = this.ctrGame.camera;
+          cfg.hideMask = true;
+          cfg.actionText = "tutorial.buildHouse.action";
+          cfg.callBack = function () { if (flow.active(ui) && flow.visible(house)) ui.ctrUI.setGuide(house); };
           break;
         case 3:
+          if (house) {
+            pauseForGuide(false);
+            this.ctrUI.setGuide(house);
+            return;
+          }
+          this.ctrUI.setGuide(null);
+          this.btnStartFight.active = true;
           cfg.lightType = 1; cfg.distNode = this.btnStartFight;
+          cfg.isWeek = false; cfg.hideMask = false; cfg.showHand = 1;
+          cfg.callBack = function () { if (flow.active(ui)) ui._pressStartBattle(); };
           break;
       }
       if (flow.present(this, guide, group, step, rows, cfg)) {
-        this.isPauset = step !== 1 && step !== 3;
-        if (this.ctrGame.setAudioPaused) this.ctrGame.setAudioPaused(this.isPauset);
+        pauseForGuide(step === 0 || step === 2);
         var track = ["guide4", "guide5", "guide7"][step];
         if (track) $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId[track]);
       }
@@ -1592,7 +1604,7 @@ var def_KinghtFallUIGame = function (t) {
     }
     // Building help waits for the current battle decision instead of covering
     // the perk/tutorial dialog or being discarded by a competing UI request.
-    if (this._battleDialog) return;
+    if (this._battleDialog || this.ctrGame.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare) return;
     for (var id of this._pendingGuideTips) {
       if (guide.getGuideTips(id)) { this._pendingGuideTips.delete(id); continue; }
       var row = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(id)[0];
@@ -1616,7 +1628,7 @@ var def_KinghtFallUIGame = function (t) {
     }
   };
   _ctor.prototype.getTask = function (silent) {
-    var info = this.ctrGame.gameData.taskInfo;
+    var data = this.ctrGame.gameData, info = data.taskInfo;
     if (info.index < info.list.length && 1 == info.stage) {
       var t = info.reward[info.index];
       var multiplier = info.rewardMultiplier === undefined ? this.ctrGame.gameData.levelCfg.InGameCoefficient : info.rewardMultiplier;
@@ -1624,7 +1636,8 @@ var def_KinghtFallUIGame = function (t) {
       var checkpoint = this.ctrGame.getCheckpoint();
       var taskIndex = checkpoint.taskList.index;
       checkpoint.taskList.index++;
-      checkpoint.taskList.stage = 0;
+      var nextStage = data.structureTaskReady(checkpoint.taskList.index) ? 1 : 0;
+      checkpoint.taskList.stage = nextStage;
       var counted = Array.isArray(info.targets);
       if (counted) {
         checkpoint.taskList.progress = 0;
@@ -1639,7 +1652,7 @@ var def_KinghtFallUIGame = function (t) {
         if (record.setCheckpoint(checkpoint) === false) return false;
         this.ctrGame.gameData.coin = checkpoint.coin;
       } else {
-        if (counted && typeof info.list[taskIndex] === "string") {
+        if (counted && typeof info.list[taskIndex] === "string" || data.structureTaskReady(taskIndex)) {
           var saved = record.getTaskInfo(checkpoint.levelNum);
           // A task may become ready while an earlier checkpoint write is
           // blocked. Persist readiness before starting its reward journal.
@@ -1654,10 +1667,10 @@ var def_KinghtFallUIGame = function (t) {
         var committedTask = record.getTaskInfo(checkpoint.levelNum);
         // A durable journal may still be retrying individual target writes. Its
         // installed checkpoint is authoritative and must not leave this task claimable.
-        if (!granted && !(committedTask && committedTask.index === taskIndex + 1 && committedTask.stage === 0)) return false;
+        if (!granted && !(committedTask && committedTask.index === taskIndex + 1 && committedTask.stage === nextStage)) return false;
       }
       info.index = checkpoint.taskList.index;
-      info.stage = 0;
+      info.stage = nextStage;
       if (counted) {
         info.progress = 0;
         delete info.waveIntact;

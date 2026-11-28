@@ -97,9 +97,9 @@ function fixture(options = {}) {
 }
 function build(recipe) { return {buildCfg: recipe.config, buildInfo: recipe.row ? {cfg: recipe.row} : null, getUpgradeChoices: () => recipe.choices.slice()}; }
 
-test('the shipped catalog has four distinct readonly multi-choice presentations and no single-upgrade menus', () => {
+test('the shipped catalog has three distinct readonly multi-choice presentations and no single-upgrade menus', () => {
   const h = fixture(), before = JSON.stringify(authored), recipes = h.api.plan(authored);
-  assert.deepEqual(Array.from(recipes, recipe => [recipe.config.enumValue, recipe.row ? recipe.row.index : null, Array.from(recipe.choices)]), [[2, null, [1, 4, 7]], [3, null, [11, 14, 17, 20]], [5, 1, [2, 5]], [6, 1, [2, 3]]]);
+  assert.deepEqual(Array.from(recipes, recipe => [recipe.config.enumValue, recipe.row ? recipe.row.index : null, Array.from(recipe.choices)]), [[2, null, [1, 4, 7]], [3, null, [11, 14, 17, 20]], [5, 1, [2, 5]]]);
   assert.equal(JSON.stringify(authored), before);
   recipes[0].choices.push(999);
   assert.equal(JSON.stringify(authored), before, 'Planner does not expose the authored choice arrays');
@@ -126,8 +126,8 @@ test('loading completion waits for stable layout and actual paint of every varia
   h.frame(); assert.equal(callbacks.length, 0, 'One frame is not a completed layout/paint barrier');
   h.finish();
   assert.equal(callbacks.length, 2); assert(callbacks.every(row => !row.error)); assert.equal(callbacks[0].pool, callbacks[1].pool);
-  const pool = callbacks[0].pool; assert.equal(pool.ready, true); assert.equal(h.paints.length, 4); assert.equal(h.manager.registered, 1);
-  assert.equal(h.log.filter(v => v === 'paint').length, 4); assert(h.log.lastIndexOf('paint') < h.log.indexOf('register'));
+  const pool = callbacks[0].pool; assert.equal(pool.ready, true); assert.equal(h.paints.length, 3); assert.equal(h.manager.registered, 1);
+  assert.equal(h.log.filter(v => v === 'paint').length, 3); assert(h.log.lastIndexOf('paint') < h.log.indexOf('register'));
   assert.equal(pool.host.opacity, 0); assert(pool.host.x > h.uiRoot.width);
   for (const record of pool.records) { const c = record.component; assert(c.node.activeInHierarchy); assert(c.node.paused); assert(c.isclose); assert.equal(c.build, null); assert.equal(c.callBack, null); assert.equal(c.cancelCall, null); }
   assert(h.textures.every(texture => texture.destroys === 1), 'Discard paint target is released before entering the game');
@@ -150,7 +150,7 @@ test('opening and re-parking a prepared menu preserves live lifecycle, rows and 
 test('a translated Canvas keeps the discard camera centered and covers all menu columns', () => {
   const h = fixture(); h.uiRoot.setPosition(375, 667);
   let pool; h.api.prepare(authored, h.manager, (error, value) => { assert.ifError(error); pool = value; }); h.finish();
-  assert(pool.ready); assert.equal(h.paints.length, 4, 'Every menu passes camera-origin and full-width coverage assertions');
+  assert(pool.ready); assert.equal(h.paints.length, 3, 'Every menu passes camera-origin and full-width coverage assertions');
 });
 
 for (const throws of [false, true]) test('native manual paint restores world and HUD render flags ' + (throws ? 'even when rendering throws' : 'after successful rendering'), () => {
@@ -213,7 +213,7 @@ test('paint failure retires partial nodes and resources, reports every waiter an
   h.addTemplate();
   let result; h.api.prepare(authored, h.manager, (error, pool) => { assert.ifError(error); result = pool; }); h.finish();
   assert(result.ready, 'The same module and manager can retry after a failed preparation');
-  assert.equal(h.paints.length, 4); assert.equal(h.manager.registered, 1);
+  assert.equal(h.paints.length, 3); assert.equal(h.manager.registered, 1);
 });
 
 test('a caller exception does not strand other loading waiters or invalidate a completed cache', () => {
@@ -223,7 +223,7 @@ test('a caller exception does not strand other loading waiters or invalidate a c
   assert.throws(() => h.finish(), /caller failure/);
   assert.equal(seen.length, 2); assert.equal(seen[1].ready, true);
   let cached; h.api.prepare(authored, h.manager, (error, pool) => { assert.ifError(error); cached = pool; });
-  assert.equal(cached, seen[1]); assert.equal(h.paints.length, 4); assert.equal(h.draws.size, 0); assert.equal(h.timers.size, 0);
+  assert.equal(cached, seen[1]); assert.equal(h.paints.length, 3); assert.equal(h.draws.size, 0); assert.equal(h.timers.size, 0);
 });
 
 test('locale changes during the loading barrier retire the partial pool and can be retried', () => {
@@ -234,7 +234,7 @@ test('locale changes during the loading barrier retire the partial pool and can 
   assert(h.components.every(component => component.node.destroyed)); assert.equal(h.draws.size, 0); assert.equal(h.timers.size, 0);
   h.addTemplate(); let pool;
   h.api.prepare(authored, h.manager, (failure, value) => { assert.ifError(failure); pool = value; }); h.finish();
-  assert(pool.ready); assert.equal(pool.locale, 'zh'); assert.equal(h.paints.length, 4);
+  assert(pool.ready); assert.equal(pool.locale, 'zh'); assert.equal(h.paints.length, 3);
 });
 
 test('an unrendered loading context fails rather than completing before the paint barrier', () => {
@@ -253,18 +253,18 @@ test('disposing prepared cache never destroys an open decision or its borrowed i
   pool.dispose(); assert(!c.node.destroyed); assert(c.cancelCall); assert.equal(c._preparedUIProvider, null); assert(h.assets.every(asset => !asset.destroys));
 });
 
-test('Web scene repaint waits for real post-transition draws and preserves the four live presentations', () => {
+test('Web scene repaint waits for real post-transition draws and preserves the three live presentations', () => {
   const h = fixture(); let pool; h.api.prepare(authored, h.manager, (error, value) => { assert.ifError(error); pool = value; }); h.finish();
   const records = pool.records.slice(), rows = records.map(r => r.component._choiceRows), starts = records.map(r => r.component.starts);
   const main = h.launchScene(), callbacks = [];
   h.api.repaintScene(error => callbacks.push(error)); h.api.repaintScene(error => callbacks.push(error));
   assert.equal(pool.ready, true, 'Provider stays usable; no duplicate preload can allocate another prefab');
   assert.equal(callbacks.length, 0); h.frame(); assert.equal(callbacks.length, 0);
-  h.finish(); assert.deepEqual(callbacks, [null, null]); assert.equal(h.paints.length, 8); assert.equal(h.manager.registered, 1);
+  h.finish(); assert.deepEqual(callbacks, [null, null]); assert.equal(h.paints.length, 6); assert.equal(h.manager.registered, 1);
   assert.equal(pool.renderedScene, main); assert.equal(pool.host.opacity, 0); assert.equal(h.events.get('scene').size, 0);
   records.forEach((record, index) => { assert.equal(pool.records[index], record); assert.equal(record.component._choiceRows, rows[index]); assert.equal(record.component.starts, starts[index]); assert.equal(record.component.initCalls, 1); assert.equal(record.component.node.opacity, 255); assert(record.component.node.paused); });
   assert(h.textures.every(texture => texture.destroys === 1)); assert(h.assets.every(asset => !asset.destroys));
-  h.api.repaintScene(error => { assert.ifError(error); callbacks.push('cached'); }); assert.equal(callbacks.at(-1), 'cached'); assert.equal(h.paints.length, 8);
+  h.api.repaintScene(error => { assert.ifError(error); callbacks.push('cached'); }); assert.equal(callbacks.at(-1), 'cached'); assert.equal(h.paints.length, 6);
 });
 
 test('Web repaint errors release temporary resources and retry the same rows without rebinding input', () => {
@@ -296,7 +296,7 @@ test('scene repaint fanout drains every caller before rethrowing its first excep
 
 test('native scene readiness remains synchronous and does not repaint prepared menus', () => {
   const h = fixture({native: true}); h.api.prepare(authored, h.manager, assert.ifError); h.finish(); h.launchScene(); let complete = false;
-  h.api.repaintScene(error => { assert.ifError(error); complete = true; }); assert(complete); assert.equal(h.paints.length, 4); assert.equal(h.draws.size, 0);
+  h.api.repaintScene(error => { assert.ifError(error); complete = true; }); assert(complete); assert.equal(h.paints.length, 3); assert.equal(h.draws.size, 0);
 });
 
 function mainLoadingFixture(native = false, prepared = null) {
