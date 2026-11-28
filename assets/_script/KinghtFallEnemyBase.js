@@ -551,11 +551,17 @@ var def_KinghtFallEnemyBase = function (t) {
       var ui = $z1KinghtFallUIGame.default.instance, game = ui && ui.ctrGame;
       var life = { node: this.node, generation: this.node._combatGeneration, timers: this.time, cfg: this.cfg, ui: ui, game: game, data: game && game.gameData, epoch: game && game._combatEpoch };
       t = RelicCombat.enemyDamage(this, t, source, secondary, context);
-      this.hp -= t;
       var transform = this.cfg && this.cfg.TransformSkill;
-      if (t > 0 && transform && transform.trigger === "health" && this.time.Transform >= 0 && this.hp > 0 &&
-          this.hp <= this.hpMax * (transform.healthPercent / 100) && !this._unitTestActor &&
-          game && game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight) {
+      var healthTrigger = t > 0 && transform && transform.trigger === "health" && this.time.Transform >= 0 &&
+        !this._unitTestActor && game && game.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight;
+      var threshold = healthTrigger ? this.hpMax * (transform.healthPercent / 100) : 0;
+      // A required second phase absorbs further damage at its trigger until
+      // the combat update consumes the pending transformation.
+      if (healthTrigger && transform.preventLethal === true && threshold > 0) {
+        t = Math.min(t, Math.max(0, this.hp - threshold));
+      }
+      this.hp -= t;
+      if (healthTrigger && this.hp > 0 && this.hp <= threshold) {
         // Resolve the change in the normal combat update after this hit settles.
         this.time.TransformHealthReached = true;
       }

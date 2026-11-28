@@ -411,7 +411,7 @@
     {
       "name": "Dead",
       "bone": "Dead",
-      "attachment": "u_b647fc43dda20514b810d2a550e48f12",
+      "attachment": "u_85d6824e78fe9f54da7df154d9ea4c7a",
       "color": "ffffff00"
     }
   ],
@@ -564,11 +564,11 @@
           }
         },
         "Dead": {
-          "u_b647fc43dda20514b810d2a550e48f12": {
-            "width": 115.0,
-            "height": 149.0,
-            "x": 0.0,
-            "y": 0.0,
+          "u_85d6824e78fe9f54da7df154d9ea4c7a": {
+            "width": 160,
+            "height": 161,
+            "x": 0,
+            "y": 0,
             "scaleX": 1,
             "scaleY": 1
           }

@@ -37,7 +37,7 @@ var def_KinghtFallEnemyItem08 = function (t) {
     if (n) {
       targetNode = n.node; targetGeneration = targetNode._combatGeneration;
       e = GameToolsOverrides.typeCounterDamage(this, n, e);
-      var origin = Navigation.positionOf(sourceNode, game);
+      var origin = Navigation.positionOf(sourceNode, game), attacker = { cfg: this.cfg };
       var impact = Navigation.attackPointOf(n, game, origin, selected.polygon, selected.wallPoint);
       var offset = n.getNavigationGateShapes && targetNode.convertToNodeSpaceAR(game.ndMain.convertToWorldSpaceAR(cc.v2(impact)));
       this.vec2_2.x = impact.x; this.vec2_2.y = impact.y;
@@ -47,7 +47,7 @@ var def_KinghtFallEnemyItem08 = function (t) {
       i.ctr.setParent(this);
       return void i.ctr.setTag(i.pos, n.node, function () {
         if (!currentShot() || n.isDead && n.isDead()) return;
-        if (require("EnemyTargeting").protectingWall(game, origin, n)) return;
+        if (require("EnemyTargeting").protectingWall(game, origin, n, attacker)) return;
         var shooter = cc.isValid(t, true) && t.node === sourceNode && cc.isValid(sourceNode, true) && sourceNode._combatGeneration === sourceGeneration && !t._isPooled ? t : null;
         var received = n.onAttacked(e, shooter, true);
         if (currentShot() && ui.ctrEffect === effects && cc.isValid(effects, true) && effects.showDamageNum) effects.showDamageNum(offset ? cc.v2(impact) : targetNode.getPosition(), received);

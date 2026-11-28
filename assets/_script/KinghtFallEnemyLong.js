@@ -52,7 +52,7 @@ var def_KinghtFallEnemyLong = function (t) {
       targetNode = n.node; targetGeneration = targetNode._combatGeneration;
       // Counter bonuses belong to the released shot, not a later pooled life.
       if (GameToolsOverrides.counters(this, n)) e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms));
-      var origin = Navigation.positionOf(sourceNode, game);
+      var origin = Navigation.positionOf(sourceNode, game), attacker = { cfg: this.cfg };
       var impact = Navigation.attackPointOf(n, game, origin, selected.polygon, selected.wallPoint);
       var offset = n.getNavigationGateShapes && targetNode.convertToNodeSpaceAR(game.ndMain.convertToWorldSpaceAR(cc.v2(impact)));
       this.vec2_2.x = impact.x; this.vec2_2.y = impact.y;
@@ -62,7 +62,7 @@ var def_KinghtFallEnemyLong = function (t) {
       i.ctr.setParent(this);
       return void i.ctr.setTag(i.pos, n.node, function () {
         if (!currentShot() || n.isDead && n.isDead()) return;
-        if (require("EnemyTargeting").protectingWall(game, origin, n)) return;
+        if (require("EnemyTargeting").protectingWall(game, origin, n, attacker)) return;
         var shooter = cc.isValid(t, true) && t.node === sourceNode && cc.isValid(sourceNode, true) && sourceNode._combatGeneration === sourceGeneration && !t._isPooled ? t : null;
         var position = offset ? cc.v2(impact) : targetNode.getPosition(), received = n.onAttacked(e, shooter, true);
         if (currentShot() && ui.ctrEffect === effects && cc.isValid(effects, true) && effects.showDamageNum) effects.showDamageNum(position, received);

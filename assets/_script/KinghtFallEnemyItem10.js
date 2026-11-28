@@ -245,8 +245,8 @@ var def_KinghtFallEnemyItem10 = function (t) {
       t.sort(function (t, e) {
         return t.len - e.len;
       });
-      var targeting = this.cfg.EnemyTargeting && require("EnemyTargeting"), rule = targeting && targeting.settings(this.cfg);
-      if (rule) t = t.filter(function (entry) { return targeting.allows(rule, scope.game, entry.item); });
+      var targeting = require("EnemyTargeting"), rule = targeting.settings(this.cfg), owner = this;
+      t = t.filter(function (entry) { return targeting.allows(rule, scope.game, entry.item, null, owner); });
       for (var p = 0; p < limit; p++) {
         if (!skillCurrent(this, scope, false)) return;
         var f;

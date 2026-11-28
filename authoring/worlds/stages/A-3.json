@@ -468,7 +468,7 @@
             "unitId": 91182,
             "spawnId": 5,
             "count": 2,
-            "startSeconds": 13.5,
+            "startSeconds": 4,
             "intervalSeconds": 10,
             "id": "entry-7",
             "unitGroupId": "unit-group-1"
@@ -477,7 +477,7 @@
             "unitId": 91010,
             "spawnId": 6,
             "count": 3,
-            "startSeconds": 17,
+            "startSeconds": 8,
             "intervalSeconds": 4,
             "id": "entry-8"
           },
@@ -485,7 +485,7 @@
             "unitId": 100807,
             "spawnId": 4,
             "count": 3,
-            "startSeconds": 19,
+            "startSeconds": 10,
             "intervalSeconds": 3,
             "id": "entry-10"
           },
@@ -502,7 +502,7 @@
             "unitId": 1000009000,
             "spawnId": 7,
             "count": 2,
-            "startSeconds": 30.5,
+            "startSeconds": 30,
             "intervalSeconds": 3.5,
             "id": "entry-13"
           },
@@ -510,7 +510,7 @@
             "unitId": 101719,
             "spawnId": 8,
             "count": 1,
-            "startSeconds": 32.5,
+            "startSeconds": 32,
             "intervalSeconds": 0.5,
             "id": "entry-14"
           }
@@ -573,7 +573,7 @@
             "unitId": 91010,
             "spawnId": 9,
             "count": 3,
-            "startSeconds": 16,
+            "startSeconds": 6,
             "intervalSeconds": 4,
             "id": "entry-7"
           },
@@ -581,7 +581,7 @@
             "unitId": 91182,
             "spawnId": 7,
             "count": 4,
-            "startSeconds": 17.5,
+            "startSeconds": 7,
             "intervalSeconds": 3,
             "id": "entry-8",
             "unitGroupId": "unit-group-0"
@@ -590,7 +590,7 @@
             "unitId": 100672,
             "spawnId": 8,
             "count": 3,
-            "startSeconds": 20,
+            "startSeconds": 10,
             "intervalSeconds": 4,
             "id": "entry-10"
           },
@@ -598,7 +598,7 @@
             "unitId": 91162,
             "spawnId": 1,
             "count": 3,
-            "startSeconds": 30.5,
+            "startSeconds": 30,
             "intervalSeconds": 4,
             "id": "entry-11"
           },
@@ -686,7 +686,7 @@
             "unitId": 91182,
             "spawnId": 3,
             "count": 6,
-            "startSeconds": 18.5,
+            "startSeconds": 18,
             "intervalSeconds": 2.5,
             "id": "entry-10",
             "unitGroupId": "unit-group-0"
@@ -695,7 +695,7 @@
             "unitId": 1000009000,
             "spawnId": 2,
             "count": 3,
-            "startSeconds": 20.5,
+            "startSeconds": 20,
             "intervalSeconds": 3.5,
             "id": "entry-11"
           },
@@ -703,7 +703,7 @@
             "unitId": 91182,
             "spawnId": 5,
             "count": 6,
-            "startSeconds": 33,
+            "startSeconds": 5,
             "intervalSeconds": 3,
             "id": "entry-17",
             "unitGroupId": "unit-group-0"
@@ -712,7 +712,7 @@
             "unitId": 91010,
             "spawnId": 4,
             "count": 3,
-            "startSeconds": 36,
+            "startSeconds": 8,
             "intervalSeconds": 4,
             "id": "entry-18"
           },
@@ -720,7 +720,7 @@
             "unitId": 100807,
             "spawnId": 6,
             "count": 4,
-            "startSeconds": 38,
+            "startSeconds": 10,
             "intervalSeconds": 3,
             "id": "entry-19",
             "unitGroupId": "unit-group-1"
@@ -765,7 +765,7 @@
             "unitId": 91010,
             "spawnId": 1,
             "count": 4,
-            "startSeconds": 4.5,
+            "startSeconds": 4,
             "intervalSeconds": 4,
             "id": "entry-6"
           },
@@ -782,7 +782,7 @@
             "unitId": 91182,
             "spawnId": 5,
             "count": 8,
-            "startSeconds": 15.5,
+            "startSeconds": 5,
             "intervalSeconds": 2.5,
             "id": "entry-8",
             "unitGroupId": "unit-group-1"
@@ -791,7 +791,7 @@
             "unitId": 100807,
             "spawnId": 4,
             "count": 6,
-            "startSeconds": 18.5,
+            "startSeconds": 8,
             "intervalSeconds": 3,
             "id": "entry-10"
           },
@@ -799,7 +799,7 @@
             "unitId": 1000009000,
             "spawnId": 6,
             "count": 3,
-            "startSeconds": 20.5,
+            "startSeconds": 10,
             "intervalSeconds": 3.5,
             "id": "entry-11"
           },
@@ -807,7 +807,7 @@
             "unitId": 91162,
             "spawnId": 9,
             "count": 5,
-            "startSeconds": 34.5,
+            "startSeconds": 34,
             "intervalSeconds": 4,
             "id": "entry-13"
           },
@@ -824,7 +824,7 @@
             "unitId": 101719,
             "spawnId": 7,
             "count": 2,
-            "startSeconds": 38.5,
+            "startSeconds": 38,
             "intervalSeconds": 4,
             "id": "entry-18"
           }
@@ -886,7 +886,7 @@
             "unitId": 91162,
             "spawnId": 9,
             "count": 5,
-            "startSeconds": 14.5,
+            "startSeconds": 7,
             "intervalSeconds": 4,
             "id": "entry-13"
           },
@@ -894,7 +894,7 @@
             "unitId": 91182,
             "spawnId": 8,
             "count": 8,
-            "startSeconds": 15.5,
+            "startSeconds": 8,
             "intervalSeconds": 2,
             "id": "entry-11",
             "unitGroupId": "unit-group-0"
@@ -903,7 +903,7 @@
             "unitId": 100672,
             "spawnId": 7,
             "count": 3,
-            "startSeconds": 17,
+            "startSeconds": 10,
             "intervalSeconds": 4,
             "id": "entry-17"
           },
@@ -911,7 +911,7 @@
             "unitId": 91182,
             "spawnId": 1,
             "count": 9,
-            "startSeconds": 27.5,
+            "startSeconds": 27,
             "intervalSeconds": 2,
             "id": "entry-9",
             "unitGroupId": "unit-group-0"
@@ -920,7 +920,7 @@
             "unitId": 91010,
             "spawnId": 2,
             "count": 5,
-            "startSeconds": 29.5,
+            "startSeconds": 29,
             "intervalSeconds": 3.5,
             "id": "entry-18"
           },
@@ -991,7 +991,7 @@
             "unitId": 91182,
             "spawnId": 1,
             "count": 8,
-            "startSeconds": 11.5,
+            "startSeconds": 11,
             "intervalSeconds": 2,
             "id": "entry-8",
             "unitGroupId": "unit-group-0"
@@ -1000,7 +1000,7 @@
             "unitId": 100807,
             "spawnId": 2,
             "count": 4,
-            "startSeconds": 13.5,
+            "startSeconds": 13,
             "intervalSeconds": 4,
             "id": "entry-11"
           },
@@ -1016,7 +1016,7 @@
             "unitId": 91182,
             "spawnId": 5,
             "count": 7,
-            "startSeconds": 23,
+            "startSeconds": 7,
             "intervalSeconds": 2.5,
             "id": "entry-12",
             "unitGroupId": "unit-group-0"
@@ -1025,7 +1025,7 @@
             "unitId": 91010,
             "spawnId": 6,
             "count": 5,
-            "startSeconds": 25,
+            "startSeconds": 9,
             "intervalSeconds": 3,
             "id": "entry-17"
           },
@@ -1033,7 +1033,7 @@
             "unitId": 100672,
             "spawnId": 4,
             "count": 3,
-            "startSeconds": 26.5,
+            "startSeconds": 10,
             "intervalSeconds": 4,
             "id": "entry-18"
           },
@@ -1041,7 +1041,7 @@
             "unitId": 91182,
             "spawnId": 9,
             "count": 7,
-            "startSeconds": 34.5,
+            "startSeconds": 34,
             "intervalSeconds": 1.5,
             "id": "entry-19",
             "unitGroupId": "unit-group-0"
@@ -1050,7 +1050,7 @@
             "unitId": 101719,
             "spawnId": 7,
             "count": 3,
-            "startSeconds": 36.5,
+            "startSeconds": 36,
             "intervalSeconds": 3,
             "id": "entry-20"
           }
@@ -1106,7 +1106,7 @@
             "unitId": 91010,
             "spawnId": 2,
             "count": 4,
-            "startSeconds": 3.5,
+            "startSeconds": 3,
             "intervalSeconds": 3.5,
             "id": "entry-17"
           },
@@ -1114,7 +1114,7 @@
             "unitId": 91162,
             "spawnId": 5,
             "count": 5,
-            "startSeconds": 12,
+            "startSeconds": 8,
             "intervalSeconds": 3.5,
             "id": "entry-18"
           },
@@ -1122,7 +1122,7 @@
             "unitId": 91182,
             "spawnId": 6,
             "count": 9,
-            "startSeconds": 13,
+            "startSeconds": 9,
             "intervalSeconds": 2,
             "id": "entry-19",
             "unitGroupId": "unit-group-0"
@@ -1131,7 +1131,7 @@
             "unitId": 100807,
             "spawnId": 4,
             "count": 5,
-            "startSeconds": 14.5,
+            "startSeconds": 10,
             "intervalSeconds": 3.5,
             "id": "entry-20"
           },
@@ -1148,7 +1148,7 @@
             "unitId": 1000009000,
             "spawnId": 7,
             "count": 3,
-            "startSeconds": 27.5,
+            "startSeconds": 27,
             "intervalSeconds": 3.5,
             "id": "entry-22"
           },
@@ -1156,7 +1156,7 @@
             "unitId": 100672,
             "spawnId": 8,
             "count": 3,
-            "startSeconds": 28.5,
+            "startSeconds": 28,
             "intervalSeconds": 3.5,
             "id": "entry-23"
           },
@@ -1179,7 +1179,7 @@
           },
           {
             "count": 1,
-            "startSeconds": 42.5,
+            "startSeconds": 42,
             "intervalSeconds": 0.5,
             "spawnId": 1,
             "unitId": 91164,
@@ -1232,7 +1232,7 @@
     "StageLayoutId": "A-3",
     "EnemyProfiles": {
       "1000009000": {
-        "baseId": 91180,
+        "baseId": 100503,
         "name": "Bruiser · 230 speed",
         "stats": {
           "Speed": 230
@@ -5869,7 +5869,7 @@
   "nextBuilding": 28,
   "nextSpawn": 14,
   "nextSpecial": 7,
-  "sourceRevision": "e7083bbd22c59d7542b655d3fcba19fe62d92084b46c4c11a4b7722475abcbe7",
+  "sourceRevision": "ed33894f23def2e08d25496ddd5dfa7266a37d34bffdb9a02d12194bc98e5bef",
   "templates": {
     "Map03": [
       {

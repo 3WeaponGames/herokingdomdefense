@@ -401,7 +401,7 @@
           },
           {
             "count": 3,
-            "startSeconds": 2.5,
+            "startSeconds": 2,
             "intervalSeconds": 0.5,
             "spawnId": 5,
             "unitId": 100681,
@@ -458,7 +458,7 @@
           },
           {
             "count": 3,
-            "startSeconds": 4.5,
+            "startSeconds": 4,
             "intervalSeconds": 0.5,
             "spawnId": 5,
             "unitId": 100701,
@@ -466,7 +466,7 @@
           },
           {
             "count": 3,
-            "startSeconds": 2.5,
+            "startSeconds": 2,
             "intervalSeconds": 0.5,
             "spawnId": 6,
             "unitId": 100686,
@@ -612,7 +612,7 @@
           },
           {
             "count": 3,
-            "startSeconds": 3.5,
+            "startSeconds": 3,
             "intervalSeconds": 0.5,
             "spawnId": 6,
             "unitId": 91127,
@@ -669,7 +669,7 @@
           },
           {
             "count": 5,
-            "startSeconds": 3.5,
+            "startSeconds": 3,
             "intervalSeconds": 0.5,
             "spawnId": 6,
             "unitId": 91128,
@@ -8022,7 +8022,7 @@
   "nextBuilding": 31,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "e064a8ab969dcdabf4976c5984498bdcdcb34fe849d2c243f092d7f5e484f0b6",
+  "sourceRevision": "7e311ff799908de3baa823c52c5c7ee3969b71b35476d9de6921c83f467681d8",
   "templates": {
     "Map01": [
       {

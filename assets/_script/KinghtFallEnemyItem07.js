@@ -23,9 +23,9 @@ function splashSnapshot(owner, primary, scope, wallImpact) {
   var world = wallImpact ? scope.game.ndMain.convertToWorldSpaceAR(wallImpact) : primary.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
   var radius = owner.cfg.Data[1], records = [], origin = Navigation.positionOf(owner.node, scope.game);
   var targeting = require("EnemyTargeting"), rule = targeting.settings(owner.cfg);
-  if (rule && !targeting.allows(rule, scope.game, primary)) return { scope: scope, records: records, damage: owner.cfg.Data[0], limit: 0 };
+  if (!targeting.allows(rule, scope.game, primary, null, owner)) return { scope: scope, records: records, damage: owner.cfg.Data[0], limit: 0 };
   function include(actor) {
-    if (!actor || actor.uuid === primary.uuid || rule && !targeting.allows(rule, scope.game, actor)) return;
+    if (!actor || actor.uuid === primary.uuid || !targeting.allows(rule, scope.game, actor, null, owner)) return;
     var record = skillTarget(actor);if (!targetCurrent(record, true)) return;
     record.position = actor.node.getPosition();record.len = cc.Vec2.distance(record.position, center);
     if (record.len <= radius) records.push(record);
@@ -34,8 +34,8 @@ function splashSnapshot(owner, primary, scope, wallImpact) {
   var buildings = millAttackTargets(scope.data), circle = { position: world, radius: radius };
   for (var index = 0; index < buildings.length; index++) {
     var building = buildings[index], record = skillTarget(building);
-    if (building.uuid === primary.uuid || !targetCurrent(record, true) || rule && !targeting.allows(rule, scope.game, building) ||
-        targeting.protectingWall(scope.game, origin, building)) continue;
+    if (building.uuid === primary.uuid || !targetCurrent(record, true) || !targeting.allows(rule, scope.game, building, null, owner) ||
+        targeting.protectingWall(scope.game, origin, building, owner)) continue;
     var polygons = building.getWposPhyCol();
     for (var part = 0; part < polygons.length; part++) if (cc.Intersection.polygonCircle(polygons[part], circle)) {
       record.position = building.node.getPosition();record.len = cc.Vec2.distance(record.position, center);records.push(record);break;
@@ -130,7 +130,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
     for (var index = 0; index < release.limit; index++) {
       if (!skillCurrent(this, release.scope, true)) return;
       var record = release.records[index];if (!record) break;
-      if (!targetCurrent(record, true) || require("EnemyTargeting").protectingWall(release.scope.game, release.origin, record.item)) continue;
+      if (!targetCurrent(record, true) || require("EnemyTargeting").protectingWall(release.scope.game, release.origin, record.item, this)) continue;
       var damage = GameToolsOverrides.typeCounterDamage(this, record.item, release.damage);
       var received = record.item.onAttacked(damage, this);
       if (!skillCurrent(this, release.scope, true)) return;

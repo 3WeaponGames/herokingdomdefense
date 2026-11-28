@@ -4,13 +4,13 @@
 // which stage is currently using it. The lists use the base unit IDs.
 const kingdoms=[
  {id:'slime',label:'Slime Kingdom',biome:'Forest',units:[91037,91038,91151,91152,91153,91154,91155,91156,91157,91173]},
- {id:'sun-tomb',label:'Sun-Tomb Empire',biome:'Desert',units:[91010,91071,91123,91149,91150,91162,91163,91164,91180,91182]},
- {id:'plant',label:'Nature Kingdom',biome:'Deep Forest',units:[91082,91083,91086,91087,91088,91099,91100,91112,91161]},
- {id:'skeleton',label:'Skeleton Kingdom',biome:'Snow',units:[91059,91091,91092,91093,91135,91165,91166,91167,91169]},
+ {id:'sun-tomb',label:'Sun-Tomb Empire',biome:'Desert',units:[91010,91071,91089,91123,91149,91150,91162,91163,91164,91182]},
+ {id:'plant',label:'Nature Kingdom',biome:'Deep Forest',units:[91040,91077,91082,91083,91084,91086,91087,91088,91090,91099,91100,91103,91112,91114]},
+ {id:'skeleton',label:'Undead Kingdom',biome:'Snow',units:[91028,91035,91059,91081,91091,91092,91093,91131,91135,91167]},
  {id:'orc',label:'Orc Kingdom',biome:'Autumn',units:[91124,91125,91126,91127,91128,91129,91158,91159,91160,91174,91181,91183]},
  {id:'ice',label:'Ice Kingdom',biome:'Ice',units:[91005,91007,91015,91023,91030,91034,91067,91073,91146,91148,91172]},
- {id:'vampire',label:'Vampire Kingdom',biome:'Ice',units:[90009,91006,91051,91134,91145,91171,91175,91176,91179]},
- {id:'demon',label:'Demon Kingdom',biome:'Fire',units:[91049,91060,91096,91116,91133,91138,91144,91170,91184,91185,91186]}
+ {id:'vampire',label:'Vampire Kingdom',biome:'Ice',units:[90009,91006,91051,91134,91145,91171,91175,91176,91179,91187]},
+ {id:'demon',label:'Demon Kingdom',biome:'Fire',units:[91025,91049,91060,91096,91116,91133,91138,91144,91170,91185,91186,91188]}
 ];
 const unassigned={id:'unassigned',label:'Unassigned'};
 const choices=kingdoms.concat(unassigned);

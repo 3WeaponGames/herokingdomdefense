@@ -6579,8 +6579,8 @@
       "context": "Imported monster1 monster · monster1/Goby_Helmet"
     },
     "data.monster-roster.91028.name": {
-      "en": "Mad Goby",
-      "zh": "狂怒虾虎鱼",
+      "en": "Grave Goby",
+      "zh": "墓穴虾虎鱼",
       "context": "Imported monster1 monster · monster1/Goby_Mad"
     },
     "data.monster-roster.91029.name": {
@@ -6614,8 +6614,8 @@
       "context": "Imported monster1 monster · monster1/Octopus_Ice"
     },
     "data.monster-roster.91035.name": {
-      "en": "Pirate Octopus",
-      "zh": "海盗章鱼",
+      "en": "Drowned Octopus",
+      "zh": "溺亡章鱼",
       "context": "Imported monster1 monster · monster1/Octopus_Pirate"
     },
     "data.monster-roster.91036.name": {
@@ -6844,8 +6844,8 @@
       "context": "Imported monster2 monster · monster2/Ghost_Mask"
     },
     "data.monster-roster.91081.name": {
-      "en": "Pirate Ghost",
-      "zh": "海盗幽灵",
+      "en": "Corsair Wraith",
+      "zh": "海盗怨灵",
       "context": "Imported monster2 monster · monster2/Ghost_Pirate"
     },
     "data.monster-roster.91082.name": {
@@ -7339,8 +7339,8 @@
       "context": "Attack and ability description; numeric stats stay dynamic"
     },
     "data.unitguide.91028.lore": {
-      "en": "The shallows have many strange residents, but few wear such a permanently wild expression.",
-      "zh": "浅滩住着许多怪异生灵，却很少有谁像它这样始终神情狂放。",
+      "en": "This goby still snaps at anything that passes through the frozen shallows.",
+      "zh": "这条虾虎鱼仍会扑咬任何经过冰冷浅水的目标。",
       "context": "Creature lore"
     },
     "data.unitguide.91029.description": {
@@ -7409,8 +7409,8 @@
       "context": "Attack and ability description; numeric stats stay dynamic"
     },
     "data.unitguide.91035.lore": {
-      "en": "A river wanderer dressed for adventures far beyond the shadowed forest banks.",
-      "zh": "这位河流漫游者的一身装束，像是准备去阴影林岸之外闯荡远方。",
+      "en": "The tide carried this pirate back to shore. Its crew still answers its call.",
+      "zh": "海潮把这名海盗带回岸边，它的船员仍会响应它的召唤。",
       "context": "Creature lore"
     },
     "data.unitguide.91036.description": {
@@ -7824,13 +7824,13 @@
       "context": "Creature lore"
     },
     "data.unitguide.91077.description": {
-      "en": "A durable close-combat fighter that strikes nearby targets.",
-      "zh": "耐久的近战战士，攻击身边的目标。",
+      "en": "An armored flying boss that swoops into nearby enemies and slows defenders with its wingbeats.",
+      "zh": "披甲的飞行首领，俯冲攻击附近的敌人，并扇动双翼减缓守军的速度。",
       "context": "Attack and ability description; numeric stats stay dynamic"
     },
     "data.unitguide.91077.lore": {
-      "en": "Its iron-colored body looks oddly at home among the abandoned desert workings.",
-      "zh": "铁色的身体，在废弃的沙漠工地之间显得意外地相衬。",
+      "en": "The hum of its iron wings gives the creatures of the Deep Forest time to scatter.",
+      "zh": "深林中的生灵一听到它铁翼的嗡鸣，就纷纷四散。",
       "context": "Creature lore"
     },
     "data.unitguide.91078.description": {
@@ -9393,16 +9393,6 @@
       "zh": "戴着兜帽的兽人身披深紫斗篷，手持镶有玉色水晶和雕刻符饰的法杖。",
       "context": "Enemy guide appearance · Orc Shaman"
     },
-    "data.monster-roster.91161.name": {
-      "en": "Thorn Warden",
-      "zh": "荆棘守护者",
-      "context": "Deep Forest plant boss · monster2/Golem_ElderTreant"
-    },
-    "data.unitguide.91161.description": {
-      "en": "A crimson-eyed briar treant with a crown of thorns. It leaps and slams down with its heavy roots.",
-      "zh": "头顶荆棘冠、双眼赤红的树人。它高高跃起，用粗重的根足砸向地面。",
-      "context": "Enemy guide appearance · Thorn Warden"
-    },
     "data.monster-roster.91162.name": {
       "en": "Brass Scarab",
       "zh": "黄铜圣甲虫",
@@ -9505,12 +9495,12 @@
     },
     "data.monster-roster.91173.name": {
       "en": "Flying Slime",
-      "zh": "飞翼史莱姆",
+      "zh": "飞行史莱姆",
       "context": "Minimal flying unit · monster3/WingDemon_FlyingSlime"
     },
     "data.unitguide.91173.description": {
-      "en": "A mint-green blob that flutters on soft bat wings and dives into defenders.",
-      "zh": "薄荷绿的史莱姆拍动柔软的蝠翼，从空中俯冲撞击守军。",
+      "en": "A bright blue slime that bounces through the air and lunges at nearby defenders.",
+      "zh": "亮蓝色的史莱姆在空中弹跳，猛扑附近的守军。",
       "context": "Enemy guide · Flying Slime"
     },
     "data.monster-roster.91174.name": {
@@ -9552,21 +9542,6 @@
       "en": "A scarred vampire knight who advances with a shield and a heavy serrated blade.",
       "zh": "一位伤痕累累的吸血鬼骑士，持盾挥舞沉重的锯齿剑向前推进。",
       "context": "Enemy guide · Scarbrow Vampire"
-    },
-    "data.monster-roster.91180.name": {
-      "en": "Evilmass Dagger",
-      "zh": "邪灵双刃",
-      "context": "Monster 3 · monster3/Evilmass_Dagger"
-    },
-    "data.unitguide.91180.description": {
-      "en": "Closes in and strikes its target with twin daggers.",
-      "zh": "接近目标后，用双匕首发动近战攻击。",
-      "context": "Enemy guide · Evilmass Dagger"
-    },
-    "data.unitguide.91180.lore": {
-      "en": "A pair of steel blades flashes beneath its wrapped hood.",
-      "zh": "裹巾下，一对钢刃闪着寒光。",
-      "context": "Enemy lore · Evilmass Dagger"
     },
     "data.monster-roster.91181.name": {
       "en": "Orc War Raptor",
@@ -9627,6 +9602,26 @@
       "en": "An armored bull that lowers its horns to ram its target.",
       "zh": "披甲的魔牛低头用双角冲撞敌人。",
       "context": "Enemy guide · Hellgate Behemoth"
+    },
+    "data.monster-roster.91187.name": {
+      "en": "Blood Ant",
+      "zh": "血色蚂蚁",
+      "context": "Monster Pack 2 · vampire enemy"
+    },
+    "data.unitguide.91187.description": {
+      "en": "A crimson ant that heals for part of the damage dealt by its bites.",
+      "zh": "深红色的蚂蚁，能通过撕咬恢复相当于部分伤害值的生命。",
+      "context": "Blood Ant enemy guide"
+    },
+    "data.monster-roster.91188.name": {
+      "en": "Crimson Regent",
+      "zh": "猩红摄政王",
+      "context": "Demon Kingdom boss · Evilmass Angry variant"
+    },
+    "data.unitguide.91188.description": {
+      "en": "The Black Goat’s true form. Its sweeping blows burn nearby foes, and its presence weakens opposing forces.",
+      "zh": "黑山羊的真身。横扫会灼烧附近的敌人，它的威势会削弱敌方部队。",
+      "context": "Crimson Regent enemy guide"
     }
   },
   "images": {

@@ -46,10 +46,11 @@ function capture(actor, scope, selection, origin) {
 }
 function distance(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
 function canTarget(scope, actor) {
-  return scope.side === "enemy" || scope.rules.delivery === "ranged" || !FlightTargeting.isFlying(actor);
+  if (scope.side === "enemy") return scope.targetingRules.allows(scope.targeting, scope.game, actor, scope.breach, scope.attacker);
+  return scope.rules.delivery === "ranged" || !FlightTargeting.isFlying(actor);
 }
 function protectedByWall(scope, actor) {
-  return scope.targetingRules && scope.targetingRules.protectingWall(scope.game, scope.origin, actor);
+  return scope.targetingRules && scope.targetingRules.protectingWall(scope.game, scope.origin, actor, scope.attacker);
 }
 function opponents(scope) {
   var data = scope.data;
@@ -61,7 +62,6 @@ function candidates(scope, exclude) {
   var seen = new Set();
   return opponents(scope).filter(function (actor) {
     if (!targetLive(actor) || !canTarget(scope, actor) || seen.has(actor.node) || exclude && exclude.has(actor.node) ||
-        scope.targeting && !scope.targetingRules.allows(scope.targeting, scope.game, actor, scope.breach) ||
         protectedByWall(scope, actor)) return false;
     seen.add(actor.node);
     return true;

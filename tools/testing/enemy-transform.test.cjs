@@ -7,12 +7,12 @@ const rules=require('../../assets/_script/EnemyTransform');
 const warmup=require('../../assets/_script/StageAssetWarmup');
 const roster=require('../../assets/KinghtFallConfig/GameJsonCfg.json').SoldierCfg;
 
-function fixture(preload,settings={TransformSkill:{unitId:91090,delay:.5}}) {
-  const units={91001:{...roster[91001],...settings},
+function fixture(preload,settings={TransformSkill:{unitId:91090,delay:.5}},formIds) {
+  const units=formIds?Object.fromEntries(formIds.map(id=>[id,roster[id]])):{91001:{...roster[91001],...settings},
     91090:{...roster[91090],TransformSkill:{unitId:91002,delay:1}},91002:roster[91002]};
   const spawns=[],h=setup({EnemyTransform:rules,KinghtFallMissionData:{KinghtFallTaskCountName:{Kill:'Kill'}},
     BattleSounds:{spawnEnemy(actor){spawns.push(actor.cfg.ID);}}});
-  if(settings.EnemySkills){
+  if(Object.values(units).some(unit=>unit.EnemySkills)){
     const file=require.resolve('../../assets/_script/EnemySkills'),exports={};
     vm.runInNewContext(fs.readFileSync(file,'utf8'),{exports,cc:h.e.cc,require:h.e.load},{filename:file});
     h.e.stubs.EnemySkills=exports;
@@ -34,7 +34,7 @@ function fixture(preload,settings={TransformSkill:{unitId:91090,delay:.5}}) {
     return actor.node;
   };
   if(preload)h.g._stageAssets={assets:Object.fromEntries(Object.values(units).map(unit=>['Enemy/'+unit.prefab+':prefab',prefab]))};
-  h.g.addEnemy(91001,2);
+  h.g.addEnemy(formIds?formIds[0]:91001,2);
   h.pending.shift()(prefab);
   h.g.setPath=()=>assert.fail('Transform must keep the existing route');
   return {...h,units,spawns,prefab,pathList,source:h.d.enemyList[0]};
@@ -100,6 +100,25 @@ test('a lethal hit ends the life of an enemy equipped with a health-triggered Tr
   assert.equal(source.hp,0);
   assert.equal(source.updateCombatTimers(1),false);
   assert.equal(h.d.enemyList[0],source);
+});
+
+test('Black Goat survives lethal hits at its 50% threshold and enters phase two with Crimson Regent stats and skills',()=>{
+  const h=fixture(true,undefined,[91025,91188]),source=h.source;
+  source.hp=source.hpMax=200;
+  assert.equal(source.onAttacked(99,null,true),99);
+  source.updateCombatTimers(.016);
+  assert.equal(h.d.enemyList[0],source);
+  assert.equal(source.onAttacked(1000,null,true),1);
+  assert.equal(source.hp,100);
+  assert.equal(source.onAttacked(1000,null,true),0);
+  assert.equal(source.updateCombatTimers(.016),false);
+  assert.equal(h.d.enemyList.length,1);
+  const regent=h.d.enemyList[0];
+  assert.equal(regent.cfg.ID,91188);
+  assert.equal(regent.hp,h.units[91188].Health);
+  assert.equal(regent.attack,Math.round(h.units[91188].AttackDamage));
+  assert.equal(regent.cfg.UnitAttack.onHit.burn.percent,.15);
+  assert(regent.time.EnemySkills.some(skill=>skill.id==='weaken'));
 });
 
 test('equipped support skills use their own intervals, ranges, and eligible targets',()=>{

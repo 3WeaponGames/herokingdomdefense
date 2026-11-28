@@ -1087,20 +1087,20 @@
       "id": "monster3/WingDemon_FlyingSlime",
       "name": "Flying Slime",
       "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/WingDemon/WingDemon_Vampire.prefab",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Jellyfish/Jellyfish_Bouncy.prefab",
       "skeleton": "assets/resources/unit-library/monster3/Units/FlyingVariants/WingDemon_FlyingSlime.json",
       "uuid": "eb93e42f-ecc9-5858-a242-f3d942697f27",
       "resource": "unit-library/monster3/Units/FlyingVariants/WingDemon_FlyingSlime",
       "animations": [
-        "idle",
-        "die",
         "move",
         "attack",
-        "hit"
+        "die",
+        "hit",
+        "idle"
       ],
-      "bones": 18,
-      "slots": 9,
-      "variantOf": "monster3/WingDemon_Vampire"
+      "bones": 8,
+      "slots": 5,
+      "variantOf": "monster1/Jellyfish_Bouncy"
     },
     {
       "id": "monster3/OrcSmasher_CryptGhoul",
@@ -1139,25 +1139,6 @@
       "bones": 35,
       "slots": 13,
       "variantOf": "monster3/OrcSword_Butcher"
-    },
-    {
-      "id": "monster3/Evilmass_Dagger",
-      "name": "Evilmass Dagger",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Evilmass/Evilmass_Boxer.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/WeaponVariants/Evilmass_Boxer.json",
-      "uuid": "a773b5ad-59b7-5517-a71c-ce980c3871ca",
-      "resource": "unit-library/monster3/Units/WeaponVariants/Evilmass_Boxer",
-      "animations": [
-        "attack",
-        "move",
-        "idle",
-        "die",
-        "hit"
-      ],
-      "bones": 21,
-      "slots": 10,
-      "variantOf": "monster3/Evilmass_Boxer"
     },
     {
       "id": "monster3/Raptor_OrcWar",
@@ -1234,6 +1215,25 @@
       "bones": 35,
       "slots": 15,
       "variantOf": "monster3/OrcSmasher_Red"
+    },
+    {
+      "id": "monster3/Evilmass_CrimsonRegent",
+      "name": "Crimson Regent",
+      "pack": "monster3",
+      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Evilmass/Evilmass_Angry.prefab",
+      "skeleton": "assets/resources/unit-library/monster3/Units/DemonVariants/Evilmass_CrimsonRegent.json",
+      "uuid": "2d7f9298-a209-5242-a045-d170d5e2e320",
+      "resource": "unit-library/monster3/Units/DemonVariants/Evilmass_CrimsonRegent",
+      "animations": [
+        "attack",
+        "move",
+        "idle",
+        "die",
+        "hit"
+      ],
+      "bones": 21,
+      "slots": 10,
+      "variantOf": "monster3/Evilmass_Angry"
     }
   ],
   "parts": [

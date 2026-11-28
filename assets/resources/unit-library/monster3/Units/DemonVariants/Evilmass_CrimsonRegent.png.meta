@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "ee0a2f02-751b-537d-a575-6934a61a4816",
+  "uuid": "16c877e9-5228-5e4e-a387-36932b21f3ef",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -9,14 +9,14 @@
   "genMipmaps": false,
   "packable": false,
   "width": 2048,
-  "height": 512,
+  "height": 256,
   "platformSettings": {},
   "subMetas": {
-    "Evilmass_Boxer": {
+    "Evilmass_CrimsonRegent": {
       "ver": "1.0.6",
-      "uuid": "15d9d946-9939-5f85-af85-71cdaaec505d",
+      "uuid": "eaa2cd85-7dc7-53ee-af2d-69449d438b9f",
       "importer": "sprite-frame",
-      "rawTextureUuid": "ee0a2f02-751b-537d-a575-6934a61a4816",
+      "rawTextureUuid": "16c877e9-5228-5e4e-a387-36932b21f3ef",
       "trimType": "none",
       "trimThreshold": 1,
       "rotated": false,
@@ -25,9 +25,9 @@
       "trimX": 0,
       "trimY": 0,
       "width": 2048,
-      "height": 512,
+      "height": 256,
       "rawWidth": 2048,
-      "rawHeight": 512,
+      "rawHeight": 256,
       "borderTop": 0,
       "borderBottom": 0,
       "borderLeft": 0,

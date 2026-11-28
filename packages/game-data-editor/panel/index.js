@@ -16,6 +16,7 @@ const EquipmentCurve=require('./equipment-curve');
 const Buildings=require('../buildings/client');
 const IconPicker=require('./icon-picker');
 const UnitProfiles=require('../units/panel-profiles');
+const UnitNames=require('../lib/unit-names');
 const UnitSidebar=require('../units/sidebar');
 const UnitCatalog=require('../worlds/unit-catalog');
 const EnemyClasses=require('../lib/enemy-classes');
@@ -23,6 +24,7 @@ const EnemyBalance=require('./enemy-balance');
 const FightingTypeDamage=require('../../../assets/_script/FightingTypeDamage');
 const UnitAttack=require('../../../assets/_script/UnitAttackRules');
 const EnemyTargeting=require('../../../assets/_script/EnemyTargeting');
+const FlightTargeting=require('../../../assets/_script/FlightTargeting');
 const Skills=require('../units/skills');
 const EquipmentTiers=require('../../../assets/_script/EquipmentTiers'),HeroWeapons=require('../../../assets/_script/HeroWeapons');
 const ItemAppearance=require('../../hkd-items/appearance');
@@ -471,6 +473,7 @@ function create(kind){
       this._note('Progression follows ordered rows. Existing IDs and effect types stay stable; an arbitrary new skill requires its gameplay implementation.');
     },
     _unit(row){
+      if(row.unitType!=='hero')this._unitName(row);
       UnitProfiles.bar(this,row,node);
       if(row.unitType==='hero'){
         this._note('The hero combines equipment stats and layered animated equipment. Choose levels in the silent preview; those choices never change player progression.');
@@ -515,12 +518,10 @@ function create(kind){
         this._field(visualFields,'Model tint',visual.tint||'#ffffff',value=>setVisual('tint',value),{color:true});
         visualFields.appendChild(button('Edit rider, horse & parts',()=>ipc('open-characters').catch(error=>this._status(error.message,true))));
       }
-      const excluded=['Suppressed','CounterType','OverrideCounterType','AttackType','UnitAttack','MonsterSource','MonsterPack','BehaviorTemplate','CampaignBaseUnit','AppearanceSourceUnit','Guide'];
+      const excluded=['Name','Suppressed','CounterType','OverrideCounterType','AttackType','UnitAttack','MonsterSource','MonsterPack','BehaviorTemplate','CampaignBaseUnit','AppearanceSourceUnit','Guide'];
       const stats=this._section(row.unitType==='ally'?'Shared unit settings':'Stats & behavior');
       if(row.unitType==='enemy'){
         excluded.push('prefab','loadIcon','BuildingCross','AttackPriority','EnemyTargeting','TransformSkill','EnemySkills');
-        const entries=(this._data('overrides').unitProfiles||{}).entries;
-        if(entries?.[row.unitID]?.created)excluded.push('Name');
       }
       const fields=this._properties(stats,'A',row.path,row.record,{table:'SoldierCfg',id:row.unitID,side:row.unitType},excluded.concat(row.unitType==='ally'?UnitLevelStats.FIELDS:[]));
       if(row.unitType==='enemy'){
@@ -531,7 +532,7 @@ function create(kind){
         line.appendChild(button('Choose icon…',()=>this._pickIcon(row.record.loadIcon,value=>this._set('A',row.path.concat('loadIcon'),value),Schema.descriptor('loadIcon',{table:'SoldierCfg'})),'gt-mini'));
         iconField.appendChild(line);
         fields.appendChild(iconField);
-        this._field(fields,'Ground or flight unit',row.record.BuildingCross?1:0,value=>this._set('A',row.path.concat('BuildingCross'),value),{
+        this._field(fields,'Ground or flight unit',FlightTargeting.isFlying({cfg:row.record})?0:1,value=>this._set('A',row.path.concat('BuildingCross'),value),{
           options:[{value:1,label:'Ground'},{value:0,label:'Flight'}],
           help:'Flight units can cross walls and gates. Terrain and other buildings still block them.'
         });
@@ -547,6 +548,14 @@ function create(kind){
         }
       }
       this._note('Attacks per second includes the cooldown, hit windup and full attack animation. Changing the selected level’s animation speed or hit timing recalculates its rate. Perks, movement and interruptions can change the rate during battle.');
+    },
+    _unitName(row){
+      const language=this._language,side=row.unitType,id=row.unitID;
+      const current=()=>UnitNames.display(UnitNames.target(this._data('A'),this._data('overrides'),side,id),this._data('catalog'),language);
+      const fields=node('div',undefined,'gt-fields');this.$detail.appendChild(fields);
+      const input=this._field(fields,'Unit name · '+language,current(),value=>this._change(()=>
+        UnitNames.renameEdits({A:this._data('A'),overrides:this._data('overrides'),catalog:this._data('catalog')},side,id,language,value),
+      {skipEmpty:true}).catch(()=>{input.value=current();}),{wide:true,help:'Save to use this name wherever the unit appears.'});
     },
     _enemySkillFields(row){
       const fields=this._section('Skills'),config=this._data('A'),settings=this._data('overrides'),catalog=this._data('catalog');
@@ -591,6 +600,7 @@ function create(kind){
     _enemyTargetFields(row){
       const fields=this._section('Target priority'),key=row.path.concat('EnemyTargeting'),stored=row.record.EnemyTargeting;
       const rule=EnemyTargeting.issue(stored)?{mode:'nearest'}:stored;
+      const flying=FlightTargeting.isFlying({cfg:row.record});
       if(UnitAttack.attackType(row.record)===3){
         this._note('Choose Melee or Ranged in Attack to set targets for this support unit.',false,fields).style.gridColumn='1 / -1';
         return;
@@ -604,13 +614,14 @@ function create(kind){
       },{skipEmpty:true}).catch(()=>{});
       const help={
         nearest:'Selects the nearest eligible target in search range.',
-        priority:'The first available group in search range wins. Omitted groups are ignored.',
+        priority:'The first available group in search range wins. Omitted groups are ignored.'+(flying?' Flight units skip walls and gates.':''),
         castle:'Heads straight for the castle. Ground units break walls in the shortest route to it.',
         hero:'Follows the spawn path until the hero enters search range. Ground units breach walls in the way.'
       };
+      const options=flying?EnemyTargeting.modes.map(option=>option.value==='nearest'?{...option,label:'Nearest target (skips walls and gates)'}:option):EnemyTargeting.modes;
       this._field(fields,'Targeting rule',rule.mode,mode=>change(current=>({
         ...current,mode,...(mode==='priority'&&!current.order?{order:defaultOrder}:{})
-      })),{options:EnemyTargeting.modes,help:help[rule.mode]});
+      })),{options,help:help[rule.mode]});
       if(rule.mode!=='priority')return;
       const order=rule.order;
       for(let index=0;index<Math.min(order.length+1,defaultOrder.length);index++){
@@ -939,7 +950,7 @@ function create(kind){
       if(kind==='buildings'){try{Buildings.preview(this,row,{ipc});}catch(error){this._status('Preview: '+error.message,true);}return;}
       const hasModel=kind==='units'||kind==='buildings'||kind==='equipment';
       if(hasModel){
-        if(!this._previewClient){clear(this.$preview);try{this._previewClient=require('../preview/client').mount(this.$preview,{ipc,onChange:edits=>this._previewChange(edits),onAttackMetrics:value=>this._attackRateMetrics(value)});}catch(error){this.$preview.appendChild(node('div','Animation preview is loading. '+error.message,'gt-note'));}}
+        if(!this._previewClient){clear(this.$preview);try{this._previewClient=require('../preview/client').mount(this.$preview,{ipc,rememberAnimation:kind==='units',onChange:edits=>this._previewChange(edits),onAttackMetrics:value=>this._attackRateMetrics(value)});}catch(error){this.$preview.appendChild(node('div','Animation preview is loading. '+error.message,'gt-note'));}}
         if(this._previewClient){const input={documents:this._snapshot.documents,version:this._snapshot.version};try{
           if(kind==='units'){const level=row.unitType==='ally'?this._selectedUnitLevel(row):undefined;this._previewClient.setUnit(Object.assign(input,{type:row.unitType,id:row.unitID||'hero',level,record:level?UnitLevelStats.resolve(row.record,this._data('overrides'),level):row.record}));}
           else if(kind==='buildings')this._previewClient.setBuilding(Object.assign(input,{id:row.key,record:row.record,levelIndex:this._level}));

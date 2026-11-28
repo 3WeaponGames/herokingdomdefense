@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "d420ff3f-c6d6-5c7a-a60b-ad163174baac",
+  "uuid": "92eeecd8-45ce-5dd3-a06f-cef1e328ecfe",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -12,11 +12,11 @@
   "height": 128,
   "platformSettings": {},
   "subMetas": {
-    "golem-eldertreant": {
+    "ant-blood": {
       "ver": "1.0.6",
-      "uuid": "c5bc6f87-2b12-5c3a-a9aa-d3775e9c1e5b",
+      "uuid": "122a69b5-ad0d-5fe3-a7d7-df97e6cba93a",
       "importer": "sprite-frame",
-      "rawTextureUuid": "d420ff3f-c6d6-5c7a-a60b-ad163174baac",
+      "rawTextureUuid": "92eeecd8-45ce-5dd3-a06f-cef1e328ecfe",
       "trimType": "none",
       "trimThreshold": 1,
       "rotated": false,

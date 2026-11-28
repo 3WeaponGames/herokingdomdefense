@@ -495,7 +495,7 @@
             "spawnId": 7,
             "unitId": 91064,
             "count": 3,
-            "startSeconds": 5.5,
+            "startSeconds": 5,
             "intervalSeconds": 0.5
           },
           {
@@ -503,7 +503,7 @@
             "spawnId": 8,
             "unitId": 100300,
             "count": 3,
-            "startSeconds": 5.5,
+            "startSeconds": 5,
             "intervalSeconds": 0.5
           }
         ]
@@ -589,7 +589,7 @@
             "spawnId": 7,
             "unitId": 100776,
             "count": 6,
-            "startSeconds": 5.5,
+            "startSeconds": 6,
             "intervalSeconds": 0.5
           },
           {
@@ -597,7 +597,7 @@
             "spawnId": 11,
             "unitId": 91064,
             "count": 6,
-            "startSeconds": 5.5,
+            "startSeconds": 5,
             "intervalSeconds": 0.5
           }
         ]
@@ -683,7 +683,7 @@
             "spawnId": 7,
             "unitId": 91064,
             "count": 8,
-            "startSeconds": 5.5,
+            "startSeconds": 5,
             "intervalSeconds": 0.5
           },
           {
@@ -691,7 +691,7 @@
             "spawnId": 11,
             "unitId": 91143,
             "count": 8,
-            "startSeconds": 5.5,
+            "startSeconds": 5,
             "intervalSeconds": 0.5
           }
         ]
@@ -770,7 +770,7 @@
             "spawnId": 7,
             "unitId": 91144,
             "count": 5,
-            "startSeconds": 5.5,
+            "startSeconds": 5,
             "intervalSeconds": 0.5
           },
           {
@@ -778,7 +778,7 @@
             "spawnId": 8,
             "unitId": 100300,
             "count": 5,
-            "startSeconds": 5.5,
+            "startSeconds": 5,
             "intervalSeconds": 0.5
           },
           {
@@ -786,7 +786,7 @@
             "spawnId": 10,
             "unitId": 100356,
             "count": 5,
-            "startSeconds": 5.5,
+            "startSeconds": 5,
             "intervalSeconds": 0.5
           },
           {
@@ -794,7 +794,7 @@
             "spawnId": 11,
             "unitId": 91064,
             "count": 5,
-            "startSeconds": 5.5,
+            "startSeconds": 5,
             "intervalSeconds": 0.5
           }
         ]
@@ -6519,7 +6519,7 @@
   "nextBuilding": 22,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "76b0c353d876a18c82dffb4a95330a5c62edc791e6efb9c74bd787bd10712d2c",
+  "sourceRevision": "3f67b12431289bf5b8e1f6136af69026af2d24d70caaecb4fa826588da316361",
   "templates": {
     "Map03": [
       {

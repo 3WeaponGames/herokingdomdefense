@@ -1,14 +1,14 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "Monster3_Evilmass_Dagger",
+    "_name": "Monster2_Ant_Blood",
     "data": {
       "__id__": 1
     }
   },
   {
     "__type__": "cc.Node",
-    "_name": "Monster3_Evilmass_Dagger",
+    "_name": "Monster2_Ant_Blood",
     "_groupIndex": 1,
     "_children": [
       {
@@ -39,7 +39,7 @@
       "__id__": 13
     },
     "groupIndex": 1,
-    "_id": "88f35ffc-4233-5e32-a1de-4a5a32c5bf4e"
+    "_id": "258aeff4-8ef2-5b3c-a2d4-3f0cde7a608a"
   },
   {
     "__type__": "cc.Node",
@@ -58,7 +58,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 107.40983290593627,
+      "width": 113.94495569649021,
       "height": 120
     },
     "_trs": {
@@ -96,7 +96,7 @@
       }
     ],
     "_N$skeletonData": {
-      "__uuid__": "a773b5ad-59b7-5517-a71c-ce980c3871ca"
+      "__uuid__": "9779c23f-2239-517f-a8c2-205bd7272a51"
     }
   },
   {
@@ -214,7 +214,7 @@
     }
   },
   {
-    "__type__": "269422tMhhOTrBarQe9J6Dp",
+    "__type__": "f31fer0fuhMybvzcy6MULro",
     "ndHp": {
       "__id__": 5
     },

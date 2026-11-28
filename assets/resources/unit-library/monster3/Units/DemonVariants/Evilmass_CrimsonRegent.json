@@ -3,18 +3,18 @@
     "spine": "3.8.99",
     "images": "",
     "audio": "",
-    "x": -53.704916452968135,
+    "x": -60.656924603153264,
     "y": 0,
-    "width": 107.40983290593627,
+    "width": 121.31384920630653,
     "height": 120
   },
   "bones": [
     {
       "name": "__size",
-      "scaleX": 0.3934426190808923,
-      "scaleY": 0.3934426190808923,
-      "x": 1.3770481152094636,
-      "y": 12.590163810588553
+      "scaleX": 0.43795615482977807,
+      "scaleY": 0.43795615482977807,
+      "x": 2.8467143554033263,
+      "y": 14.014596954552898
     },
     {
       "name": "__root",
@@ -54,8 +54,8 @@
     },
     {
       "name": "Evilmass_bone/Up_bone/Hit",
-      "x": 10.5000004,
-      "y": 72.50004,
+      "x": 24.0,
+      "y": 63.999987000000004,
       "rotation": 0.0,
       "scaleX": 1,
       "scaleY": 1,
@@ -63,8 +63,8 @@
     },
     {
       "name": "Evilmass_bone/Up_bone/Hit_2",
-      "x": 10.5000004,
-      "y": 72.50004,
+      "x": 24.0,
+      "y": 64.000034,
       "rotation": 0.0,
       "scaleX": 1,
       "scaleY": 1,
@@ -81,8 +81,8 @@
     },
     {
       "name": "Evilmass_bone/Up_bone/Body_bone/Body",
-      "x": -8.499998,
-      "y": 44.99998,
+      "x": -2.9999912,
+      "y": 29.500008,
       "rotation": 0.0,
       "scaleX": 1,
       "scaleY": 1,
@@ -99,8 +99,8 @@
     },
     {
       "name": "Evilmass_bone/Up_bone/Body_bone/Mouth_bone/Mouth",
-      "x": -2.0150153,
-      "y": 5.9321195,
+      "x": -1.6079107,
+      "y": 5.353953000000001,
       "rotation": -9.848778355848758,
       "scaleX": 1,
       "scaleY": 1,
@@ -117,8 +117,8 @@
     },
     {
       "name": "Evilmass_bone/Up_bone/Arm_bone/Arm",
-      "x": 1.000005,
-      "y": 17.000008,
+      "x": 0,
+      "y": 16.500044,
       "rotation": 0.0,
       "scaleX": 1,
       "scaleY": 1,
@@ -135,8 +135,8 @@
     },
     {
       "name": "Evilmass_bone/Up_bone/Arm2_bone/Arm2",
-      "x": -4.970698,
-      "y": 13.621406,
+      "x": 1.4944635,
+      "y": 18.788749,
       "rotation": -26.349101816682975,
       "scaleX": 1,
       "scaleY": 1,
@@ -152,18 +152,18 @@
       "parent": "Evilmass_bone"
     },
     {
-      "name": "Evilmass_bone/Attack_bone/Attack2",
-      "x": -0.49998760000000003,
-      "y": 9.499979,
+      "name": "Evilmass_bone/Attack_bone/Attack_2",
+      "x": 35.500002,
+      "y": 19.000006,
       "rotation": 0.0,
       "scaleX": 1,
       "scaleY": 1,
       "parent": "Evilmass_bone/Attack_bone"
     },
     {
-      "name": "Evilmass_bone/Attack_bone/Attack1",
+      "name": "Evilmass_bone/Attack_bone/Attack_1",
       "x": -0.49998760000000003,
-      "y": 7.999992000000001,
+      "y": 10.500002,
       "rotation": 0.0,
       "scaleX": 1,
       "scaleY": 1,
@@ -179,7 +179,7 @@
       "parent": "__root"
     },
     {
-      "name": "Evilmass_bone/Attack_bone/Attack_1",
+      "name": "Evilmass_bone/Attack_bone/Attack1",
       "x": 0,
       "y": 0,
       "rotation": 0,
@@ -188,7 +188,7 @@
       "parent": "Evilmass_bone/Attack_bone"
     },
     {
-      "name": "Evilmass_bone/Attack_bone/Attack_2",
+      "name": "Evilmass_bone/Attack_bone/Attack2",
       "x": 0,
       "y": 0,
       "rotation": 0,
@@ -207,49 +207,49 @@
     {
       "name": "Evilmass_bone/Up_bone/Arm2_bone/Arm2",
       "bone": "Evilmass_bone/Up_bone/Arm2_bone/Arm2",
-      "attachment": "u_ba06516678d89284fb1da3a62cdaaed9",
+      "attachment": "u_912bf70eda39f6c46bba8368f9dac984",
       "color": "ffffffff"
     },
     {
       "name": "Evilmass_bone/Up_bone/Body_bone/Body",
       "bone": "Evilmass_bone/Up_bone/Body_bone/Body",
-      "attachment": "u_5b095e027a56fbf4f80fcdab322047ee",
+      "attachment": "u_1da0515150b75df4e9e7ef741bfccc65",
       "color": "ffffffff"
     },
     {
       "name": "Evilmass_bone/Up_bone/Body_bone/Mouth_bone/Mouth",
       "bone": "Evilmass_bone/Up_bone/Body_bone/Mouth_bone/Mouth",
-      "attachment": "u_a53aad149d00e1045b6600f14cfe91a3",
+      "attachment": "u_025f66f2d00c5d84ea43f3cfe4e9c2da",
       "color": "ffffffff"
     },
     {
       "name": "Evilmass_bone/Up_bone/Arm_bone/Arm",
       "bone": "Evilmass_bone/Up_bone/Arm_bone/Arm",
-      "attachment": "u_b8f52386e1791804e92c2e9db0dedc0f",
+      "attachment": "u_ec143401ed35b274395edc74cafa5c09",
       "color": "ffffffff"
     },
     {
       "name": "Evilmass_bone/Up_bone/Hit",
       "bone": "Evilmass_bone/Up_bone/Hit",
-      "attachment": "u_efc237bc323dbe9489702f2fc1725aa4",
+      "attachment": "u_b70c7ff5f5595304d82b519af290f567",
       "color": "ffffff00"
     },
     {
       "name": "Evilmass_bone/Up_bone/Hit_2",
       "bone": "Evilmass_bone/Up_bone/Hit_2",
-      "attachment": "u_d2d06a8d745e41e4a9f994eefab76099",
+      "attachment": "u_2fd700f8ae3b06e4c89e7f3a2ac6eaad",
       "color": "ffffff00"
     },
     {
-      "name": "Evilmass_bone/Attack_bone/Attack1",
-      "bone": "Evilmass_bone/Attack_bone/Attack1",
-      "attachment": "u_e5902d2ec3ec84a43b30bfc4e64003af",
+      "name": "Evilmass_bone/Attack_bone/Attack_1",
+      "bone": "Evilmass_bone/Attack_bone/Attack_1",
+      "attachment": "u_c79559e4b789f0a4fac9e30e7932687e",
       "color": "ffffff00"
     },
     {
-      "name": "Evilmass_bone/Attack_bone/Attack2",
-      "bone": "Evilmass_bone/Attack_bone/Attack2",
-      "attachment": "u_ea4448ac8a018f24085246aae9a5d5db",
+      "name": "Evilmass_bone/Attack_bone/Attack_2",
+      "bone": "Evilmass_bone/Attack_bone/Attack_2",
+      "attachment": "u_a5d180b7e5fde184c8f231996cbba5b8",
       "color": "ffffff00"
     },
     {
@@ -274,20 +274,19 @@
           }
         },
         "Evilmass_bone/Up_bone/Arm2_bone/Arm2": {
-          "u_ba06516678d89284fb1da3a62cdaaed9": {
-            "width": 129,
-            "height": 137,
-            "x": -21,
-            "y": 23.5,
+          "u_912bf70eda39f6c46bba8368f9dac984": {
+            "width": 98.0,
+            "height": 89.0,
+            "x": 0.0,
+            "y": 0.0,
             "scaleX": 1,
-            "scaleY": 1,
-            "path": "Evilmass_Boxer_Daggers_Arm2"
+            "scaleY": 1
           }
         },
         "Evilmass_bone/Up_bone/Body_bone/Body": {
-          "u_5b095e027a56fbf4f80fcdab322047ee": {
-            "width": 219.0,
-            "height": 254.0,
+          "u_1da0515150b75df4e9e7ef741bfccc65": {
+            "width": 216.0,
+            "height": 223.0,
             "x": 0.0,
             "y": 0.0,
             "scaleX": 1,
@@ -295,9 +294,9 @@
           }
         },
         "Evilmass_bone/Up_bone/Body_bone/Mouth_bone/Mouth": {
-          "u_a53aad149d00e1045b6600f14cfe91a3": {
-            "width": 76.0,
-            "height": 111.0,
+          "u_025f66f2d00c5d84ea43f3cfe4e9c2da": {
+            "width": 77.0,
+            "height": 112.0,
             "x": 0.0,
             "y": 0.0,
             "scaleX": 1,
@@ -305,58 +304,53 @@
           }
         },
         "Evilmass_bone/Up_bone/Arm_bone/Arm": {
-          "u_b8f52386e1791804e92c2e9db0dedc0f": {
-            "width": 152,
-            "height": 143,
-            "x": 26,
-            "y": 23.5,
+          "u_ec143401ed35b274395edc74cafa5c09": {
+            "width": 90.0,
+            "height": 91.0,
+            "x": 0.0,
+            "y": 0.0,
             "scaleX": 1,
-            "scaleY": 1,
-            "path": "Evilmass_Boxer_Daggers_Arm"
+            "scaleY": 1
           }
         },
         "Evilmass_bone/Up_bone/Hit": {
-          "u_efc237bc323dbe9489702f2fc1725aa4": {
-            "width": 331,
-            "height": 228.0,
-            "x": 4,
+          "u_b70c7ff5f5595304d82b519af290f567": {
+            "width": 252.0,
+            "height": 233.0,
+            "x": 0.0,
             "y": 0.0,
             "scaleX": 1,
-            "scaleY": 1,
-            "path": "Evilmass_Boxer_Daggers_Hit"
+            "scaleY": 1
           }
         },
         "Evilmass_bone/Up_bone/Hit_2": {
-          "u_d2d06a8d745e41e4a9f994eefab76099": {
-            "width": 331,
-            "height": 228.0,
-            "x": 4,
+          "u_2fd700f8ae3b06e4c89e7f3a2ac6eaad": {
+            "width": 252.0,
+            "height": 233.0,
+            "x": 0.0,
             "y": 0.0,
             "scaleX": 1,
-            "scaleY": 1,
-            "path": "Evilmass_Boxer_Daggers_Hit_2"
+            "scaleY": 1
           }
         },
-        "Evilmass_bone/Attack_bone/Attack1": {
-          "u_e5902d2ec3ec84a43b30bfc4e64003af": {
-            "width": 194,
-            "height": 99,
-            "x": -31.5,
-            "y": 4.5,
-            "scaleX": 1,
-            "scaleY": 1,
-            "path": "Evilmass_Boxer_Daggers_Attack1"
-          }
-        },
-        "Evilmass_bone/Attack_bone/Attack2": {
-          "u_ea4448ac8a018f24085246aae9a5d5db": {
-            "width": 194,
+        "Evilmass_bone/Attack_bone/Attack_1": {
+          "u_c79559e4b789f0a4fac9e30e7932687e": {
+            "width": 99.0,
             "height": 93.0,
-            "x": -31.5,
+            "x": 0.0,
             "y": 0.0,
             "scaleX": 1,
-            "scaleY": 1,
-            "path": "Evilmass_Boxer_Daggers_Attack2"
+            "scaleY": 1
+          }
+        },
+        "Evilmass_bone/Attack_bone/Attack_2": {
+          "u_a5d180b7e5fde184c8f231996cbba5b8": {
+            "width": 235.0,
+            "height": 100.0,
+            "x": 0.0,
+            "y": 0.0,
+            "scaleX": 1,
+            "scaleY": 1
           }
         },
         "Dead": {
@@ -2441,7 +2435,7 @@
             }
           ]
         },
-        "Evilmass_bone/Attack_bone/Attack1": {
+        "Evilmass_bone/Attack_bone/Attack_1": {
           "color": [
             {
               "time": 0.0,
@@ -2464,15 +2458,19 @@
               "color": "ffffff00"
             },
             {
-              "time": 0.2833333,
+              "time": 0.3,
               "color": "ffffff00"
             },
             {
-              "time": 0.3,
+              "time": 0.3166667,
               "color": "ffffffff"
             },
             {
-              "time": 0.3166667,
+              "time": 0.3333333,
+              "color": "ffffffff"
+            },
+            {
+              "time": 0.35,
               "color": "ffffff00"
             },
             {
@@ -2481,7 +2479,7 @@
             }
           ]
         },
-        "Evilmass_bone/Attack_bone/Attack2": {
+        "Evilmass_bone/Attack_bone/Attack_2": {
           "color": [
             {
               "time": 0.0,
@@ -2496,23 +2494,11 @@
               "color": "ffffffff"
             },
             {
-              "time": 0.2833333,
-              "color": "ffffffff"
-            },
-            {
               "time": 0.3,
-              "color": "ffffff00"
+              "color": "ffffffff"
             },
             {
               "time": 0.3166667,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.3333333,
-              "color": "ffffffff"
-            },
-            {
-              "time": 0.35,
               "color": "ffffff00"
             },
             {
@@ -4164,7 +4150,7 @@
             }
           ]
         },
-        "Evilmass_bone/Attack_bone/Attack1": {
+        "Evilmass_bone/Attack_bone/Attack_1": {
           "color": [
             {
               "time": 0.0,
@@ -4176,7 +4162,7 @@
             }
           ]
         },
-        "Evilmass_bone/Attack_bone/Attack2": {
+        "Evilmass_bone/Attack_bone/Attack_2": {
           "color": [
             {
               "time": 0.0,
@@ -7350,7 +7336,7 @@
             }
           ]
         },
-        "Evilmass_bone/Attack_bone/Attack1": {
+        "Evilmass_bone/Attack_bone/Attack_1": {
           "color": [
             {
               "time": 0.0,
@@ -7362,7 +7348,7 @@
             }
           ]
         },
-        "Evilmass_bone/Attack_bone/Attack2": {
+        "Evilmass_bone/Attack_bone/Attack_2": {
           "color": [
             {
               "time": 0.0,
@@ -8752,7 +8738,7 @@
             }
           ]
         },
-        "Evilmass_bone/Attack_bone/Attack1": {
+        "Evilmass_bone/Attack_bone/Attack_1": {
           "color": [
             {
               "time": 0.0,
@@ -8764,7 +8750,7 @@
             }
           ]
         },
-        "Evilmass_bone/Attack_bone/Attack2": {
+        "Evilmass_bone/Attack_bone/Attack_2": {
           "color": [
             {
               "time": 0.0,
@@ -9700,7 +9686,7 @@
             }
           ]
         },
-        "Evilmass_bone/Attack_bone/Attack1": {
+        "Evilmass_bone/Attack_bone/Attack_1": {
           "color": [
             {
               "time": 0.0,
@@ -9712,7 +9698,7 @@
             }
           ]
         },
-        "Evilmass_bone/Attack_bone/Attack2": {
+        "Evilmass_bone/Attack_bone/Attack_2": {
           "color": [
             {
               "time": 0.0,

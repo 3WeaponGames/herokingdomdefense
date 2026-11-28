@@ -22,7 +22,7 @@ runtime.module={exports:{}};vm.runInNewContext(source,runtime,{filename:'preview
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 function fixture(options){
     options=options||{};const root=new Element('div'),edits=[],requests=[],metrics=[],type=options.type||'enemy',id=String(options.id||90001);
-    const description={type,id,form:'default',key:type+':'+id+':default',effect:'Melee hit',defaultTiming:.4,runtimePath:'fixture-spine',shared:[],layers:[{animations:['idle','attack'],skins:['default'],skin:'default',json:{animations:{attack:{events:[{name:'attack',time:.4}]}}}}]};
+    const description={type,id,form:'default',key:type+':'+id+':default',effect:'Melee hit',defaultTiming:.4,runtimePath:'fixture-spine',shared:[],layers:[{animations:options.animations||['idle','attack'],skins:['default'],skin:'default',json:{animations:{attack:{events:[{name:'attack',time:.4}]}}}}]};
     if(type==='ally')description.levels=[1,2,3];
     if(options.pack)description.layers[0].json._fantasy={pack:options.pack};
     if(options.unitAnimationSpeed!==undefined)description.unitAnimationSpeed=options.unitAnimationSpeed;
@@ -33,7 +33,7 @@ function fixture(options){
     if(options.level!==undefined)request.level=options.level;
     if(options.default!==undefined)request.documents.overrides.data.timingDefaults[description.key]={attack:options.default};
     if(options.custom!==undefined)request.documents.overrides.data.timings[description.key]={attack:options.custom};
-    const before=clone(description),client=Client.mount(root,{ipc:async(_message,payload)=>{requests.push(clone(payload));return description;},onChange:value=>edits.push(clone(value)),onAttackMetrics:value=>metrics.push(clone(value))});client.setUnit(request);
+    const before=clone(description),client=Client.mount(root,{rememberAnimation:options.rememberAnimation,ipc:async(_message,payload)=>{requests.push(clone(payload));return description;},onChange:value=>edits.push(clone(value)),onAttackMetrics:value=>metrics.push(clone(value))});client.setUnit(request);
     return{root,edits,requests,metrics,description,before,request,client};
 }
 async function main(){
@@ -64,6 +64,37 @@ async function main(){
         assert.equal(active.length,1);assert.equal(active[0].style.left,'50%');assert.equal(references[0].style.left,'40%');
         assert(active[0].title.includes('active gold marker'));assert(references[0].title.includes('original animation reference'));
         assert.equal(all(f.root,n=>/preview-marker (original|gameplay)/.test(n.className||'')).length,0);f.client.destroy();
+    });
+    await test('the Units preview remembers an animation across models and restores it after a missing clip',async()=>{
+        const f=fixture({rememberAnimation:true,animations:['idle','attack','die']});
+        const animation=field(f.root,'Animation');
+        async function showUnit(id,clips){
+            f.description.id=String(id);
+            f.description.key='enemy:'+id+':default';
+            f.description.layers[0].animations=clips;
+            f.client.setUnit({...f.request,id:String(id),record:{ID:id,AttackInterval:1}});
+            await flush();
+            assert.equal(f.client.getState().description.id,String(id));
+        }
+        try{
+            await flush();
+            assert.equal(animation.value,'attack');
+            animation.value='die';animation.onchange();
+            const seconds=field(f.root,'Position (seconds)');
+            seconds.value=.5;seconds.onchange();
+            await showUnit(90002,['idle','attack','die']);
+            assert.equal(animation.value,'die');
+            assert.equal(f.client.getState().time,0);
+            assert(button(f.root,'Use current frame').disabled);
+            await showUnit(90003,['idle','attack']);
+            assert.equal(animation.value,'attack');
+            await showUnit(90004,['idle','attack','die']);
+            assert.equal(animation.value,'die');
+            animation.value='idle';animation.onchange();
+            await showUnit(90001,['idle','attack','die']);
+            assert.equal(animation.value,'idle');
+            assert.deepStrictEqual(f.edits,[]);
+        }finally{f.client.destroy();}
     });
     await test('eventless imported rigs show saved gameplay timing without inventing an animation reference',async()=>{
         const f=fixture({default:.5,events:[]});await flush();assert.equal(f.client.getState().effect,.5);assert.equal(f.edits.length,0);

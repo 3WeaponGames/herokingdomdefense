@@ -144,11 +144,11 @@ test('an intact wall blocks cached tower targets and redirects tower priority to
   assert.deepEqual(hits, ['wall', 'tower']);
 });
 
-test('legacy ranged and flying enemies aim at the gate before they can hit the tower', () => {
+test('legacy ground ranged enemies aim at the gate before they can hit the tower', () => {
   for (const actor of ['KinghtFallEnemyLong', 'KinghtFallEnemyItem08']) {
     const e = fixture(actor), { game, gate, tower, unit, hits, impacts } = e;
     game.gameData.buildings.push(tower);
-    unit.cfg = { ...unit.cfg, AttackRange: 100, BuildingCross: actor === 'KinghtFallEnemyLong' ? 1 : 0 };
+    unit.cfg = { ...unit.cfg, AttackRange: 100, BuildingCross: 1 };
     let shot;
     game.onShotEnemy = () => ({ pos: e.cc.v2(), ctr: { setParent() {}, setTag(_, target, hit, offset) { shot = { target, hit, offset }; } } });
     unit.doAttack();
@@ -165,6 +165,53 @@ test('legacy ranged and flying enemies aim at the gate before they can hit the t
     assert.equal(shot.target, tower.node);
     shot.hit();
     assert.deepEqual(hits, ['wall', 'tower']);
+  }
+});
+
+test('a flying melee enemy crosses the closed gate and attacks the tower', () => {
+  const { nav, game, gate, tower, unit, hits } = fixture();
+  unit.node.setPosition(-30, 0);
+  tower.node.setPosition(65, 0);
+  game.gameData.buildings.push(tower);
+  const groundTarget = unit.getUpdateTarget();
+  assert.equal(groundTarget.building, gate);
+
+  unit.cfg.BuildingCross = false;
+  unit.rigidBody.active = false;
+  const selected = unit.getUpdateTarget();
+  assert.equal(selected.building, tower, 'refreshing a cached gate target switches to the tower');
+  assert.equal(selected.canAtt, false);
+  for (let i = 0; i < 40 && !unit.getUpdateTarget()?.canAtt; i++) {
+    nav.beginFrame(game);
+    const target = unit.getUpdateTarget();
+    assert.equal(target.building, tower);
+    nav.moveTo(unit, game, nav.attackPositionOf(target, unit, game), .05);
+  }
+  assert(unit.node.x > 8);
+  unit.doAttack();
+  assert.deepEqual(hits, ['tower']);
+  assert(gate.getIsWork());
+
+  unit.cfg = { ...unit.cfg, EnemyTargeting: { mode: 'priority', order: ['wall', 'tower'] } };
+  assert.equal(unit.getUpdateTarget().building, tower);
+  unit.cfg = { ...unit.cfg, EnemyTargeting: { mode: 'priority', order: ['wall'] } };
+  assert.equal(unit.getUpdateTarget(), null);
+});
+
+test('legacy flying ranged shots hit a tower behind a live gate after the attacker is reused', () => {
+  for (const actor of ['KinghtFallEnemyLong', 'KinghtFallEnemyItem08']) {
+    const e = fixture(actor), { game, gate, tower, unit, hits } = e;
+    game.gameData.buildings.push(tower);
+    unit.cfg = { ...unit.cfg, AttackRange: 100, BuildingCross: 0 };
+    let shot;
+    game.onShotEnemy = () => ({ pos: e.cc.v2(), ctr: { setParent() {}, setTag(_, target, hit) { shot = { target, hit }; } } });
+    unit.doAttack();
+    assert.equal(shot.target, tower.node);
+    unit.cfg = { ...unit.cfg, BuildingCross: 1 };
+    unit.node._combatGeneration = 2;
+    shot.hit();
+    assert.deepEqual(hits, ['tower']);
+    assert(gate.getIsWork());
   }
 });
 
@@ -190,8 +237,8 @@ test('pursuit and ranged impacts use exposed wall faces beside terrain and skip 
   assert.equal(unit.pickAttackTarget(game), null);
 });
 
-test('legacy splash damage cannot hit a tower through a live wall', () => {
-  const { game, gate, tower, unit, hits } = fixture('KinghtFallEnemyItem07');
+test('legacy ground splash respects wall protection and flying splash skips walls', () => {
+  const { nav, game, gate, tower, unit, hits } = fixture('KinghtFallEnemyItem07');
   game.gameData.buildings.push(tower);
   unit.doAttack();
   assert.deepEqual(hits, ['wall']);
@@ -203,4 +250,10 @@ test('legacy splash damage cannot hit a tower through a live wall', () => {
   game.gameData.soldiers.push(troop);
   unit.doAttack();
   assert.deepEqual(hits, ['wall', 'troop', 'tower']);
+
+  gate.isDestroyed = false;
+  nav.invalidate(game);
+  unit.cfg = { ...unit.cfg, BuildingCross: 0 };
+  unit.doAttack();
+  assert.deepEqual(hits, ['wall', 'troop', 'tower', 'troop', 'tower']);
 });

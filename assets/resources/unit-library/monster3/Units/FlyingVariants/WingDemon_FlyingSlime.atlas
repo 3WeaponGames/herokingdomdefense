@@ -1,69 +1,27 @@
 
 WingDemon_FlyingSlime.png
-size: 2048,256
+size: 512,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-u_19fa815e76388a94d94234b3f844a816
+FlyingSlime_MeltTail
   rotate: false
   xy: 2, 2
-  size: 200, 169
-  orig: 200, 169
+  size: 174, 146
+  orig: 174, 146
   offset: 0, 0
   index: -1
-WingDemon_FlyingSlime_Hit
+u_152fe574aaf1a0541811ce62a5399c46
   rotate: false
-  xy: 206, 2
-  size: 161, 138
-  orig: 161, 138
+  xy: 180, 2
+  size: 173, 56
+  orig: 173, 56
   offset: 0, 0
   index: -1
-WingDemon_FlyingSlime_Hit_2
+u_b0f6c00bb569bf8478dd1e9c5ccc51a5
   rotate: false
-  xy: 371, 2
-  size: 161, 138
-  orig: 161, 138
-  offset: 0, 0
-  index: -1
-WingDemon_FlyingSlime_Wing2
-  rotate: false
-  xy: 536, 2
-  size: 53, 122
-  orig: 53, 122
-  offset: 0, 0
-  index: -1
-WingDemon_FlyingSlime_Wing2_
-  rotate: false
-  xy: 593, 2
-  size: 53, 122
-  orig: 53, 122
-  offset: 0, 0
-  index: -1
-WingDemon_FlyingSlime_Head
-  rotate: false
-  xy: 650, 2
-  size: 109, 121
-  orig: 109, 121
-  offset: 0, 0
-  index: -1
-WingDemon_FlyingSlime_Wing_
-  rotate: false
-  xy: 763, 2
-  size: 112, 75
-  orig: 112, 75
-  offset: 0, 0
-  index: -1
-WingDemon_FlyingSlime_Wing
-  rotate: false
-  xy: 879, 2
-  size: 111, 74
-  orig: 111, 74
-  offset: 0, 0
-  index: -1
-u_8c50a723da23a4d40b73f4f228b442ef
-  rotate: false
-  xy: 994, 2
-  size: 144, 47
-  orig: 144, 47
+  xy: 357, 2
+  size: 113, 158
+  orig: 113, 158
   offset: 0, 0
   index: -1

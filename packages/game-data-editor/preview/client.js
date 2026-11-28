@@ -54,6 +54,7 @@ function mount(container, api) {
     const impact=el('p','',shot);impact.className='preview-help';
     const shared=el('p','',root);shared.className='preview-help';
     let request=null,description=null,spine=null,layers=[],poseBounds=null,playing=false,current=0,playbackTime=0,duration=1,effect=0,customTiming=false,raf=null,last=0,token=0,direction=1,mirrored=false,disposed=false,trajectory=null,heroLevels={},identity='',savedAttackSpeed=1,customSpeed=false,allyLevel=0,lastMetricsSignature='',attackMetrics=null,pendingTiming=null;
+    let preferredAnimation='';
     function controlledLevel(next){return next&&next.type==='ally'&&Number.isInteger(next.level)&&next.level>0?next.level:0;}
     characterLevel.onchange=()=>{if(controlledLevel(request)){characterLevel.value=allyLevel;return;}allyLevel=Number(characterLevel.value)||0;load(request);};
     attackSpeed.onchange=()=>{if(unitPlayback()!==undefined){attackSpeed.value=savedAttackSpeed;return;}const value=Number(attackSpeed.value);if(!description||!Number.isFinite(value)||value<.1||value>4){attackSpeed.value=savedAttackSpeed;status.textContent='Choose an attack animation speed between 0.1 and 4.';return;}if(value===savedAttackSpeed)return;savedAttackSpeed=value;customSpeed=true;api.onChange([{doc:'overrides',path:['animationSpeeds',playbackKey()],value}]);updateTiming();render();};
@@ -64,7 +65,21 @@ function mount(container, api) {
     function seekTime(value){current=Math.max(0,Math.min(duration,Number(value)||0));playbackTime=current;updatePosition();}
     loop.onchange=()=>{playbackTime=current;last=0;render();};
     scrub.oninput=()=>{stop();seekTime(scrub.value);};seconds.onchange=()=>{stop();seekTime(seconds.value);};grid.onchange=()=>seekTime(current);
-    animations.onchange=()=>{stop();duration=Math.max.apply(null,layers.map(l=>{const a=l.data.findAnimation(animations.value);return a?a.duration:0;}))||1;scrub.max=duration;seekTime(0);updateTiming();};
+    function restartAnimation(){
+        stop();
+        duration=Math.max(0,...layers.map(layer=>{
+            const clip=layer.data.findAnimation(animations.value);
+            return clip?clip.duration:0;
+        }))||1;
+        scrub.max=duration;
+        seekTime(0);
+        updateTiming();
+    }
+    animations.onchange=()=>{
+        if(!layers.length)return;
+        if(api.rememberAnimation)preferredAnimation=animations.value;
+        restartAnimation();
+    };
     skins.onchange=()=>{layers.forEach(l=>{if(l.data.findSkin(skins.value)){l.skeleton.setSkinByName(skins.value);l.description.skin=skins.value;}});render();};
     distance.onchange=()=>{trajectory=Projectile.simulate(description&&description.projectile,Math.max(25,Number(distance.value)||250),60);render();};
     effectSlider.oninput=()=>{effect=Number(effectSlider.value);effectSeconds.value=effect;pendingTiming={key:description.key,value:{attack:effect}};updateMarkers();publishAttackMetrics();render();};
@@ -107,9 +122,12 @@ function mount(container, api) {
         const data=await api.ipc('unit-preview',payload);if(disposed||currentToken!==token)return;
         title.textContent=data.type==='building'?'Building preview':data.type==='hero'?'Hero & equipment preview':'Unit '+data.id+(data.type==='ally'&&allyLevel?' · Level '+allyLevel:'')+(data.form!=='default'?' · form '+data.form:'');
         if(data.type==='building'){description=data;controls.hidden=timing.hidden=true;canvas.hidden=true;buildingArtwork.set(data);const artwork=data.appearance;status.textContent=!data.image?'Map artwork resource is missing or not imported.':artwork&&artwork.weapon&&!data.weaponImage?'Weapon artwork resource is missing or not imported.':artwork&&artwork.weapon?'Fixed base and aiming weapon.':artwork?'Map artwork · '+(Number(artwork.width)||160)+' × '+(Number(artwork.height)||200)+' world units.':'Authored building icon.';shared.textContent='Preview only. Changes remain drafts until Save.';return;}
-        canvas.hidden=false;controls.hidden=timing.hidden=false;
         spine=require(data.runtimePath);const loaded=await Renderer.createLayers(spine,data.layers);if(disposed||currentToken!==token)return;layers=loaded;description=data;
-        const names=Array.from(new Set([].concat.apply([],data.layers.map(l=>Renderer.animationNames?Renderer.animationNames(l.json):l.animations)))).filter(name=>name!=='__fx_ambient');animations.innerHTML='';names.forEach(name=>{const o=el('option',name,animations);o.value=name;});const attack=next.heroStyle&&next.heroStyle!=='skirmisher'?'attack_'+next.heroStyle:'attack';animations.value=names.includes(attack)?attack:names.indexOf('attack')>=0?'attack':names[0];
+        const names=Array.from(new Set([].concat.apply([],data.layers.map(l=>Renderer.animationNames?Renderer.animationNames(l.json):l.animations)))).filter(name=>name!=='__fx_ambient');
+        animations.innerHTML='';
+        names.forEach(name=>{const o=el('option',name,animations);o.value=name;});
+        const attack=next.heroStyle&&next.heroStyle!=='skirmisher'?'attack_'+next.heroStyle:'attack';
+        animations.value=[preferredAnimation,attack,'attack'].find(name=>names.includes(name))||names[0]||'';
         Renderer.seek(spine,layers,'idle',0,false);poseBounds=Renderer.bounds(spine,layers);
         skins.innerHTML='';(data.layers[0].skins||[]).forEach(name=>{const o=el('option',name,skins);o.value=name;});skins.value=data.layers[0].skin;skinsRow.hidden=data.type==='hero';
         equipment.innerHTML='';(data.equipment||[]).forEach(item=>{const label=el('label',item.label,equipment),input=el(item.levels?'select':'input',undefined,label);if(item.levels)for(const value of item.levels){const option=el('option',value.label,input);option.value=value.value;}else{input.type='number';input.min=1;input.max=item.max;}input.value=item.level;input.setAttribute('aria-label','Preview '+item.label);input.disabled=!!(next.heroLevels&&next.heroLevels[item.id]);input.title=input.disabled?'Follows the level selected in Equipment.':'';input.onchange=()=>{heroLevels[item.id]=Math.min(item.max,Math.max(1,Math.round(Number(input.value)||1)));load(request);};});
@@ -117,7 +135,9 @@ function mount(container, api) {
         readEffect();readMirror();readPlayback();trajectory=Projectile.simulate(data.projectile,Math.max(25,Number(distance.value)||250),60);shot.hidden=!data.projectile;
         status.textContent='Animation preview only. '+(data.type==='hero'?'Equipment levels here do not change your saved progression.':'No gameplay or audio is running.');
         shared.textContent=data.shared.length?'Animation assets are shared with '+data.shared.length+' other prefab(s). Timing edits stay scoped to this unit.':'This preview never writes animation assets.';
-        shared.title=data.shared.join('\n');animations.onchange();
+        shared.title=data.shared.join('\n');
+        canvas.hidden=controls.hidden=timing.hidden=false;
+        restartAnimation();
     }catch(error){if(!disposed&&currentToken===token){description=null;layers=[];clearAttackMetrics();controls.hidden=timing.hidden=canvas.hidden=true;status.className='preview-help preview-error';status.textContent='Preview unavailable: '+error.message;}}}
     function setUnit(next){next=Object.assign({},next);const equipmentData=next.type==='hero'&&next.documents&&next.documents.A?next.documents.A.data.EquipCfg:null,level=controlledLevel(next),sameUnit=request&&request.type===next.type&&String(request.id)===String(next.id);const nextIdentity=next.type+':'+next.id+':'+level+':'+JSON.stringify(next.record||{})+':'+JSON.stringify(equipmentData)+':'+JSON.stringify(next.heroLevels||{})+':'+(next.heroStyle||'');if(identity===nextIdentity&&description&&description.type!=='building'){request=next;readEffect();readMirror();readPlayback();updateTiming();render();return;}identity=nextIdentity;heroLevels=Object.assign({},next.heroLevels);allyLevel=level||(sameUnit?allyLevel:0);load(next);}
     function setBuilding(next){identity='';load(Object.assign({},next,{type:'building'}));}

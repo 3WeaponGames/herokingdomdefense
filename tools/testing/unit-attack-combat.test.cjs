@@ -125,7 +125,7 @@ test('unit attack overrides resolve supported combinations without editing base 
   assert.deepEqual(Rules.issues({ delivery: 'ranged', pattern: 'volley', shotsPerVolley: 1.5 }).map(issue => issue.field), ['shotsPerVolley']);
 });
 
-test('the configured Evilmass Dagger attack hits a blocking wall before an out-of-range hero', () => {
+test('a hero-seeking melee attack hits a blocking wall before an out-of-range hero', () => {
   const f = fixture(), player = f.target('hero', 340, 0), wall = f.target('wall', 35, 0);
   installIntersection(f.e.cc);
   f.game.ctrPlay = player;
@@ -136,7 +136,11 @@ test('the configured Evilmass Dagger attack hits a blocking wall before an out-o
   collider.points = [{ x: -8, y: -90 }, { x: 8, y: -90 }, { x: 8, y: 90 }, { x: -8, y: 90 }];
   wall.getWposPhyCol2 = () => [{ tagNode: wall.node, points: collider.points.map(point => wall.node.convertToWorldSpaceAR(point)) }];
   f.d.getBulidList = f.d.getAttackableBuildList = () => [wall];
-  const saved = require('../../assets/KinghtFallConfig/GameJsonCfg.json').SoldierCfg[91180];
+  const saved = {
+    ID: 90002, AttackType: 1, AttackRange: 44, SearchRange: 220, BuildingCross: 1,
+    EnemyTargeting: { mode: 'hero' },
+    UnitAttack: { delivery: 'melee', pattern: 'single', onHit: { bleed: { percent: .08, duration: 3 } } }
+  };
   const owner = f.attacker('KinghtFallEnemyBase', saved.UnitAttack, player);
   owner.cfg = Rules.runtimeCfg(saved);
   delete owner.getFind;
@@ -148,7 +152,7 @@ test('the configured Evilmass Dagger attack hits a blocking wall before an out-o
   assert.deepEqual(f.amounts(), [['wall', 100], ['hero', 100]]);
 });
 
-test('configured enemy missiles and splash respect tower protection through impact and recheck after a breach', () => {
+test('configured enemy missiles and splash use the released attacker movement to check wall protection', () => {
   const f = fixture(), { game } = f, primary = f.target('troop', 40), tower = f.target('tower', 100);
   const wall = f.target('wall', 65);
   wall.buildInfo = { BuildID: 'Wall' };
@@ -178,6 +182,15 @@ test('configured enemy missiles and splash respect tower protection through impa
   shot.doAttackStart();
   f.step(1);
   assert(f.hits.some(hit => hit.name === 'tower'), 'the same tower was exposed once the wall was broken');
+
+  const start = f.hits.length;
+  intact = true;
+  const flyer = f.attacker('KinghtFallEnemyBase', { delivery: 'ranged', pattern: 'splash', splashRadius: 100 }, tower);
+  flyer.cfg = { ...flyer.cfg, BuildingCross: 0 };
+  flyer.doAttackStart();
+  flyer.cfg = { ...flyer.cfg, BuildingCross: 1 };
+  f.step(1);
+  assert.deepEqual(f.hits.slice(start).map(hit => hit.name).sort(), ['tower', 'troop']);
 });
 
 test('the Sun-Tomb Regent steals life on a real hit without requesting the retired healing sound', () => {

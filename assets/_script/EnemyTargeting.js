@@ -1,5 +1,6 @@
 "use strict";
 
+var FlightTargeting = require("./FlightTargeting");
 var footprintBounds = new WeakMap();
 var wallCrowds = new WeakMap();
 var gateCapacity = 4;
@@ -40,6 +41,7 @@ function settings(cfg) {
 function kind(game, actor) {
   if (actor === game.ctrPlay) return "hero";
   if (actor === game.gameData.baseBuild) return "castle";
+  if (actor.getNavigationGateShapes) return "wall";
   var types = require("KinghtFallEnum").KinghtFallEnumBuildEnum;
   var id = actor.buildInfo && actor.buildInfo.BuildID || actor.buildCfg && actor.buildCfg.enumValue;
   if (id !== undefined && types) {
@@ -49,7 +51,8 @@ function kind(game, actor) {
   }
   return actor.getIsWork ? "building" : "troops";
 }
-function allows(rule, game, actor, breach) {
+function allows(rule, game, actor, breach, unit) {
+  if (FlightTargeting.isFlying(unit) && kind(game, actor) === "wall") return false;
   if (!rule) return true;
   if (breach) return actor === breach;
   var type = kind(game, actor);
@@ -60,8 +63,8 @@ function live(actor) {
     !actor._isPooled && !actor.isDestroyed && (!actor.isDead || !actor.isDead()) && (!actor.getIsWork || actor.getIsWork()));
 }
 function length(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-function protectingWall(game, start, actor) {
-  if (kind(game, actor) !== "tower") return null;
+function protectingWall(game, start, actor, unit) {
+  if (FlightTargeting.isFlying(unit) || kind(game, actor) !== "tower") return null;
   var Navigation = require("KinghtFallNavigation");
   return Navigation.wallBetween(game, start, Navigation.positionOf(actor.node, game));
 }
@@ -173,7 +176,7 @@ function wallTarget(unit, game, query, wall, parts, range, hitRange, breach, pur
   return selected;
 }
 function buildingTarget(unit, game, query, building, range, hitRange, breach, pursue) {
-  if (!building || !building.getIsWork || !live(building)) return null;
+  if (!building || !building.getIsWork || !live(building) || !allows(null, game, building, null, unit)) return null;
   var Navigation = query.navigation;
   var parts = Navigation.attackPartsOf(building), nearest = null;
   var circle = query.circle;
@@ -204,7 +207,7 @@ function refreshBuilding(unit, game, target) {
   var range = unit.cfg.AttackRange || 0;
   var query = { navigation: require("KinghtFallNavigation"), circle: { position: null, radius: 0 }, start: null };
   var selected = buildingTarget(unit, game, query, target.building, range + (unit.cfg.SearchRange || 0), range, target.breach, true);
-  if (selected && protectingWall(game, query.start, selected.building)) return null;
+  if (selected && protectingWall(game, query.start, selected.building, unit)) return null;
   return selected;
 }
 function rememberedWall(unit, node, goal) {
@@ -275,7 +278,7 @@ function find(unit, game, rule, attackOnly) {
       if (rank < 0 || rank > bestRank) return;
       var candidate = building ? buildingTarget(unit, game, query, actor, awareness, attackRange, false, !attackOnly) : actorTarget(actor);
       if (candidate && building) {
-        var wall = protectingWall(game, start, actor);
+        var wall = protectingWall(game, start, actor, unit);
         if (wall) candidate = buildingTarget(unit, game, query, wall, awareness, attackRange, true, !attackOnly);
       }
       if (candidate && (!target || rank < bestRank || candidate.distance < target.distance)) {

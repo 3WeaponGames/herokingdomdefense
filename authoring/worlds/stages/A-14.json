@@ -442,7 +442,7 @@
             "unitId": 91133,
             "spawnId": 5,
             "count": 7,
-            "startSeconds": 2.5,
+            "startSeconds": 2,
             "intervalSeconds": 1.5,
             "id": "entry-3",
             "unitGroupId": "unit-group-1"
@@ -451,7 +451,7 @@
             "unitId": 91133,
             "spawnId": 1,
             "count": 7,
-            "startSeconds": 13,
+            "startSeconds": 5,
             "intervalSeconds": 2,
             "id": "legacy-1-0",
             "unitGroupId": "unit-group-1"
@@ -460,7 +460,7 @@
             "unitId": 91096,
             "spawnId": 2,
             "count": 4,
-            "startSeconds": 16,
+            "startSeconds": 8,
             "intervalSeconds": 3.5,
             "id": "entry-4"
           },
@@ -468,7 +468,7 @@
             "unitId": 100779,
             "spawnId": 3,
             "count": 2,
-            "startSeconds": 18,
+            "startSeconds": 10,
             "intervalSeconds": 4,
             "id": "entry-5"
           },
@@ -476,7 +476,7 @@
             "unitId": 91170,
             "spawnId": 11,
             "count": 2,
-            "startSeconds": 27.5,
+            "startSeconds": 6,
             "intervalSeconds": 4,
             "id": "entry-6"
           },
@@ -484,16 +484,16 @@
             "unitId": 91133,
             "spawnId": 12,
             "count": 7,
-            "startSeconds": 29.5,
+            "startSeconds": 8,
             "intervalSeconds": 1.5,
             "id": "entry-7",
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 91184,
+            "unitId": 91185,
             "spawnId": 10,
             "count": 1,
-            "startSeconds": 31.5,
+            "startSeconds": 10,
             "intervalSeconds": 0.5,
             "id": "entry-8"
           }
@@ -548,7 +548,7 @@
             "unitId": 91133,
             "spawnId": 5,
             "count": 7,
-            "startSeconds": 14.5,
+            "startSeconds": 5,
             "intervalSeconds": 2.5,
             "id": "legacy-5-0",
             "unitGroupId": "unit-group-1"
@@ -557,7 +557,7 @@
             "unitId": 91096,
             "spawnId": 6,
             "count": 5,
-            "startSeconds": 17.5,
+            "startSeconds": 8,
             "intervalSeconds": 3,
             "id": "entry-5"
           },
@@ -565,7 +565,7 @@
             "unitId": 1000042000,
             "spawnId": 4,
             "count": 3,
-            "startSeconds": 19.5,
+            "startSeconds": 10,
             "intervalSeconds": 3.5,
             "id": "entry-6"
           },
@@ -573,7 +573,7 @@
             "unitId": 101831,
             "spawnId": 3,
             "count": 4,
-            "startSeconds": 31.5,
+            "startSeconds": 8,
             "intervalSeconds": 4,
             "id": "entry-7"
           },
@@ -581,7 +581,7 @@
             "unitId": 91133,
             "spawnId": 1,
             "count": 7,
-            "startSeconds": 33,
+            "startSeconds": 10,
             "intervalSeconds": 2,
             "id": "legacy-1-0",
             "unitGroupId": "unit-group-1"
@@ -590,7 +590,7 @@
             "unitId": 91170,
             "spawnId": 2,
             "count": 2,
-            "startSeconds": 35,
+            "startSeconds": 12,
             "intervalSeconds": 4,
             "id": "entry-1"
           }
@@ -645,7 +645,7 @@
             "unitId": 1000042000,
             "spawnId": 9,
             "count": 3,
-            "startSeconds": 18.5,
+            "startSeconds": 6,
             "intervalSeconds": 3.5,
             "id": "entry-6"
           },
@@ -653,7 +653,7 @@
             "unitId": 91133,
             "spawnId": 7,
             "count": 8,
-            "startSeconds": 20.5,
+            "startSeconds": 8,
             "intervalSeconds": 2,
             "id": "legacy-7-1",
             "unitGroupId": "unit-group-0"
@@ -662,7 +662,7 @@
             "unitId": 91096,
             "spawnId": 8,
             "count": 5,
-            "startSeconds": 22.5,
+            "startSeconds": 10,
             "intervalSeconds": 3,
             "id": "entry-7"
           },
@@ -670,7 +670,7 @@
             "unitId": 91133,
             "spawnId": 4,
             "count": 8,
-            "startSeconds": 37,
+            "startSeconds": 5,
             "intervalSeconds": 2,
             "id": "legacy-4-0",
             "unitGroupId": "unit-group-0"
@@ -679,7 +679,7 @@
             "unitId": 101831,
             "spawnId": 6,
             "count": 4,
-            "startSeconds": 40,
+            "startSeconds": 8,
             "intervalSeconds": 4,
             "id": "entry-8"
           },
@@ -687,7 +687,7 @@
             "unitId": 91170,
             "spawnId": 5,
             "count": 3,
-            "startSeconds": 42,
+            "startSeconds": 10,
             "intervalSeconds": 4,
             "id": "entry-9"
           }
@@ -744,7 +744,7 @@
             "unitId": 101831,
             "spawnId": 10,
             "count": 4,
-            "startSeconds": 19,
+            "startSeconds": 7,
             "intervalSeconds": 4,
             "id": "entry-6"
           },
@@ -752,7 +752,7 @@
             "unitId": 91133,
             "spawnId": 12,
             "count": 9,
-            "startSeconds": 20.5,
+            "startSeconds": 8,
             "intervalSeconds": 2,
             "id": "entry-7",
             "unitGroupId": "unit-group-0"
@@ -761,7 +761,7 @@
             "unitId": 1000042000,
             "spawnId": 11,
             "count": 3,
-            "startSeconds": 22.5,
+            "startSeconds": 10,
             "intervalSeconds": 3.5,
             "id": "entry-8"
           },
@@ -769,7 +769,7 @@
             "unitId": 91133,
             "spawnId": 8,
             "count": 8,
-            "startSeconds": 36.5,
+            "startSeconds": 1,
             "intervalSeconds": 2.5,
             "id": "legacy-8-1",
             "unitGroupId": "unit-group-0"
@@ -778,7 +778,7 @@
             "unitId": 100779,
             "spawnId": 7,
             "count": 4,
-            "startSeconds": 39.5,
+            "startSeconds": 4,
             "intervalSeconds": 4,
             "id": "legacy-7-1"
           },
@@ -835,7 +835,7 @@
             "unitId": 101831,
             "spawnId": 6,
             "count": 5,
-            "startSeconds": 3.5,
+            "startSeconds": 3,
             "intervalSeconds": 3.5,
             "id": "entry-4"
           },
@@ -843,7 +843,7 @@
             "unitId": 1000042000,
             "spawnId": 2,
             "count": 5,
-            "startSeconds": 14,
+            "startSeconds": 8,
             "intervalSeconds": 3.5,
             "id": "entry-5"
           },
@@ -851,7 +851,7 @@
             "unitId": 91133,
             "spawnId": 1,
             "count": 9,
-            "startSeconds": 15,
+            "startSeconds": 9,
             "intervalSeconds": 2.5,
             "id": "entry-6",
             "unitGroupId": "unit-group-0"
@@ -860,7 +860,7 @@
             "unitId": 91096,
             "spawnId": 3,
             "count": 5,
-            "startSeconds": 16.5,
+            "startSeconds": 10,
             "intervalSeconds": 4,
             "id": "entry-7"
           },
@@ -874,10 +874,10 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91184,
+            "unitId": 91185,
             "spawnId": 11,
             "count": 3,
-            "startSeconds": 20,
+            "startSeconds": 10,
             "intervalSeconds": 8,
             "id": "entry-9"
           },
@@ -930,7 +930,7 @@
             "unitId": 91133,
             "spawnId": 7,
             "count": 9,
-            "startSeconds": 2.5,
+            "startSeconds": 2,
             "intervalSeconds": 1.5,
             "id": "legacy-7-1",
             "unitGroupId": "unit-group-1"
@@ -939,7 +939,7 @@
             "unitId": 91133,
             "spawnId": 6,
             "count": 8,
-            "startSeconds": 11.5,
+            "startSeconds": 6,
             "intervalSeconds": 2.5,
             "id": "legacy-6-0",
             "unitGroupId": "unit-group-1"
@@ -948,15 +948,15 @@
             "unitId": 91096,
             "spawnId": 5,
             "count": 6,
-            "startSeconds": 14,
+            "startSeconds": 9,
             "intervalSeconds": 3,
             "id": "legacy-5-0"
           },
           {
-            "unitId": 91184,
+            "unitId": 91185,
             "spawnId": 4,
             "count": 3,
-            "startSeconds": 15.5,
+            "startSeconds": 10,
             "intervalSeconds": 4,
             "id": "entry-4"
           },
@@ -964,7 +964,7 @@
             "unitId": 100779,
             "spawnId": 1,
             "count": 3,
-            "startSeconds": 25.5,
+            "startSeconds": 9,
             "intervalSeconds": 4,
             "id": "entry-5"
           },
@@ -972,7 +972,7 @@
             "unitId": 91133,
             "spawnId": 2,
             "count": 8,
-            "startSeconds": 26,
+            "startSeconds": 10,
             "intervalSeconds": 1.5,
             "id": "legacy-2-0",
             "unitGroupId": "unit-group-1"
@@ -981,7 +981,7 @@
             "unitId": 1000042000,
             "spawnId": 3,
             "count": 2,
-            "startSeconds": 27.5,
+            "startSeconds": 11,
             "intervalSeconds": 3.5,
             "id": "entry-6"
           },
@@ -989,7 +989,7 @@
             "unitId": 91170,
             "spawnId": 11,
             "count": 2,
-            "startSeconds": 36,
+            "startSeconds": 9,
             "intervalSeconds": 4,
             "id": "entry-7"
           },
@@ -997,7 +997,7 @@
             "unitId": 91133,
             "spawnId": 12,
             "count": 8,
-            "startSeconds": 37,
+            "startSeconds": 10,
             "intervalSeconds": 1.5,
             "id": "entry-8",
             "unitGroupId": "unit-group-1"
@@ -1053,7 +1053,7 @@
             "unitId": 101831,
             "spawnId": 7,
             "count": 5,
-            "startSeconds": 16,
+            "startSeconds": 4,
             "intervalSeconds": 3.5,
             "id": "legacy-7-1"
           },
@@ -1061,16 +1061,16 @@
             "unitId": 91133,
             "spawnId": 8,
             "count": 10,
-            "startSeconds": 17,
+            "startSeconds": 5,
             "intervalSeconds": 1.5,
             "id": "entry-5",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91184,
+            "unitId": 91185,
             "spawnId": 9,
             "count": 3,
-            "startSeconds": 18,
+            "startSeconds": 6,
             "intervalSeconds": 3.5,
             "id": "entry-6"
           },
@@ -1078,7 +1078,7 @@
             "unitId": 91133,
             "spawnId": 5,
             "count": 11,
-            "startSeconds": 29.5,
+            "startSeconds": 6,
             "intervalSeconds": 2,
             "id": "legacy-5-0",
             "unitGroupId": "unit-group-0"
@@ -1087,7 +1087,7 @@
             "unitId": 100779,
             "spawnId": 6,
             "count": 5,
-            "startSeconds": 31.5,
+            "startSeconds": 8,
             "intervalSeconds": 3.5,
             "id": "entry-7"
           },
@@ -1095,7 +1095,7 @@
             "unitId": 91170,
             "spawnId": 4,
             "count": 3,
-            "startSeconds": 33,
+            "startSeconds": 10,
             "intervalSeconds": 3.5,
             "id": "entry-8"
           }
@@ -1142,7 +1142,7 @@
             "unitId": 100779,
             "spawnId": 2,
             "count": 4,
-            "startSeconds": 3.5,
+            "startSeconds": 3,
             "intervalSeconds": 3,
             "id": "entry-5"
           },
@@ -1150,7 +1150,7 @@
             "unitId": 101831,
             "spawnId": 11,
             "count": 5,
-            "startSeconds": 11.5,
+            "startSeconds": 8,
             "intervalSeconds": 3.5,
             "id": "entry-6"
           },
@@ -1158,7 +1158,7 @@
             "unitId": 91133,
             "spawnId": 12,
             "count": 10,
-            "startSeconds": 12.5,
+            "startSeconds": 9,
             "intervalSeconds": 2,
             "id": "entry-7",
             "unitGroupId": "unit-group-0"
@@ -1167,7 +1167,7 @@
             "unitId": 91096,
             "spawnId": 10,
             "count": 5,
-            "startSeconds": 13.5,
+            "startSeconds": 10,
             "intervalSeconds": 3,
             "id": "entry-8"
           },
@@ -1175,7 +1175,7 @@
             "unitId": 91133,
             "spawnId": 9,
             "count": 8,
-            "startSeconds": 24.5,
+            "startSeconds": 3,
             "intervalSeconds": 2,
             "id": "entry-9",
             "unitGroupId": "unit-group-0"
@@ -1184,15 +1184,15 @@
             "unitId": 1000042000,
             "spawnId": 7,
             "count": 4,
-            "startSeconds": 26.5,
+            "startSeconds": 5,
             "intervalSeconds": 3,
             "id": "entry-10"
           },
           {
-            "unitId": 91184,
+            "unitId": 91185,
             "spawnId": 8,
             "count": 4,
-            "startSeconds": 28,
+            "startSeconds": 7,
             "intervalSeconds": 3,
             "id": "entry-11"
           },
@@ -1200,7 +1200,7 @@
             "unitId": 91133,
             "spawnId": 4,
             "count": 6,
-            "startSeconds": 35.5,
+            "startSeconds": 8,
             "intervalSeconds": 1.5,
             "id": "legacy-4-0",
             "unitGroupId": "unit-group-0"
@@ -1209,7 +1209,7 @@
             "unitId": 91170,
             "spawnId": 6,
             "count": 4,
-            "startSeconds": 37,
+            "startSeconds": 10,
             "intervalSeconds": 2.5,
             "id": "entry-12"
           }
@@ -1265,7 +1265,7 @@
             "unitId": 100779,
             "spawnId": 3,
             "count": 5,
-            "startSeconds": 10.5,
+            "startSeconds": 10,
             "intervalSeconds": 3,
             "id": "entry-6"
           },
@@ -1273,7 +1273,7 @@
             "unitId": 91133,
             "spawnId": 1,
             "count": 11,
-            "startSeconds": 11.5,
+            "startSeconds": 11,
             "intervalSeconds": 1.5,
             "id": "legacy-1-0",
             "unitGroupId": "unit-group-0"
@@ -1282,7 +1282,7 @@
             "unitId": 1000042000,
             "spawnId": 2,
             "count": 4,
-            "startSeconds": 12.5,
+            "startSeconds": 12,
             "intervalSeconds": 3,
             "id": "entry-7"
           },
@@ -1290,7 +1290,7 @@
             "unitId": 101831,
             "spawnId": 10,
             "count": 7,
-            "startSeconds": 22,
+            "startSeconds": 9,
             "intervalSeconds": 2.5,
             "id": "entry-8"
           },
@@ -1298,16 +1298,16 @@
             "unitId": 91133,
             "spawnId": 12,
             "count": 7,
-            "startSeconds": 22.5,
+            "startSeconds": 9,
             "intervalSeconds": 2,
             "id": "entry-9",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91184,
+            "unitId": 91185,
             "spawnId": 11,
             "count": 3,
-            "startSeconds": 23.5,
+            "startSeconds": 10,
             "intervalSeconds": 3,
             "id": "entry-4"
           },
@@ -1315,7 +1315,7 @@
             "unitId": 91170,
             "spawnId": 8,
             "count": 4,
-            "startSeconds": 31.5,
+            "startSeconds": 1,
             "intervalSeconds": 3,
             "id": "entry-10"
           },
@@ -1323,7 +1323,7 @@
             "unitId": 91133,
             "spawnId": 7,
             "count": 7,
-            "startSeconds": 32.5,
+            "startSeconds": 32,
             "intervalSeconds": 1,
             "id": "entry-11",
             "unitGroupId": "unit-group-0"
@@ -1389,7 +1389,7 @@
             "unitId": 100779,
             "spawnId": 4,
             "count": 6,
-            "startSeconds": 14,
+            "startSeconds": 9,
             "intervalSeconds": 3,
             "id": "entry-5"
           },
@@ -1397,16 +1397,16 @@
             "unitId": 91133,
             "spawnId": 6,
             "count": 14,
-            "startSeconds": 14.5,
+            "startSeconds": 9,
             "intervalSeconds": 1.5,
             "id": "entry-6",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91184,
+            "unitId": 91185,
             "spawnId": 5,
             "count": 4,
-            "startSeconds": 15,
+            "startSeconds": 10,
             "intervalSeconds": 3,
             "id": "entry-7"
           },
@@ -1423,7 +1423,7 @@
             "unitId": 1000042000,
             "spawnId": 1,
             "count": 5,
-            "startSeconds": 26.5,
+            "startSeconds": 26,
             "intervalSeconds": 2.5,
             "id": "entry-8"
           },
@@ -1431,7 +1431,7 @@
             "unitId": 91096,
             "spawnId": 3,
             "count": 6,
-            "startSeconds": 27.5,
+            "startSeconds": 27,
             "intervalSeconds": 3,
             "id": "entry-9",
             "unitGroupId": "unit-group-2"
@@ -1440,16 +1440,16 @@
             "unitId": 91170,
             "spawnId": 2,
             "count": 4,
-            "startSeconds": 28,
+            "startSeconds": 9,
             "intervalSeconds": 3,
             "id": "entry-10"
           },
           {
             "id": "entry-1",
             "spawnId": 1,
-            "unitId": 91185,
+            "unitId": 91025,
             "count": 1,
-            "startSeconds": 47.5,
+            "startSeconds": 47,
             "intervalSeconds": 0.5,
             "editorManualTiming": true
           }
@@ -6455,7 +6455,7 @@
   "nextBuilding": 21,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "cbdbeb976dc3be00559ee6f2e7205673f34e289b4692dc339fafd85bb1d0b4a1",
+  "sourceRevision": "afbb45af8433015e2838883fce1f8212ae79d2fc9f10494640fb90e89e440a57",
   "templates": {
     "Map02": [
       {
