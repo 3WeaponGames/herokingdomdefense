@@ -19931,10 +19931,6 @@
         ],
         [
           4,
-          14
-        ],
-        [
-          4,
           13
         ],
         [
@@ -19960,10 +19956,6 @@
           21
         ],
         [
-          4,
-          26
-        ],
-        [
           2,
           7
         ],
@@ -19973,10 +19965,6 @@
         ]
       ],
       "HomeLevel3Unlock": [
-        [
-          2,
-          8
-        ],
         [
           3,
           11
@@ -19990,12 +19978,12 @@
           22
         ],
         [
-          2,
-          23
-        ],
-        [
           3,
           24
+        ],
+        [
+          4,
+          26
         ]
       ],
       "ChallengeReward": [
@@ -20046,7 +20034,7 @@
         {
           "id": 3,
           "Wave": 1,
-          "HealthCoefficient": 1.2,
+          "HealthCoefficient": 1,
           "AttackCoefficient": 1,
           "StartSliver": 6,
           "CommerceSliver": 4,
@@ -20079,7 +20067,7 @@
         {
           "id": 3,
           "Wave": 2,
-          "HealthCoefficient": 1.2,
+          "HealthCoefficient": 1,
           "AttackCoefficient": 1,
           "StartSliver": 3,
           "CommerceSliver": 4,
@@ -20129,7 +20117,7 @@
         {
           "id": 3,
           "Wave": 3,
-          "HealthCoefficient": 1.5,
+          "HealthCoefficient": 1.3,
           "AttackCoefficient": 1.3,
           "StartSliver": 4,
           "CommerceSliver": 4,
@@ -20189,7 +20177,7 @@
         {
           "id": 3,
           "Wave": 4,
-          "HealthCoefficient": 1.5,
+          "HealthCoefficient": 1.3,
           "AttackCoefficient": 1.3,
           "StartSliver": 5,
           "CommerceSliver": 4,
@@ -20218,30 +20206,32 @@
               "spawnId": 4,
               "count": 3,
               "startSeconds": 2.25,
-              "intervalSeconds": 3.75,
+              "intervalSeconds": 1,
               "id": "entry-5",
-              "unitGroupId": "unit-group-1"
+              "unitGroupId": "unit-group-1",
+              "editorManualTiming": true
             },
             {
               "unitId": 91182,
-              "spawnId": 9,
-              "count": 3,
-              "startSeconds": 12.25,
+              "spawnId": 1,
+              "count": 4,
+              "startSeconds": 12.75,
               "intervalSeconds": 6.375,
               "id": "entry-6",
               "unitGroupId": "unit-group-1"
             },
             {
               "unitId": 100807,
-              "spawnId": 8,
+              "spawnId": 3,
               "count": 4,
-              "startSeconds": 15.5,
+              "startSeconds": 15,
               "intervalSeconds": 3.125,
-              "id": "entry-7"
+              "id": "entry-7",
+              "editorManualTiming": true
             },
             {
               "unitId": 91010,
-              "spawnId": 7,
+              "spawnId": 2,
               "count": 3,
               "startSeconds": 17.625,
               "intervalSeconds": 3.75,
@@ -20266,7 +20256,7 @@
         {
           "id": 3,
           "Wave": 5,
-          "HealthCoefficient": 1.6,
+          "HealthCoefficient": 1.4,
           "AttackCoefficient": 1.4,
           "StartSliver": 6,
           "CommerceSliver": 8,
@@ -20336,7 +20326,7 @@
         {
           "id": 3,
           "Wave": 6,
-          "HealthCoefficient": 1.6,
+          "HealthCoefficient": 1.4,
           "AttackCoefficient": 1.4,
           "StartSliver": 7,
           "CommerceSliver": 8,
@@ -20440,7 +20430,7 @@
         {
           "id": 3,
           "Wave": 7,
-          "HealthCoefficient": 1.8,
+          "HealthCoefficient": 1.6,
           "AttackCoefficient": 1.6,
           "StartSliver": 8,
           "CommerceSliver": 8,

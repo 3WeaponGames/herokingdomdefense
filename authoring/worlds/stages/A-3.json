@@ -31,10 +31,6 @@
       ],
       [
         4,
-        14
-      ],
-      [
-        4,
         13
       ],
       [
@@ -60,10 +56,6 @@
         21
       ],
       [
-        4,
-        26
-      ],
-      [
         2,
         7
       ],
@@ -73,10 +65,6 @@
       ]
     ],
     "HomeLevel3Unlock": [
-      [
-        2,
-        8
-      ],
       [
         3,
         11
@@ -90,12 +78,12 @@
         22
       ],
       [
-        2,
-        23
-      ],
-      [
         3,
         24
+      ],
+      [
+        4,
+        26
       ]
     ],
     "ChallengeReward": [
@@ -146,7 +134,7 @@
       {
         "id": 3,
         "Wave": 1,
-        "HealthCoefficient": 1.2,
+        "HealthCoefficient": 1,
         "AttackCoefficient": 1,
         "StartSliver": 6,
         "CommerceSliver": 4,
@@ -179,7 +167,7 @@
       {
         "id": 3,
         "Wave": 2,
-        "HealthCoefficient": 1.2,
+        "HealthCoefficient": 1,
         "AttackCoefficient": 1,
         "StartSliver": 3,
         "CommerceSliver": 4,
@@ -229,7 +217,7 @@
       {
         "id": 3,
         "Wave": 3,
-        "HealthCoefficient": 1.5,
+        "HealthCoefficient": 1.3,
         "AttackCoefficient": 1.3,
         "StartSliver": 4,
         "CommerceSliver": 4,
@@ -289,7 +277,7 @@
       {
         "id": 3,
         "Wave": 4,
-        "HealthCoefficient": 1.5,
+        "HealthCoefficient": 1.3,
         "AttackCoefficient": 1.3,
         "StartSliver": 5,
         "CommerceSliver": 4,
@@ -318,30 +306,32 @@
             "spawnId": 4,
             "count": 3,
             "startSeconds": 2.25,
-            "intervalSeconds": 3.75,
+            "intervalSeconds": 1,
             "id": "entry-5",
-            "unitGroupId": "unit-group-1"
+            "unitGroupId": "unit-group-1",
+            "editorManualTiming": true
           },
           {
             "unitId": 91182,
-            "spawnId": 9,
-            "count": 3,
-            "startSeconds": 12.25,
+            "spawnId": 1,
+            "count": 4,
+            "startSeconds": 12.75,
             "intervalSeconds": 6.375,
             "id": "entry-6",
             "unitGroupId": "unit-group-1"
           },
           {
             "unitId": 100807,
-            "spawnId": 8,
+            "spawnId": 3,
             "count": 4,
-            "startSeconds": 15.5,
+            "startSeconds": 15,
             "intervalSeconds": 3.125,
-            "id": "entry-7"
+            "id": "entry-7",
+            "editorManualTiming": true
           },
           {
             "unitId": 91010,
-            "spawnId": 7,
+            "spawnId": 2,
             "count": 3,
             "startSeconds": 17.625,
             "intervalSeconds": 3.75,
@@ -366,7 +356,7 @@
       {
         "id": 3,
         "Wave": 5,
-        "HealthCoefficient": 1.6,
+        "HealthCoefficient": 1.4,
         "AttackCoefficient": 1.4,
         "StartSliver": 6,
         "CommerceSliver": 8,
@@ -436,7 +426,7 @@
       {
         "id": 3,
         "Wave": 6,
-        "HealthCoefficient": 1.6,
+        "HealthCoefficient": 1.4,
         "AttackCoefficient": 1.4,
         "StartSliver": 7,
         "CommerceSliver": 8,
@@ -540,7 +530,7 @@
       {
         "id": 3,
         "Wave": 7,
-        "HealthCoefficient": 1.8,
+        "HealthCoefficient": 1.6,
         "AttackCoefficient": 1.6,
         "StartSliver": 8,
         "CommerceSliver": 8,
@@ -1701,8 +1691,8 @@
         "x": 50.108,
         "y": 305.273
       },
-      "x": 45.91154152897856,
-      "y": 458.51740709652205,
+      "x": -323.8980291532354,
+      "y": 484.9323764309659,
       "scale": 1,
       "angle": 0,
       "unlock": 1,
@@ -3220,202 +3210,6 @@
       "renderAfter": "layer-4"
     },
     {
-      "id": 14,
-      "name": "House 3",
-      "kind": 4,
-      "origin": {
-        "x": 65.143,
-        "y": -565.45
-      },
-      "x": -189.46474483721605,
-      "y": 646.3748867862762,
-      "scale": 1,
-      "angle": 0,
-      "unlock": 1,
-      "enabled": true,
-      "template": {
-        "prefab": "Map03",
-        "node": 1295,
-        "roots": [
-          1295,
-          513
-        ],
-        "revision": "cd51c5b74438eb8597e6e6463282c4a4dd4068d296497674cdf95b40edad2e46"
-      },
-      "sprites": [
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            146.04177691597076,
-            -646.3487769159708
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            146.04177691597076,
-            -646.3487769159708
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "de5efb11-6931-4bdf-8bf8-428b171ce96b",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            54.761776915970756,
-            -592.7947769159708
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            146.04177691597076,
-            -646.3487769159708
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            146.04177691597076,
-            -646.3487769159708
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            146.04177691597076,
-            -646.3487769159708
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            146.04177691597076,
-            -646.3487769159708
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        }
-      ],
-      "purchaseSide": "default",
-      "editorOrder": 9
-    },
-    {
       "id": 17,
       "name": "Mill 1",
       "kind": 5,
@@ -3423,8 +3217,8 @@
         "x": 517.025,
         "y": 350.431
       },
-      "x": -256.9649283203278,
-      "y": 460.19540938115904,
+      "x": -54.4501634229249,
+      "y": 510.0903514573308,
       "scale": 1,
       "angle": 0,
       "unlock": 2,
@@ -4053,202 +3847,6 @@
       }
     },
     {
-      "id": 8,
-      "name": "Tower 4",
-      "kind": 2,
-      "origin": {
-        "x": 395.989,
-        "y": -942.74
-      },
-      "x": -586.6626822366572,
-      "y": -303.754346024691,
-      "scale": 1,
-      "angle": 0,
-      "unlock": 3,
-      "enabled": true,
-      "template": {
-        "prefab": "Map03",
-        "node": 1607,
-        "roots": [
-          1607,
-          273
-        ],
-        "revision": "cd51c5b74438eb8597e6e6463282c4a4dd4068d296497674cdf95b40edad2e46"
-      },
-      "sprites": [
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.7055994695417,
-            -1030.4565994695417
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.70559946954177,
-            -1030.4565994695417
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "0b12ddfe-6a93-44fe-b93b-ec41664a6c6d",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            378.23959946954164,
-            -962.6495994695417
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.7055994695417,
-            -1030.4565994695417
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.70559946954177,
-            -1030.4565994695417
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.7055994695417,
-            -1030.4565994695417
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.70559946954177,
-            -1030.4565994695417
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        }
-      ],
-      "purchaseSide": "default",
-      "editorOrder": 4
-    },
-    {
       "id": 22,
       "name": "Tower 5",
       "kind": 2,
@@ -4442,202 +4040,6 @@
         }
       ],
       "purchaseSide": "default"
-    },
-    {
-      "id": 23,
-      "name": "Tower 6",
-      "kind": 2,
-      "origin": {
-        "x": 395.989,
-        "y": -942.74
-      },
-      "x": 441.1302859988299,
-      "y": -430.2653246704258,
-      "scale": 1,
-      "angle": 0,
-      "unlock": 3,
-      "enabled": true,
-      "template": {
-        "prefab": "Map03",
-        "node": 1607,
-        "roots": [
-          1607,
-          273
-        ],
-        "revision": "cd51c5b74438eb8597e6e6463282c4a4dd4068d296497674cdf95b40edad2e46"
-      },
-      "sprites": [
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.7055994695417,
-            -1030.4565994695417
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.70559946954177,
-            -1030.4565994695417
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "0b12ddfe-6a93-44fe-b93b-ec41664a6c6d",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            378.23959946954164,
-            -962.6495994695417
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": true
-        },
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.7055994695417,
-            -1030.4565994695417
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.70559946954177,
-            -1030.4565994695417
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "15ff80d1-cb19-4992-9636-7e6d3ba584d3",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.7055994695417,
-            -1030.4565994695417
-          ],
-          "width": 171,
-          "height": 100,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        },
-        {
-          "frame": "cc7b2c38-a240-4451-95ad-7924ed3f8025",
-          "matrix": [
-            1,
-            0,
-            0,
-            1,
-            483.70559946954177,
-            -1030.4565994695417
-          ],
-          "width": 165,
-          "height": 94,
-          "anchor": {
-            "x": 0.5,
-            "y": 0.5
-          },
-          "color": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-          },
-          "active": false
-        }
-      ],
-      "purchaseSide": "default",
-      "renderAfter": "native-props"
     },
     {
       "id": 24,
@@ -5218,10 +4620,10 @@
         "y": 525.515
       },
       "x": 80.02892383341037,
-      "y": 1242.947502366512,
+      "y": 1245.882498959228,
       "scale": 1,
       "angle": 0,
-      "unlock": 2,
+      "unlock": 3,
       "enabled": true,
       "template": {
         "prefab": "Map01",
@@ -5410,7 +4812,7 @@
     },
     {
       "id": 27,
-      "name": "House 6",
+      "name": "House 3",
       "kind": 4,
       "origin": {
         "x": 65.143,
@@ -6462,7 +5864,7 @@
   "nextBuilding": 28,
   "nextSpawn": 14,
   "nextSpecial": 7,
-  "sourceRevision": "f25811b257aa305b6f1fcab36c18661ef22c8a70b806d3ede48f14ae8c032f3d",
+  "sourceRevision": "8497c56dd6964f6d5223480ce2130967aa4f8f0c9213e8651621f65195f116b3",
   "templates": {
     "Map03": [
       {
