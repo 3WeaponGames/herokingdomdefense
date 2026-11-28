@@ -146,8 +146,8 @@
       {
         "id": 13,
         "Wave": 1,
-        "HealthCoefficient": 3.75,
-        "AttackCoefficient": 3.55,
+        "HealthCoefficient": 3.8,
+        "AttackCoefficient": 3.6,
         "StartSliver": 6,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
@@ -168,8 +168,8 @@
             "unitId": 91133,
             "spawnId": 1,
             "count": 9,
-            "startSeconds": 0.625,
-            "intervalSeconds": 1.25,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
             "id": "legacy-1-0"
           }
         ]
@@ -177,8 +177,8 @@
       {
         "id": 13,
         "Wave": 2,
-        "HealthCoefficient": 3.75,
-        "AttackCoefficient": 3.55,
+        "HealthCoefficient": 3.8,
+        "AttackCoefficient": 3.6,
         "StartSliver": 4,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
@@ -201,8 +201,8 @@
             "unitId": 91133,
             "spawnId": 1,
             "count": 10,
-            "startSeconds": 0.625,
-            "intervalSeconds": 1.375,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
             "id": "legacy-1-0"
           },
           {
@@ -210,7 +210,7 @@
             "spawnId": 2,
             "count": 3,
             "startSeconds": 5,
-            "intervalSeconds": 3.75,
+            "intervalSeconds": 4,
             "id": "entry-2"
           }
         ]
@@ -218,8 +218,8 @@
       {
         "id": 13,
         "Wave": 3,
-        "HealthCoefficient": 4.05,
-        "AttackCoefficient": 3.85,
+        "HealthCoefficient": 4.1,
+        "AttackCoefficient": 3.9,
         "StartSliver": 4,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
@@ -243,24 +243,24 @@
             "unitId": 91133,
             "spawnId": 1,
             "count": 13,
-            "startSeconds": 0.625,
-            "intervalSeconds": 1.75,
+            "startSeconds": 0.5,
+            "intervalSeconds": 2,
             "id": "legacy-1-0"
           },
           {
             "unitId": 91096,
             "spawnId": 3,
             "count": 4,
-            "startSeconds": 5.25,
-            "intervalSeconds": 3.75,
+            "startSeconds": 5.5,
+            "intervalSeconds": 4,
             "id": "entry-2"
           },
           {
             "unitId": 101831,
             "spawnId": 2,
             "count": 4,
-            "startSeconds": 7.375,
-            "intervalSeconds": 3.875,
+            "startSeconds": 7.5,
+            "intervalSeconds": 4,
             "id": "entry-3"
           }
         ]
@@ -268,8 +268,8 @@
       {
         "id": 13,
         "Wave": 4,
-        "HealthCoefficient": 4.05,
-        "AttackCoefficient": 3.85,
+        "HealthCoefficient": 4.1,
+        "AttackCoefficient": 3.9,
         "StartSliver": 5,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
@@ -294,7 +294,7 @@
             "unitId": 91133,
             "spawnId": 3,
             "count": 10,
-            "startSeconds": 0.625,
+            "startSeconds": 0.5,
             "intervalSeconds": 1.5,
             "id": "legacy-3-0",
             "unitGroupId": "unit-group-0"
@@ -303,24 +303,24 @@
             "unitId": 91096,
             "spawnId": 1,
             "count": 3,
-            "startSeconds": 3.875,
-            "intervalSeconds": 3.75,
+            "startSeconds": 4,
+            "intervalSeconds": 4,
             "id": "entry-2"
           },
           {
             "unitId": 100779,
             "spawnId": 4,
             "count": 4,
-            "startSeconds": 15.875,
-            "intervalSeconds": 3.625,
+            "startSeconds": 16,
+            "intervalSeconds": 3.5,
             "id": "entry-3"
           },
           {
             "unitId": 91133,
             "spawnId": 6,
             "count": 5,
-            "startSeconds": 17.25,
-            "intervalSeconds": 2.375,
+            "startSeconds": 17.5,
+            "intervalSeconds": 2.5,
             "id": "entry-4",
             "unitGroupId": "unit-group-0"
           },
@@ -328,8 +328,8 @@
             "unitId": 1000039000,
             "spawnId": 5,
             "count": 2,
-            "startSeconds": 19.375,
-            "intervalSeconds": 3.625,
+            "startSeconds": 19.5,
+            "intervalSeconds": 3.5,
             "id": "entry-5"
           }
         ]
@@ -337,8 +337,8 @@
       {
         "id": 13,
         "Wave": 5,
-        "HealthCoefficient": 4.15,
-        "AttackCoefficient": 3.95,
+        "HealthCoefficient": 4.2,
+        "AttackCoefficient": 4,
         "StartSliver": 5,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
@@ -363,8 +363,8 @@
             "unitId": 91133,
             "spawnId": 4,
             "count": 9,
-            "startSeconds": 0.625,
-            "intervalSeconds": 1.625,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
             "id": "entry-3",
             "unitGroupId": "unit-group-0"
           },
@@ -373,14 +373,14 @@
             "spawnId": 6,
             "count": 4,
             "startSeconds": 3.5,
-            "intervalSeconds": 3.375,
+            "intervalSeconds": 3.5,
             "id": "entry-4"
           },
           {
             "unitId": 91133,
             "spawnId": 8,
             "count": 7,
-            "startSeconds": 16.125,
+            "startSeconds": 16,
             "intervalSeconds": 2,
             "id": "legacy-8-0",
             "unitGroupId": "unit-group-0"
@@ -389,16 +389,16 @@
             "unitId": 1000039000,
             "spawnId": 7,
             "count": 2,
-            "startSeconds": 19.25,
-            "intervalSeconds": 3.625,
+            "startSeconds": 19.5,
+            "intervalSeconds": 3.5,
             "id": "entry-5"
           },
           {
             "unitId": 101831,
             "spawnId": 9,
             "count": 3,
-            "startSeconds": 21.375,
-            "intervalSeconds": 3.375,
+            "startSeconds": 21.5,
+            "intervalSeconds": 3.5,
             "id": "entry-6"
           }
         ]
@@ -406,8 +406,8 @@
       {
         "id": 13,
         "Wave": 6,
-        "HealthCoefficient": 4.15,
-        "AttackCoefficient": 3.95,
+        "HealthCoefficient": 4.2,
+        "AttackCoefficient": 4,
         "StartSliver": 6,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
@@ -434,16 +434,16 @@
             "unitId": 100779,
             "spawnId": 8,
             "count": 3,
-            "startSeconds": 0.625,
-            "intervalSeconds": 3.75,
+            "startSeconds": 0.5,
+            "intervalSeconds": 4,
             "id": "entry-2"
           },
           {
             "unitId": 91133,
             "spawnId": 7,
             "count": 7,
-            "startSeconds": 2.25,
-            "intervalSeconds": 1.375,
+            "startSeconds": 2.5,
+            "intervalSeconds": 1.5,
             "id": "legacy-7-0",
             "unitGroupId": "unit-group-1"
           },
@@ -451,8 +451,8 @@
             "unitId": 91133,
             "spawnId": 3,
             "count": 6,
-            "startSeconds": 13.125,
-            "intervalSeconds": 2.375,
+            "startSeconds": 13,
+            "intervalSeconds": 2.5,
             "id": "legacy-3-0",
             "unitGroupId": "unit-group-1"
           },
@@ -460,8 +460,8 @@
             "unitId": 91096,
             "spawnId": 2,
             "count": 4,
-            "startSeconds": 16.375,
-            "intervalSeconds": 2.875,
+            "startSeconds": 16.5,
+            "intervalSeconds": 3,
             "id": "legacy-2-0"
           },
           {
@@ -469,23 +469,23 @@
             "spawnId": 1,
             "count": 2,
             "startSeconds": 18.5,
-            "intervalSeconds": 3.625,
+            "intervalSeconds": 3.5,
             "id": "entry-3"
           },
           {
             "unitId": 101831,
             "spawnId": 4,
             "count": 4,
-            "startSeconds": 26.875,
-            "intervalSeconds": 3.625,
+            "startSeconds": 27,
+            "intervalSeconds": 3.5,
             "id": "entry-4"
           },
           {
             "unitId": 91133,
             "spawnId": 5,
             "count": 6,
-            "startSeconds": 28.375,
-            "intervalSeconds": 1.875,
+            "startSeconds": 28.5,
+            "intervalSeconds": 2,
             "id": "entry-5",
             "unitGroupId": "unit-group-1"
           },
@@ -502,8 +502,8 @@
       {
         "id": 13,
         "Wave": 7,
-        "HealthCoefficient": 4.35,
-        "AttackCoefficient": 4.15,
+        "HealthCoefficient": 4.4,
+        "AttackCoefficient": 4.2,
         "StartSliver": 6,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
@@ -531,16 +531,16 @@
             "unitId": 101831,
             "spawnId": 3,
             "count": 4,
-            "startSeconds": 0.625,
-            "intervalSeconds": 3.875,
+            "startSeconds": 0.5,
+            "intervalSeconds": 4,
             "id": "legacy-3-0"
           },
           {
             "unitId": 91133,
             "spawnId": 2,
             "count": 9,
-            "startSeconds": 2.375,
-            "intervalSeconds": 1.375,
+            "startSeconds": 2.5,
+            "intervalSeconds": 1.5,
             "id": "legacy-2-0",
             "unitGroupId": "unit-group-1"
           },
@@ -548,7 +548,7 @@
             "unitId": 91133,
             "spawnId": 4,
             "count": 6,
-            "startSeconds": 15.625,
+            "startSeconds": 15.5,
             "intervalSeconds": 2.5,
             "id": "legacy-4-1",
             "unitGroupId": "unit-group-1"
@@ -558,14 +558,14 @@
             "spawnId": 5,
             "count": 4,
             "startSeconds": 18.5,
-            "intervalSeconds": 3.75,
+            "intervalSeconds": 4,
             "id": "entry-3"
           },
           {
             "unitId": 91096,
             "spawnId": 6,
             "count": 4,
-            "startSeconds": 20.625,
+            "startSeconds": 20.5,
             "intervalSeconds": 3,
             "id": "entry-4"
           },
@@ -573,7 +573,7 @@
             "unitId": 91133,
             "spawnId": 8,
             "count": 7,
-            "startSeconds": 31.875,
+            "startSeconds": 32,
             "intervalSeconds": 2,
             "id": "legacy-8-0",
             "unitGroupId": "unit-group-1"
@@ -583,15 +583,15 @@
             "spawnId": 9,
             "count": 3,
             "startSeconds": 35,
-            "intervalSeconds": 3.625,
+            "intervalSeconds": 3.5,
             "id": "entry-5"
           },
           {
             "unitId": 91170,
             "spawnId": 7,
             "count": 2,
-            "startSeconds": 37.125,
-            "intervalSeconds": 4.125,
+            "startSeconds": 37,
+            "intervalSeconds": 4,
             "id": "entry-6"
           }
         ]
@@ -599,8 +599,8 @@
       {
         "id": 13,
         "Wave": 8,
-        "HealthCoefficient": 4.35,
-        "AttackCoefficient": 4.15,
+        "HealthCoefficient": 4.4,
+        "AttackCoefficient": 4.2,
         "StartSliver": 6,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
@@ -628,8 +628,8 @@
             "unitId": 91133,
             "spawnId": 4,
             "count": 10,
-            "startSeconds": 0.625,
-            "intervalSeconds": 1.75,
+            "startSeconds": 0.5,
+            "intervalSeconds": 2,
             "id": "entry-4",
             "unitGroupId": "unit-group-0"
           },
@@ -638,7 +638,7 @@
             "spawnId": 5,
             "count": 6,
             "startSeconds": 3.5,
-            "intervalSeconds": 2.625,
+            "intervalSeconds": 2.5,
             "id": "entry-5",
             "unitGroupId": "unit-group-1"
           },
@@ -646,16 +646,16 @@
             "unitId": 100779,
             "spawnId": 8,
             "count": 4,
-            "startSeconds": 19.125,
-            "intervalSeconds": 3.75,
+            "startSeconds": 19,
+            "intervalSeconds": 4,
             "id": "entry-6"
           },
           {
             "unitId": 91133,
             "spawnId": 9,
             "count": 7,
-            "startSeconds": 20.75,
-            "intervalSeconds": 2.125,
+            "startSeconds": 21,
+            "intervalSeconds": 2,
             "id": "legacy-9-0",
             "unitGroupId": "unit-group-0"
           },
@@ -663,7 +663,7 @@
             "unitId": 91184,
             "spawnId": 7,
             "count": 3,
-            "startSeconds": 22.875,
+            "startSeconds": 23,
             "intervalSeconds": 4,
             "id": "entry-7"
           },
@@ -671,16 +671,16 @@
             "unitId": 101831,
             "spawnId": 3,
             "count": 4,
-            "startSeconds": 35.625,
-            "intervalSeconds": 3.875,
+            "startSeconds": 35.5,
+            "intervalSeconds": 4,
             "id": "entry-8"
           },
           {
             "unitId": 91133,
             "spawnId": 1,
             "count": 7,
-            "startSeconds": 37.375,
-            "intervalSeconds": 2.25,
+            "startSeconds": 37.5,
+            "intervalSeconds": 2.5,
             "id": "legacy-1-0",
             "unitGroupId": "unit-group-0"
           },
@@ -688,8 +688,8 @@
             "unitId": 91096,
             "spawnId": 2,
             "count": 4,
-            "startSeconds": 39.625,
-            "intervalSeconds": 3.75,
+            "startSeconds": 39.5,
+            "intervalSeconds": 4,
             "id": "entry-9",
             "unitGroupId": "unit-group-1"
           }
@@ -698,8 +698,8 @@
       {
         "id": 13,
         "Wave": 9,
-        "HealthCoefficient": 4.45,
-        "AttackCoefficient": 4.25,
+        "HealthCoefficient": 4.5,
+        "AttackCoefficient": 4.3,
         "StartSliver": 7,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
@@ -728,8 +728,8 @@
             "unitId": 91133,
             "spawnId": 8,
             "count": 11,
-            "startSeconds": 0.625,
-            "intervalSeconds": 1.625,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
             "id": "entry-5",
             "unitGroupId": "unit-group-0"
           },
@@ -737,23 +737,23 @@
             "unitId": 101831,
             "spawnId": 9,
             "count": 5,
-            "startSeconds": 3.75,
-            "intervalSeconds": 3.25,
+            "startSeconds": 4,
+            "intervalSeconds": 3.5,
             "id": "entry-6"
           },
           {
             "unitId": 1000039000,
             "spawnId": 3,
             "count": 4,
-            "startSeconds": 19.375,
-            "intervalSeconds": 3.625,
+            "startSeconds": 19.5,
+            "intervalSeconds": 3.5,
             "id": "entry-7"
           },
           {
             "unitId": 91133,
             "spawnId": 1,
             "count": 9,
-            "startSeconds": 21.125,
+            "startSeconds": 21,
             "intervalSeconds": 2,
             "id": "legacy-1-0",
             "unitGroupId": "unit-group-0"
@@ -762,16 +762,16 @@
             "unitId": 91096,
             "spawnId": 2,
             "count": 4,
-            "startSeconds": 23.25,
-            "intervalSeconds": 3.75,
+            "startSeconds": 23.5,
+            "intervalSeconds": 4,
             "id": "legacy-2-0"
           },
           {
             "unitId": 91133,
             "spawnId": 4,
             "count": 10,
-            "startSeconds": 39.375,
-            "intervalSeconds": 1.75,
+            "startSeconds": 39.5,
+            "intervalSeconds": 2,
             "id": "legacy-4-1",
             "unitGroupId": "unit-group-0"
           },
@@ -779,7 +779,7 @@
             "unitId": 91184,
             "spawnId": 6,
             "count": 3,
-            "startSeconds": 26.375,
+            "startSeconds": 26.5,
             "intervalSeconds": 8,
             "id": "entry-8"
           },
@@ -788,7 +788,7 @@
             "spawnId": 5,
             "count": 2,
             "startSeconds": 44.5,
-            "intervalSeconds": 4.125,
+            "intervalSeconds": 4,
             "id": "entry-9"
           }
         ]
@@ -796,8 +796,8 @@
       {
         "id": 13,
         "Wave": 10,
-        "HealthCoefficient": 4.45,
-        "AttackCoefficient": 4.25,
+        "HealthCoefficient": 4.5,
+        "AttackCoefficient": 4.3,
         "StartSliver": 7,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
@@ -826,8 +826,8 @@
             "unitId": 91133,
             "spawnId": 3,
             "count": 12,
-            "startSeconds": 0.625,
-            "intervalSeconds": 1.625,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
             "id": "entry-14",
             "unitGroupId": "unit-group-0"
           },
@@ -835,24 +835,24 @@
             "unitId": 91096,
             "spawnId": 1,
             "count": 5,
-            "startSeconds": 3.875,
-            "intervalSeconds": 3.625,
+            "startSeconds": 4,
+            "intervalSeconds": 3.5,
             "id": "entry-15"
           },
           {
             "unitId": 101831,
             "spawnId": 4,
             "count": 5,
-            "startSeconds": 15.833,
-            "intervalSeconds": 3.875,
+            "startSeconds": 16,
+            "intervalSeconds": 4,
             "id": "entry-16"
           },
           {
             "unitId": 91133,
             "spawnId": 6,
             "count": 8,
-            "startSeconds": 16.852,
-            "intervalSeconds": 2.25,
+            "startSeconds": 17,
+            "intervalSeconds": 2.5,
             "id": "entry-17",
             "unitGroupId": "unit-group-0"
           },
@@ -860,7 +860,7 @@
             "unitId": 91184,
             "spawnId": 5,
             "count": 3,
-            "startSeconds": 18.426,
+            "startSeconds": 18.5,
             "intervalSeconds": 4,
             "id": "entry-18"
           },
@@ -868,8 +868,8 @@
             "unitId": 91133,
             "spawnId": 8,
             "count": 9,
-            "startSeconds": 29.722,
-            "intervalSeconds": 2.25,
+            "startSeconds": 29.5,
+            "intervalSeconds": 2.5,
             "id": "entry-19",
             "unitGroupId": "unit-group-0"
           },
@@ -877,16 +877,16 @@
             "unitId": 100779,
             "spawnId": 7,
             "count": 5,
-            "startSeconds": 32.037,
-            "intervalSeconds": 3.75,
+            "startSeconds": 32,
+            "intervalSeconds": 4,
             "id": "entry-20"
           },
           {
             "unitId": 91170,
             "spawnId": 9,
             "count": 3,
-            "startSeconds": 33.611,
-            "intervalSeconds": 4.125,
+            "startSeconds": 33.5,
+            "intervalSeconds": 4,
             "id": "entry-21"
           }
         ]
@@ -894,8 +894,8 @@
       {
         "id": 13,
         "Wave": 11,
-        "HealthCoefficient": 5.175,
-        "AttackCoefficient": 4.515,
+        "HealthCoefficient": 5.2,
+        "AttackCoefficient": 4.6,
         "StartSliver": 7,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
@@ -922,8 +922,8 @@
             "unitId": 91133,
             "spawnId": 4,
             "count": 11,
-            "startSeconds": 0.625,
-            "intervalSeconds": 1.625,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
             "id": "entry-2",
             "unitGroupId": "unit-group-0"
           },
@@ -932,22 +932,22 @@
             "spawnId": 6,
             "count": 4,
             "startSeconds": 3.5,
-            "intervalSeconds": 3.75,
+            "intervalSeconds": 4,
             "id": "entry-3"
           },
           {
             "unitId": 101831,
             "spawnId": 8,
             "count": 5,
-            "startSeconds": 12.586,
-            "intervalSeconds": 3.875,
+            "startSeconds": 12.5,
+            "intervalSeconds": 4,
             "id": "entry-4"
           },
           {
             "unitId": 91133,
             "spawnId": 7,
             "count": 8,
-            "startSeconds": 13.707,
+            "startSeconds": 13.5,
             "intervalSeconds": 2.5,
             "id": "entry-5",
             "unitGroupId": "unit-group-0"
@@ -956,16 +956,16 @@
             "unitId": 91096,
             "spawnId": 9,
             "count": 5,
-            "startSeconds": 15.172,
-            "intervalSeconds": 3.75,
+            "startSeconds": 15,
+            "intervalSeconds": 4,
             "id": "entry-6"
           },
           {
             "unitId": 91133,
             "spawnId": 3,
             "count": 7,
-            "startSeconds": 27.241,
-            "intervalSeconds": 2.25,
+            "startSeconds": 27,
+            "intervalSeconds": 2.5,
             "id": "legacy-3-0",
             "unitGroupId": "unit-group-0"
           },
@@ -973,15 +973,15 @@
             "unitId": 1000039000,
             "spawnId": 2,
             "count": 3,
-            "startSeconds": 29.483,
-            "intervalSeconds": 3.625,
+            "startSeconds": 29.5,
+            "intervalSeconds": 3.5,
             "id": "entry-7"
           },
           {
             "unitId": 91184,
             "spawnId": 1,
             "count": 3,
-            "startSeconds": 30.948,
+            "startSeconds": 31,
             "intervalSeconds": 4,
             "id": "entry-8"
           },
@@ -989,7 +989,7 @@
             "unitId": 91133,
             "spawnId": 4,
             "count": 5,
-            "startSeconds": 38.19,
+            "startSeconds": 38,
             "intervalSeconds": 2,
             "id": "entry-9",
             "unitGroupId": "unit-group-0"
@@ -998,8 +998,8 @@
             "unitId": 91170,
             "spawnId": 5,
             "count": 3,
-            "startSeconds": 40.259,
-            "intervalSeconds": 2.875,
+            "startSeconds": 40.5,
+            "intervalSeconds": 3,
             "id": "entry-10"
           }
         ]
@@ -1007,8 +1007,8 @@
       {
         "id": 13,
         "Wave": 12,
-        "HealthCoefficient": 5.6875,
-        "AttackCoefficient": 4.698,
+        "HealthCoefficient": 5.7,
+        "AttackCoefficient": 4.7,
         "StartSliver": 7,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
@@ -1036,8 +1036,8 @@
             "unitId": 91133,
             "spawnId": 8,
             "count": 11,
-            "startSeconds": 0.625,
-            "intervalSeconds": 1.575,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
             "id": "legacy-8-0",
             "unitGroupId": "unit-group-0"
           },
@@ -1045,16 +1045,16 @@
             "unitId": 101831,
             "spawnId": 7,
             "count": 5,
-            "startSeconds": 3.75,
-            "intervalSeconds": 3.15,
+            "startSeconds": 4,
+            "intervalSeconds": 3,
             "id": "legacy-7-0"
           },
           {
             "unitId": 91133,
             "spawnId": 3,
             "count": 9,
-            "startSeconds": 12.742,
-            "intervalSeconds": 2.025,
+            "startSeconds": 12.5,
+            "intervalSeconds": 2,
             "id": "entry-4",
             "unitGroupId": "unit-group-0"
           },
@@ -1062,24 +1062,24 @@
             "unitId": 91096,
             "spawnId": 2,
             "count": 5,
-            "startSeconds": 14.839,
-            "intervalSeconds": 3.263,
+            "startSeconds": 15,
+            "intervalSeconds": 3.5,
             "id": "entry-5"
           },
           {
             "unitId": 1000039000,
             "spawnId": 1,
             "count": 3,
-            "startSeconds": 16.21,
-            "intervalSeconds": 3.263,
+            "startSeconds": 16,
+            "intervalSeconds": 3.5,
             "id": "entry-1"
           },
           {
             "unitId": 91133,
             "spawnId": 4,
             "count": 7,
-            "startSeconds": 25.887,
-            "intervalSeconds": 2.25,
+            "startSeconds": 26,
+            "intervalSeconds": 2.5,
             "id": "legacy-4-1",
             "unitGroupId": "unit-group-0"
           },
@@ -1087,24 +1087,24 @@
             "unitId": 100779,
             "spawnId": 5,
             "count": 5,
-            "startSeconds": 27.742,
-            "intervalSeconds": 2.925,
+            "startSeconds": 27.5,
+            "intervalSeconds": 3,
             "id": "entry-3"
           },
           {
             "unitId": 91184,
             "spawnId": 6,
             "count": 3,
-            "startSeconds": 29.113,
-            "intervalSeconds": 3.6,
+            "startSeconds": 29,
+            "intervalSeconds": 3.5,
             "id": "entry-6"
           },
           {
             "unitId": 91133,
             "spawnId": 8,
             "count": 7,
-            "startSeconds": 37.742,
-            "intervalSeconds": 1.575,
+            "startSeconds": 37.5,
+            "intervalSeconds": 1.5,
             "id": "entry-7",
             "unitGroupId": "unit-group-0"
           },
@@ -1112,8 +1112,8 @@
             "unitId": 91170,
             "spawnId": 9,
             "count": 3,
-            "startSeconds": 39.758,
-            "intervalSeconds": 3.15,
+            "startSeconds": 40,
+            "intervalSeconds": 3,
             "id": "entry-8"
           }
         ]
@@ -1121,8 +1121,8 @@
       {
         "id": 13,
         "Wave": 13,
-        "HealthCoefficient": 6.21,
-        "AttackCoefficient": 4.928,
+        "HealthCoefficient": 6.3,
+        "AttackCoefficient": 5,
         "StartSliver": 7,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
@@ -1150,8 +1150,8 @@
             "unitId": 91133,
             "spawnId": 3,
             "count": 13,
-            "startSeconds": 0.625,
-            "intervalSeconds": 1.275,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
             "id": "legacy-3-0",
             "unitGroupId": "unit-group-0"
           },
@@ -1159,24 +1159,24 @@
             "unitId": 1000039000,
             "spawnId": 2,
             "count": 4,
-            "startSeconds": 3.875,
-            "intervalSeconds": 3.081,
+            "startSeconds": 4,
+            "intervalSeconds": 3,
             "id": "entry-3"
           },
           {
             "unitId": 101831,
             "spawnId": 4,
             "count": 5,
-            "startSeconds": 12.426,
-            "intervalSeconds": 3.294,
+            "startSeconds": 12.5,
+            "intervalSeconds": 3.5,
             "id": "entry-4"
           },
           {
             "unitId": 91133,
             "spawnId": 5,
             "count": 8,
-            "startSeconds": 13.235,
-            "intervalSeconds": 2.019,
+            "startSeconds": 13,
+            "intervalSeconds": 2,
             "id": "legacy-5-1",
             "unitGroupId": "unit-group-0"
           },
@@ -1184,16 +1184,16 @@
             "unitId": 100779,
             "spawnId": 6,
             "count": 4,
-            "startSeconds": 14.485,
-            "intervalSeconds": 3.188,
+            "startSeconds": 14.5,
+            "intervalSeconds": 3,
             "id": "entry-5"
           },
           {
             "unitId": 91133,
             "spawnId": 8,
             "count": 11,
-            "startSeconds": 24.559,
-            "intervalSeconds": 1.7,
+            "startSeconds": 24.5,
+            "intervalSeconds": 1.5,
             "id": "entry-6",
             "unitGroupId": "unit-group-0"
           },
@@ -1201,24 +1201,24 @@
             "unitId": 91096,
             "spawnId": 9,
             "count": 6,
-            "startSeconds": 26.397,
-            "intervalSeconds": 2.869,
+            "startSeconds": 26.5,
+            "intervalSeconds": 3,
             "id": "entry-7"
           },
           {
             "unitId": 91184,
             "spawnId": 7,
             "count": 2,
-            "startSeconds": 27.647,
-            "intervalSeconds": 3.4,
+            "startSeconds": 27.5,
+            "intervalSeconds": 3.5,
             "id": "entry-8"
           },
           {
             "unitId": 91133,
             "spawnId": 3,
             "count": 6,
-            "startSeconds": 37.574,
-            "intervalSeconds": 1.488,
+            "startSeconds": 37.5,
+            "intervalSeconds": 1.5,
             "id": "entry-9",
             "unitGroupId": "unit-group-0"
           },
@@ -1226,8 +1226,8 @@
             "unitId": 91170,
             "spawnId": 1,
             "count": 3,
-            "startSeconds": 39.485,
-            "intervalSeconds": 2.444,
+            "startSeconds": 39.5,
+            "intervalSeconds": 2.5,
             "id": "entry-10"
           }
         ]
@@ -1235,8 +1235,8 @@
       {
         "id": 13,
         "Wave": 14,
-        "HealthCoefficient": 6.975,
-        "AttackCoefficient": 5.162,
+        "HealthCoefficient": 7,
+        "AttackCoefficient": 5.2,
         "StartSliver": 7,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
@@ -1265,8 +1265,8 @@
             "unitId": 101831,
             "spawnId": 4,
             "count": 6,
-            "startSeconds": 0.625,
-            "intervalSeconds": 2.7,
+            "startSeconds": 0.5,
+            "intervalSeconds": 2.5,
             "id": "entry-7"
           },
           {
@@ -1274,7 +1274,7 @@
             "spawnId": 5,
             "count": 10,
             "startSeconds": 2,
-            "intervalSeconds": 1.4,
+            "intervalSeconds": 1.5,
             "id": "legacy-5-1",
             "unitGroupId": "unit-group-1"
           },
@@ -1282,8 +1282,8 @@
             "unitId": 91133,
             "spawnId": 8,
             "count": 10,
-            "startSeconds": 10.125,
-            "intervalSeconds": 1.9,
+            "startSeconds": 10,
+            "intervalSeconds": 2,
             "id": "entry-8",
             "unitGroupId": "unit-group-1"
           },
@@ -1291,23 +1291,23 @@
             "unitId": 91096,
             "spawnId": 9,
             "count": 7,
-            "startSeconds": 11.688,
-            "intervalSeconds": 2.4,
+            "startSeconds": 11.5,
+            "intervalSeconds": 2.5,
             "id": "entry-9"
           },
           {
             "unitId": 91184,
             "spawnId": 7,
             "count": 3,
-            "startSeconds": 12.75,
-            "intervalSeconds": 3.2,
+            "startSeconds": 13,
+            "intervalSeconds": 3,
             "id": "entry-10"
           },
           {
             "unitId": 100779,
             "spawnId": 3,
             "count": 4,
-            "startSeconds": 21.75,
+            "startSeconds": 22,
             "intervalSeconds": 3,
             "id": "entry-11"
           },
@@ -1315,8 +1315,8 @@
             "unitId": 91133,
             "spawnId": 1,
             "count": 10,
-            "startSeconds": 22.688,
-            "intervalSeconds": 1.4,
+            "startSeconds": 22.5,
+            "intervalSeconds": 1.5,
             "id": "legacy-1-0",
             "unitGroupId": "unit-group-1"
           },
@@ -1324,24 +1324,24 @@
             "unitId": 1000039000,
             "spawnId": 2,
             "count": 3,
-            "startSeconds": 23.75,
-            "intervalSeconds": 2.9,
+            "startSeconds": 24,
+            "intervalSeconds": 3,
             "id": "entry-12"
           },
           {
             "unitId": 91170,
             "spawnId": 4,
             "count": 3,
-            "startSeconds": 31.875,
-            "intervalSeconds": 3.3,
+            "startSeconds": 32,
+            "intervalSeconds": 3.5,
             "id": "entry-5"
           },
           {
             "unitId": 91133,
             "spawnId": 6,
             "count": 10,
-            "startSeconds": 32.563,
-            "intervalSeconds": 1.1,
+            "startSeconds": 32.5,
+            "intervalSeconds": 1,
             "id": "legacy-6-1",
             "unitGroupId": "unit-group-1"
           }
@@ -1350,8 +1350,8 @@
       {
         "id": 13,
         "Wave": 15,
-        "HealthCoefficient": 7.8375,
-        "AttackCoefficient": 5.46,
+        "HealthCoefficient": 7.9,
+        "AttackCoefficient": 5.5,
         "StartSliver": 7,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
@@ -1380,8 +1380,8 @@
             "unitId": 91133,
             "spawnId": 8,
             "count": 16,
-            "startSeconds": 0.625,
-            "intervalSeconds": 1.688,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
             "id": "entry-14",
             "unitGroupId": "unit-group-0"
           },
@@ -1389,8 +1389,8 @@
             "unitId": 91096,
             "spawnId": 9,
             "count": 7,
-            "startSeconds": 3.75,
-            "intervalSeconds": 2.813,
+            "startSeconds": 4,
+            "intervalSeconds": 3,
             "id": "entry-15",
             "unitGroupId": "unit-group-1"
           },
@@ -1398,16 +1398,16 @@
             "unitId": 101831,
             "spawnId": 7,
             "count": 6,
-            "startSeconds": 5.875,
-            "intervalSeconds": 2.906,
+            "startSeconds": 6,
+            "intervalSeconds": 3,
             "id": "entry-16"
           },
           {
             "unitId": 91133,
             "spawnId": 3,
             "count": 14,
-            "startSeconds": 14.15,
-            "intervalSeconds": 1.688,
+            "startSeconds": 14,
+            "intervalSeconds": 1.5,
             "id": "entry-17",
             "unitGroupId": "unit-group-0"
           },
@@ -1415,16 +1415,16 @@
             "unitId": 100779,
             "spawnId": 1,
             "count": 7,
-            "startSeconds": 15.45,
-            "intervalSeconds": 2.813,
+            "startSeconds": 15.5,
+            "intervalSeconds": 3,
             "id": "entry-18"
           },
           {
             "unitId": 1000039000,
             "spawnId": 2,
             "count": 5,
-            "startSeconds": 16.35,
-            "intervalSeconds": 2.719,
+            "startSeconds": 16.5,
+            "intervalSeconds": 2.5,
             "id": "entry-11",
             "editorManualTiming": true
           },
@@ -1432,8 +1432,8 @@
             "unitId": 91133,
             "spawnId": 4,
             "count": 12,
-            "startSeconds": 26.8,
-            "intervalSeconds": 1.875,
+            "startSeconds": 27,
+            "intervalSeconds": 2,
             "id": "entry-19",
             "unitGroupId": "unit-group-0"
           },
@@ -1441,8 +1441,8 @@
             "unitId": 91096,
             "spawnId": 6,
             "count": 5,
-            "startSeconds": 27.95,
-            "intervalSeconds": 2.813,
+            "startSeconds": 28,
+            "intervalSeconds": 3,
             "id": "entry-6",
             "editorManualTiming": true,
             "unitGroupId": "unit-group-1"
@@ -1451,7 +1451,7 @@
             "unitId": 91184,
             "spawnId": 5,
             "count": 3,
-            "startSeconds": 21.2,
+            "startSeconds": 21,
             "intervalSeconds": 6,
             "id": "entry-20"
           },
@@ -1459,13 +1459,13 @@
             "unitId": 91170,
             "spawnId": 4,
             "count": 4,
-            "startSeconds": 29.65,
-            "intervalSeconds": 3.094,
+            "startSeconds": 29.5,
+            "intervalSeconds": 3,
             "id": "entry-21"
           },
           {
             "count": 1,
-            "startSeconds": 47.425,
+            "startSeconds": 47.5,
             "intervalSeconds": 0.5,
             "spawnId": 1,
             "unitId": 91185,
@@ -6302,7 +6302,7 @@
   "nextBuilding": 20,
   "nextSpawn": 10,
   "nextSpecial": 7,
-  "sourceRevision": "07d6d77f4da206fbd8f9aa0c224346a81efda00a0bd4b4cf237b43bd295cc6ea",
+  "sourceRevision": "e8467d0cd3d3d77212828a7ea14f73c6461cf2d44dd12bed5fcb1e1bfca45efd",
   "templates": {
     "Map01": [
       {
