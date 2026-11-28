@@ -9403,16 +9403,6 @@
       "zh": "兽人驯养这头橄榄绿鳞片的双足飞龙，让它从高空俯冲袭击守军。",
       "context": "Enemy guide · Orc Wyvern"
     },
-    "data.monster-roster.91183.name": {
-      "en": "Orc War Beast",
-      "zh": "兽人战兽",
-      "context": "Orc Kingdom · monster3/Rhino_OrcWarBeast"
-    },
-    "data.unitguide.91183.description": {
-      "en": "A heavily armored rhino that drives its horn into nearby enemies.",
-      "zh": "身披重甲的犀牛，用巨角攻击附近的敌人。",
-      "context": "Enemy guide · Orc War Beast"
-    },
     "data.monster-roster.91185.name": {
       "en": "Pyre Executioner",
       "zh": "焚刑刽子手",
@@ -9512,6 +9502,11 @@
       "en": "Launches fireballs that burn targets on hit.",
       "zh": "发射火球，命中时灼烧目标。",
       "context": "Fire Lizard · Skirmisher"
+    },
+    "data.unitguide.91136.description": {
+      "en": "A heavily armored rhino that drives its horn into nearby enemies.",
+      "zh": "身披重甲的犀牛，用巨角攻击附近的敌人。",
+      "context": "Enemy guide · Rhino Armor"
     }
   },
   "images": {

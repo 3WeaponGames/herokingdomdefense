@@ -2,7 +2,7 @@
 const Records=require('../lib/unit-records'),Classes=require('../lib/enemy-classes'),Fighting=require('../lib/fighting-profiles');
 const UnitPacks=require('../../hkd-characters/lib/unit-packs');
 const Kingdoms=require('../lib/unit-kingdoms');
-const Threat=require('./wave-threat');
+const CardData=require('../units/card-data');
 const PACKS={monster1:'Monster Pack 1',monster2:'Monster Pack 2',monster3:'Monster Pack 3','fantasy-monsters':'Fantasy Monsters','fantasy-bosses':'Fantasy Bosses','knight-fall':'Knight Fall'};
 function name(unit){const value=unit&&unit.name;return(typeof value==='string'||typeof value==='number')&&String(value).trim()?String(value):'Unit '+(unit&&unit.id);}
 function matches(unit,query){const words=String(query||'').trim().toLowerCase().split(/\s+/).filter(Boolean),text=[name(unit),unit.description||'',unit.id,unit.unitTypeName||'',unit.assetPackName||'',unit.profileKind||'',unit.profileName||'',unit.enemyClass||'',unit.enemyClassName||'',Kingdoms.searchText(unit.kingdom)].join(' ').toLowerCase();return words.every(word=>text.includes(word));}
@@ -38,7 +38,7 @@ function rows(config,localization,icon,characters,customSources=new Set()){
   const unit=units[id],type=unit.FightingType||assignments['enemy:'+id+':'+Records.form('enemy',id)]||'',assetPack=pack(id,new Set([String(id)])),enemyClass=Classes.resolve(tools,id),family=Fighting.familyFor(tools,id);
   const baseId=Number(profiles[id]&&profiles[id].baseId||id);
   const customUnit=UnitPacks.isCustomEnemy(id,units,profiles,customSources);
-  const traits=Threat.recordTraits(unit,id);
+  const traits=CardData.fromRecord(unit,id);
   const kingdom=Kingdoms.resolve(id,units,tools);
   return{id:Number(id),name:text(family?.name||unit.Name)||'Unit '+id,description:[text(unit.Guide&&unit.Guide.description),text(unit.Describe)].filter(Boolean).join(' '),unitType:type||'untyped',unitTypeName:type&&types[type]?text(types[type].name):'Unassigned',enemyClass,enemyClassName:Classes.label(enemyClass),kingdom,assetPack,assetPackName:PACKS[assetPack]||assetPack,...(customUnit?{customUnit}:{}),icon:unit.loadIcon,iconUrl:icon?icon(unit.loadIcon):null,modelKey:family?'fighting:'+baseId:model(id,new Set([String(id)])),profileName:family?type&&types[type]?text(types[type].name):type:profiles[id]&&profiles[id].name||(unit.MonsterSource?'Default':''),fightingProfile:!!family,defaultProfile:Number(id)===Fighting.defaultProfileId(tools,id),archived:!!(profiles[id]&&profiles[id].archived),profileKind:family?'Fighting type':unit.CampaignBaseUnit!==undefined?'Campaign':unit.MonsterSource?'Standard':profiles[id]?'Custom':'Original',health:unit.Health,damage:unit.AttackDamage,attackRate:unit.AttackInterval,speed:unit.Speed,attackRange:unit.AttackRange,searchRange:unit.SearchRange,...traits};
  });

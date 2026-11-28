@@ -56,7 +56,13 @@ class Element{
 test('unit chooser shows scaled stats on every model and refreshes them for profile selection and catalog reload',t=>{
  t.mock.method(Gallery,'create',()=>({watch(){},setUnit(){},destroy(){}}));
  const oldRequest=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
- const el=(tag,text,cls)=>new Element(tag,text,cls),dialog=el('section'),units=[{id:1,name:'Solo',health:40,damage:10},{id:2,name:'Mage',modelKey:'mage',profileName:'Standard',health:20,damage:15},{id:3,name:'Mage',modelKey:'mage',profileName:'Elite',health:60,damage:30}],wave={HealthCoefficient:1.5,AttackCoefficient:.7},before=JSON.stringify({units,wave}),selected=new Set([2]);
+ const el=(tag,text,cls)=>new Element(tag,text,cls),dialog=el('section'),units=[
+  {id:1,name:'Solo',health:40,damage:10,cp:20},
+  {id:2,name:'Mage',modelKey:'mage',profileName:'Standard',health:20,damage:15,cp:12},
+  {id:3,name:'Mage',modelKey:'mage',profileName:'Elite',health:60,damage:30,cp:54,flight:true,
+   unitType:'mystic',unitTypeName:'Mystic',attack:{delivery:'ranged',pattern:'splash',onHit:{lifeSteal:{}}},
+   skillLabels:['Transform Self','Damage boost'],targeting:{mode:'hero'}}
+ ],wave={HealthCoefficient:1.5,AttackCoefficient:.7},before=JSON.stringify({units,wave}),selected=new Set([2]);
  const button=(parent,text,handler)=>{const input=el('button',text);input.onclick=handler;parent.appendChild(input);return input;},field=(parent,name,value,change)=>{const label=el('label'),input=el('select');input.value=value;input.change=change;label.appendChild(input);parent.appendChild(label);return input;};
  let dispose;
  try{
@@ -65,9 +71,16 @@ test('unit chooser shows scaled stats on every model and refreshes them for prof
   const entries=()=>dialog.descendants().filter(item=>item.classList.contains('world-unit-entry')),solo=entries()[0],mage=entries()[1];
   assert.equal(solo.querySelector('.world-unit-profile-stats').textContent,'60 HP · 7 damage / hit');
   assert.equal(mage.querySelector('.world-unit-profile-stats').textContent,'30 HP · 11 damage / hit');
+  assert.equal(mage.querySelector('.gt-unit-card-cp').textContent,'12 CP');
   assert.match(solo.querySelector('.world-unit-choice').title,/HP: 40 × 1\.5 = 60/);
   mage.querySelector('select').change(3);
   assert.deepEqual([...selected],[3]);assert.equal(mage.querySelector('.world-unit-profile-stats').textContent,'90 HP · 21 damage / hit');
+  assert.equal(mage.querySelector('.gt-unit-card-cp').textContent,'54 CP');
+  assert.equal(mage.querySelector('.gt-unit-card-skills').textContent,'Transform Self, Damage boost');
+  assert.equal(mage.descendants().find(node=>node.dataset.movement==='flying').textContent,'Flying');
+  assert.equal(mage.descendants().find(node=>node.dataset.target==='hero').textContent,'Target Hero');
+  assert.deepEqual(mage.descendants().filter(node=>node.classList.contains('gt-unit-card-line')).map(node=>node.textContent),
+   ['Mystic','Range Splash, Life Steal']);
   assert.equal(JSON.stringify({units,wave}),before,'Browsing profiles leaves all source data intact');
   dispose.reload(units.map(unit=>Object.assign({},unit,unit.id===3?{health:80,damage:40}:{})));
   assert.equal(dialog.descendants().filter(item=>item.classList.contains('world-unit-picker-scaling')).length,1);
@@ -80,10 +93,10 @@ test('class, fighting type, pack and kingdom filters preserve selections, model 
  t.mock.method(Gallery,'create',()=>({watch(){},setUnit(){},destroy(){}}));
  const oldRequest=global.requestAnimationFrame,oldCancel=global.cancelAnimationFrame;global.requestAnimationFrame=()=>1;global.cancelAnimationFrame=()=>{};
  const el=(tag,text,cls)=>new Element(tag,text,cls),dialog=el('section'),units=[
-  {id:1,name:'Slime',modelKey:'slime',assetPack:'monster1',kingdom:'slime',enemyClass:'normal',enemyClassName:'Normal',unitType:'fighter',health:40,damage:10},
-  {id:2,name:'Slime',modelKey:'slime',assetPack:'monster1',kingdom:'slime',enemyClass:'elite',enemyClassName:'Elite',unitType:'fighter',health:60,damage:15},
-  {id:3,name:'Slime',modelKey:'slime',assetPack:'monster1',kingdom:'slime',enemyClass:'boss',enemyClassName:'Boss',unitType:'mystic',health:200,damage:30},
-  {id:4,name:'Solo',health:20,damage:5},
+  {id:1,name:'Slime',modelKey:'slime',assetPack:'monster1',kingdom:'slime',enemyClass:'normal',enemyClassName:'Normal',unitType:'fighter',health:40,damage:10,cp:65},
+  {id:2,name:'Slime',modelKey:'slime',assetPack:'monster1',kingdom:'slime',enemyClass:'elite',enemyClassName:'Elite',unitType:'fighter',health:60,damage:15,cp:35},
+  {id:3,name:'Slime',modelKey:'slime',assetPack:'monster1',kingdom:'slime',enemyClass:'boss',enemyClassName:'Boss',unitType:'mystic',health:200,damage:30,cp:20},
+  {id:4,name:'Solo',kingdom:'slime',health:20,damage:5,cp:55},
   {id:5,name:'Dragon',assetPack:'monster2',kingdom:'sun-tomb',enemyClass:'boss',enemyClassName:'Boss',unitType:'mystic',health:500,damage:50}
  ],selected=new Set([1]),wave={HealthCoefficient:2,AttackCoefficient:1.5},before=JSON.stringify({units,wave});
  const button=(parent,text,handler)=>{const input=el('button',text);input.onclick=handler;parent.appendChild(input);return input;},field=(parent,name,value,change,choices)=>{const label=el('label'),input=el('select');input.value=value;input.change=change;input.fieldName=name;input.choices=choices;label.appendChild(input);parent.appendChild(label);return input;};
@@ -93,20 +106,28 @@ test('class, fighting type, pack and kingdom filters preserve selections, model 
   const entries=()=>dialog.descendants().filter(item=>item.classList.contains('world-unit-entry')),visible=()=>entries().filter(entry=>!entry.hidden),filter=name=>dialog.descendants().find(item=>item.fieldName===name),card=entry=>entry.querySelector('.world-unit-choice');
   assert.equal(entries().length,3,'three profiles retain a single Slime model card');assert.equal(visible().length,3);
   assert.deepEqual(filter('Enemy class').choices.map(choice=>choice.label),['All enemy classes','Normal','Elite','Boss']);
-  assert.equal(entries()[1].querySelector('.world-unit-enemy-class').textContent,'Normal','single-profile legacy models also show a class');
-  filter('Enemy class').change('elite');assert.equal(visible().length,1);const slime=visible()[0];assert.equal(card(slime).dataset.unitId,2);assert.equal(card(slime).dataset.enemyClass,'elite');assert.equal(slime.querySelector('.world-unit-enemy-class').textContent,'Elite');assert.equal(slime.querySelector('.world-unit-profile-stats').textContent,'120 HP · 23 damage / hit');assert.deepEqual([...selected],[1]);
+  assert.equal(card(entries()[1]).dataset.enemyClass,'normal','single-profile legacy models keep their normal background');
+  assert(visible().every(entry=>!entry.querySelector('.world-unit-enemy-class')));
+  filter('Enemy class').change('elite');assert.equal(visible().length,1);const slime=visible()[0];assert.equal(card(slime).dataset.unitId,2);assert.equal(card(slime).dataset.enemyClass,'elite');assert.equal(slime.querySelector('.world-unit-profile-stats').textContent,'120 HP · 23 damage / hit');assert.deepEqual([...selected],[1]);
   card(slime).onclick();assert.deepEqual([...selected],[1,2]);
-  filter('Enemy class').change('boss');assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[3,5]);assert(visible().every(entry=>entry.querySelector('.world-unit-enemy-class').textContent==='Boss'));assert.deepEqual([...selected],[1,2]);
+  filter('Enemy class').change('boss');assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[3,5]);assert(visible().every(entry=>card(entry).dataset.enemyClass==='boss'));assert.deepEqual([...selected],[1,2]);
   filter('Fighting type').change('fighter');assert.equal(visible().length,0);assert.equal(dialog.querySelector('.world-unit-picker-empty').hidden,false);assert.deepEqual([...selected],[1,2]);
   filter('Fighting type').change('all');filter('Enemy class').change('all');const search=dialog.querySelector('.world-unit-picker-search');search.value='slime elite';search.oninput();assert.equal(visible().length,1);assert.equal(card(visible()[0]).dataset.unitId,2);
   assert.deepEqual(filter('Kingdom').choices.map(choice=>choice.value),['all','slime','sun-tomb']);
   search.value='desert';search.oninput();filter('Kingdom').change('sun-tomb');
   assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[5]);
-  assert.equal(visible()[0].querySelector('.world-unit-kingdom').textContent,'Desert Kingdom');
+  assert.match(card(visible()[0]).getAttribute('aria-label'),/Desert Kingdom/);
   filter('Asset pack').change('monster1');assert.equal(visible().length,0);
   filter('Asset pack').change('monster2');assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[5]);
   assert.deepEqual([...selected],[1,2]);
   assert.equal(JSON.stringify({units,wave}),before,'browsing filters only changes chooser state');
-  dispose.reload(units.map(unit=>unit.id===4?Object.assign({},unit,{enemyClass:'elite',enemyClassName:'Elite'}):unit));assert.equal(entries()[1].querySelector('.world-unit-enemy-class').textContent,'Elite','a fresh saved catalog updates class badges');
+  search.value='';
+  filter('Asset pack').change('all');filter('Kingdom').change('slime');
+  assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[4,1],'Normal cards sort by base CP');
+  slime.querySelector('select').change(2);
+  assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[4,2],'Elites stay after Normal cards with higher CP');
+  slime.querySelector('select').change(3);
+  assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[4,3],'Bosses stay after Normal cards with higher CP');
+  dispose.reload(units.map(unit=>unit.id===4?Object.assign({},unit,{enemyClass:'elite',enemyClassName:'Elite'}):unit));assert.equal(card(entries()[1]).dataset.enemyClass,'elite','a fresh saved catalog updates card classification');
  }finally{if(dispose)dispose();if(oldRequest===undefined)delete global.requestAnimationFrame;else global.requestAnimationFrame=oldRequest;if(oldCancel===undefined)delete global.cancelAnimationFrame;else global.cancelAnimationFrame=oldCancel;}
 });

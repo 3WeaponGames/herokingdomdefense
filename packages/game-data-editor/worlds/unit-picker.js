@@ -2,6 +2,8 @@
 const Catalog=require('./unit-catalog'),Gallery=require('./unit-model-gallery'),Stats=require('./wave-stats'),Classes=require('../lib/enemy-classes');
 const {custom}=require('../../hkd-characters/lib/unit-packs');
 const Kingdoms=require('../lib/unit-kingdoms');
+const Card=require('../units/card');
+const {comparePower}=require('../units/card-data');
 const {ROLES}=require('../lib/fighting-profiles');
 const profileOrder=[...ROLES,'wrecker'];
 const collection=unit=>unit.customUnit?custom:{id:unit.assetPack||'untyped',label:unit.assetPackName||'Unassigned'};
@@ -28,13 +30,19 @@ function mount(dialog,options){
  function show(record,unit){
   const changed=record.unit.id!==unit.id,enemyClass=Catalog.enemyClass(unit),className=Classes.label(enemyClass);
   const affiliation=Kingdoms.info(unit.kingdom),kingdomLabel=affiliation?.biome?affiliation.label:'';
-  record.unit=unit;record.card.dataset.unitId=unit.id;record.card.dataset.enemyClass=enemyClass;
+  record.unit=unit;record.card.dataset.unitId=unit.id;
+  Card.update(record.view,{
+   label:Catalog.name(unit),enemyClass,cp:unit.cp,flying:unit.flight,attack:unit.attack,
+   fightingType:unit.unitType,fightingTypeName:unit.unitTypeName,skills:unit.skillLabels,targeting:unit.targeting
+  });
   record.card.setAttribute('aria-label',[Catalog.name(unit),className,kingdomLabel].filter(Boolean).join(' · '));
-  record.card.title=[Catalog.name(unit)+' · '+unit.id,Catalog.profileLabel(unit),options.wave&&Stats.formula(unit,options.wave),unit.description,unit.assetPackName,kingdomLabel].filter(Boolean).join('\n');
-  record.name.textContent=Catalog.name(unit);record.kingdom.textContent=kingdomLabel;record.kingdom.hidden=!kingdomLabel;
-  record.classBadge.textContent=className;record.classBadge.dataset.enemyClass=enemyClass;record.image.alt=Catalog.name(unit)+' model';
-  if(record.stats){record.stats.textContent=[unit.unitTypeName,options.wave?Stats.describe(unit,options.wave):Catalog.profileStats(unit)].filter(Boolean).join(' · ');record.stats.title=options.wave?Stats.formula(unit,options.wave):'Base unit stats';}
+  record.card.title=[Catalog.name(unit)+' · '+unit.id,className,Catalog.profileLabel(unit),options.wave&&Stats.formula(unit,options.wave),unit.description,unit.assetPackName,kingdomLabel].filter(Boolean).join('\n');
+  if(record.stats){record.stats.textContent=options.wave?Stats.describe(unit,options.wave):Catalog.profileStats(unit);record.stats.title=options.wave?Stats.formula(unit,options.wave):'Base unit stats';}
   if(changed)gallery.setUnit(record.card,unit.baseProfileId||unit.id);
+ }
+ function orderCards(){
+  const ordered=kingdom==='all'?cards:cards.slice().sort((left,right)=>comparePower(left.unit,right.unit));
+  ordered.forEach(({entry},i)=>{if(grid.children[i]!==entry)grid.insertBefore(entry,grid.children[i]||null);});
  }
  function filter(){
   for(const record of cards){
@@ -59,14 +67,19 @@ function mount(dialog,options){
     record.select.value=String(unit.id);record.select.disabled=available.length===1;
    }
   }
-  empty.hidden=cards.some(({entry})=>!entry.hidden);selection();scroll.scrollTop=0;
+  orderCards();empty.hidden=cards.some(({entry})=>!entry.hidden);selection();scroll.scrollTop=0;
  }
  for(const group of models){const members=group.units,initial=members.find(unit=>unit.id===options.initialUnitId)||members.find(unit=>selected.has(unit.id)),unit=initial||Catalog.firstProfile(members),entry=el('div',undefined,'world-unit-entry');entry.dataset.modelKey=group.key;entry.dataset.memberIds=JSON.stringify(members.map(unit=>unit.id));grid.appendChild(entry);const record={entry,members,unit,preferredId:initial&&initial.id,available:members};
   const card=button(entry,'',()=>{const id=record.unit.id;if(options.single){selected.clear();selected.add(id);}else if(selected.has(id))selected.delete(id);else selected.add(id);selection();const error=dialog.querySelector('[role="alert"]');if(error)error.hidden=true;});card.className='world-unit-choice';record.card=card;
-  const model=el('span',undefined,'world-unit-model'),image=el('img'),status=el('small','Loading model…','world-unit-model-status');image.draggable=false;model.appendChild(image);model.appendChild(status);card.appendChild(model);record.image=image;record.name=el('span',undefined,'world-unit-model-name');card.appendChild(record.name);record.kingdom=el('small',undefined,'world-unit-kingdom');card.appendChild(record.kingdom);record.classBadge=el('span',undefined,'world-unit-enemy-class');card.appendChild(record.classBadge);const check=el('span','✓','world-unit-model-selected');check.setAttribute('aria-hidden','true');card.appendChild(check);
-  if(members.length>1){record.labels=new Map();const counts=new Map();for(const member of members){const label=Catalog.profileLabel(member);counts.set(label,(counts.get(label)||0)+1);}for(const member of members){const label=Catalog.profileLabel(member);record.labels.set(member.id,label+(counts.get(label)>1?' · '+member.id:''));}record.select=field(entry,'Profile',unit.id,value=>{const next=record.available.find(member=>member.id===Number(value));if(!next)return;const replace=selected.has(record.unit.id);if(replace){selected.delete(record.unit.id);selected.add(next.id);}record.preferredId=next.id;show(record,next);selection();},[]);record.select.setAttribute('aria-label',Catalog.name(unit)+' profile');}
+  record.view=Card.create(card,(tag,cls)=>el(tag,undefined,cls));
+  if(members.length>1){record.labels=new Map();const counts=new Map();for(const member of members){const label=Catalog.profileLabel(member);counts.set(label,(counts.get(label)||0)+1);}for(const member of members){const label=Catalog.profileLabel(member);record.labels.set(member.id,label+(counts.get(label)>1?' · '+member.id:''));}record.select=field(entry,'Profile',unit.id,value=>{
+   const next=record.available.find(member=>member.id===Number(value));if(!next)return;
+   if(selected.delete(record.unit.id))selected.add(next.id);
+   record.preferredId=next.id;show(record,next);orderCards();
+   record.select.focus?.({preventScroll:true});selection();
+  },[]);record.select.setAttribute('aria-label',Catalog.name(unit)+' profile');}
   if(options.wave||members.length>1){record.stats=el('small',undefined,'world-unit-profile-stats');entry.appendChild(record.stats);}
-  record.other=el('small',undefined,'world-unit-other-selected');record.other.hidden=true;entry.appendChild(record.other);cards.push(record);show(record,unit);gallery.watch(card,image,status,unit.baseProfileId||unit.id);
+  record.other=el('small',undefined,'world-unit-other-selected');record.other.hidden=true;entry.appendChild(record.other);cards.push(record);show(record,unit);gallery.watch(card,record.view.image,record.view.status,unit.baseProfileId||unit.id);
   if(options.manageProfiles){const manage=button(entry,'Profiles…',()=>options.manageProfiles(record.unit.id,units=>dispose.reload(units),profileId=>{if(!units.some(unit=>unit.id===profileId))throw Error('Save this profile before selecting it.');if(options.single)selected.clear();else if(selected.has(record.unit.id))selected.delete(record.unit.id);selected.add(profileId);dispose.reload(units.slice());}));manage.className='world-unit-manage-profiles';manage.setAttribute('aria-label','Manage profiles for '+Catalog.name(unit));}
  }
  search.oninput=filter;filter();initialFrame=requestAnimationFrame(()=>{initialFrame=null;if(disposed)return;const current=cards.find(({members})=>members.some(unit=>unit.id===options.initialUnitId));if(current)current.entry.scrollIntoView({block:'center'});search.focus({preventScroll:true});});

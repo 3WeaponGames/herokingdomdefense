@@ -17,6 +17,7 @@ const Profiles = require('../lib/unit-profiles');
 const Catalog = require('../worlds/unit-catalog');
 const Library = require('../../hkd-characters/lib/unit-library');
 const Packs = require('../../hkd-characters/lib/unit-packs');
+const UnitPower = require('../../../tools/balance/unit-combat-power.cjs');
 const root = path.resolve(__dirname, '../../..');
 const read = relative => JSON.parse(fs.readFileSync(path.join(root, relative), 'utf8'));
 const definitions = require('../../../tools/characters/monster-roster-definitions.json').units;
@@ -146,21 +147,46 @@ test('pack and kingdom filters, search and wave choices leave drafts and files u
     let cards;
     f.panel._unitSidebar = { render(rows) { cards = rows; } };
     f.panel._unitPack = 'all'; f.panel._unitKingdom = 'demon'; f.panel.$search.value = ''; f.panel._renderList();
-    for (const [name, fightingType, flying, target, rank] of [
-        ['Carapace Iron', 'Guardian', false, undefined, 'normal'],
-        ['Wing Demon Eye', 'Mystic', true, undefined, 'normal'],
-        ['Horn Rabbit Demon', 'Bruiser', false, undefined, 'elite'],
-        ['Demon Wolf', 'Vanguard', false, 'hero', 'normal'],
-        ['Hellgate Behemoth', 'Wrecker', false, 'castle', 'normal'],
-        ['Black Goat', 'Fighter', false, undefined, 'boss']
+    assert.equal(f.panel._selected, cards[0].key, 'Kingdom browsing starts on the weakest normal unit');
+    for (const [name, fightingType, flying, target, rank, delivery, pattern, effects = [], skills = []] of [
+        ['Carapace Iron', 'Guardian', false, undefined, 'normal', 'melee', 'single'],
+        ['Wing Demon Eye', 'Mystic', true, undefined, 'normal', 'ranged', 'volley', ['slow']],
+        ['Horn Rabbit Demon', 'Bruiser', false, undefined, 'elite', 'melee', 'splash', ['lifeSteal'], ['Attack speed boost']],
+        ['Demon Wolf', 'Vanguard', false, 'hero', 'normal', 'melee', 'single', ['burn']],
+        ['Hellgate Behemoth', 'Wrecker', false, 'castle', 'normal', 'melee', 'splash'],
+        ['Black Goat', 'Fighter', false, undefined, 'boss', 'melee', 'single', [], ['Transform Self']]
     ]) {
         const card = cards.find(row => row.label === name);
         assert(card, name + ' is in the Demon Kingdom');
-        assert.equal(card.subtitle, '', name + ' uses only the badges');
+        assert.equal(card.subtitle, '', name + ' omits pack, kingdom and ID');
         assert.equal(card.fightingTypeName, fightingType, name + ' fighting type');
         assert.equal(card.flying, flying, name + ' movement');
         assert.equal(card.targeting?.mode, target, name + ' targeting');
         assert.equal(card.enemyClass, rank, name + ' classification');
+        assert.equal(card.attack.delivery, delivery, name + ' attack delivery');
+        assert.equal(card.attack.pattern, pattern, name + ' attack pattern');
+        assert.deepEqual(Object.keys(card.attack.onHit || {}), effects, name + ' on-hit effects');
+        assert.deepEqual(Array.from(card.skills), skills, name + ' skills');
+        const record = before.A.SoldierCfg[card.key.split(':')[1]];
+        assert.equal(card.cp, UnitPower.calculate({ ...record, side: 'enemy' }).cp, name + ' base CP');
+    }
+    f.panel._unitKingdom = 'plant'; f.panel._renderList();
+    assert.deepEqual(Array.from(cards.find(card => card.label === 'Stump Walker').skills),
+        ['Transform Self', 'Weaken opposing attacks']);
+    f.panel._unitKingdom = 'sun-tomb'; f.panel._renderList();
+    assert.deepEqual(Object.keys(cards.find(card => card.label === 'Plague Doctor').attack.onHit), ['lifeSteal', 'poison']);
+    const ranks = ['normal', 'elite', 'boss'];
+    for (const kingdom of ['slime', 'sun-tomb', 'plant', 'skeleton', 'orc', 'ice', 'demon']) {
+        f.panel._unitKingdom = kingdom; f.panel._renderList();
+        assert(cards.length > 0 && cards.every(card => Number.isFinite(card.cp)), kingdom + ' base CP coverage');
+        for (let i = 1; i < cards.length; i++) {
+            const previous = cards[i - 1], next = cards[i];
+            if (previous.enemyClass === next.enemyClass) {
+                assert(previous.cp <= next.cp, kingdom + ' orders each rank by CP');
+            } else {
+                assert(ranks.indexOf(previous.enemyClass) < ranks.indexOf(next.enemyClass), kingdom + ' places Elites and Bosses last');
+            }
+        }
     }
     const choices = f.panel._unitOptions(false);
     for (const row of monsters) {

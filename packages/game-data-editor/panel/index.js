@@ -19,6 +19,7 @@ const UnitProfiles=require('../units/panel-profiles');
 const UnitNames=require('../lib/unit-names');
 const UnitSidebar=require('../units/sidebar');
 const UnitCatalog=require('../worlds/unit-catalog');
+const CardData=require('../units/card-data');
 const EnemyClasses=require('../lib/enemy-classes');
 const EnemyBalance=require('./enemy-balance');
 const FightingTypeDamage=require('../../../assets/_script/FightingTypeDamage');
@@ -45,7 +46,7 @@ function display(value){if(value===undefined)return '(not set)';if(value===null)
 
 function create(kind){
   return Editor.Panel.extend({
-    template:fs.readFileSync(path.join(__dirname,'panel.html'),'utf8'),style:require('./control-theme')(fs.readFileSync(path.join(__dirname,'panel.css'),'utf8')+(kind==='buildings'?Buildings.style:kind==='units'?fs.readFileSync(path.join(__dirname,'../units/sidebar.css'),'utf8'):'')),
+    template:fs.readFileSync(path.join(__dirname,'panel.html'),'utf8'),style:require('./control-theme')(fs.readFileSync(path.join(__dirname,'panel.css'),'utf8')+(kind==='buildings'?Buildings.style:kind==='units'?fs.readFileSync(path.join(__dirname,'../units/sidebar.css'),'utf8')+UnitSidebar.style:'')),
     $:{root:'#root',title:'#title',toolbar:'#toolbar',language:'#language',status:'#status',workspace:'#workspace',sidebar:'#sidebar',unitPack:'#unitPack',unitKingdom:'#unitKingdom',searchLabel:'#searchLabel',search:'#search',count:'#count',list:'#list',detail:'#detail',preview:'#preview',undo:'#undo',redo:'#redo',reload:'#reload',discard:'#discard',review:'#review',save:'#save',issues:'#issues',footer:'#footer',modal:'#modal',modalTitle:'#modalTitle',modalBody:'#modalBody',modalActions:'#modalActions'},
     ready(){
       this._kind=kind;this._selected=null;this._wave=0;this._level=0;this._talentLevel=0;this._unitLevel=0;this._unitPack=this._unitKingdom='all';this._language='en';this._queue=Promise.resolve();this._assets={images:[],prefabs:[],animations:[]};this._closed=false;
@@ -76,8 +77,10 @@ function create(kind){
         this.$search.placeholder='Name, kingdom, or ID…';
         this.$search.removeAttribute('aria-label');
         this.$search.onkeydown=event=>{
-          if(event.key!=='Enter'||event.isComposing||!this.$search.value.trim())return;
-          const match=this.$list.querySelector('.gt-record');
+          const query=this.$search.value.trim().toLowerCase();
+          if(event.key!=='Enter'||event.isComposing||!query)return;
+          const cards=Array.from(this.$list.querySelectorAll('.gt-record'));
+          const match=cards.find(card=>card.querySelector('strong')?.textContent.toLowerCase()===query)||cards[0];
           if(match){event.preventDefault();match.click();}
         };
       }
@@ -246,21 +249,28 @@ function create(kind){
         const exactName=row=>Number(stripRich(row.label).toLowerCase()===query);
         rows.sort((left,right)=>exactName(right)-exactName(left));
       }
-      if(!scoped.some(r=>r.key===this._selected))this._selected=rows.length?rows[0].key:null;
+      const needsSelection=!scoped.some(r=>r.key===this._selected);
+      const sortKingdom=this._unitSidebar&&kingdom!=='all';
+      if(needsSelection)this._selected=sortKingdom?null:rows[0]?.key??null;
       const shown=kind==='units'?UnitProfiles.list(this,rows):rows;this.$count.textContent=kind==='units'?shown.length+' models · '+rows.length+' profiles':rows.length+' / '+all.length+' items';
       if(this._unitSidebar){
         const settings=this._data('overrides');
         const cards=shown.map(row=>{
           const enemy=row.unitType==='enemy',hero=row.unitType==='hero';
           const fightingType=(enemy&&row.record.FightingType)||this._unitRoleId(row.unitType,row.unitID);
+          const details=hero?{}:CardData.fromRecord(row.record,row.unitID,row.unitType);
           return {
             key:row.key,label:stripRich(row.label),subtitle:hero?row.subtitle:'',
             fightingType,fightingTypeName:hero?'':this._text(settings.unitTypes?.[fightingType]?.name)||'Unassigned',
-            flying:hero?null:FlightTargeting.isFlying({cfg:row.record}),
-            targeting:enemy?EnemyTargeting.settings(row.record):null,
+            flying:details.flight??null,attack:details.attack,skills:details.skillLabels||[],
+            cp:details.cp??null,targeting:details.targeting??null,
             enemyClass:enemy?EnemyClasses.resolve(settings,row.unitID):null
           };
         });
+        if(sortKingdom){
+          cards.sort(CardData.comparePower);
+          if(needsSelection)this._selected=(cards.find(card=>card.label.toLowerCase()===query)||cards[0])?.key??null;
+        }
         this._unitSidebar.render(cards,this._selected,this._snapshot.version);
         return;
       }

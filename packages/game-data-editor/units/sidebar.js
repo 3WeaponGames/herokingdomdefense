@@ -1,18 +1,17 @@
 'use strict';
 
 const Gallery = require('../worlds/unit-model-gallery');
-const Classes = require('../lib/enemy-classes');
+const Card = require('./card');
 
 const DEFAULT_WIDTH = 456;
 const MIN_WIDTH = 208;
-const TARGET_BADGES = { hero: 'Target Hero', castle: 'Target Castle' };
 
 function mount({ workspace, sidebar, detail, list, describe, select }) {
   const document = workspace.ownerDocument;
   const view = document.defaultView;
   const make = (tag, className) => {
     const element = document.createElement(tag);
-    element.className = className;
+    if (className) element.className = className;
     return element;
   };
   const divider = make('div', 'gt-unit-divider');
@@ -111,27 +110,11 @@ function mount({ workspace, sidebar, detail, list, describe, select }) {
     list.scrollTop += top + (bounds.height - list.clientHeight) / 2;
   }
   function cardFor(key) {
-    const card = make('button', 'gt-record gt-unit-card');
+    const card = make('button', 'gt-record');
     card.type = 'button';
     card.dataset.unitKey = key;
     card.onclick = () => select(key);
-    const art = make('span', 'gt-unit-card-art'), image = make('img', ''), status = make('small', 'gt-unit-card-status');
-    image.alt = '';
-    image.draggable = false;
-    art.append(image, status);
-    const label = make('strong', ''), subtitle = make('small', 'gt-unit-card-subtitle');
-    const traits = make('span', 'gt-unit-card-traits');
-    const role = make('span', 'gt-unit-card-trait');
-    const movement = make('span', 'gt-unit-card-trait');
-    const target = make('span', 'gt-unit-card-trait');
-    const text = make('span', 'gt-unit-card-text'), badge = make('span', 'gt-unit-card-class');
-    traits.append(role, movement, target);
-    text.append(label, traits, subtitle);
-    const check = make('span', 'gt-unit-card-check');
-    check.textContent = '✓';
-    check.setAttribute('aria-hidden', 'true');
-    card.append(art, text, badge, check);
-    return { card, image, status, label, subtitle, traits, role, movement, target, badge };
+    return Card.create(card, make);
   }
   function render(rows, selected, revision) {
     const refresh = !gallery || version !== revision || dirty;
@@ -153,28 +136,11 @@ function mount({ workspace, sidebar, detail, list, describe, select }) {
       const previous = cards.get(row.key);
       const record = previous || cardFor(row.key);
       cards.set(row.key, record);
-      const { card, image, status, label, subtitle, traits, role, movement, target, badge } = record;
+      const { card, image, status } = record;
       const active = row.key === selected;
       card.classList.toggle('active', active);
       card.setAttribute('aria-current', String(active));
-      label.textContent = row.label;
-      subtitle.textContent = row.subtitle;
-      subtitle.hidden = !row.subtitle;
-      traits.hidden = !row.fightingTypeName;
-      role.dataset.role = row.fightingType || '';
-      role.textContent = row.fightingTypeName;
-      movement.dataset.movement = row.flying ? 'flying' : 'ground';
-      movement.textContent = row.flying ? 'Flying' : 'Ground';
-      const priority = row.targeting?.mode === 'priority';
-      const targetGroup = priority ? row.targeting.order[0] : row.targeting?.mode;
-      const targetLabel = TARGET_BADGES[targetGroup];
-      target.hidden = !targetLabel;
-      target.dataset.target = targetLabel ? targetGroup : '';
-      target.textContent = targetLabel || '';
-      target.title = targetLabel ? (targetGroup === 'hero' ? 'Hero' : 'Castle') + (priority ? ' first' : ' only') : '';
-      badge.hidden = !row.enemyClass;
-      badge.dataset.enemyClass = row.enemyClass || '';
-      badge.textContent = row.enemyClass ? Classes.label(row.enemyClass) : '';
+      Card.update(record, row);
       if (list.children[index] !== card) list.insertBefore(card, list.children[index] || null);
       if (refresh || !previous) {
         status.textContent = 'Loading model…';
@@ -213,4 +179,4 @@ function mount({ workspace, sidebar, detail, list, describe, select }) {
   };
 }
 
-module.exports = { mount };
+module.exports = { mount, style: Card.style };

@@ -4,10 +4,10 @@
 // which stage is currently using it. The lists use the base unit IDs.
 const kingdoms=[
  {id:'slime',label:'Slime Kingdom',biome:'Forest',units:[91037,91038,91151,91152,91153,91154,91155,91156,91157,91173]},
- {id:'sun-tomb',label:'Desert Kingdom',biome:'Desert',units:[91006,91010,91066,91071,91089,91107,91121,91134,91149,91150]},
+ {id:'sun-tomb',label:'Desert Kingdom',biome:'Desert',units:[91006,91010,91066,91071,91089,91107,91122,91134,91149,91150]},
  {id:'plant',label:'Nature Kingdom',biome:'Deep Forest',units:[91062,91077,91082,91084,91086,91088,91099,91100,91110,91114,91130]},
  {id:'skeleton',label:'Undead Kingdom',biome:'Snow',units:[91004,91028,91035,91081,91091,91092,91096,91123,91135,91145]},
- {id:'orc',label:'Orc Kingdom',biome:'Autumn',units:[91124,91125,91127,91128,91129,91133,91139,91160,91174,91183]},
+ {id:'orc',label:'Orc Kingdom',biome:'Autumn',units:[91124,91125,91127,91128,91129,91133,91136,91139,91160,91174]},
  {id:'ice',label:'Ice Kingdom',biome:'Ice',units:[91007,91023,91030,91034,91052,91073,91093,91126,91147,91148]},
  {id:'demon',label:'Demon Kingdom',biome:'Fire',units:[91025,91031,91049,91060,91104,91116,91119,91144,91185,91186,91188]}
 ];

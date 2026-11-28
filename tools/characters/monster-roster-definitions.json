@@ -2096,19 +2096,6 @@
       }
     },
     {
-      "id": 91183,
-      "source": "monster3/Rhino_OrcWarBeast",
-      "name": "Orc War Beast",
-      "role": "guardian",
-      "behaviorTemplate": 90002,
-      "aerial": false,
-      "portrait": {
-        "pattern": "\\/Head$",
-        "cropHeight": 1,
-        "cropWidth": 1
-      }
-    },
-    {
       "id": 91185,
       "source": "monster3/OrcSmasher_PyreExecutioner",
       "name": "Pyre Executioner",

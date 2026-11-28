@@ -92,7 +92,7 @@ test('the Waves roster shows standard profiles and Wreckers with their kingdoms'
   'sun-tomb':['Green Cactus','melee','single','buildings-first'],
   plant:['Spiky Plant','ranged','splash','buildings-first'],
   skeleton:['Grave Goby','ranged','single','castle'],
-  orc:['Orc War Beast','melee','splash','castle'],
+  orc:['Rhino Armor','melee','splash','castle'],
   ice:['Winter Iron','melee','splash','buildings-first'],
   demon:['Hellgate Behemoth','melee','splash','castle']
  };
@@ -109,7 +109,7 @@ test('the Waves roster shows standard profiles and Wreckers with their kingdoms'
   return group.units[0].name;
  }).sort();
  assert.deepEqual(namesIn('sun-tomb'),[
-  'Black Plague','Blood Beetle','Carrion Bird','Evilmass Knight','Green Cactus','Larva Green','Plague Doctor','Purple Scorpion',
+  'Black Plague','Blood Beetle','Carrion Bird','Evilmass Knight','Green Cactus','Larva Knight','Plague Doctor','Purple Scorpion',
   'Worm Lightning','Worm Poison'
  ]);
  assert.deepEqual(namesIn('plant'),[
@@ -130,10 +130,10 @@ test('the Waves roster shows standard profiles and Wreckers with their kingdoms'
  assert.deepEqual(groups.filter(group=>group.units[0].kingdom==='skeleton'&&group.units[0].enemyClass==='boss').map(group=>group.units[0].name),['Skeleton Warlord']);
  assert.deepEqual(namesIn('orc'),[
   'Orc Shaman','Orc Smasher Berserker','Orc Smasher Red',
-  'Orc Sword Butcher','Orc Sword Rookie','Orc Sword Veteran','Orc War Beast','Orc War Toad','Orc Wyvern','Raptor Swamp'
+  'Orc Sword Butcher','Orc Sword Rookie','Orc Sword Veteran','Orc War Toad','Orc Wyvern','Raptor Swamp','Rhino Armor'
  ]);
  for(const name of ['Skeleton Bird','Skeleton Haunt','Skeleton Rhino','Skeleton King','Glacier Yeti','Feral Ghoul',
-  'Crypt Ghoul','Scarbrow Vampire','Orc War Raptor','Hellforge Colossus','Blood Ant']){
+  'Crypt Ghoul','Scarbrow Vampire','Orc War Raptor','Orc War Beast','Hellforge Colossus','Blood Ant']){
   assert(!rows.some(unit=>unit.name===name),name+' was retired');
  }
  const orcGroups=groups.filter(group=>group.units[0].kingdom==='orc');
@@ -197,7 +197,7 @@ test('every beta stage spawns its kingdom’s required roles and ordinary melee 
  const families=settings.unitProfiles.families;
  const castleProfiles={
   slime:families[91154].profiles.wrecker,'sun-tomb':91010,plant:families[91110].profiles.vanguard,
-  skeleton:families[91028].profiles.wrecker,orc:families[91183].profiles.wrecker,
+  skeleton:families[91028].profiles.wrecker,orc:families[91136].profiles.wrecker,
   ice:families[91073].profiles.vanguard,demon:families[91186].profiles.wrecker
  };
  function ordinary(unit,delivery){
