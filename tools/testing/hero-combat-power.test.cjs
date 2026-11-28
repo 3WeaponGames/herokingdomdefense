@@ -1,12 +1,36 @@
 'use strict';
 const assert=require('node:assert/strict'),{test}=require('node:test'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const config=require('../../assets/KinghtFallConfig/GameJsonCfg.json'),Loadout=require('../../assets/_script/HeroLoadout'),Weapons=require('../../assets/_script/HeroWeapons'),Core=require('../../assets/_script/CombatPower');
+const Stats = require('../../assets/_script/HeroEquipmentStats');
 const baseDamage=style=>config.HeroEquipment.damageProgressions?.[style]?.baseDamage??Math.ceil(config.EquipCfg.find(row=>row.id===4).levelInfo[0].Parameters*config.HeroEquipment.damageMultipliers[style]);
 const source=path.resolve(__dirname,'../../assets/_script/HeroWeaponCombat.js');
-test('hero CP shares the exact unit formula and independent weapon levels, with no stale read cache or progression writes',()=>{
- const data={personLevel:[1,1,10,10,1,1],heroWeapon:{selected:'fighter',levels:{skirmisher:{3:10,4:10},fighter:{3:1,4:1}}},future:{keep:7}},before=JSON.stringify(data),cfg=JSON.stringify(config);
- const sword=Loadout.calculate(config,data);assert.equal(sword.damage,baseDamage("fighter"));assert.equal(sword.health,100);assert.equal(sword.attackRate,1);assert.equal(sword.effectiveAttackRate,1/1.1667);assert.equal(sword.lifeStealHps,0);assert.equal(sword.regen,10.2);assert.equal(sword.cp,Core.calculate({health:100,directDps:baseDamage("fighter")*(1/1.1667),healingHps:sword.healingHps}).cp);assert.equal(sword.reason,null);assert.equal(JSON.stringify(data),before);assert.equal(JSON.stringify(config),cfg);
- data.heroWeapon.levels.skirmisher={3:25,4:25};assert.deepEqual(Loadout.calculate(config,data),sword);Weapons.select(data,'skirmisher');const bow=Loadout.calculate(config,data);assert.equal(bow.levels[3],25);assert.equal(bow.levels[4],25);assert(bow.cp>sword.cp);Weapons.select(data,'fighter');assert.equal(Loadout.calculate(config,data).cp,sword.cp);
+test('hero CP uses the combat formula and applies shared levels to the equipped style stats', () => {
+ const data = {personLevel: [1, 1, 1, 1, 1, 1], heroWeapon: {selected: 'fighter', levels: {skirmisher: {3: 11, 4: 15}, fighter: {3: 1, 4: 1}}}, future: {keep: 7}};
+ const before = JSON.stringify(data), cfg = JSON.stringify(config);
+ const sword = Loadout.calculate(config, data);
+ assert.equal(sword.levels[3], 11);
+ assert.equal(sword.levels[4], 15);
+ assert.equal(sword.damage, Stats.damageAtLevel(config, 'fighter', 15));
+ assert.equal(sword.health, 100);
+ assert.equal(sword.attackRate, 1);
+ assert.equal(sword.effectiveAttackRate, 1 / 1.1667);
+ assert.equal(sword.lifeStealHps, 0);
+ assert.equal(sword.regen, 10 + 100 * Stats.secondary(config, 'fighter', 11).healthRegenPercent);
+ assert.equal(sword.cp, Core.calculate({health: 100, directDps: sword.damage * (1 / 1.1667), healingHps: sword.healingHps}).cp);
+ assert.equal(sword.reason, null);
+ assert.equal(JSON.stringify(data), before);
+ assert.equal(JSON.stringify(config), cfg);
+ Weapons.select(data, 'skirmisher');
+ const bow = Loadout.calculate(config, data);
+ assert.deepEqual(bow.levels, sword.levels);
+ assert.equal(bow.damage, Stats.damageAtLevel(config, 'skirmisher', 15));
+ assert.equal(bow.secondary.criticalChance, Stats.secondary(config, 'skirmisher', 11).criticalChance);
+ Weapons.upgrade(data, 4, 16);
+ Weapons.select(data, 'fighter');
+ const upgraded = Loadout.calculate(config, data);
+ assert.equal(upgraded.levels[3], 11);
+ assert.equal(upgraded.levels[4], 16);
+ assert(upgraded.cp > sword.cp);
 });
 test('the CP loadout and actual runtime style setup apply only owned active-style bonuses, once',()=>{
  const data={personLevel:[4,2,10,10,3,2],heroWeapon:{selected:'fighter',levels:{fighter:{3:1,4:1}}},talentInfo:config.TalentLevelCfg.filter(row=>row.HeroStyle==='skirmisher').map(row=>({id:row.ID,isLock:true}))},user={data,getHeroWeapon:()=>Weapons.selected(data)};
@@ -15,19 +39,19 @@ test('the CP loadout and actual runtime style setup apply only owned active-styl
 });
 test('owned critical, cleave and barrier relics retain separate outputs without increasing maximum HP or critical damage',()=>{
  const data={personLevel:[1,1,1,1,1,1],treasureInfo:[{id:120031,level:1},{id:120035,level:1},{id:120036,level:1},{id:120044,level:1},{id:120028,level:3}]},before=JSON.stringify(data),value=Loadout.calculate(config,data);
- assert.equal(value.health,100);assert.equal(value.criticalChance,.014);assert.equal(value.criticalMultiplier,1.5);assert.equal(value.expectedDamage,baseDamage("skirmisher")*(1+.014*(1.5-1)));assert.equal(value.range,308*1.006);assert.equal(value.healingHps,0);assert(value.cleaveDps>0);assert.equal(value.chainDps,0);assert(Math.abs(value.barrierPreventedDps-100*.03*.2/30)<1e-12);assert.equal(JSON.stringify(data),before);
+ assert.equal(value.health,100);assert.equal(value.criticalChance,.014);assert.equal(value.criticalMultiplier,1.5);assert.equal(value.expectedDamage,baseDamage("skirmisher")*(1+.014*(1.5-1)));assert.equal(value.range,Loadout.calculate(config,{personLevel:data.personLevel}).range*1.006);assert.equal(value.healingHps,0);assert(value.cleaveDps>0);assert.equal(value.chainDps,0);assert(Math.abs(value.barrierPreventedDps-100*.03*.2/30)<1e-12);assert.equal(JSON.stringify(data),before);
  const utilized=Loadout.calculate(config,data,{heroHealingUtilization:.25});assert.equal(utilized.healingHps,2.5);assert.equal(utilized.cp,Core.calculate({health:100,directDps:value.directDps,splashDps:value.splashDps,preventedDps:value.preventedDps,healingHps:2.5}).cp);
 });
 test('snapshot bounds reads safely, rejects malformed outputs and preserves unavailable-stat diagnostics',()=>{
- const data={personLevel:[99999,1,99999,99999,1,1],heroWeapon:{selected:'fighter',levels:{fighter:{3:99999,4:0}}}},before=JSON.stringify(data),value=Loadout.calculate(config,data);assert.equal(value.levels[1],config.EquipCfg.find(row=>row.id===1).levelInfo.length);assert.equal(value.levels[3],25);assert.equal(value.levels[4],1);assert.equal(JSON.stringify(data),before);assert.equal(value.reason,null);
+ const data={personLevel:[99999,1,99999,99999,1,1],heroWeapon:{selected:'fighter',levels:{fighter:{3:99999,4:0}}}},before=JSON.stringify(data),value=Loadout.calculate(config,data);assert.equal(value.levels[1],config.EquipCfg.find(row=>row.id===1).levelInfo.length);assert.equal(value.levels[3],25);assert.equal(value.levels[4],50);assert.equal(JSON.stringify(data),before);assert.equal(value.reason,null);
  const bad=structuredClone(config);bad.EquipCfg.find(row=>row.id===1).levelInfo[0].Parameters=Infinity;const invalid=Loadout.calculate(bad,{personLevel:[1,1,1,1,1,1]});assert.equal(invalid.cp,null);assert.match(invalid.reason,/invalid/);assert.equal(Loadout.calculate(config,data,{heroHealingUtilization:2}).cp,null);
  const missingCritical=structuredClone(config);delete missingCritical.ParameterCfg[60015];const ownedCrit={personLevel:[1,1,1,1,1,1],treasureInfo:[{id:120031,level:1}]};assert.equal(Loadout.calculate(missingCritical,ownedCrit).cp,null);missingCritical.EquipCfg[2].levelInfo[0].SecondaryStats.skirmisher.criticalChance=0;assert.equal(Loadout.calculate(missingCritical,{personLevel:[1,1,1,1,1,1]}).cp,Math.sqrt(100*(baseDamage("skirmisher")*(1/1.1667))));
 });
 
 test('actual hero combat initialization follows the equipped weapon through bow-to-sword switches and repeated initialization',()=>{
- const {setup,hero}=require('./backend-gameplay-harness.cjs'),data={personLevel:[1,1,10,10,1,1],heroWeapon:{selected:'skirmisher',levels:{skirmisher:{3:10,4:10},fighter:{3:1,4:1}}},talentInfo:config.TalentLevelCfg.filter(row=>row.HeroStyle==='skirmisher').map(row=>({id:row.ID,isLock:true}))};
+ const {setup,hero}=require('./backend-gameplay-harness.cjs'),data={personLevel:[1,1,11,15,1,1],heroWeapon:{selected:'skirmisher',levels:{skirmisher:{3:11,4:15},fighter:{3:1,4:1}}},talentInfo:config.TalentLevelCfg.filter(row=>row.HeroStyle==='skirmisher').map(row=>({id:row.ID,isLock:true}))};
  const user={data,getHeroWeapon:()=>Weapons.selected(data),getPersonLevel:slot=>Weapons.level(data,slot)},h=setup({KinghtFallEnum:require('../../assets/_script/KinghtFallEnum'),KinghtFallPlayerMgr:{KinghtFallPlayerMgr:{getInstance:()=>({getUserData:()=>user})}}}),p=hero(h),manager=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();manager.data=config;manager.getEquipCfgList=()=>config.EquipCfg;manager.getParamsCfgById=()=>3;
  h.e.stubs.HeroMakerRider={setCombatState(){},clearCombatState(){}};Object.assign(p.ctrPlayAni,{initView(){},setAttackEvent(){},setAttackEnd(){}});p.ctrHp.setType=()=>{};
  const check=()=>{const before=JSON.stringify(data),snap=Loadout.snapshot(config,user);p.initData();assert.equal(p.hpMax,snap.health);assert.equal(p.attack,snap.damage);assert.equal(p.attackSpeed,snap.attackRate);assert.equal(p.attackRange,snap.range);assert.equal(JSON.stringify(data),before);return snap;};
- const bow=check();Weapons.select(data,'fighter');const sword=check();assert.equal(sword.damage,baseDamage("fighter"));assert(sword.damage<bow.damage);for(let i=0;i<3;i++)assert.deepEqual(check(),sword);Weapons.select(data,'skirmisher');assert.deepEqual(check(),bow);
+ const bow=check();Weapons.select(data,'fighter');const sword=check();assert.deepEqual(sword.levels,bow.levels);assert.equal(sword.damage,Stats.damageAtLevel(config,'fighter',15));assert.equal(sword.secondary.healthRegenPercent,Stats.secondary(config,'fighter',11).healthRegenPercent);for(let i=0;i<3;i++)assert.deepEqual(check(),sword);Weapons.select(data,'skirmisher');assert.deepEqual(check(),bow);
 });

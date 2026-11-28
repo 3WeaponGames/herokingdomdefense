@@ -33,14 +33,15 @@ test('More is an added percentage; Less is a percentage divisor, with safe read-
  }
 });
 
-test('the saved global defaults affect all six hero, ally and enemy types, across every attack source and secondary hits',()=>{
+test('the saved fighting-type defense applies only to heroes across attack sources and secondary hits',()=>{
  const h=fixture(),before=JSON.stringify(h.tools);
  const sources=[undefined,{cfg:{AttackType:1}},{cfg:{AttackType:2}},{cfg:{AttackType:3}},{buildInfo:{}},h.p];
  for(const [role,multiplier]of Object.entries(expected)){
   h.p.heroStyle=h.d.heroStyle=role;
   const ally=h.unit('ally',role),enemy=h.unit('enemy',role);
   for(const source of sources)for(const secondary of [false,true])for(const actor of [h.p,ally,enemy]){
-   const hp=actor.hp;near(actor.onAttacked(10,source,secondary),10*multiplier);near(hp-actor.hp,10*multiplier);
+   const hp=actor.hp,damage=actor===h.p?10*multiplier:10;
+   near(actor.onAttacked(10,source,secondary),damage);near(hp-actor.hp,damage);
   }
  }
  // Assignment edits above are test inputs; damage must not seed any settings.
@@ -49,19 +50,19 @@ test('the saved global defaults affect all six hero, ally and enemy types, acros
  assert.equal(JSON.stringify(h.tools),before);
 });
 
-test('custom types, stage-local profiles, boss phases and live type changes resolve the recipient rather than the attacker',()=>{
+test('custom defense follows the hero style and leaves allied and enemy profiles at base damage',()=>{
  const h=fixture(),overrides=h.load('GameToolsOverrides');
  h.tools.unitTypes.custom={name:'Custom',damageTaken:{mode:'less',percent:400},future:true};
  const enemy=h.unit('enemy','fighter');enemy.cfg.FightingType='custom';
- near(enemy.onAttacked(100,{heroStyle:'mystic'},true),25);
- enemy.cfg={ID:1000000000,ProfileBaseID:90003};near(enemy.onAttacked(100),200);
+ near(enemy.onAttacked(100,{heroStyle:'mystic'},true),100);
+ enemy.cfg={ID:1000000000,ProfileBaseID:90003};near(enemy.onAttacked(100),100);
  for(const [id,phase]of [[90010,0],[90011,1],[90012,2]]){
-  enemy.cfg={ID:id};enemy.spIdx=phase;h.tools.unitTypeAssignments[`enemy:${id}:${phase+1}`]='custom';near(enemy.onAttacked(100),25);
+  enemy.cfg={ID:id};enemy.spIdx=phase;h.tools.unitTypeAssignments[`enemy:${id}:${phase+1}`]='custom';near(enemy.onAttacked(100),100);
  }
- enemy.cfg={ID:1000000001,ProfileBaseID:90011,FightingType:'mystic'};near(enemy.onAttacked(100),220);
+ enemy.cfg={ID:1000000001,ProfileBaseID:90011,FightingType:'mystic'};near(enemy.onAttacked(100),100);
  enemy.cfg={ID:123456};delete enemy.spIdx;near(enemy.onAttacked(100),100);
  const ally=h.unit('ally','fighter');near(ally.onAttacked(100),100);
- h.tools.unitTypeAssignments['ally:90001:default']='custom';near(ally.onAttacked(100),25);
+ h.tools.unitTypeAssignments['ally:90001:default']='custom';near(ally.onAttacked(100),100);
  h.p.heroStyle='custom';near(h.p.onAttacked(100),25);
  delete h.tools.unitTypes.custom.damageTaken;near(h.p.onAttacked(100),100);
  delete h.manager.data.GameTools;near(h.p.onAttacked(100),100);
@@ -79,7 +80,7 @@ test('type defense stacks with existing hero reductions, finite shields, ally au
  state.shield=0;near(h.p.onAttacked(100),hit);near(h.p.hp,10000-hit);
  const ally=h.unit('ally','skirmisher');
  const talent=h.e.stubs.KinghtFallEnum.KinghtFallEnumTalentCfg.TalenType04;h.d.talentAdd[talent]=[[.1]];
- near(ally.onAttacked(100),135);near(ally.hp,9865);
+ near(ally.onAttacked(100),67.5);near(ally.hp,9932.5);
  h.p.time.NoDie=1;const hp=h.p.hp;assert.equal(h.p.onAttacked(100),undefined);near(h.p.hp,hp);
  h.p.addHpPro(.001);near(h.p.hp,hp+10);near(h.p.hpMax,10000);near(ally.hpMax,10000);
 });
@@ -112,14 +113,14 @@ test('all six hero matchups take precedence over per-unit counters and apply onl
  const cycle={fighter:'skirmisher',skirmisher:'vanguard',vanguard:'mystic',mystic:'guardian',guardian:'bruiser',bruiser:'fighter'};
  for(const [attacker,countered]of Object.entries(cycle)){
   h.p.heroStyle=h.d.heroStyle=attacker;
-  for(const [defender,defense]of Object.entries(expected)){
+  for(const defender of Object.keys(expected)){
    target.cfg.FightingType=defender;
    const context=Combat.primaryContext(h.p,target,100,false);
    const outgoing=defender===countered?125:100;
    near(Combat.previewHeroHit(h.p,target,100),outgoing);
-   near(target.onAttacked(100,h.p,false,context),outgoing*defense);
+   near(target.onAttacked(100,h.p,false,context),outgoing);
    near(context.nonCritical,100);
-   near(target.onAttacked(100,h.p,true),100*defense);
+   near(target.onAttacked(100,h.p,true),100);
   }
  }
 });
@@ -133,10 +134,10 @@ test('hero basic melee and arrows get one counter bonus using the role at releas
  let impact;h.g.takeHeroArrow=()=>({node:new Node(),setTag(_origin,_target,callback){impact=callback;}});
  h.g.onPlayAttack(vanguard);assert(impact);
  h.p.heroStyle='guardian';
- impact();near(vanguard.hp,10000-125*1.15);
+ impact();near(vanguard.hp,10000-125);
 });
 
-test('launched enemy and ally projectiles apply the target type exactly once and display the resulting damage after shooter reuse',()=>{
+test('projectiles retain their matchup bonus after shooter reuse and apply hero defense once',()=>{
  for(const kind of ['KinghtFallEnemyLong','KinghtFallEnemyItem08','KinghtFallSoldierItem03']){
   const h=fixture(),ally=kind==='KinghtFallSoldierItem03',target=ally?h.unit('enemy','skirmisher'):h.p;
   h.p.heroStyle=h.d.heroStyle='skirmisher';target.node.setPosition(10,0);h.d.enemyList=ally?[target]:[];
@@ -145,7 +146,8 @@ test('launched enemy and ally projectiles apply the target type exactly once and
   let impact;h.g.onShotEnemy=h.g.onShotSoldier=()=>({pos:{x:0,y:0},ctr:{setParent(){},setTag(_p,_n,callback){impact=callback;}}});
   const shown=[];h.ui.ctrEffect.showDamageNum=(_point,amount)=>shown.push(amount);
   source.doAttack();assert(impact,kind);source.node._combatGeneration++;source.cfg.ID=90003;
-  impact();near(target.hp,9750);assert.deepEqual(shown,[250]);
+  const damage=ally?125:250;
+  impact();near(target.hp,10000-damage);assert.deepEqual(shown,[damage]);
  }
 });
 
@@ -159,18 +161,18 @@ test('enemy splash checks each victim’s matchup against the attacker’s type'
  h.ui.ctrEffect.onAttack=()=>{};
  source.doSplashDamage(primary);
  near(primary.hp,10000);
- near(guardian.hp,10000-100*(2/3));
+ near(guardian.hp,9900);
  near(h.p.hp,9750);
 });
 
-test('cannon splash, critical hits and relic secondary hits use each recipient type',()=>{
+test('cannon splash, critical hits and relic secondary hits preserve their damage against enemies',()=>{
  const h=fixture(),guardian=h.unit('enemy','fighter',90001),mystic=h.unit('enemy','fighter',90002);
  const shown=[];h.ui.ctrEffect.showDamageNum=(_point,amount)=>shown.push(amount);
  guardian.cfg.FightingType='guardian';mystic.cfg.FightingType='mystic';h.d.enemyList=[guardian,mystic];
  const Tower=h.load('TowerCombat');Tower.damage(h.g,guardian,{x:20,y:0},100,{attackType:'cannon',splashRadius:100,splashFalloff:1},null,{buildInfo:{}});
- near(guardian.hp,10000-100*(2/3));near(mystic.hp,9780);
+ near(guardian.hp,9900);near(mystic.hp,9900);
  h.p.heroStyle=h.d.heroStyle='bruiser';const Combat=h.load('RelicCombat');h.d.treasureAdd[120035]=[.12];
  const context=Combat.primaryContext(h.p,guardian,100,true);
- near(guardian.onAttacked(200,h.p,false,context),200*(2/3));near(mystic.hp,9780-100*.12*2.2);
- assert.equal(shown.length,1);near(shown[0],100*.12*2.2);
+ near(guardian.onAttacked(200,h.p,false,context),200);near(mystic.hp,9900-100*.12);
+ assert.equal(shown.length,1);near(shown[0],100*.12);
 });

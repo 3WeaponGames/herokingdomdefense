@@ -62,8 +62,27 @@ TestMode.prototype.showLobbyRewardTesting = function () {
   return !this._startupActive && this.isEnabled() && !this._hasGameplayTarget();
 };
 
-TestMode.prototype.toggleRewardTesting = function () {
-  if (!this.isAvailable() || this._startupActive || !require("RewardTestPanel").toggle(this)) return false;
+TestMode.prototype.toggleRewardTesting = function (startScreen, pause) {
+  if (!this.isAvailable() || this._startupActive && !startScreen) return false;
+  if (!require("RewardTestPanel").toggle(this, startScreen, this.ownsBattlePause(pause))) return false;
+  this.clearGameplayInput(true);
+  return true;
+};
+
+TestMode.prototype.ownsBattlePause = function (pause) {
+  if (!pause || pause.isclose || !cc.isValid(pause, true) || !this._hasGameplayTarget()) return false;
+  var battle = this._gameplayTarget, dialog = battle._battleDialog, owners = battle._pauseOwners;
+  return !!(dialog && dialog.kind === "pause" && dialog.node === pause.node && dialog.paused && dialog.isCurrent() &&
+    !battle._legacyGamePause && owners && owners.size === 1 && owners.has(dialog));
+};
+
+TestMode.prototype.toggleBattleTesting = function (tool, pause) {
+  if (!this.isAvailable() || this._rewardTestPanel || !this._hasGameplayTarget()) return false;
+  var target = this._gameplayTarget;
+  var opened = tool === "wave"
+    ? require("WaveTestPanel").toggle(target, this.ownsBattlePause(pause))
+    : require("UnitTestPanel").toggle(target);
+  if (!opened) return false;
   this.clearGameplayInput(true);
   return true;
 };
@@ -146,11 +165,7 @@ TestMode.prototype._keyDown = function (event) {
     if (event.repeat || event.isComposing || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey ||
         this._rewardTestPanel || !this._hasGameplayTarget() ||
         !(wave ? target._waveTestPanel : target._unitTestPanel) && this._isEditing(event)) return;
-    var panelModule = wave ? require("WaveTestPanel") : require("UnitTestPanel");
-    if (panelModule.toggle(target)) {
-      if (event.preventDefault) event.preventDefault();
-      this.clearGameplayInput(true);
-    }
+    if (this.toggleBattleTesting(wave ? "wave" : "unit") && event.preventDefault) event.preventDefault();
     return;
   }
   if (this._isF8(event)) {

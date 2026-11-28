@@ -1,6 +1,5 @@
 "use strict";
-// Equipment slots and campaign costs remain the existing ones. Only slots 3
-// (secondary bonuses) and 4 (main-weapon damage) have independent progress.
+// Weapon and sub-item levels are shared across hero styles.
 var styles = [
   { id: "skirmisher", name: "Skirmisher", weapon: "Bow", ranged: true, reach: 1 },
   { id: "fighter", name: "Fighter", weapon: "Sword", ranged: false, reach: .35 },
@@ -19,31 +18,38 @@ function upgradeUnlocked(equipment, user) {
   return stage > requiredStage || stage === requiredStage && requirement.length > 1 && user.getMaxOrder() > requirement[1];
 }
 function number(value) { return typeof value === "number" && isFinite(value) && value >= 1 ? Math.floor(value) : 1; }
-function level(data, slot, style) {
-  var id = style || selected(data).id, levels = data && data.heroWeapon && data.heroWeapon.levels, weapon = levels && levels[id];
-  if (slot !== 3 && slot !== 4) return number(data && data.personLevel && data.personLevel[slot - 1]);
-  if (weapon && weapon[slot] !== undefined) return number(weapon[slot]);
-  return id === "skirmisher" ? number(data && data.personLevel && data.personLevel[slot - 1]) : 1;
-}
-function state(data) {
-  var previous = data.heroWeapon || {}, result = Object.assign({}, previous, { selected: selected(data).id, levels: Object.assign({}, previous.levels) });
-  // Copy legacy bow progress only when the player actually changes equipment.
-  if (!result.levels.skirmisher) result.levels.skirmisher = { 3: level(data, 3, "skirmisher"), 4: level(data, 4, "skirmisher") };
-  return result;
+function level(data, slot) {
+  var shared = number(data && data.personLevel && data.personLevel[slot - 1]);
+  var levels = data && data.heroWeapon && data.heroWeapon.levels;
+  if (!levels || slot !== 3 && slot !== 4) return shared;
+  // Read the best legacy level in each slot so existing saves and journals
+  // can use shared gear before their next upgrade.
+  styles.forEach(function (style) {
+    var progress = levels[style.id];
+    if (progress && typeof progress === "object" && !Array.isArray(progress)) shared = Math.max(shared, number(progress[slot]));
+  });
+  return shared;
 }
 function select(data, id) {
   if (!find(id) || selected(data).id === id) return false;
-  var next = state(data); next.selected = id; data.heroWeapon = next; return true;
+  var previous = data.heroWeapon || {};
+  data.heroWeapon = Object.assign({}, previous, { selected: id, levels: previous.levels || {} });
+  return true;
 }
-function upgrade(data, slot, value, style) {
-  if (slot !== 3 && slot !== 4) { data.personLevel[slot - 1] = value; return; }
-  var next = state(data), id = find(style) ? style : next.selected;
-  next.levels[id] = Object.assign({}, next.levels[id]); next.levels[id][slot] = value; data.heroWeapon = next;
-  if (id === "skirmisher") data.personLevel[slot - 1] = value;
+function upgrade(data, slot, value) {
+  if (!Array.isArray(data.personLevel)) data.personLevel = [];
+  data.personLevel[slot - 1] = value;
+  var levels = data.heroWeapon && data.heroWeapon.levels;
+  if (!levels || slot !== 3 && slot !== 4) return;
+  // Retire this slot's legacy levels so explicit level changes take effect.
+  styles.forEach(function (style) {
+    var progress = levels[style.id];
+    if (progress && typeof progress === "object" && !Array.isArray(progress)) delete progress[slot];
+  });
 }
 function itemKey(slot, value, style) { return slot + ":" + value + ((slot === 3 || slot === 4) && style && style !== "skirmisher" ? ":" + style : ""); }
 function skin(style, tier) { return (style || "skirmisher") + "_" + tier; }
-// The secondary slot shows the same item as its style-specific upgrade track.
+// Each style supplies its own secondary item and bonus at the shared level.
 function gear(style, slot, area) {
   var selected = find(style) || styles[0], main = selected.id === "guardian" ? "Hammer" : selected.weapon;
   if (Number(slot) === 1) return { name: "Chest", kind: "armor", slot: 1 };

@@ -14,7 +14,8 @@ function fixture(){
  Object.assign(modules,{BaseUI:{default:Base},BaseCtrl:{default:Base},BaseData:{BaseData:Base},BaseButton:{BaseButton:function(){}},Config:{UIID:{UIGuide:'guide'}},UIMgr:{UIMgr:single(manager)},KinghtFallConfig:{KinghtFallUIID:ids,KinghtFallEventName:{NewbieGuide:'guide-event'}},KinghtFallDataMgr:{KinghtFallDataMgr:single(data)},KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single(player)},PlayerMgr:{PlayerMgr:single({getTrackData:()=>({youmengTrack:noop})})},GameTrackDataEvent:{TrackId:{}},PlatformSetting:{PlatformSetting:{currentPlatform:'editor'}},BasePlatform:{Platform:{WEB_LINK:'weblink'}},Appcfg:{BaseEventName:{CloseUI:'closed'}},HeroItemLooks:{},HeroWeaponPicker:{},EarnedAds:{},TestMode:{},AudioMgr:{},BattleHud:{layout:noop}});
  function load(name){if(modules[name])return modules[name];const exports=modules[name]={};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script',name+'.js'),'utf8'),{exports,require:id=>{if(id==='TutorialFlow'||id==='UIGuide')return load(id);return modules[id]||{};},cc,sp:{Skeleton:function(){}},console,__extends(C,B){Object.setPrototypeOf(C,B);C.prototype=Object.create(B.prototype);C.prototype.constructor=C;},__decorate:(_d,value,key)=>key===undefined?value:undefined,__spreadArrays:(...a)=>[].concat(...a),Set,Number},{filename:name+'.js'});return exports;}
  modules.Config.GameConfig={AppCacheName:'tutorial-test'};modules.KinghtFallConfig.KinghtFallParameter={AppCacheName:'kingdom'};
- modules.KinghtFallEnum={KinghtFallEnumTreasureEnum:{EconomyBook:120012}};
+ modules.KinghtFallEnum={KinghtFallEnumTreasureEnum:{EconomyBook:120012},KinghtFallEnumBuildEnum:{PrivateHouse:4}};
+ modules.KinghtFallModle={KinghtFallGameStage:{Prepare:0,Fight:2}};
  modules.HeroWeaponPicker.open=gear=>{
    const tutorial=gear.getWeaponPickerTutorial();
    assert(tutorial);
@@ -24,13 +25,20 @@ function fixture(){
  const Guide=load('KinghtFallGuideData').KinghtFallGuideData,guide=new Guide();guide.createData();
  function owner(name,uid){const C=load(name).default,o=new C();o.uid=uid;o.node=node(uid);o.scheduleOnce=fn=>scheduled.push(()=>fn.call(o));o.unschedule=noop;o.sendEvent=(event,...args)=>{if(event==='guide-event')home.startGuide(...args);};return o;}
  const home=owner('KinghtFallUIHome',ids.UIHome);home.canGuide=true;home.isLock=()=>false;home.showView=noop;home.togCon={toggleItems:[0,1,2,3,4].map(i=>({node:node('Toggle'+i),isChecked:false}))};home.tagNode={getComponent:()=>({btnBattle:node('campaign')}),getComponentsInChildren:()=>[]};
- const game=owner('KinghtFallUIGame',ids.UIGame);game.ndCoin=node('silver');game.ndLevelInfo=node('wave');game.btnStartFight=node('fight');game.btnAgg=node('rally');game.btnFollow=node('follow');game.enemyIconInfo={one:{ndItem:node('enemies')}};let mainLevel=0;const pad=node('current-purchase-pad');game.ctrGame={gameData:{baseBuild:{getLevel:()=>mainLevel,getPurchaseField:()=>pad,ndLockList:[]}},setAudioPaused:noop};game.ctrUI={setGuide:noop};
+ const game=owner('KinghtFallUIGame',ids.UIGame);game.ndCoin=node('silver');game.ndLevelInfo=node('wave');game.btnStartFight=node('Start Battle');game.btnAgg=node('rally');game.btnFollow=node('follow');
+ let mainLevel=0,houseLevel=0;
+ const pad=node('current-purchase-pad'),housePad=node('House 1 purchase card'),secondPad=node('House 2 purchase card');
+ const house={node:node('House 1'),getLevel:()=>houseLevel,getPurchaseField:()=>housePad,getSell:()=>2};
+ const secondHouse={node:node('House 2'),getLevel:()=>0,getPurchaseField:()=>secondPad,getSell:()=>2};
+ game.ctrGame={gameStatus:0,gameData:{levelCfg:config.LevelCfg[0],round:1,coin:3,bulidPointMap:{10:secondHouse,20:house},baseBuild:{getLevel:()=>mainLevel,getPurchaseField:()=>pad,ndLockList:[]}},setAudioPaused:noop};
+ game.ctrUI={setGuide(value){this.guideTag=value;}};
+ game.startRoundGame=()=>{game.roundStarts=(game.roundStarts||0)+1;game.ctrGame.gameStatus=2;};
  const buff=owner('KinghtFallUIBuff',ids.UIBuff);buff.ndParent=node('perk-cards');
  function ready(request=requests.at(-1)){assert(request,'Expected a guide request');if(!request.callbacks.isCurrent()){request.callbacks.onCancel();return false;}visibleUI.set('guide',{node:node('guide'),cfg:request.cfg});if(request.callbacks.onOpened)request.callbacks.onOpened();shown.push(request.cfg.tipstring);return request;}
  function close(request=requests.at(-1)){visibleUI.delete('guide');request.cfg.onClosed();}
  function acknowledge(request=requests.at(-1)){assert.equal(request.cfg.onComplete(),true);if(request.cfg.callBack)request.cfg.callBack();close(request);}
  function position(group,step=0){guide.data.GroupId=group;guide.data.stepId=step;}
- return{requests,shown,pickers,scheduled,dialogs,node,load,cc,manager,visibleUI,data,player,guide,home,game,buff,pad,ownedRelics,owner,ready,close,acknowledge,position,setMainLevel:value=>mainLevel=value,writes:()=>writes,failSave:value=>failSave=value,flush(){let count=0;while(scheduled.length){assert(count++<30,'Unexpected guide scheduling loop');scheduled.shift()();}}};
+ return{requests,shown,pickers,scheduled,dialogs,node,load,cc,manager,visibleUI,data,player,guide,home,game,buff,pad,housePad,secondPad,ownedRelics,owner,ready,close,acknowledge,position,setMainLevel:value=>mainLevel=value,setHouseLevel:value=>houseLevel=value,writes:()=>writes,failSave:value=>failSave=value,flush(){let count=0;while(scheduled.length){assert(count++<30,'Unexpected guide scheduling loop');scheduled.shift()();}}};
 }
 
 function talentInfo(h,talent){
@@ -87,13 +95,59 @@ test('home lessons wait for a loading or visible detail dialog instead of coveri
  h.manager.isopening=false;h.visibleUI.set('relic-info',{node:h.node('details')});h.flush();assert.equal(h.requests.length,0);h.visibleUI.clear();h.home.startGuide();assert(h.ready());assert.equal(h.guide.getStepId(),0);
 });
 
-test('battle tutorial uses the current purchase field and waits for construction without pausing movement',()=>{
+test('battle tutorial points to the current Main Hall purchase field and waits for construction',()=>{
  const h=fixture();h.position(2,1);h.game.startGuide();const request=h.ready();assert.equal(request.cfg.distNode,h.pad);assert.equal(h.game.isPauset,false);h.acknowledge();assert.equal(h.guide.getStepId(),2);
- const count=h.requests.length;h.game.startGuide();assert.equal(h.requests.length,count);h.setMainLevel(1);h.game.startGuide();assert.equal(h.ready().cfg.distNode,h.game.enemyIconInfo.one.ndItem);
+ const count=h.requests.length;h.game.startGuide();assert.equal(h.requests.length,count);h.setMainLevel(1);h.game.startGuide();assert.equal(h.ready().cfg.distNode,h.housePad);
 });
 
-test('a resumed built castle needs no extra tier upgrade and an empty authored wave has a visible fallback',()=>{
- const h=fixture();h.position(2,1);h.setMainLevel(1);h.game.enemyIconInfo={};h.game.startGuide();const request=h.ready();assert.equal(h.guide.getStepId(),2);assert.equal(request.cfg.distNode,h.game.ndLevelInfo);h.acknowledge();h.game.startGuide();assert.equal(h.ready().cfg.distNode,h.game.btnStartFight);
+test('House 1 follows the Main Hall, and the Start Battle guide starts the wave on one press',()=>{
+ const h=fixture();h.position(2,1);h.setMainLevel(1);h.game.startGuide();const house=h.ready();
+ assert.equal(h.guide.getStepId(),2);
+ assert.equal(house.cfg.distNode,h.housePad);
+ assert.equal(house.cfg.actionText,'tutorial.buildHouse.action');
+ assert.equal(h.game.ctrUI.guideTag,undefined);
+ h.acknowledge(house);assert.equal(h.game.ctrUI.guideTag,h.housePad);
+ h.game.onCloseUI('guide');h.flush();
+ assert.equal(h.game.isPauset,false);
+ h.game._pressStartBattle();assert.equal(h.game.roundStarts,undefined);
+ const requests=h.requests.length;
+ h.game.startGuide();assert.equal(h.requests.length,requests);
+ h.setHouseLevel(1);
+ h.game.startGuide(7);const start=h.ready();
+ assert.equal(h.game.ctrUI.guideTag,null);
+ assert.equal(start.cfg.distNode,h.game.btnStartFight);
+ assert.equal(start.cfg.hideMask,false);assert.equal(start.cfg.isWeek,false);
+ const copy=require('../../assets/resources/localization/catalog.json').entries;
+ assert.match(copy['data.guidecfg.6.describe'].en,/Start Battle/);
+ h.acknowledge(start);
+ assert.equal(h.guide.getGroupId(),3);assert.equal(h.game.roundStarts,1);
+ h.game.onCloseUI('guide');h.flush();
+ assert.equal(h.requests.length,requests+1,'The house tip waits until planning resumes');
+ h.game._pressStartBattle();assert.equal(h.game.roundStarts,1);
+});
+
+test('the house tutorial can resume and falls back safely on an edited or spent opening',()=>{
+ const resumed=fixture();resumed.position(2,3);resumed.setMainLevel(1);resumed.game.startGuide();
+ assert.equal(resumed.game.ctrUI.guideTag,resumed.housePad);
+ assert.equal(resumed.requests.length,0);
+ const alternatives=[h=>h.setHouseLevel(1),h=>{h.game.ctrGame.gameData.coin=1;},h=>{h.game.ctrGame.gameData.bulidPointMap={};}];
+ for(const setup of alternatives){
+  const h=fixture();h.position(2,2);h.setMainLevel(1);setup(h);h.game.startGuide();
+  assert.equal(h.guide.getStepId(),3);assert.equal(h.ready().cfg.distNode,h.game.btnStartFight);
+ }
+ const fallback=fixture();fallback.position(2,2);fallback.setMainLevel(1);fallback.housePad.active=false;
+ fallback.game.startGuide();assert.equal(fallback.ready().cfg.distNode,fallback.secondPad);
+});
+
+test('a canceled house tutorial load releases its pause and still points to the purchase card',()=>{
+ const h=fixture();h.position(2,2);h.setMainLevel(1);h.game.startGuide();
+ assert.equal(h.game.isPauset,true);
+ h.requests.at(-1).callbacks.onCancel();
+ assert.equal(h.game.isPauset,false);
+ assert.equal(h.game.ctrUI.guideTag,h.housePad);
+ assert.equal(h.guide.getStepId(),2);
+ h.setHouseLevel(1);h.game.startGuide();
+ assert.equal(h.ready().cfg.distNode,h.game.btnStartFight);
 });
 
 test('building help queues during core lessons and perk decisions and records only acknowledged tips',()=>{
@@ -105,7 +159,8 @@ test('all 22 lessons can be acknowledged through current home, battle, perk, equ
  const h=fixture();
  for(let step=0;step<2;step++){h.home.startGuide();h.ready();h.acknowledge();}
  h.game.startGuide();h.ready();h.acknowledge();h.game.startGuide();h.ready();h.acknowledge();h.setMainLevel(1);
- for(let step=2;step<4;step++){h.game.startGuide();h.ready();h.acknowledge();}
+ h.game.startGuide();h.ready();h.acknowledge();h.setHouseLevel(1);
+ h.game.startGuide();h.ready();h.acknowledge();h.game.ctrGame.gameStatus=0;
  h.buff.startGuide();h.ready();h.acknowledge();
  h.home.startGuide();h.ready();h.acknowledge();
  const gear=h.owner('KinghtFallHomePersonCtrl','gear');gear.nodeInfo=[{ndInfo:{active:true,activeInHierarchy:true,getChildByName:()=>h.node('upgrade')}}];gear.showHomeGuide();h.ready();h.acknowledge();

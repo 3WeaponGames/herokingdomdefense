@@ -250,14 +250,6 @@ exports.effects = {
     "loop": false,
     "duration": 1.143673469387755
   },
-  "healing-receive": {
-    "path": "sfx/healing-receive",
-    "group": "magic",
-    "gain": 0.5,
-    "cooldown": 180,
-    "loop": false,
-    "duration": 0.783
-  },
   "freeze-apply": {
     "path": "sfx/freeze-apply",
     "group": "magic",

@@ -196,19 +196,26 @@ class Service{
   this.recordChange(doc,value);
   return this.snapshot(doc.key);
  }
- changeWave({key,version,waveIndex,wave}){
+ changeWave({key,version,waveIndex,wave,intermediateWaves=[]}){
   this.expect(version);
   if(typeof key!=='string'||!key.startsWith('stage:'))throw Error('Select a stage before editing a wave.');
   const doc=this.doc(key),waves=doc.data.config.WaveCfg;
   const previous=Array.isArray(waves)&&Number.isInteger(waveIndex)&&waves[waveIndex];
-  if(!previous||!wave||typeof wave!=='object'||Array.isArray(wave)||wave.Wave!==previous.Wave||wave.id!==previous.id){
+  if(!previous||!Array.isArray(intermediateWaves)){
    throw Error('The wave changed. Select it again before editing.');
   }
-  if(!equal(previous,wave)){
+  let current=previous;
+  const values=[];
+  for(const proposed of intermediateWaves.concat([wave])){
+   if(!proposed||typeof proposed!=='object'||Array.isArray(proposed)||proposed.Wave!==previous.Wave||proposed.id!==previous.id){
+    throw Error('The wave changed. Select it again before editing.');
+   }
+   if(equal(current,proposed))continue;
    const WaveCfg=waves.slice();
-   WaveCfg[waveIndex]=clone(wave);
-   this.recordChange(doc,{...doc.data,config:{...doc.data.config,WaveCfg}});
+   current=WaveCfg[waveIndex]=clone(proposed);
+   values.push({...doc.data,config:{...doc.data.config,WaveCfg}});
   }
+  if(values.length)this.recordChanges(doc,values);
   return this.snapshot(key,undefined,{waveIndex});
  }
  editStageLayout({key,version,mapId,edit}){
@@ -222,9 +229,17 @@ class Service{
   return this.snapshot(key,undefined,{layoutOnly:true});
  }
  recordChange(doc,value){
-  this.undo.push({key:doc.key,edits:History.diff(doc.data,value)});
+  this.recordChanges(doc,[value]);
+ }
+ recordChanges(doc,values){
+  let previous=doc.data;
+  const history=values.map(value=>{
+   const edits=History.diff(previous,value);previous=value;
+   return {key:doc.key,edits};
+  });
+  for(const entry of history)this.undo.push(entry);
   this.redo=this.redo.filter(item=>item.key!==doc.key);
-  doc.data=value;this.version++;this.persist();
+  doc.data=previous;this.version+=history.length;this.persist();
  }
  history(request,redo){this.expect(request.version);const from=redo?this.redo:this.undo,to=redo?this.undo:this.redo;let at=from.length-1;while(at>=0&&from[at].key!==request.key)at--;if(at<0)return this.snapshot(request.key);const change=from.splice(at,1)[0];const doc=this.doc(request.key),value=clone(doc.data);History.apply(value,change.edits,redo);doc.data=value;to.push(change);this.version++;this.persist();return this.snapshot(request.key);}
  refresh(request){this.expect(request.version);L.invalidateScripts(this.root);require('../lib/unit-assets').invalidate();this._previewConfigs=null;const removed=new Set();for(const key of Object.keys(this.docs))if(equal(this.docs[key].data,this.docs[key].original)){delete this.docs[key];removed.add(key);}this.undo=this.undo.filter(e=>!removed.has(e.key));this.redo=this.redo.filter(e=>!removed.has(e.key));this.indexData=null;this.palette=null;this.sources={};this.version++;const maps=this.availableMaps(),key=request.key.startsWith('map:')&&!this.docs[request.key]&&!maps.some(m=>'map:'+m.id===request.key)?'map:'+maps[0].id:request.key;return this.snapshot(key);}

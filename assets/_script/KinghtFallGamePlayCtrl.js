@@ -369,10 +369,8 @@ var def_KinghtFallGamePlayCtrl = function (t) {
   };
   _ctor.prototype.addHpPro = function (t) {
     if (!this.isDead()) {
-      var soundHp = this.hp;
       this.hp += t * this.hpMax;
       this.hp > this.hpMax && (this.hp = this.hpMax);
-      if (this.hp > soundHp && BattleSounds.effect) BattleSounds.effect("healing-receive", this);
       this.ctrHp.setHp(this.hp, this.hpMax);
     }
   };

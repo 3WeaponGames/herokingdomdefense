@@ -21,6 +21,11 @@ function fixture(){
  }
  Label.Overflow={RESIZE_HEIGHT:3,SHRINK:2};Label.HorizontalAlign={LEFT:0,CENTER:1,RIGHT:2};Label.VerticalAlign={CENTER:1};
  class Sprite{}Sprite.SizeMode={CUSTOM:0};Sprite.Type={SLICED:1};
+ class Skeleton{
+  constructor(){this._skeleton={getBounds:(offset,size)=>{Object.assign(offset,this.skeletonData.offset);Object.assign(size,this.skeletonData.size);}};}
+  setSkin(skin){this.skin=skin;}findAnimation(name){return name==='idle';}setAnimation(_track,clip){this.clip=clip;}
+  update(){}updateWorldTransform(){}
+ }
  class Graphics{clear(){}roundRect(){}rect(){}fill(){}stroke(){}moveTo(){}lineTo(){}}
  class ScrollView{
   scrollToTop(){this.content.y=0;this.offset=0;this.scrolls=(this.scrolls||0)+1;}
@@ -35,7 +40,7 @@ function fixture(){
   view:{getVisibleOrigin:()=>origin,getVisibleSize:()=>size},sys:{getSafeAreaRect:()=>safe},macro:{KEY:{escape:27}},SystemEvent:{EventType:{KEY_DOWN:'key'}},
   systemEvent:{on(event,fn,target){keys.push({event,fn,target});},off(event,fn,target){const i=keys.findIndex(x=>x.event===event&&x.fn===fn&&x.target===target);if(i>=0)keys.splice(i,1);}}
  };
- const config=structuredClone(authored),pending=[],labels=[],listeners=[],events=[],parent=new Node('BattleUI');parent.width=750;parent.height=1334;
+ const config=structuredClone(authored),pending=[],models=[],labels=[],listeners=[],events=[],parent=new Node('BattleUI');parent.width=750;parent.height=1334;
  const catalog=require('../../assets/resources/localization/catalog.json');let currentLanguage='en';
  const language={catalog,t(key,params){const normalized=String(key).replace(/^\[\[loc:(.+)\]\]$/,'$1');return String(catalog.entries[normalized]?.[currentLanguage]||key).replace(/\{(\d+)\}/g,(_,i)=>params&&params[i]||'');},
   bindLabel(label,key,params){label.string=this.t(key,params);labels.push(label);},onChange(fn,target){listeners.push({fn,target});},offChange(fn,target){const i=listeners.findIndex(x=>x.fn===fn&&x.target===target);if(i>=0)listeners.splice(i,1);}};
@@ -43,11 +48,15 @@ function fixture(){
  const data={round:2,levelCfg:{WaveCfg:[{}, {HealthCoefficient:1.8,AttackCoefficient:1.4}]},getHpAdd:()=>1.8,getAttAdd:()=>1.4,getEnemyList:()=>data.enemies||[]};
  const game={gameData:data,gameStatus:0,_combatEpoch:1,moveFun:value=>events.push(['move',value])},ui={node:parent,enemyIconInfo:{},ctrUI:{node:parent,onBlockTouch(){events.push(['stopTouch']);}},ctrGame:game,canBreak:true,_pauseOwners:new Set(),
   onPauseGame(paused,owner){if(paused)this._pauseOwners.add(owner);else this._pauseOwners.delete(owner);this.isPauset=!!this._legacyGamePause||this._pauseOwners.size>0;events.push(['pause',paused]);},
-  loadSpriteFrame(bundle,key,done){pending.push({bundle,key,done});}};
- const context={exports:{},cc,require:id=>id==='KinghtFallDataMgr'?{KinghtFallDataMgr:{getInstance:()=>({data:config,getSoldierCfgById:id=>config.SoldierCfg[id]})}}:id==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:id==='LanguageMgr'?{LanguageMgr:{getInstance:()=>language}}:id==='TestMode'?{TestMode:{getInstance:()=>({clearGameplayInput:()=>events.push(['clearInput'])})}}:id==='./FightingTypeDamage'?require('../../assets/_script/FightingTypeDamage'):id==='UnitAttackRules'?require('../../assets/_script/UnitAttackRules'):null};
+  loadSpriteFrame(bundle,key,done){pending.push({bundle,key,done});},loadPrefab(bundle,key,done){models.push({bundle,key,done});}};
+ const context={exports:{},cc,sp:{Skeleton,spine:{Vector2:class{}}},require:id=>id==='KinghtFallDataMgr'?{KinghtFallDataMgr:{getInstance:()=>({data:config,getSoldierCfgById:id=>config.SoldierCfg[id]})}}:id==='KinghtFallModle'?{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2,FightEnd:3,End:4}}:id==='LanguageMgr'?{LanguageMgr:{getInstance:()=>language}}:id==='TestMode'?{TestMode:{getInstance:()=>({clearGameplayInput:()=>events.push(['clearInput'])})}}:id==='./FightingTypeDamage'?require('../../assets/_script/FightingTypeDamage'):id==='UnitAttackRules'?require('../../assets/_script/UnitAttackRules'):null};
  vm.runInNewContext(fs.readFileSync(path.join(root,'assets/_script/EnemyGuide.js'),'utf8'),context,{filename:'EnemyGuide.js'});
  const frame=()=>({getOriginalSize:()=>({width:256,height:128}),clone(){return{destroy(){this.destroyed=true;}};}});
- return{api:context.exports,ui,cc,config,game,data,pending,events,size,origin,safe,keys,listeners,frame,Node,language};
+ const prefab=(layer='spAni')=>{
+  const data=new Node('Enemy'),model=new Node(layer);model.parent=data;
+  const rig=model.addComponent(Skeleton);rig.defaultSkin='default';rig.skeletonData={offset:{x:-37,y:11},size:{x:250,y:176}};return {data,rig};
+ };
+ return{api:context.exports,ui,cc,config,game,data,pending,models,events,size,origin,safe,keys,listeners,frame,Node,language,prefab};
 }
 function record(f,id=91001,live=false){const item=new f.Node('Marker');item.parent=f.ui.node;const result={id,ndItem:item,tag:true,_guideLive:live};f.ui.enemyIconInfo[id]=result;return result;}
 function stats(model){return Object.fromEntries(model.stats);}
@@ -81,6 +90,47 @@ test('all enemy records resolve to existing nonempty head portraits without gene
  for(const row of Object.values(authored.SoldierCfg)){assert(row.loadIcon.startsWith('@icon/'));icons.add(row.loadIcon.slice(6));}
  assert(icons.size>=112);
  for(const icon of icons){const file=path.join(root,'assets/resources',icon+'.png');assert(fs.existsSync(file),icon);const image=PNG.decode(fs.readFileSync(file));let visible=0;for(let i=3;i<image.rgba.length;i+=4)if(image.rgba[i]>64)visible++;assert(visible>300,icon+' has no usable portrait');assert(fs.existsSync(file+'.meta'));}
+});
+
+test('all imported and inherited enemy profiles resolve the shipped full model and boss form',()=>{
+ const f=fixture(),prefabs=new Map();
+ for(const row of Object.values(authored.SoldierCfg)){
+  const source=f.api.describe(f.ui,row.ID,false).visual;
+  if(!prefabs.has(source.prefab)){
+   const prefab=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallEnemy',source.prefab+'.prefab')));
+   prefabs.set(source.prefab,prefab.filter(value=>value.__type__==='sp.Skeleton'&&value._N$skeletonData).map(value=>prefab[value.node.__id__]._name));
+  }
+  assert(prefabs.get(source.prefab).includes(source.layer),row.ID+' has no '+source.layer);
+ }
+});
+
+test('enemy guide fits only the selected pose, keeps it on language changes, and discards obsolete renders',()=>{
+ const f=fixture(),r=record(f,91123);r._guideIds=[91123,90011,91001];
+ f.api.open(f.ui,r);
+ const state=f.ui._enemyGuide,larva=f.prefab(),boss=f.prefab('spAni2');
+ assert.equal(f.models[0].key,'Monster3_Larva_Leech');
+ state.next.emit('end',{stopPropagation(){}});
+ f.models[0].done(larva);
+ assert.equal(state.modelPreview,undefined);
+ assert.equal(f.models[1].key,'ItemEnemy10');
+ f.models[1].done(boss);
+ const preview=state.modelPreview;
+ assert.equal(preview.renderer.skeletonData,boss.rig.skeletonData);
+ assert.equal(preview.node.components.length,1);
+ assert.equal(preview.renderer.clip,'idle');
+ assert.equal(preview.renderer.paused,true);
+ assert.equal(state.portrait.node.active,false);
+ assert(preview.node.scale*250<=state.portraitCard.width);
+ const scale=preview.node.scale;
+ f.language.setCurrentLanguage('zh');
+ assert.equal(state.modelPreview,preview);assert.equal(f.models.length,2);
+ f.safe.width=420;f.api.update(f.ui);
+ assert(preview.node.scale<scale);
+ state.next.emit('end',{stopPropagation(){}});
+ assert(preview.node.destroyed);
+ assert(state.portrait.node.active);
+ f.api.close(f.ui);f.models[2].done(f.prefab());
+ assert.equal(state.modelPreview,null);
 });
 
 test('portrait preloads respect resource generations and failed loads can retry without updating a closed guide',()=>{

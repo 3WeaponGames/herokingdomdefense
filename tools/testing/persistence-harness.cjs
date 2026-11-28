@@ -13,7 +13,9 @@ function harness(saved = {}, beforeRecords) {
   const singleton = object => ({ getInstance: () => object });
   const localStorage = {
     getItem: key => storage.get(key) ?? null,
-    removeItem(key) { storage.delete(key); },
+    get length() { return storage.size; },
+    key: index => Array.from(storage.keys())[index] ?? null,
+    removeItem(key) { if (state.failRemovals?.has(key)) throw Error('could not remove save'); storage.delete(key); },
     setItem(key, value) { if (state.failKeys.has(key) || state.failAll) throw Error('quota exceeded'); storage.set(key, value); state.writes++; }
   };
   const globals = { console: { log() {}, error() {}, warn() {} }, Date, Math, localStorage,

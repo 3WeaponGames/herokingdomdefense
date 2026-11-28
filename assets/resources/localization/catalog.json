@@ -206,6 +206,21 @@
       "zh": "· {0} FPS",
       "context": "Rendered frames per second after F8 in the development-only badge; {0} is the measured count or -- before sampling"
     },
+    "settings.developerMode": {
+      "en": "Developer Mode (F8)",
+      "zh": "开发者模式（F8）",
+      "context": "Settings · developer toggle for debug builds"
+    },
+    "settings.developerRewards": {
+      "en": "Reward Testing (F4)",
+      "zh": "奖励测试（F4）",
+      "context": "Settings · opens the reward testing and save slots panel"
+    },
+    "settings.developerWave": {
+      "en": "Wave Adjuster (F6)",
+      "zh": "波次调整（F6）",
+      "context": "Settings · opens the campaign wave testing panel"
+    },
     "lobby.rewardTesting": {
       "en": "Reward Testing",
       "zh": "奖励测试",
@@ -845,8 +860,8 @@
       "context": "assets\\configs\\GameJsonCfg.json:BuildEnum.6.levelList.1.Name; assets\\KinghtFallConfig\\GameJsonCfg.json:BuildEnum.6.levelList.1.Name"
     },
     "data.buildenum.6.levellist.2.levelupdescribe": {
-      "en": "Final upgrade: reinforced walls with more HP to hold back monsters.",
-      "zh": "最终升级：加固城墙拥有更多生命，可抵御怪物进攻。",
+      "en": "Reinforced walls have more HP to hold back monsters.",
+      "zh": "加固城墙拥有更多生命，可抵御怪物进攻。",
       "context": "Buildings · level capabilities and upgrade notes"
     },
     "data.buildenum.6.levellist.3.name": {
@@ -1195,13 +1210,18 @@
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.3.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.3.Describe"
     },
     "data.guidecfg.5.describe": {
-      "en": "<b>This shows <color=#106cff>how many enemies are coming and where they will appear</c>.</b>",
-      "zh": "<b>这里会显示<color=#106cff>敌人的数量和出现的位置</c></b>",
+      "en": "<b>You have silver left. A house earns more after each wave.</b>",
+      "zh": "<b>你还有银币。房屋会在每波结束后赚取更多银币。</b>",
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.4.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.4.Describe"
     },
+    "tutorial.buildHouse.action": {
+      "en": "Build a House",
+      "zh": "建造房屋",
+      "context": "Action in the opening Royal Advisor house tutorial."
+    },
     "data.guidecfg.6.describe": {
-      "en": "<b>Ready? <color=#106cff>Tap Fight</c> to start the wave!</b>",
-      "zh": "<b>准备好了就<color=#106cff>开始迎击吧</c>！</b>",
+      "en": "<b>Press the <color=#106cff>Start Battle</c> button to begin the first wave.</b>",
+      "zh": "<b>点击<color=#106cff>战斗</c>按钮，开始第一波战斗。</b>",
       "context": "assets\\configs\\GameJsonCfg.json:GuideCfg.5.Describe; assets\\KinghtFallConfig\\GameJsonCfg.json:GuideCfg.5.Describe"
     },
     "data.guidecfg.7.describe": {

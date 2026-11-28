@@ -30,11 +30,17 @@ function targetLive(actor) {
 function targetCurrent(entry) {
   return TowerCombat.targetCurrent(entry) && targetLive(entry.actor) && entry.actor.buildInfo === entry.buildInfo;
 }
-function position(actor, scope, polygon) {
-  return Navigation.attackPointOf(actor, scope.game, scope.side === "enemy" ? scope.origin : null, polygon);
+function position(actor, scope, selection, origin) {
+  if (!selection && scope.side === "enemy" && actor.getNavigationGateShapes) {
+    return Navigation.exposedWallPoint(actor, scope.game, origin || scope.origin);
+  }
+  return Navigation.attackPointOf(actor, scope.game, scope.side === "enemy" ? scope.origin : null,
+    selection && selection.polygon, selection && selection.wallPoint);
 }
-function capture(actor, scope, polygon) {
-  var entry = TowerCombat.capture(actor, position(actor, scope, polygon));
+function capture(actor, scope, selection, origin) {
+  var point = position(actor, scope, selection, origin);
+  if (!point) return null;
+  var entry = TowerCombat.capture(actor, point);
   entry.buildInfo = actor.buildInfo;
   return entry;
 }
@@ -63,10 +69,11 @@ function candidates(scope, exclude) {
 }
 function nearby(scope, center, range, exclude) {
   return candidates(scope, exclude).map(function (actor) {
-    var entry = capture(actor, scope);
+    var entry = capture(actor, scope, null, center);
+    if (!entry) return null;
     entry.distance = distance(center, entry.position);
     return entry;
-  }).filter(function (entry) { return entry.distance <= range; }).sort(function (a, b) { return a.distance - b.distance; });
+  }).filter(function (entry) { return entry && entry.distance <= range; }).sort(function (a, b) { return a.distance - b.distance; });
 }
 function effectsBattleCurrent(state) {
   return state.data.round === state.round && battleCurrent(state);
@@ -249,7 +256,10 @@ function deal(scope, entry, amount, impact, current) {
 function blast(scope, primary, center, current) {
   var radius = scope.rules.splashRadius;
   if (!(radius > 0)) return deal(scope, primary, scope.amount, center, current);
-  nearby(scope, center, radius).forEach(function (entry) {
+  var hitWall = primary.actor.getNavigationGateShapes && targetCurrent(primary);
+  var targets = nearby(scope, center, radius, hitWall ? new Set([primary.node]) : null);
+  if (hitWall) deal(scope, primary, scope.amount, center, current);
+  targets.forEach(function (entry) {
     var factor = TowerCombat.splashMultiplier(entry.distance, radius, scope.rules.splashFalloff);
     deal(scope, entry, scope.amount * factor, entry.position, current);
   });
@@ -311,7 +321,7 @@ function release(owner, side) {
   if (!current() || !targetLive(target) || !canTarget(scope, target)) return;
   scope.origin = Navigation.positionOf(scope.sourceNode, game);
   if (protectedByWall(scope, target)) return;
-  var primary = capture(target, scope, selected && selected.polygon);
+  var primary = capture(target, scope, selected);
   scope.range = side === "ally" ? owner.attackRange : owner.cfg.AttackRange;
   scope.amount = owner.getAttack();
   if (!current() || !targetCurrent(primary)) return;
@@ -341,7 +351,10 @@ function showContact(shot) {
 function pierce(shot, flight, budget, current) {
   var scope = flight.scope, start = flight.position, end = flight.end;
   var next = move(start, end, distance(start, end), budget);
-  var contact = TowerCombat.sniperContacts(candidates(scope), start, next, scope.game.ndMain, flight.hits, function (actor) { return position(actor, scope); });
+  var contact = TowerCombat.sniperContacts(candidates(scope), start, next, scope.game.ndMain, flight.hits, function (actor) {
+    return actor === flight.target.actor && targetCurrent(flight.target) ? flight.target.position :
+      position(actor, scope, null, start);
+  });
   contact.forEach(function (entry) { entry.buildInfo = entry.actor.buildInfo; });
   for (var index = 0; index < contact.length && current(); index++) {
     var entry = contact[index];

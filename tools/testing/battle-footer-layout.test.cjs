@@ -32,13 +32,15 @@ function fixture(height=1688,width=750,native=false){
  return{ui,control,root,world,button,coin,reward,rod,rally,follow,node,layout:()=>layout.call(ui),safe:()=>safe,
   safeConversions:()=>safeConversions,restWrites:()=>restWrites,setSafe:value=>{safe=value;}};
 }
-test('portrait and tall screens center Start and stack Follow above Rally beside the lower-left joystick',()=>{
+test('portrait and tall screens center the joystick above Start and stack Follow above Rally',()=>{
  for(const height of [1334,1688,1900]){const f=fixture(height);f.layout();const world=n=>n.convertToWorldSpaceAR(new Vec2(0,0));
   const start=world(f.button),rally=world(f.rally),follow=world(f.follow),rod=world(f.rod);assert(Math.abs(start.y-98.5-f.safe().y-18)<1e-6);assert(Math.abs(rally.x+64-732)<1e-6);assert(Math.abs(rally.y-82.484-f.safe().y-18)<1e-6);
   assert.equal(start.x,375);assert.equal(follow.x,rally.x);assert(Math.abs(follow.y-rally.y-164.484)<1e-6);
-  assert(Math.abs(rod.x-187.5)<1e-6);assert(rod.y<height*.45);assert(rod.y-121>=start.y+55.5+18-1e-6);
+  assert.equal(rod.x,start.x);assert(rod.y<height*.45);
+  const coinTop=f.coin.convertToWorldSpaceAR(new Vec2(0,(1-f.coin.anchorY)*f.coin.height));
+  assert(rod.y-121>=Math.max(start.y+55.5,coinTop.y)+18-1e-6);
   assert(start.x+180+18<=rally.x-64+1e-6,'The start/reward group stays clear of both commands');
-  assert(Math.abs(f.coin.y-f.button.y-59.774)<1e-3);f.button.active=false;f.layout();assert(Math.abs(world(f.rod).y-f.safe().y-301)<1e-6);
+  assert(Math.abs(f.coin.y-f.button.y-59.774)<1e-3);f.button.active=false;f.layout();assert.equal(world(f.rod).x,start.x);assert(Math.abs(world(f.rod).y-f.safe().y-301)<1e-6);
  }
 });
 
@@ -80,6 +82,7 @@ test('upcoming waves from both ends of a side keep their approach heights and cl
  const place=vm.runInContext('('+method('_placeUpcomingEnemyIndicators')+')',context);
  function marker(x,y){
   const ndItem=new Node('wave',f.root);Object.assign(ndItem,{width:88,height:104,anchorX:.5,anchorY:.5});
+  f.node('labName',0,0,88,30,ndItem);
   return {record:{ndItem},target:{x,y}};
  }
  const north=marker(-900,1600),south=marker(-900,-1800),farSouth=marker(-600,-2400),east=marker(1200,200);
@@ -106,7 +109,7 @@ test('late footer adjustment repositions the skill after command controls withou
 });
 test('safe-area changes and caption height changes relayout the footer without accumulating offsets',()=>{
  const f=fixture();f.layout();const y=f.button.y;f.layout();assert.equal(f.button.y,y);f.reward.height=120;f.layout();assert(f.button.y>y);const offset=f.coin.y-f.button.y;
- f.setSafe({x:10,y:100,width:710,height:1588});f.layout();const r=f.rally.convertToWorldSpaceAR(new Vec2(0,0));assert(Math.abs(r.x+64-702)<1e-6);assert(Math.abs(r.y-82.484-118)<1e-6);assert.equal(f.button.convertToWorldSpaceAR(new Vec2(0,0)).x,365);assert.equal(f.coin.y-f.button.y,offset);
+ f.setSafe({x:10,y:100,width:710,height:1588});f.layout();const r=f.rally.convertToWorldSpaceAR(new Vec2(0,0));assert(Math.abs(r.x+64-702)<1e-6);assert(Math.abs(r.y-82.484-118)<1e-6);assert.equal(f.button.convertToWorldSpaceAR(new Vec2(0,0)).x,365);assert.equal(f.rod.convertToWorldSpaceAR(Vec2.ZERO).x,365);assert.equal(f.coin.y-f.button.y,offset);
 });
 test('settled native footer skips safe-area conversion and relayout until the viewport or an ancestor moves',()=>{
  const f=fixture(1688,750,true);f.layout();assert.equal(f.safeConversions(),2);assert.equal(f.restWrites(),1);

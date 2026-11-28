@@ -77,19 +77,26 @@ test('Mystic checks the new beam target after a switch and obeys the live toggle
  h.rt.update(1);assert(!h.rt.skillCast);assert.equal(second.hp,0);
 });
 
-test('Mystic waits for a lethal hit after fighting-type defense is applied',()=>{
- const h=scene('mystic'),target=h.enemy(),overrides=h.load('GameToolsOverrides');
- const data=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
- data.data={...data.data,GameTools:{unitTypes:{guardian:{damageTaken:{mode:'less',percent:200}}}}};
+test('Mystic waits until the beam is lethal with its fighting-type counter bonus',()=>{
+ const h=scene('mystic'),target=h.enemy();
+ const manager=h.e.stubs.KinghtFallDataMgr.KinghtFallDataMgr.getInstance();
+ manager.data.GameTools={unitTypes:{
+  mystic:{counterType:'guardian'},guardian:{damageTaken:{mode:'less',percent:200}}
+ }};
+ manager.getParamsCfgById=id=>id===h.e.stubs.KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms?'1.25':undefined;
  target.cfg={ID:90002,FightingType:'guardian'};
- target.hp=target.hpMax=125;
- const onAttacked=target.onAttacked;
- target.onAttacked=function(damage,...args){return onAttacked.call(this,overrides.damageTaken(this,'enemy',damage),...args);};
+ target.navigationTeam='enemy';
+ target.hp=target.hpMax=360;
  h.load('ControlPreferences').autoSkillCast.set(true);
- h.rt.update(2);
- assert.equal(target.hp,25);assert.equal(h.rt.state.mysticCharges,2);assert(!h.rt.skillCast);
+ for(const hp of [235,110]){
+  h.rt.update(1);
+  assert.equal(target.hp,hp);assert(!h.rt.skillCast);
+ }
+ assert.equal(h.rt.state.mysticCharges,2);
  h.rt.update(1);
- near(h.rt.skillCast.at,3);assert.equal(h.rt.state.active.cast.charges,2);assert.equal(target.hp,25);
+ near(h.rt.skillCast.at,3);assert.equal(h.rt.skillCast.target.id,target);
+ assert.equal(h.rt.state.active.cast.charges,2);assert.equal(target.hp,110);
+ h.rt.update(.9);assert(target.hp<=0);
 });
 
 test('actual slow movement gives the same Momentum and Steady Aim outcome at 30, 60 and 120 FPS',()=>{

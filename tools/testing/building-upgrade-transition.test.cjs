@@ -84,6 +84,24 @@ test('all authored terminal building variants ignore held input and stale progre
   assert.ok(checked >= 12);
 });
 
+test('walls upgrade from level 1 to 2 to 3 in order, charging the destination price each time', () => {
+  const h = fixture(6, 1), build = h.build;
+  for (const [level, price] of [[2, 7], [3, 14]]) {
+    const before = h.d.coin;
+    assert.equal(build.getUpgradeChoices().join(','), String(level));
+    assert.equal(build.getSell(), price);
+    build.doUpgrade(build.standTimeMax, true);
+    assert.equal(build.getLevel(), level);
+    assert.equal(build.getSave().level, level);
+    assert.equal(h.d.coin, before - price);
+    assert.equal(h.state.picker, undefined);
+    h.flush();
+  }
+  assert.equal(h.state.upgrades, 2);
+  assert.equal(build.getUpgradeChoices().length, 0);
+  assert.equal(build.getSell(), -1);
+});
+
 test('a castle-gated tier does not accumulate upgrade progress or spend silver even if called with held input', () => {
   const h = fixture(2, 8), build = h.build;
   build.buildInfo.canUpgrade = false; build.buildInfo.standTime = .7;

@@ -1171,7 +1171,11 @@ var def_KinghtFallGameCtrl = function (t) {
     var announceSound = !!this._battleSounds;
     var n = this;
     var epoch = this._combatEpoch, data = this.gameData, main = this.ndMain, ui = $z1KinghtFallUIGame.default.instance;
+    var spawnEpoch = data._enemySpawnEpoch;
     var sourceNode = transformSource && transformSource.node, sourceGeneration = sourceNode && sourceNode._combatGeneration;
+    function waveCurrent() {
+      return n._combatEpoch === epoch && n.gameData === data && data._enemySpawnEpoch === spawnEpoch;
+    }
     function sourceCurrent() {
       return !transformSource || n.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight &&
         cc.isValid(transformSource, true) && !transformSource._isPooled && transformSource.bornInfo &&
@@ -1195,7 +1199,7 @@ var def_KinghtFallGameCtrl = function (t) {
       var spawnCfg = previewCfg || i, areaCollides = !!spawnCfg.BuildingCross;
       var o = function (i) {
         var generation = i._combatGeneration, actor = null;
-        function current() { return cc.isValid(n, true) && cc.isValid(n.node, true) && n._combatEpoch === epoch && n.gameData === data && n.ndMain === main && $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === n && cc.isValid(i, true) && i._combatGeneration === generation && (!preview || preview.current()) && sourceCurrent(); }
+        function current() { return cc.isValid(n, true) && cc.isValid(n.node, true) && waveCurrent() && n.ndMain === main && $z1KinghtFallUIGame.default.instance === ui && !ui.isclose && ui.ctrGame === n && cc.isValid(i, true) && i._combatGeneration === generation && (!preview || preview.current()) && sourceCurrent(); }
         function abandon() {
           if (!cc.isValid(i, true) || i._combatGeneration !== generation) return;
           if (preview) { i.active = false; i.destroy(); }
@@ -1264,15 +1268,14 @@ var def_KinghtFallGameCtrl = function (t) {
         var bundle = $z1KinghtFallConfig.KinghtFallBundelName.Enemy;
         var prepared = transformSource && this._stageAssets && this._stageAssets.assets[bundle + "/" + i.prefab + ":prefab"];
         if (prepared) return o($z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(a, prepared, 0));
-        var pendingData = this.gameData;
-        if (!transformSource) pendingData.pendingEnemySpawns = (pendingData.pendingEnemySpawns || 0) + 1;
+        if (!transformSource) data.pendingEnemySpawns = (data.pendingEnemySpawns || 0) + 1;
         this.loadPrefab(bundle, i.prefab, function (t) {
-          if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || n._combatEpoch !== epoch || !sourceCurrent()) return;
+          if (!cc.isValid(n, true) || !cc.isValid(n.node, true) || !waveCurrent() || !sourceCurrent()) return;
           try {
             // Grow on demand; warming unused rigs stalls the first live spawn.
             r = $z1PoolMgr.PoolMgr.getInstance().getNodeFromPrefab(a, t, 0);
             o(r);
-          } finally { if (!transformSource) pendingData.pendingEnemySpawns--; }
+          } finally { if (!transformSource && waveCurrent()) data.pendingEnemySpawns--; }
         });
       }
     }
@@ -1635,6 +1638,8 @@ var def_KinghtFallGameCtrl = function (t) {
       }
       var s = record.getTaskInfo(stage);
       if (s) this.gameData.taskInfo = this.gameData.createTaskInfo(s);
+      var task = this.gameData.taskInfo;
+      if (task.stage === 0 && this.gameData.structureTaskReady(task.index)) task.stage = 1;
       return true;
     }
     return false;

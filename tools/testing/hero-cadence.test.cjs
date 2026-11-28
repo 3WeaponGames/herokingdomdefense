@@ -42,7 +42,8 @@ test('custom timings and whole-unit speed take runtime precedence while absent t
 
 test('account credits affect cooldown before timing while gameplay keeps its full matching style talents',()=>{
  const data={personLevel:[1,1,10,10,1,1],heroWeapon:{selected:'vanguard',levels:{skirmisher:{3:10,4:10},vanguard:{3:1,4:1}}},talentInfo:Config.TalentLevelCfg.filter(row=>row.HeroStyle==='vanguard').map(row=>({id:row.ID,isLock:true}))},before=JSON.stringify(data);
- const value=Loadout.calculate(Config,data,undefined,{unitAnimationSpeed:.5}),actual=Loadout.snapshot(Config,data, {unitAnimationSpeed:.5});close(value.attackRate,1.01);close(value.damage,20.2);close(value.effectiveAttackRate,1/(1/1.01+.1667/.5));close(actual.attackRate,1.05);close(actual.damage,21);
+ const damage = Config.EquipCfg.find(row => row.id === 3).levelInfo[9].Parameters;
+ const value=Loadout.calculate(Config,data,undefined,{unitAnimationSpeed:.5}),actual=Loadout.snapshot(Config,data, {unitAnimationSpeed:.5});close(value.attackRate,1.01);close(value.damage,damage*1.01);close(value.effectiveAttackRate,1/(1/1.01+.1667/.5));close(actual.attackRate,1.05);close(actual.damage,damage*1.05);
  const run=simulate(Config.GameTools,.5,1.05);close((run.releases.at(-1)-run.releases[0])/(run.releases.length-1),1/actual.effectiveAttackRate,.002);assert.equal(JSON.stringify(data),before);
 });
 

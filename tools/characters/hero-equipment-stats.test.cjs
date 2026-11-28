@@ -15,9 +15,9 @@ test('secondary levels affect only the equipped style and never supply flat weap
  }
  const old={EquipCfg:config.EquipCfg};assert.equal(Stats.enabled(old),false);assert.deepEqual(Stats.raw(old,'fighter',{1:100,2:10,3:20,4:300,5:1,6:221},50),{health:100,regen:10,damage:20,range:300,attackRate:1,move:221});
 });
-test('migration retains earned main progression and previous damage for each existing style without granting unstarted styles or repeating',()=>{
+test('migration preserves earned main progression and exposes the best level to every style',()=>{
  const data={equipmentProgressionVersion:1,personLevel:[10,20,50,1,6,8],goldNum:4321,heroWeapon:{selected:'fighter',levels:{skirmisher:{3:50,4:1,keep:7},fighter:{3:1,4:25}}},future:{keep:true}};
- Stats.migrate(data,config);assert.equal(data.personLevel[3],50);assert.equal(data.heroWeapon.levels.skirmisher[4],50);assert.equal(data.heroWeapon.levels.skirmisher.keep,7);assert.equal(data.heroWeapon.levels.fighter[4],50);assert.equal(Weapons.level(data,4,'mystic'),1);assert.equal(data.heroWeapon.levels.fighter[3],1);assert.equal(data.goldNum,4321);assert.deepEqual(data.future,{keep:true});
+ Stats.migrate(data,config);assert.equal(data.personLevel[3],50);assert.equal(data.heroWeapon.levels.skirmisher[4],50);assert.equal(data.heroWeapon.levels.skirmisher.keep,7);assert.equal(data.heroWeapon.levels.fighter[4],50);assert.equal(Weapons.level(data,4),50);assert.equal(data.heroWeapon.levels.fighter[3],1);assert.equal(data.goldNum,4321);assert.deepEqual(data.future,{keep:true});
  const before=structuredClone(data);Stats.migrate(data,config);assert.deepEqual(data,before);
  const early={personLevel:[1,1,1,20,1,1]};Stats.migrate(early,config);assert.equal(early.personLevel[3],50);
  const inactive={personLevel:[1,1,40,25,1,1]};Stats.migrate(inactive,{});assert.equal(inactive.personLevel[3],25);assert.equal(inactive.heroEquipmentVersion,undefined);

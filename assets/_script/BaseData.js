@@ -133,6 +133,8 @@ var exp_BaseData = function () {
       this.recoveryErrors = this.recoveryErrors || [];
       this.recoveryErrors.push({ source: source, raw: raw, backupKey: backupKey });
       try {
+        var cache = $z1CacheUtils.CacheUtils;
+        if (cache.localProgressKey) backupKey = cache.localProgressKey(backupKey);
         while (localStorage.getItem(backupKey) !== null) backupKey += ".1";
         localStorage.setItem(backupKey, raw);
         if (localStorage.getItem(backupKey) !== raw) throw new Error("Recovery backup was not persisted");

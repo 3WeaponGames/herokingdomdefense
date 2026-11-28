@@ -343,6 +343,26 @@ function polygonIntervals(start,end,radius,vertices) {
   intervals.length=count;
   return intervals;
 }
+NavigationGrid.prototype.openEdge = function (start, end) {
+  var dx = end.x - start.x, dy = end.y - start.y, length = Math.hypot(dx, dy);
+  var bounds = this.bounds, span = [0, 1];
+  if (!length || !clipAxis(span, start.x, dx, bounds.minX, bounds.maxX) ||
+      !clipAxis(span, start.y, dy, bounds.minY, bounds.maxY)) return [];
+  var ids = this._query(Math.min(start.x, end.x), Math.min(start.y, end.y), Math.max(start.x, end.x), Math.max(start.y, end.y));
+  var blocked = [];
+  for (var i = 0; i < ids.length; i++) {
+    blocked = blocked.concat(polygonIntervals(start, end, 0, this.polygons[ids[i]].vertices));
+  }
+  blocked.sort(function (a, b) { return a[0] - b[0]; });
+  var padding = .05 / length, open = [], cursor = span[0];
+  for (var j = 0; j < blocked.length && cursor <= span[1]; j++) {
+    var stop = Math.min(span[1], blocked[j][0] - padding);
+    if (stop >= cursor) open.push([cursor, stop]);
+    cursor = Math.max(cursor, blocked[j][1] + padding);
+  }
+  if (cursor <= span[1]) open.push([cursor, span[1]]);
+  return open;
+};
 // One-way terrain permits a single exit from an existing body overlap.
 function exitPolygonClear(start,end,radius,vertices,outwardOnly) {
   if(outwardOnly) {

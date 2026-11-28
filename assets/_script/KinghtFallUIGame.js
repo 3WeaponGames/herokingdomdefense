@@ -72,16 +72,33 @@ function placeEnemyIndicator(target, footprint, bounds, obstacles, gap) {
   }); });
   return best;
 }
-function enemyIndicatorBounds(node, ui, ignored) {
+function enemyIndicatorSpriteRect(node) {
+  var sprite = node.getComponent(cc.Sprite), frame = sprite && sprite.spriteFrame;
+  if (!sprite || sprite.trim !== false || !frame || !frame.getRect || !frame.getOriginalSize || !frame.getOffset) return null;
+  var rect = frame.getRect(), original = frame.getOriginalSize(), offset = frame.getOffset();
+  if (!original.width || !original.height) return null;
+  var sx = node.width / original.width, sy = node.height / original.height;
+  return {
+    x: -node.width * node.anchorX + (original.width / 2 + offset.x - rect.width / 2) * sx,
+    y: -node.height * node.anchorY + (original.height / 2 + offset.y - rect.height / 2) * sy,
+    width: rect.width * sx, height: rect.height * sy
+  };
+}
+function enemyIndicatorBounds(node, ui, ignored, compact) {
   var rect = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
+  var painted = compact && enemyIndicatorSpriteRect(node);
+  var caption = compact && node.getChildByName("labName"), count = compact && node.getChildByName("labNum");
   function include(point) {
     rect.minX = Math.min(rect.minX, point.x); rect.maxX = Math.max(rect.maxX, point.x);
     rect.minY = Math.min(rect.minY, point.y); rect.maxY = Math.max(rect.maxY, point.y);
   }
   function visit(current) {
-    if (!current || current === ignored) return;
-    var left = -current.anchorX * current.width, bottom = -current.anchorY * current.height;
-    [[left, bottom], [left + current.width, bottom], [left, bottom + current.height], [left + current.width, bottom + current.height]].forEach(function (point) {
+    if (!current || current === ignored || current === caption || current === count) return;
+    var visual = current === node && painted;
+    var left = visual ? visual.x : -current.anchorX * current.width;
+    var bottom = visual ? visual.y : -current.anchorY * current.height;
+    var right = left + (visual ? visual.width : current.width), top = bottom + (visual ? visual.height : current.height);
+    [[left, bottom], [right, bottom], [left, top], [right, top]].forEach(function (point) {
       include(ui.convertToNodeSpaceAR(current.convertToWorldSpaceAR(cc.v2(point[0], point[1]))));
     });
     current.children.forEach(function (child) { if (child.active) visit(child); });
@@ -89,27 +106,19 @@ function enemyIndicatorBounds(node, ui, ignored) {
   visit(node);
   return rect;
 }
-function enemyIndicatorFootprint(node, ui) {
+function enemyIndicatorFootprint(node, ui, compact) {
   var arrow = node.getChildByName("ndArr");
   var origin = ui.convertToNodeSpaceAR(node.convertToWorldSpaceAR(cc.v2(0, 0)));
-  var footprint = enemyIndicatorBounds(node, ui, arrow);
-  if (arrow) {
+  var footprint = enemyIndicatorBounds(node, ui, arrow, compact);
+  if (arrow && !compact) {
     // Reserve every arrow rotation, including when the arrow was hidden last frame.
     var center = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(0, 0)));
     var ax = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(1, 0)));
     var ay = ui.convertToNodeSpaceAR(arrow.convertToWorldSpaceAR(cc.v2(0, 1)));
     var sx = Math.hypot(ax.x - center.x, ax.y - center.y), sy = Math.hypot(ay.x - center.x, ay.y - center.y);
     var left = -arrow.width * arrow.anchorX, bottom = -arrow.height * arrow.anchorY, width = arrow.width, height = arrow.height;
-    var sprite = arrow.getComponent(cc.Sprite), frame = sprite && sprite.spriteFrame;
-    if (sprite && sprite.trim === false && frame && frame.getRect && frame.getOriginalSize && frame.getOffset) {
-      var rect = frame.getRect(), original = frame.getOriginalSize(), offset = frame.getOffset();
-      if (original.width && original.height) {
-        var px = width / original.width, py = height / original.height;
-        left += (original.width / 2 + offset.x - rect.width / 2) * px;
-        bottom += (original.height / 2 + offset.y - rect.height / 2) * py;
-        width = rect.width * px; height = rect.height * py;
-      }
-    }
+    var painted = enemyIndicatorSpriteRect(arrow);
+    if (painted) { left = painted.x; bottom = painted.y; width = painted.width; height = painted.height; }
     // The arrow texture has large transparent corners. Reserve its painted extent.
     var radius = Math.hypot(Math.max(Math.abs(left), Math.abs(left + width)) * sx, Math.max(Math.abs(bottom), Math.abs(bottom + height)) * sy);
     footprint.minX = Math.min(footprint.minX, center.x - radius); footprint.maxX = Math.max(footprint.maxX, center.x + radius);
@@ -360,19 +369,7 @@ var def_KinghtFallUIGame = function (t) {
     var t = this;
     this.ctrUI.setMoveFunc(this.moveFun.bind(this));
     this.btnStartFight.on(cc.Node.EventType.TOUCH_END, function () {
-      t.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
-      $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide8);
-      if (t.canStart && (t.startRoundGame(), !$z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGuideTips(2))) {
-        for (var e in t.enemyIconInfo) {
-          if (Object.prototype.hasOwnProperty.call(t.enemyIconInfo, e)) {
-            var i = t.enemyIconInfo[e];
-            if (i.tagNode && i.ndItem && i.ndItem.active) {
-              n.instance.ctrUI.setGuide(i.tagNode);
-              break;
-            }
-          }
-        }
-      }
+      t._pressStartBattle();
     });
     this.btnAddCoin.on(cc.Node.EventType.TOUCH_END, function () {
       var game = t.ctrGame, data = game.gameData, amount = data.videoCoin;
@@ -543,10 +540,39 @@ var def_KinghtFallUIGame = function (t) {
     return !!this.ctrGame && (this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Fight ||
       this.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Transition);
   };
+  _ctor.prototype.ownsPausedWaveTest = function (dialog) {
+    return !this._endless && TestMode.getInstance().isAvailable() && dialog && dialog === this._battleDialog &&
+      dialog.kind === "wave-test" && dialog.isCurrent() && dialog.paused &&
+      this._pauseOwners && this._pauseOwners.has(dialog) && this.canBreak && !this._restartPending;
+  };
+  _ctor.prototype.finishPausedTestVictory = function (dialog, finish) {
+    // The result dialog replaces F6 while the battle is still paused.
+    dialog.paused = false;
+    try { finish(); }
+    finally {
+      if (this._battleDialog === dialog) dialog.paused = true;
+      else this._pauseOwners.delete(dialog);
+    }
+  };
+  _ctor.prototype.completePausedWaveForTest = function (dialog) {
+    if (!this.ownsPausedWaveTest(dialog) || !this.isWaveInProgress()) return false;
+    var game = this.ctrGame, data = game.gameData;
+    if (game._restartRetired || game._battleSettlement || data._roundCompleted) return false;
+    var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
+    require("RewardTestProgress").start(player);
+    if (!player.getGameData().readyForNewBattle() || !dialog.isCurrent()) return false;
+
+    if (data.round === data.levelCfg.WaveCfg.length) {
+      this.finishPausedTestVictory(dialog, function () { data.completeWaveForTest(); });
+    } else {
+      data.completeWaveForTest();
+    }
+    // Let the normal update retry any save that delayed the transition.
+    if (this._battleDialog === dialog) this._waveTestPanel.close();
+    return true;
+  };
   _ctor.prototype.clearPausedStageForTest = function (dialog, stars) {
-    if (this._endless || !TestMode.getInstance().isAvailable() || !dialog || dialog !== this._battleDialog ||
-        dialog.kind !== "wave-test" || !dialog.isCurrent() || !dialog.paused ||
-        !this._pauseOwners || !this._pauseOwners.has(dialog) || !this.canBreak || this._restartPending) return false;
+    if (!this.ownsPausedWaveTest(dialog)) return false;
     var game = this.ctrGame, data = game.gameData;
     var phases = $z1KinghtFallModle.KinghtFallGameStage;
     if (game._restartRetired || game._battleSettlement ||
@@ -556,13 +582,8 @@ var def_KinghtFallUIGame = function (t) {
     var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
     require("RewardTestProgress").start(player);
     if (!player.getGameData().readyForNewBattle() || !dialog.isCurrent()) return false;
-    // The result dialog replaces F6 while the battle is still paused.
-    dialog.paused = false;
-    try { this.onGameOver(true, mask); }
-    finally {
-      if (this._battleDialog === dialog) dialog.paused = true;
-      else this._pauseOwners.delete(dialog);
-    }
+    var ui = this;
+    this.finishPausedTestVictory(dialog, function () { ui.onGameOver(true, mask); });
     return this._battleDialog !== dialog;
   };
   _ctor.prototype.restartPausedBattle = function (dialog, mode, waveTest) {
@@ -741,7 +762,8 @@ var def_KinghtFallUIGame = function (t) {
     this.ctrGame.onChangeSpeed();
   };
   _ctor.prototype.initBtnView = function () {
-    this.btnStartFight.active = this.ctrGame.gameData.baseBuild.getLevel() >= 1;
+    var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+    this.btnStartFight.active = this.ctrGame.gameData.baseBuild.getLevel() >= 1 && !require("TutorialFlow").openingHouse(this, guide);
     if (1 == this.ctrGame.gameData.levelCfg.Level && this.ctrGame.gameData.round <= 3) {
       var t = true;
       var e = this.ctrGame.gameData.getBulidList();
@@ -893,6 +915,20 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype.moveFun = function (t) {
     this.ctrGame.gameStatus != $z1KinghtFallModle.KinghtFallGameStage.End && this.ctrGame.moveFun(t);
   };
+  _ctor.prototype._pressStartBattle = function () {
+    if (this.isclose || !this.canStart || this.ctrGame.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare) return;
+    var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
+    if (require("TutorialFlow").openingHouse(this, guide)) return;
+    this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
+    $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide8);
+    this.startRoundGame();
+    if (guide.getGuideTips(2)) return;
+    for (var id in this.enemyIconInfo) {
+      if (!Object.prototype.hasOwnProperty.call(this.enemyIconInfo, id)) continue;
+      var enemy = this.enemyIconInfo[id];
+      if (enemy.tagNode && enemy.ndItem && enemy.ndItem.active) { this.ctrUI.setGuide(enemy.tagNode); break; }
+    }
+  };
   _ctor.prototype.startRoundGame = function () {
     if (this._waveTestPanel) this._waveTestPanel.close();
     if (this._unitTestPanel) this._unitTestPanel.close();
@@ -903,7 +939,8 @@ var def_KinghtFallUIGame = function (t) {
     var generation = this._resourceGeneration, epoch = game._combatEpoch, round = data.round;
     var phases = $z1KinghtFallModle.KinghtFallGameStage;
     function ownsDusk() {
-      return !t.isclose && cc.isValid(t, true) && t._resourceGeneration === generation &&
+      // Wave completion can start its own transition before this tween ends.
+      return !t.isclose && t.canBreak && cc.isValid(t, true) && t._resourceGeneration === generation &&
         t.ctrGame === game && cc.isValid(game, true) && game.gameData === data &&
         game._combatEpoch === epoch && data.round === round && game.gameStatus === phases.Transition;
     }
@@ -1062,6 +1099,7 @@ var def_KinghtFallUIGame = function (t) {
       : $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle02), data.round + "/" + data.levelCfg.WaveCfg.length);
     var task = this.ctrGame.gameData.taskInfo, current = task.index < task.list.length;
     if (current) {
+      if (task.stage === 0 && data.structureTaskReady(task.index)) task.stage = 1;
       var id = task.list[task.index];
       var description = (typeof id === "string" && Array.isArray(task.targets) &&
         require("BattleTaskObjectives").descriptionToken(id, task.targets[task.index], task.progress)) ||
@@ -1159,20 +1197,17 @@ var def_KinghtFallUIGame = function (t) {
     if (record.groupToggle) return record.groupToggle;
     var self = this, node = new cc.Node("UpcomingWaveGroupToggle");
     node.active = false;
-    node.setContentSize(86, 58);
+    node.setContentSize(70, 50);
     node.setParent(this.ctrUI.node);
-    node.setSiblingIndex(0);
-    var graphics = node.addComponent(cc.Graphics);
-    graphics.fillColor = cc.color(94, 28, 32, 244);
-    graphics.strokeColor = cc.color(234, 99, 88);
-    graphics.lineWidth = 2;
-    graphics.roundRect(-42, -28, 84, 56, 14); graphics.fill(); graphics.stroke();
+    node.zIndex = 1;
     var caption = new cc.Node("Count");
     caption.setParent(node); caption.setContentSize(node.width, node.height);
     var label = caption.addComponent(cc.Label);
-    label.fontSize = 31; label.lineHeight = 36;
+    label.fontSize = 26; label.lineHeight = 32;
     label.enableBold = true; label.enableWrapText = false; label.overflow = cc.Label.Overflow.CLAMP;
     label.horizontalAlign = cc.Label.HorizontalAlign.CENTER; label.verticalAlign = cc.Label.VerticalAlign.CENTER;
+    var outline = caption.addComponent(cc.LabelOutline);
+    outline.color = cc.Color.BLACK; outline.width = 2;
     var toggle = record.groupToggle = { node: node, label: label, visible: false, index: null };
     node.addComponent(cc.BlockInputEvents);
     node.on(cc.Node.EventType.TOUCH_END, function (event) {
@@ -1188,31 +1223,38 @@ var def_KinghtFallUIGame = function (t) {
     return toggle;
   };
   _ctor.prototype._placeUpcomingGroup = function (group, side, placementTarget, viewport, obstacles) {
-    var fromLeft = side === "left", direction = fromLeft ? 1 : -1, gap = 6;
+    var fromLeft = side === "left", direction = fromLeft ? 1 : -1;
+    var portraitGap = 10, toggleGap = 4;
     var expanded = this._expandedUpcomingGroup === group.index, head = group.members[0];
     var toggle = this._upcomingGroupToggle(head.record), count = group.members.length - 1;
     var ui = this.ctrUI.node, portraits = expanded ? group.members : [head];
     var width = 0;
     var shapes = portraits.map(function (marker, index) {
-      marker.record.ndItem.getChildByName("labName").active = index === 0;
-      var box = enemyIndicatorFootprint(marker.record.ndItem, ui), scale = marker.record._upcomingScale || 1;
-      box.minX /= scale; box.maxX /= scale; box.minY /= scale; box.maxY /= scale;
-      width += box.maxX - box.minX;
-      return box;
+      var node = marker.record.ndItem, scale = marker.record._upcomingScale || 1;
+      node.getChildByName("labName").active = index === 0;
+      var outer = enemyIndicatorFootprint(node, ui), body = enemyIndicatorFootprint(node, ui, true);
+      outer.minX /= scale; outer.maxX /= scale; outer.minY /= scale; outer.maxY /= scale;
+      body.minX /= scale; body.maxX /= scale;
+      width += body.maxX - body.minX;
+      return { body: body, outer: outer };
     });
-    // Fit all portraits on one row. Keep the collapse button at full size.
-    var available = viewport.maxX - viewport.minX - 32 - toggle.node.width - gap * portraits.length;
+    // Pack adjacent portraits by their painted bodies and reserve arrow room at the ends.
+    var first = shapes[0], last = shapes[shapes.length - 1];
+    width += fromLeft ? first.body.minX - first.outer.minX + last.outer.maxX - last.body.maxX
+      : first.outer.maxX - first.body.maxX + last.body.minX - last.outer.minX;
+    var available = viewport.maxX - viewport.minX - 32 - toggle.node.width - toggleGap - portraitGap * (portraits.length - 1);
     var scale = Math.min(1, Math.max(1, available) / width);
-    var cursor = scale * (fromLeft ? shapes[0].minX : shapes[0].maxX);
+    var cursor = scale * (fromLeft ? first.body.minX : first.body.maxX);
     var halfToggleWidth = toggle.node.width / 2, halfToggleHeight = toggle.node.height / 2;
     var footprint = { minX: Infinity, maxX: -Infinity, minY: -halfToggleHeight, maxY: halfToggleHeight };
-    var offsets = shapes.map(function (box) {
-      var x = cursor - scale * (fromLeft ? box.minX : box.maxX);
-      footprint.minX = Math.min(footprint.minX, x + box.minX * scale);
-      footprint.maxX = Math.max(footprint.maxX, x + box.maxX * scale);
-      footprint.minY = Math.min(footprint.minY, box.minY * scale);
-      footprint.maxY = Math.max(footprint.maxY, box.maxY * scale);
-      cursor += direction * ((box.maxX - box.minX) * scale + gap);
+    var offsets = shapes.map(function (shape, index) {
+      var body = shape.body, outer = shape.outer;
+      var x = cursor - scale * (fromLeft ? body.minX : body.maxX);
+      footprint.minX = Math.min(footprint.minX, x + outer.minX * scale);
+      footprint.maxX = Math.max(footprint.maxX, x + outer.maxX * scale);
+      footprint.minY = Math.min(footprint.minY, outer.minY * scale);
+      footprint.maxY = Math.max(footprint.maxY, outer.maxY * scale);
+      cursor += direction * ((body.maxX - body.minX) * scale + (index + 1 === shapes.length ? toggleGap : portraitGap));
       return x;
     });
     var toggleX = cursor + direction * halfToggleWidth;
@@ -1489,15 +1531,6 @@ var def_KinghtFallUIGame = function (t) {
     var e = this;
     if (t == $z1Config.UIID.UIGuide) {
       this.sendEvent($z1KinghtFallConfig.KinghtFallEventName.PlayVideoSucc, false);
-      var n = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getGroupId();
-      var i = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData().getStepId();
-      var a = [2];
-      var o = [2];
-      for (var r = 0; r < a.length; r++) {
-        if (n == a[r] && i == o[r]) {
-          return;
-        }
-      }
       this.scheduleOnce(function () {
         e.startGuide();
       });
@@ -1514,6 +1547,7 @@ var def_KinghtFallUIGame = function (t) {
     var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
     var group = guide.getGroupId(), step = guide.getStepId(), rows = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(group);
     if (group === 2 && rows[step]) {
+      if (this.ctrGame.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare) return;
       var main = this.ctrGame.gameData.baseBuild, level = main && main.getLevel();
       // Edited maps and resumed checkpoints may already have their main hall.
       // Never require a later upgrade merely to finish the construction lesson.
@@ -1522,7 +1556,15 @@ var def_KinghtFallUIGame = function (t) {
         return;
       }
       if (step >= 2 && !(level >= 1)) return;
-      var cfg = flow.config(rows[step]), ui = this;
+      var cfg = flow.config(rows[step]), ui = this, house = step >= 2 && flow.openingHouse(this, guide);
+      function pauseForGuide(pause) {
+        ui.isPauset = pause || !!ui._legacyGamePause || !!(ui._pauseOwners && ui._pauseOwners.size);
+        if (ui.ctrGame.setAudioPaused) ui.ctrGame.setAudioPaused(ui.isPauset);
+      }
+      cfg.onCancel = function () {
+        pauseForGuide(false);
+        if (flow.visible(house)) ui.ctrUI.setGuide(house);
+      };
       switch (step) {
         case 0:
           cfg.distNode = this.ndCoin; cfg.addSize = new cc.Size(40, 0); cfg.lightType = 1;
@@ -1534,19 +1576,27 @@ var def_KinghtFallUIGame = function (t) {
           cfg.callBack = function () { if (flow.active(ui)) ui.ctrUI.setGuide(field); };
           break;
         case 2:
-          for (var id in this.enemyIconInfo) {
-            if (Object.prototype.hasOwnProperty.call(this.enemyIconInfo, id) && flow.visible(this.enemyIconInfo[id].ndItem)) { cfg.distNode = this.enemyIconInfo[id].ndItem; break; }
-          }
-          // Empty authored waves still have a readable wave heading.
-          if (!cfg.distNode) cfg.distNode = this.ndLevelInfo;
+          if (!house) { if (flow.state(guide, group, step + 1)) this.startGuide(); return; }
+          cfg.distNode = house; cfg.distCamera = this.ctrGame.camera;
+          cfg.hideMask = true;
+          cfg.actionText = "tutorial.buildHouse.action";
+          cfg.callBack = function () { if (flow.active(ui) && flow.visible(house)) ui.ctrUI.setGuide(house); };
           break;
         case 3:
+          if (house) {
+            pauseForGuide(false);
+            this.ctrUI.setGuide(house);
+            return;
+          }
+          this.ctrUI.setGuide(null);
+          this.btnStartFight.active = true;
           cfg.lightType = 1; cfg.distNode = this.btnStartFight;
+          cfg.isWeek = false; cfg.hideMask = false; cfg.showHand = 1;
+          cfg.callBack = function () { if (flow.active(ui)) ui._pressStartBattle(); };
           break;
       }
       if (flow.present(this, guide, group, step, rows, cfg)) {
-        this.isPauset = step !== 1 && step !== 3;
-        if (this.ctrGame.setAudioPaused) this.ctrGame.setAudioPaused(this.isPauset);
+        pauseForGuide(step === 0 || step === 2);
         var track = ["guide4", "guide5", "guide7"][step];
         if (track) $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId[track]);
       }
@@ -1554,7 +1604,7 @@ var def_KinghtFallUIGame = function (t) {
     }
     // Building help waits for the current battle decision instead of covering
     // the perk/tutorial dialog or being discarded by a competing UI request.
-    if (this._battleDialog) return;
+    if (this._battleDialog || this.ctrGame.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Prepare) return;
     for (var id of this._pendingGuideTips) {
       if (guide.getGuideTips(id)) { this._pendingGuideTips.delete(id); continue; }
       var row = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getGuideCfgById(id)[0];
@@ -1578,7 +1628,7 @@ var def_KinghtFallUIGame = function (t) {
     }
   };
   _ctor.prototype.getTask = function (silent) {
-    var info = this.ctrGame.gameData.taskInfo;
+    var data = this.ctrGame.gameData, info = data.taskInfo;
     if (info.index < info.list.length && 1 == info.stage) {
       var t = info.reward[info.index];
       var multiplier = info.rewardMultiplier === undefined ? this.ctrGame.gameData.levelCfg.InGameCoefficient : info.rewardMultiplier;
@@ -1586,7 +1636,8 @@ var def_KinghtFallUIGame = function (t) {
       var checkpoint = this.ctrGame.getCheckpoint();
       var taskIndex = checkpoint.taskList.index;
       checkpoint.taskList.index++;
-      checkpoint.taskList.stage = 0;
+      var nextStage = data.structureTaskReady(checkpoint.taskList.index) ? 1 : 0;
+      checkpoint.taskList.stage = nextStage;
       var counted = Array.isArray(info.targets);
       if (counted) {
         checkpoint.taskList.progress = 0;
@@ -1601,7 +1652,7 @@ var def_KinghtFallUIGame = function (t) {
         if (record.setCheckpoint(checkpoint) === false) return false;
         this.ctrGame.gameData.coin = checkpoint.coin;
       } else {
-        if (counted && typeof info.list[taskIndex] === "string") {
+        if (counted && typeof info.list[taskIndex] === "string" || data.structureTaskReady(taskIndex)) {
           var saved = record.getTaskInfo(checkpoint.levelNum);
           // A task may become ready while an earlier checkpoint write is
           // blocked. Persist readiness before starting its reward journal.
@@ -1616,10 +1667,10 @@ var def_KinghtFallUIGame = function (t) {
         var committedTask = record.getTaskInfo(checkpoint.levelNum);
         // A durable journal may still be retrying individual target writes. Its
         // installed checkpoint is authoritative and must not leave this task claimable.
-        if (!granted && !(committedTask && committedTask.index === taskIndex + 1 && committedTask.stage === 0)) return false;
+        if (!granted && !(committedTask && committedTask.index === taskIndex + 1 && committedTask.stage === nextStage)) return false;
       }
       info.index = checkpoint.taskList.index;
-      info.stage = 0;
+      info.stage = nextStage;
       if (counted) {
         info.progress = 0;
         delete info.waveIntact;

@@ -1,6 +1,5 @@
 "use strict";
-// Read-only equipped stats and a separate account CP benchmark. Tracks 3/4 belong to
-// exactly one style; armor, regeneration, attack rate and mount remain shared.
+// Equipped stats and account CP both use shared equipment levels.
 var Weapons = require("./HeroWeapons"), Upgrades = require("./HeroUpgradeEffects"), Cadence = require("./CombatCadence"), Equipment = require("./HeroEquipmentStats");
 function finite(value) { return typeof value === "number" && isFinite(value); }
 function rawData(user) { return user && user.data || user || {}; }
@@ -10,11 +9,9 @@ function selected(user) {
 }
 function level(user, slot, style) {
   var data = rawData(user);
-  if (data.personLevel || data.heroWeapon) return Weapons.level(data, slot, style);
+  if (data.personLevel || data.heroWeapon) return Weapons.level(data, slot);
   if ((slot === 3 || slot === 4) && user && user.getHeroWeaponLevel) return user.getHeroWeaponLevel(style, slot);
-  // Old read-only callers may expose accessors only. Never borrow a bow track
-  // for another weapon in that fallback path.
-  return user && user.getPersonLevel && (style === "skirmisher" || slot !== 3 && slot !== 4) ? user.getPersonLevel(slot) : 1;
+  return user && user.getPersonLevel ? user.getPersonLevel(slot) : 1;
 }
 function applyStyle(stats, user, config, upgrades) {
   var style = selected(user), resolved = upgrades || Upgrades.resolve(config, user, style.id), bonus = { health: resolved.stats.health, damage: resolved.stats.damage, speed: resolved.stats.attackRate };
@@ -55,6 +52,8 @@ function calculate(config, user, assumptions, timingContext) {
   var Core = require("./CombatPower"), loadout = readLoadout(config, user, timingContext, true), effects = Upgrades.evaluate(loadout, assumptions), reason = loadout.reason || effects.reason;
   var combat = Core.calculate({ health: reason ? 0 : loadout.health, directDps: effects.directDps, healingHps: effects.healingHps, splashDps: effects.splashDps, reflectionDps: effects.reflectionDps, preventedDps: effects.preventedDps });
   if (reason) combat.reason = reason;
-  return Object.assign({}, loadout, effects, combat, { heroHealingUtilization: effects.assumptions && effects.assumptions.heroHealingUtilization });
+  // Round separately so a quarter point of regeneration always grants one Gear point.
+  var displayCp = combat.reason ? null : Math.round(combat.cp * 10) + Math.round(loadout.regen * 4);
+  return Object.assign({}, loadout, effects, combat, { displayCp: Number.isSafeInteger(displayCp) ? displayCp : null, heroHealingUtilization: effects.assumptions && effects.assumptions.heroHealingUtilization });
 }
 exports.selected = selected; exports.applyStyle = applyStyle; exports.snapshot = snapshot; exports.calculate = calculate;

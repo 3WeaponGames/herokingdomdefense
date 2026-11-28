@@ -595,17 +595,6 @@ exports.clips = {
     "referenceGain": 0.5,
     "loopCrossfade": 0
   },
-  "42f18291-820c-4151-ae3f-d467010eb48b": {
-    "bundle": "KinghtFallAudio",
-    "path": "sfx/healing-receive",
-    "gain": 1.538261,
-    "previewGain": 0.76913,
-    "integrated": -21.72,
-    "peak": -3.4,
-    "target": -24,
-    "referenceGain": 0.5,
-    "loopCrossfade": 0
-  },
   "3e8e424e-a758-40ed-82fe-4e4197a49c5d": {
     "bundle": "KinghtFallAudio",
     "path": "sfx/hooves-autumn-loop",

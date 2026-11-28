@@ -705,12 +705,24 @@ test('Bruiser basic contacts reject a custom layered impact but active attacks r
  }
 });
 
-test('Bruiser healing from every caller stays silent, while other heroes retain their healing sound',()=>{
+test('the retired healing sound cannot play on any unit and the desert boss still plays a normal impact',()=>{
+ const f=fixture('desert');f.start();
+ const cfg=require('../../assets/KinghtFallConfig/GameJsonCfg.json').SoldierCfg[91164];
+ const regent=f.actor(cfg.ID,{cfg}), ally=f.actor(90002,{navigationTeam:'friendly'});
+ for(const owner of [f.hero,ally,regent]){
+  assert.equal(f.sounds.effect('healing-receive',owner),false);
+ }
+ assert.equal(f.pending.length,0);
+ assert.equal(f.played.length,0);
+ f.sounds.hit(f.hero,regent,10);f.finishAll();
+ assert.deepEqual(f.played.map(p=>p.path),['sfx/impact-flesh-light']);
+});
+
+test('Bruiser keeps its silent kill healing while the separate relic cue remains available to other heroes',()=>{
  const f=fixture();f.start();f.hero.heroStyle='bruiser';
- for(const cue of ['healing-receive','life-steal'])assert.equal(f.sounds.effect(cue,f.hero),false);
- assert.equal(f.pending.length,0);assert.equal(f.played.length,0);
- f.hero.heroStyle='fighter';assert.equal(f.sounds.effect('healing-receive',f.hero),true);f.finishAll();
- assert.deepEqual(f.played.map(p=>p.path),['sfx/healing-receive']);
+ assert.equal(f.sounds.effect('life-steal',f.hero),false);
+ f.hero.heroStyle='fighter';assert.equal(f.sounds.effect('life-steal',f.hero),true);f.finishAll();
+ assert.deepEqual(f.played.map(p=>p.path),['sfx/life-steal']);
 });
 
 test('removed creature hurt cues cannot load or play while material hit feedback remains available',()=>{

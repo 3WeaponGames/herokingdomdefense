@@ -1,5 +1,6 @@
 "use strict";
 var Language = require("LanguageMgr").LanguageMgr, Style = require("SettingsPanelStyle");
+var TestMode = require("TestMode").TestMode;
 function panel(root, width, height) {
   var sprite = root.getComponent(cc.Sprite); if (sprite) sprite.enabled = false;
   var node = root.getChildByName("SettingsFrame");
@@ -50,11 +51,62 @@ function volume(slider, innerWidth, y, icon) {
   slider.progress = slider.progress;
   require("AudioOptions").refreshFill(slider);
 }
+function developerButton(root, name, key, x, y, width, enabled, highlighted, action) {
+  var node = root.getChildByName(name);
+  if (!node) {
+    node = new cc.Node(name); node.parent = root;
+    node.addComponent(cc.Graphics);
+    var button = node.addComponent(cc.Button);
+    button.target = node; button.transition = cc.Button.Transition.SCALE;
+    var text = new cc.Node("Caption"); text.parent = node; text.addComponent(cc.Label);
+    node.on(cc.Node.EventType.TOUCH_END, function (event) {
+      event.stopPropagation();
+      if (cc.isValid(node, true) && node.getComponent(cc.Button).interactable) action();
+    });
+  }
+  node.setPosition(x, y); node.setContentSize(width, 54);
+  node.getComponent(cc.Button).interactable = enabled;
+  var graphics = node.getComponent(cc.Graphics); graphics.clear();
+  graphics.fillColor = cc.color(enabled ? highlighted ? "#239b81" : "#e0ebdb" : "#e9e4d8");
+  graphics.strokeColor = cc.color(enabled ? highlighted ? "#177561" : "#88a58c" : "#b9b3a5");
+  graphics.lineWidth = 2; graphics.roundRect(-width / 2, -27, width, 54, 12); graphics.fill(); graphics.stroke();
+  var caption = node.getChildByName("Caption").getComponent(cc.Label);
+  Style.body(caption, 24, true, highlighted ? "#fff8e8" : enabled ? "#28453b" : "#786f62");
+  caption.horizontalAlign = cc.Label.HorizontalAlign.CENTER; caption.verticalAlign = cc.Label.VerticalAlign.CENTER;
+  caption.enableWrapText = false; caption.overflow = cc.Label.Overflow.SHRINK;
+  Language.getInstance().bindLabel(caption, key);
+  caption.node.setContentSize(width - 16, 54);
+}
+function developerControls(owner, root, width, y, mode, enabled, rewardReady, waveReady) {
+  var group = root.getChildByName("DeveloperTools");
+  if (!group) {
+    group = new cc.Node("DeveloperTools"); group.parent = root;
+    var title = new cc.Node("DeveloperMode"); title.parent = group; title.addComponent(cc.Label);
+  }
+  group.setPosition(0, y);
+  divider(group, "DeveloperDivider", width, 42);
+  var titleNode = group.getChildByName("DeveloperMode"), label = titleNode.getComponent(cc.Label);
+  Style.body(label, 28, true);
+  label.horizontalAlign = cc.Label.HorizontalAlign.LEFT; label.verticalAlign = cc.Label.VerticalAlign.CENTER;
+  label.enableWrapText = false; label.overflow = cc.Label.Overflow.SHRINK;
+  titleNode.anchorX = 0; titleNode.setPosition(-width / 2, 0);
+  Language.getInstance().bindLabel(label, "settings.developerMode");
+  titleNode.setContentSize(width - 128, 54);
+  developerButton(group, "ToggleTestMode", enabled ? "settings.controlsOn" : "settings.controlsOff",
+    width / 2 - 54, 0, 108, true, enabled, function () { if (!owner.isclose) mode.toggle(); });
+  var buttonWidth = (width - 12) / 2, x = width / 2 - buttonWidth / 2;
+  developerButton(group, "RewardTesting", "settings.developerRewards", -x, -66, buttonWidth, rewardReady, false,
+    function () { owner.openDeveloperTool("reward"); });
+  developerButton(group, "WaveAdjuster", "settings.developerWave", x, -66, buttonWidth, waveReady, false,
+    function () { owner.openDeveloperTool("wave"); });
+}
 exports.settings = function (owner) {
   if (!owner.node) return;
   var root = owner.node.getChildByName("root"), width = Math.min(600, owner.node.width - 64), inner = width - 64;
-  var height = owner.btnExchangeCode.active ? 788 : 698, language = Language.getInstance();
-  var signature = [width, height, owner.node.height, language.getCurrentLanguage()].join(":");
+  var mode = TestMode.getInstance(), developer = mode.isAvailable(), enabled = developer && mode.isEnabled();
+  var rewardReady = developer && owner.canOpenDeveloperTool("reward"), waveReady = developer && owner.canOpenDeveloperTool("wave");
+  var height = (owner.btnExchangeCode.active ? 788 : 698) + (developer ? 156 : 0), language = Language.getInstance();
+  var signature = [width, height, owner.node.height, language.getCurrentLanguage(), enabled, rewardReady, waveReady].join(":");
   if (owner._settingsLayout === signature) return;
   owner._settingsLayout = signature;
   panel(root, width, height); fit(root, owner, height, 64);
@@ -65,6 +117,7 @@ exports.settings = function (owner) {
   divider(root, "AudioDivider", inner, first - 140);
   require("LanguageOptions").attach(owner.node, first - 204, inner);
   require("ControlIndicatorOptions").attach(owner.node, { width: inner, rowY: first - 376, helpY: first - 414 });
+  if (developer) developerControls(owner, root, inner, first - 496, mode, enabled, rewardReady, waveReady);
   owner.version.node.setScale(1); owner.version.node.setPosition(0, -height / 2 + 39);
   Style.body(owner.version, 20, false, "#796e5b"); owner.version.enableWrapText = false; owner.version.overflow = cc.Label.Overflow.SHRINK;
   owner.version.node.setContentSize(inner, 30);

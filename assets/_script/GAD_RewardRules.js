@@ -1,6 +1,27 @@
 "use strict";
 
-// Wall Defense's reward calculation is independent of rendering and skill data.
+// Survival rewards use cleared waves and active combat time.
+function rarityWeights(config, wave, stage) {
+  var curve = stage !== undefined && config.endlessRarity;
+  if (!curve) {
+    var band = config.rarityBands.find(function (entry) { return wave <= entry.throughWave; });
+    return (band || config.rarityBands[config.rarityBands.length - 1]).weights;
+  }
+
+  var points = curve.points;
+  var rewardWave = wave + (curve.stageWaveOffsets[stage - 1] || 0);
+  var next = points.findIndex(function (point) { return rewardWave <= point.wave; });
+  if (next < 0) return points[points.length - 1].weights;
+  if (next === 0) return points[0].weights;
+
+  var left = points[next - 1], right = points[next];
+  var progress = (rewardWave - left.wave) / (right.wave - left.wave);
+  return left.weights.map(function (weight, index) {
+    return weight + (right.weights[index] - weight) * progress;
+  });
+}
+exports.rarityWeights = rarityWeights;
+
 function needsPieces(config, owned) {
   if (!owned) return true;
   var remaining = 0;
@@ -23,13 +44,21 @@ exports.createResult = function (run, config, treasures, inventory, random) {
   result.rewards.push({ id: config.goldID, num: result.baseGold }, { id: config.crystalID, num: result.crystals });
   var owned = {};
   inventory.forEach(function (row) { owned[row.id] = { level: row.level, frame: row.frame }; });
-  for (var wave = config.wavesPerItem; wave <= cleared; wave += config.wavesPerItem) {
-    var band = config.rarityBands[config.rarityBands.length - 1];
-    for (var i = 0; i < config.rarityBands.length; i++) if (wave <= config.rarityBands[i].throughWave) { band = config.rarityBands[i]; break; }
-    // Weights run common -> legendary. Authored Relic qualities run in reverse:
-    // 4 green, 3 blue, 2 purple, 1 orange. Keep the existing item IDs/qualities.
-    var total = band.weights.reduce(function (sum, weight) { return sum + weight; }, 0), roll = random() * total, quality = 4;
-    for (i = 0; i < band.weights.length; i++) { roll -= band.weights[i]; if (roll < 0) { quality = 4 - i; break; } }
+  var interval = config.wavesPerItem, curve = run.endlessStage !== undefined && config.endlessRarity;
+  var bonus = curve && curve.bonusDrop, step = bonus && bonus.chance > 0 ? 1 : interval;
+  for (var wave = step; wave <= cleared; wave += step) {
+    var remainder = wave % interval;
+    if (remainder && random() >= bonus.chance) continue;
+    var milestone = remainder ? wave + interval - remainder : wave;
+    var weights = rarityWeights(config, milestone, run.endlessStage);
+    var total = weights.reduce(function (sum, weight) { return sum + weight; }, 0);
+    if (remainder) {
+      weights = weights.map(function (weight) { return weight * bonus.rarityMultiplier; });
+      weights[0] += total * (1 - bonus.rarityMultiplier);
+    }
+    // Weights run green to orange, starting at relic quality 4.
+    var roll = random() * total, quality = 4;
+    for (var i = 0; i < weights.length; i++) { roll -= weights[i]; if (roll < 0) { quality = 4 - i; break; } }
     var tier = treasures.filter(function (item) { return item.Quality === quality; });
     var useful = tier.filter(function (item) { return needsPieces(item, owned[item.ID]); });
     // An exhausted tier retains its normal conversion, never a higher-rarity reroll.
@@ -37,7 +66,7 @@ exports.createResult = function (run, config, treasures, inventory, random) {
     if (!pool.length) continue;
     var item = pool[Math.min(pool.length - 1, Math.floor(random() * pool.length))], row = owned[item.ID];
     var reward = result.rewards.filter(function (entry) { return entry.id === item.goodID; })[0];
-    // Keep Endless receipts bounded while still awarding every milestone.
+    // Record the first drop of each good and grant the sum of its rolls.
     if (result.endlessStage === undefined || !reward) result.drops.push({ wave: wave, quality: quality, itemID: item.ID, goodID: item.goodID });
     if (reward) reward.num++; else result.rewards.push({ id: item.goodID, num: 1 });
     if (!row) owned[item.ID] = { level: 1, frame: 0 };

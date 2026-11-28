@@ -807,7 +807,44 @@ function localAttackFootprint(main, polygon, shared) {
 function polygonAttackPoint(start, polygon, main, shared) {
   return nearestPolygonPoint(start, localAttackFootprint(main, polygon, shared));
 }
-exports.attackPointOf = function (target, game, origin, polygon) {
+exports.wallContact = function (start, vertices, game, terrain, shared) {
+  var polygon = localAttackFootprint(game.ndMain, vertices, shared);
+  var nearest = nearestPolygonPoint(start, polygon);
+  if (terrain.segmentClear(start, nearest, 0)) return { point: nearest, clear: true };
+  var exposed = terrain.isWalkable(nearest, 0) ? nearest : null, visible = null;
+  var bestExposed = exposed ? distance(start, exposed) : Infinity, bestVisible = Infinity;
+  for (var i = 0; i < polygon.length; i++) {
+    var a = polygon[i], b = polygon[(i + 1) % polygon.length], dx = b.x - a.x, dy = b.y - a.y;
+    var squared = dx * dx + dy * dy;
+    if (!squared) continue;
+    var along = ((start.x - a.x) * dx + (start.y - a.y) * dy) / squared;
+    terrain.openEdge(a, b).forEach(function (span) {
+      var projected = Math.max(span[0], Math.min(span[1], along));
+      [projected, span[0], span[1]].forEach(function (fraction) {
+        var candidate = { x: a.x + dx * fraction, y: a.y + dy * fraction };
+        var gap = distance(start, candidate);
+        if (gap < bestExposed) { exposed = candidate; bestExposed = gap; }
+        if (gap < bestVisible && terrain.segmentClear(start, candidate, 0)) { visible = candidate; bestVisible = gap; }
+      });
+    });
+  }
+  return visible ? { point: visible, clear: true } : exposed ? { point: exposed, clear: false } : null;
+};
+exports.exposedWallPoint = function (target, game, origin) {
+  var terrain = get(game).mapGrid(), nearest = null, best = Infinity;
+  var parts = exports.attackPartsOf(target);
+  var shared = target._combatFootprints && target._combatFootprints.parts === parts;
+  parts.forEach(function (part) {
+    if (part.points.length < 3) return;
+    var aim = exports.wallContact(origin, part.points, game, terrain, shared);
+    if (!aim || !aim.clear) return;
+    var gap = distance(origin, aim.point);
+    if (gap < best) { best = gap; nearest = aim.point; }
+  });
+  return nearest;
+};
+exports.attackPointOf = function (target, game, origin, polygon, contact) {
+  if (contact) return contact;
   var main = game.ndMain;
   if (origin && destructibleWall(target)) {
     if (polygon) return polygonAttackPoint(origin, polygon, main);
@@ -914,7 +951,7 @@ exports.attackPositionOf = function (selection, unit, game) {
   // Building origins can lie behind adjoining cliffs or wall pieces. Approach
   // the same polygon used by combat range checks instead; the planner projects
   // this boundary goal outward by the unit's real physics clearance.
-  var closest = polygonAttackPoint(start, polygon, main, selection.sharedFootprint) || point(selection.tag, main);
+  var closest = selection.wallPoint || polygonAttackPoint(start, polygon, main, selection.sharedFootprint) || point(selection.tag, main);
   if (destructibleWall(selection.building) || selection.breachRoute) {
     // Give short-range siege units a precise standing point outside the face.
     // Lattice projection alone can stop a body a full cell away from the wall.

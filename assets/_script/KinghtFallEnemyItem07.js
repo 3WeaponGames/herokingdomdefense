@@ -108,7 +108,7 @@ var def_KinghtFallEnemyItem07 = function (t) {
     if (n) {
       var victim = skillTarget(n);
       if (!skillCurrent(this, scope, false) || !targetCurrent(victim, true)) return;
-      var impact = cc.v2(Navigation.attackPointOf(n, scope.game, Navigation.positionOf(this.node, scope.game), selected.polygon));
+      var impact = cc.v2(Navigation.attackPointOf(n, scope.game, Navigation.positionOf(this.node, scope.game), selected.polygon, selected.wallPoint));
       var release = splashSnapshot(this, n, scope, n.getNavigationGateShapes ? impact : null), origin = this.vec2_1.clone();
       GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
       var dealt = n.onAttacked(e, t);

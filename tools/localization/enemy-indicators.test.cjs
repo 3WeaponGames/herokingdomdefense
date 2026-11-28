@@ -4,6 +4,12 @@ const root=path.join(__dirname,'../..'),source=fs.readFileSync(path.join(root,'a
 const data=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/game/KinghtFallUIGame.prefab'),'utf8'));
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json'),'utf8'));
 const taskPatch=require('./battle-task-layout-patch.json');
+const markerFrames = new Map(['wg_zd_drts', 'wg_zd_drtsj'].map(name => {
+ const {subMetas} = JSON.parse(fs.readFileSync(path.join(root, 'assets/KinghtFallPrefabs/_res/textures/KinghtFallUIGame', name + '.png.meta'), 'utf8'));
+ const meta = subMetas[name];
+ return [meta.uuid, {getRect: () => ({width: meta.width, height: meta.height}),
+  getOriginalSize: () => ({width: meta.rawWidth, height: meta.rawHeight}), getOffset: () => ({x: meta.offsetX, y: meta.offsetY})}];
+}));
 function functionAt(marker){const start=source.indexOf('function',source.indexOf(marker)),open=source.indexOf('{',start);let depth=1,end=open+1;for(;depth;end++){if(source[end]==='{')depth++;else if(source[end]==='}')depth--;}return source.slice(start,end);}
 class Label{_forceUpdateRenderData(){}}Label.Overflow={CLAMP:1,NONE:0};class Sprite{}
 Label.HorizontalAlign=Label.VerticalAlign={CENTER:1};
@@ -25,13 +31,13 @@ class Node{
   convertToNodeSpaceAR(point){const p=this.parent?this.parent.convertToNodeSpaceAR(point):point,a=-this.angle*Math.PI/180,c=Math.cos(a),s=Math.sin(a),x=p.x-this.x,y=p.y-this.y;return{x:(c*x-s*y)/this.scaleX,y:(s*x+c*y)/this.scaleY};}
 }
 Node.EventType={TOUCH_END:'touchend'};
-const cc={v2:(x,y)=>({x,y}),color:()=>({}),isValid:x=>!!x&&!x.destroyed,Label,Sprite,Graphics,Node,BlockInputEvents:class{},Camera:{main:{getWorldToScreenPoint:p=>p}}};
+const cc={v2:(x,y)=>({x,y}),color:()=>({}),Color:{BLACK:{}},isValid:x=>!!x&&!x.destroyed,Label,LabelOutline:class{},Sprite,Graphics,Node,BlockInputEvents:class{},Camera:{main:{getWorldToScreenPoint:p=>p}}};
 const context={cc,$z1KinghtFallModle:{KinghtFallGameStage:{Prepare:0,Transition:1,Fight:2}},$z1KinghtFallDataMgr:{KinghtFallDataMgr:{getInstance:()=>({getSoldierCfgById:id=>({loadIcon:String(id)})})}},$z1KinghtFallConfig:{KinghtFallBundelName:{Enemy:'enemy'}}};
 context.resolveEnemyPictogram=vm.runInNewContext('('+functionAt('function resolveEnemyPictogram')+')',context);
 const loadPictogram=vm.runInNewContext('('+functionAt('_ctor.prototype._loadEnemyPictogram =')+')',context);
 context.placeEnemyIndicator=vm.runInNewContext('('+functionAt('function placeEnemyIndicator')+')',context);
 context.enemyIndicatorBounds=vm.runInNewContext('('+functionAt('function enemyIndicatorBounds')+')',context);
-for(const name of ['enemyIndicatorFootprint','reserveEnemyIndicator','positionEnemyIndicator','upcomingIndicatorGroups','scaleUpcomingPortrait']){
+for(const name of ['enemyIndicatorSpriteRect','enemyIndicatorFootprint','reserveEnemyIndicator','positionEnemyIndicator','upcomingIndicatorGroups','scaleUpcomingPortrait']){
  context[name]=vm.runInNewContext('('+functionAt('function '+name)+')',context);
 }
 const getObstacles=vm.runInNewContext('('+functionAt('_ctor.prototype._enemyIndicatorObstacles')+')',context);
@@ -39,7 +45,33 @@ const place=vm.runInNewContext('('+functionAt('_ctor.prototype._placeEnemyIndica
 const update=vm.runInNewContext('('+functionAt('_ctor.prototype.update =')+')',context);
 const updateLive=vm.runInNewContext('('+functionAt('_ctor.prototype._updateOffscreenEnemies =')+')',context);
 const updateUpcoming=vm.runInNewContext('('+functionAt('_ctor.prototype._placeUpcomingEnemyIndicators =')+')',context);
-function authored(index,parent,english=true){const source=data[index],node=new Node(source._name,parent),trs=source._trs&&source._trs.array;node.width=source._contentSize?source._contentSize.width:0;node.height=source._contentSize?source._contentSize.height:0;node.active=source._active!==false;if(source._anchorPoint){node.anchorX=source._anchorPoint.x;node.anchorY=source._anchorPoint.y;}if(trs){node.x=trs[0];node.y=trs[1];node.scaleX=trs[7];node.scaleY=trs[8];node.angle=2*Math.atan2(trs[5],trs[6])*180/Math.PI;}for(const ref of source._components||[]){const component=data[ref.__id__];if(component.__type__==='cc.Label'){const label=new Label();label.string=component._string;node.components.push(label);const key='ui.layout.kinghtfalluigame.'+ref.__id__,style=english&&((taskPatch.labelStyles[key]||catalog.labelStyles[key]||{}).en);if(style){if(style.width!==undefined)node.width=style.width;if(style.height!==undefined)node.height=style.height;if(style.x!==undefined)node.x=style.x;if(style.y!==undefined)node.y=style.y;}}else if(component.__type__==='cc.Sprite')node.components.push(new Sprite());}for(const child of source._children||[])authored(child.__id__,node,english);return node;}
+function authored(index, parent, english = true, paintFrames = false) {
+ const source = data[index], node = new Node(source._name, parent), trs = source._trs?.array;
+ node.width = source._contentSize?.width ?? 0;
+ node.height = source._contentSize?.height ?? 0;
+ node.active = source._active !== false;
+ if (source._anchorPoint) { node.anchorX = source._anchorPoint.x; node.anchorY = source._anchorPoint.y; }
+ if (trs) {
+  node.x = trs[0]; node.y = trs[1]; node.scaleX = trs[7]; node.scaleY = trs[8];
+  node.angle = 2 * Math.atan2(trs[5], trs[6]) * 180 / Math.PI;
+ }
+ for (const ref of source._components || []) {
+  const component = data[ref.__id__];
+  if (component.__type__ === 'cc.Label') {
+   const label = node.addComponent(Label);
+   label.string = component._string;
+   const key = 'ui.layout.kinghtfalluigame.' + ref.__id__;
+   const style = english && (taskPatch.labelStyles[key] || catalog.labelStyles[key])?.en;
+   if (style) for (const prop of ['width', 'height', 'x', 'y']) if (style[prop] !== undefined) node[prop] = style[prop];
+  } else if (component.__type__ === 'cc.Sprite') {
+   const sprite = node.addComponent(Sprite);
+   sprite.trim = component._isTrimmedMode !== false;
+   if (paintFrames) sprite.spriteFrame = markerFrames.get(component._spriteFrame?.__uuid__);
+  }
+ }
+ for (const child of source._children || []) authored(child.__id__, node, english, paintFrames);
+ return node;
+}
 // This fixture supplies fixed HUD obstacles; joystick/footer arrangement has its own layout coverage.
 function fixture(english=true){const canvas=new Node('Canvas'),ui=new Node('UI',canvas);ui.width=750;ui.height=1334;const definition=data.find(x=>x.ndEnemyIcon&&x.btnBuildInfo);const state={_updateTestControls(){},_layoutBattleFooter(){},_loadEnemyPictogram:loadPictogram,ctrUI:{node:ui,upGuide(){}},_enemyIndicatorObstacles:getObstacles,_placeEnemyIndicator:place,_updateOffscreenEnemies:updateLive,_placeUpcomingEnemyIndicators:updateUpcoming};for(const key of['btnBuildInfo','ndTask','btnSuspend','ndCoin','ndLevelInfo','btnStartFight','btnAddCoin','btnAgg'])state[key]=authored(definition[key].__id__,ui,english);state.ndTask.getChildByName('ndAni').active=false;state.ndEnemyIcon=authored(118,ui,english);state.ndEnemyIcon.active=false;return{state,ui,canvas,indicator:()=>authored(118,ui,english)};}
 function near(a,b){assert(Math.abs(a-b)<1e-6,`${a} != ${b}`);}
@@ -57,6 +89,7 @@ function liveFixture(width=750,height=1334){
 }
 function upcomingFixture(groups,spawns,width){
  const f=liveFixture(width),s=f.state,pathNode=new Node('Path',f.ui),enemyQueue={};
+ cc.instantiate = () => authored(118, f.ui, true, true);
  for(const [id,x,y,entries] of spawns){
   new Node('ndEnemy'+id,pathNode).setPosition(x,y);
   enemyQueue[id]=entries||[{id:7+id,num:100}];
@@ -68,6 +101,7 @@ function upcomingFixture(groups,spawns,width){
  Object.assign(s.ctrGame.gameData,{enemyQueue,baseBuild:{getLevel:()=>1},levelCfg:{SpawnGroups:groups},round:4});
  f.paint=()=>{f.tick();return Object.keys(s.enemyIconInfo).filter(id=>s.enemyIconInfo[id].ndItem.active).map(Number);};
  f.portrait=id=>s.enemyIconInfo[id].ndItem;
+ f.painted=id=>{const node=f.portrait(id);return context.enemyIndicatorBounds(node,f.ui,node.getChildByName('ndArr'),true);};
  f.toggle=id=>s.enemyIconInfo[id].groupToggle;
  f.tap=(id,travel=0)=>f.toggle(id).node.emit(Node.EventType.TOUCH_END,{
   stopPropagation(){},getLocation:()=>({x:travel,y:0}),getStartLocation:()=>({x:0,y:0})
@@ -294,17 +328,29 @@ test('Crowded next-wave previews follow saved spawn order and open one horizonta
  assert.deepEqual(f.paint(),[3,4,13]);
  assert.equal(f.toggle(3).label.string,'+1 \u203a');
  assert.equal(f.toggle(4).label.string,'\u2039 +2');
- assert(f.toggle(3).node.x>f.portrait(3).x && f.toggle(4).node.x<f.portrait(4).x);
+ const toggleBounds = id => bounds(f.toggle(id).node, f.ui);
+ near(toggleBounds(3).minX - f.painted(3).maxX, 4);
+ near(f.painted(4).minX - toggleBounds(4).maxX, 4);
+ for (const id of [3, 4]) {
+  const toggle = f.toggle(id);
+  assert.equal(toggle.label.fontSize, 26);
+  assert(!toggle.node.getComponent(Graphics));
+  assert(toggle.node.height >= 44 && toggle.node.width >= 44);
+ }
  f.tap(3,30);assert.deepEqual(f.paint(),[3,4,13]);
  f.tap(3);assert.deepEqual(f.paint(),[2,3,4,13]);
  near(f.portrait(2).y,f.portrait(3).y);
- assert(f.portrait(3).x<f.portrait(2).x);
+ near(f.painted(2).minX - f.painted(3).maxX, 10);
+ near(toggleBounds(3).minX - f.painted(2).maxX, 4);
+ assert.equal(f.toggle(3).label.string, '\u2039');
  f.tap(4);assert.deepEqual(f.paint(),[3,4,5,6,13]);
  for(const id of [5,6]){
   near(f.portrait(id).y,f.portrait(4).y);
-  assert(f.portrait(id).x<f.portrait(id-1).x);
+  near(f.painted(id - 1).minX - f.painted(id).maxX, 10);
   assert.equal(f.portrait(id).getChildByName('labName').active,false);
  }
+ near(f.painted(6).minX - toggleBounds(4).maxX, 4);
+ assert.equal(f.toggle(4).label.string, '\u203a');
  arrowPoints(f.portrait(5),{x:1000,y:220});
  assert.equal(f.portrait(5).getChildByName('labNum').getComponent(Label).string,'100');
  f.tap(4);assert.deepEqual(f.paint(),[3,4,13]);
@@ -326,13 +372,15 @@ test('A long expanded wave group fits the safe area in one row and restores port
   assert.deepEqual(f.paint(),[1]);
   assert.equal(f.portrait(1).scaleX,1);
   f.tap(1);assert.deepEqual(f.paint(),[1,2,3,4,5,6]);
-  const nodes=[1,2,3,4,5,6].map(f.portrait).concat(f.toggle(1).node);
-  for(let i=0;i<nodes.length;i++){
-   const rect=bounds(nodes[i],f.ui);
-   near(nodes[i].y,nodes[0].y);
-   assert(rect.minX>=-184-1e-6 && rect.maxX<=184+1e-6);
-   if(i)assert(clear(rect,bounds(nodes[i-1],f.ui),6));
+  for (const id of [1, 2, 3, 4, 5, 6]) {
+   const node = f.portrait(id), rect = context.enemyIndicatorFootprint(node, f.ui);
+   near(node.y, f.portrait(1).y);
+   assert(node.x + rect.minX >= -184 - 1e-6 && node.x + rect.maxX <= 184 + 1e-6);
+   if (id > 1) assert(clear(f.painted(id), f.painted(id - 1), 10));
   }
+  const close = bounds(f.toggle(1).node, f.ui);
+  assert(close.minX >= -184 - 1e-6 && close.maxX <= 184 + 1e-6);
+  near(f.painted(6).minX - close.maxX, 4);
   assert(f.portrait(1).scaleX<1);
   assert.equal(f.toggle(1).node.scaleX,1);
   f.tap(1);assert.deepEqual(f.paint(),[1]);

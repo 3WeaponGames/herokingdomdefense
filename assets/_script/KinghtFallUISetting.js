@@ -13,6 +13,7 @@ var $z1ServerDataMgr = require("ServerDataMgr");
 var $z1PlayerMgr = require("PlayerMgr");
 var $z1KinghtFallConfig = require("KinghtFallConfig");
 var $z1Appcfg = require("Appcfg");
+var TestMode = require("TestMode").TestMode;
 var cc__decorator = cc._decorator;
 var ccp_ccclass = cc__decorator.ccclass;
 var ccp_property = cc__decorator.property;
@@ -68,6 +69,22 @@ var def_KinghtFallUISetting = function (t) {
     (this._battleChildren || []).forEach(function (child) { if (cc.isValid(child, true) && !child.isclose) child.closeUI(); });
     this._battleChildren = [];
     this._pauseParent = null;
+  };
+  _ctor.prototype.canOpenDeveloperTool = function (tool) {
+    var mode = TestMode.getInstance(), pause = this._pauseParent;
+    if (this.isclose || !mode.isAvailable()) return false;
+    if (!pause) return tool === "reward";
+    if (!cc.isValid(pause, true) || pause.isclose || pause._settingsUI !== this) return false;
+    var context = pause.menuMetadata && pause.menuMetadata.mode;
+    var ownsPause = mode.ownsBattlePause(pause);
+    return tool === "reward" ? ownsPause || context === "wallDefense" : ownsPause && context === "campaign";
+  };
+  _ctor.prototype.openDeveloperTool = function (tool) {
+    if (!this.canOpenDeveloperTool(tool)) return false;
+    var mode = TestMode.getInstance(), pause = this._pauseParent;
+    var opened = tool === "wave" ? mode.toggleBattleTesting("wave", pause) : mode.toggleRewardTesting(null, pause);
+    if (opened && !this.isclose && cc.isValid(this, true)) this.closeNotAni();
+    return opened;
   };
   _ctor.prototype.bindEvent = function () {
     var t = this;

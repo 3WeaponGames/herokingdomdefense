@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const { setup, hero, Node } = require('./backend-gameplay-harness.cjs');
-const { PhysicsPolygonCollider } = require('../navigation/runtime-harness.cjs');
+const { PhysicsPolygonCollider, installIntersection } = require('../navigation/runtime-harness.cjs');
 const Rules = require('../../assets/_script/UnitAttackRules');
 
 function fixture() {
@@ -125,6 +125,29 @@ test('unit attack overrides resolve supported combinations without editing base 
   assert.deepEqual(Rules.issues({ delivery: 'ranged', pattern: 'volley', shotsPerVolley: 1.5 }).map(issue => issue.field), ['shotsPerVolley']);
 });
 
+test('the configured Evilmass Dagger attack hits a blocking wall before an out-of-range hero', () => {
+  const f = fixture(), player = f.target('hero', 340, 0), wall = f.target('wall', 35, 0);
+  installIntersection(f.e.cc);
+  f.game.ctrPlay = player;
+  wall.buildInfo = { BuildID: 'Wall' };
+  wall.getNavigationGateShapes = () => [];
+  wall.getIsWork = () => !wall.isDead();
+  const collider = wall.node.addComponent(PhysicsPolygonCollider);
+  collider.points = [{ x: -8, y: -90 }, { x: 8, y: -90 }, { x: 8, y: 90 }, { x: -8, y: 90 }];
+  wall.getWposPhyCol2 = () => [{ tagNode: wall.node, points: collider.points.map(point => wall.node.convertToWorldSpaceAR(point)) }];
+  f.d.getBulidList = f.d.getAttackableBuildList = () => [wall];
+  const saved = require('../../assets/KinghtFallConfig/GameJsonCfg.json').SoldierCfg[91180];
+  const owner = f.attacker('KinghtFallEnemyBase', saved.UnitAttack, player);
+  owner.cfg = Rules.runtimeCfg(saved);
+  delete owner.getFind;
+
+  f.e.stubs.UnitAttackCombat.releaseEnemy.call(owner);
+  assert.deepEqual(f.amounts(), [['wall', 100]]);
+  player.node.x = 20;
+  f.e.stubs.UnitAttackCombat.releaseEnemy.call(owner);
+  assert.deepEqual(f.amounts(), [['wall', 100], ['hero', 100]]);
+});
+
 test('configured enemy missiles and splash respect tower protection through impact and recheck after a breach', () => {
   const f = fixture(), { game } = f, primary = f.target('troop', 40), tower = f.target('tower', 100);
   const wall = f.target('wall', 65);
@@ -155,6 +178,41 @@ test('configured enemy missiles and splash respect tower protection through impa
   shot.doAttackStart();
   f.step(1);
   assert(f.hits.some(hit => hit.name === 'tower'), 'the same tower was exposed once the wall was broken');
+});
+
+test('the Sun-Tomb Regent steals life on a real hit without requesting the retired healing sound', () => {
+  const f = fixture(), saved = require('../../assets/KinghtFallConfig/GameJsonCfg.json').SoldierCfg[91164];
+  const defender = f.target('defender', 30, 0), cues = [];
+  f.game.ctrPlay = defender;
+  f.e.cc.resources = {};
+  f.e.stubs.BattleSounds.effect = cue => cues.push(cue);
+  const regent = f.attacker('KinghtFallEnemyBase', saved.UnitAttack, defender);
+  regent.cfg = Rules.runtimeCfg(saved);
+  regent.hpMax = saved.Health;
+  regent.hp = 400;
+  regent.getAttack = () => saved.AttackDamage;
+  f.e.stubs.UnitAttackCombat.releaseEnemy.call(regent);
+  assert.deepEqual(f.amounts(), [['defender', saved.AttackDamage]]);
+  assert(Math.abs(regent.hp - (400 + saved.AttackDamage * saved.UnitAttack.onHit.lifeSteal.percent)) < 1e-9);
+  assert.deepEqual(cues, []);
+});
+
+test('a configured splash shot damages the selected gate face even when a nearer wing is outside the blast', () => {
+  const f = fixture(), wall = f.target('wall', 35, 100);
+  wall.buildInfo = { BuildID: 'Wall' };
+  wall.getNavigationGateShapes = () => [];
+  wall.getIsWork = () => !wall.isDead();
+  wall.getWposPhyCol2 = () => [[-15,15],[85,115]].map(([bottom,top]) => ({
+    tagNode: wall.node,
+    points: [[27,bottom],[43,bottom],[43,top],[27,top]].map(([x,y]) => f.game.ndMain.convertToWorldSpaceAR(f.e.cc.v2(x,y)))
+  }));
+  f.d.getAttackableBuildList = f.d.getBulidList = () => [wall];
+  const owner = f.attacker('KinghtFallEnemyBase', { delivery: 'ranged', pattern: 'splash', splashRadius: 45 }, wall);
+  owner.getUpdateTarget = () => ({ canAtt: true, building: wall, wallPoint: {x: 27, y: 100} });
+  f.e.stubs.UnitAttackCombat.releaseEnemy.call(owner);
+  assert.equal(f.game.ndBuildArr2.length, 1);
+  f.step(1);
+  assert.deepEqual(f.amounts(), [['wall', 100]]);
 });
 
 test('an archer changed to melee uses its attack timing and cannon-style splash falloff', () => {

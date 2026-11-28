@@ -22,7 +22,7 @@ An explicit character animation speed overrides the older attack-only speed sett
 
 `unit-combat-power.cjs` accepts timing as its third argument, `{ settings, descriptor }`. Callers without timing metadata retain their nominal calculation. The roster exporter always supplies the resolved timing. Buffs, healing casts, and splash use the effective release rate. Separately timed boss debuffs retain their spell interval.
 
-Wave-end hero healing adds no CP while ordinary wave transitions already restore the hero to full HP. Other healing and conditional effects follow the configured benchmark assumptions.
+Gear displays the hero benchmark multiplied by 10 and rounded to a whole number, plus 1 CP per 0.25 HP/sec of passive regeneration. The default benchmark leaves passive regen out of healing output so the flat bonus counts it once. Wave-end hero healing adds no CP while ordinary wave transitions already restore the hero to full HP. Other healing and conditional effects follow the configured benchmark assumptions.
 
 ## Account upgrade credit
 

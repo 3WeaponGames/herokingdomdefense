@@ -80,7 +80,7 @@ test('primary kill healing remains capped and the emergency flask now heals once
 
 test('the permanent slow remains utility and never enables the temporary-control damage bonus',()=>{
  const ordinary=Loadout.calculate(Config,user([120029]));close(ordinary.directDps,20*(1+.05*.2*.25));
- assert.equal(Loadout.calculate(Config,user([120002])).cp,Math.sqrt(2000));
+ assert.equal(Loadout.calculate(Config,user([120002])).cp,Loadout.calculate(Config,user()).cp);
  const combined=Loadout.calculate(Config,user([120002,120029]));assert.equal(combined.effectiveSlowedTargetFraction,.25);assert.equal(combined.directDps,ordinary.directDps);
  const config=clone(Config);config.TreasureCfg.find(row=>row.ID===120002).RequiredHeroStyle='vanguard';const fighter=Loadout.calculate(config,user([120002,120029]));assert.equal(fighter.effectiveSlowedTargetFraction,.25);assert.equal(fighter.directDps,ordinary.directDps);close(fighter.upgrades.effects.enemySlow[0],.2*.2);assert.equal(Loadout.snapshot(config,user([120002,120029])).upgrades.effects.enemySlow,undefined);
  const vanguard=Loadout.calculate(config,user([120002,120029],'vanguard'));assert.equal(vanguard.cp,fighter.cp);assert.equal(vanguard.effectiveSlowedTargetFraction,.25);
@@ -88,7 +88,7 @@ test('the permanent slow remains utility and never enables the temporary-control
 
 test('utility upgrades remain visible without adding unrelated power and ownership reads are pure and repeatable',()=>{
  const data=user([120001,120002,120039,120044]),before=JSON.stringify(data),config=JSON.stringify(Config),value=Loadout.calculate(Config,data);
- assert.equal(value.cp,Math.sqrt(2000));close(value.move,221*1.006);close(value.range,300*.35*1.006);assert.equal(value.upgrades.effects.reviveSeconds[0],1);
+ assert.equal(value.cp,Loadout.calculate(Config,user()).cp);close(value.move,221*1.006);close(value.range,300*.35*1.006);assert.equal(value.upgrades.effects.reviveSeconds[0],1);
  assert.deepEqual(Loadout.calculate(Config,data),value);assert.equal(JSON.stringify(data),before);assert.equal(JSON.stringify(Config),config);
 });
 

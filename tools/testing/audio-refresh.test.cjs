@@ -91,3 +91,16 @@ test('boss, shared critical and Bruiser basic effects retain their approved OGG 
  assert.equal(critical.name,'Critical strike hit');
  const snow=indexed.items.find(row=>row.key==='planning-snow');assert.equal(snow.kind,'music');
 });
+
+test('the retired healing sound is absent from game assets, the mix and the Sounds editor',()=>{
+ const cue='sfx/healing-receive', uuid='42f18291-820c-4151-ae3f-d467010eb48b';
+ const indexed=require('../../packages/hkd-sounds/catalog').index(root);
+ const review=JSON.parse(fs.readFileSync(path.join(root,'authoring/audio-review.json'),'utf8'));
+ assert(!fs.existsSync(path.join(audio,cue+'.mp3')));
+ assert(!fs.existsSync(path.join(audio,cue+'.mp3.meta')));
+ assert(!indexed.items.some(item=>item.uuid===uuid||item.key==='healing-receive'));
+ assert.equal(review.marks['uuid:'+uuid],undefined);
+ const mix=fs.readFileSync(path.join(root,'assets/_script/AudioMixCatalog.js'),'utf8');
+ assert(!mix.includes(uuid)&&!mix.includes(cue));
+ assert.equal(require('../../assets/_script/BattleSoundCatalog').effects['healing-receive'],undefined);
+});

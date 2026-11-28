@@ -392,11 +392,12 @@ function layoutFooter(ui) {
     follow.setPosition(commandX, followBottom - followBox.minY);
   }
   var rodHalfWidth = rod.width * Math.abs(rod.scaleX) / 2, rodHalfHeight = rod.height * Math.abs(rod.scaleY) / 2;
-  state.restX = Math.max(left + margin + rodHalfWidth, left + (right - left) / 4);
+  state.restX = button.x;
   state.restY = bottom + 180 + rodHalfHeight;
   if (startBox.visible) {
     var top = button.y + startBox.maxY;
-    if (coinBox.visible && state.restX + rodHalfWidth > coin.x + coinBox.minX) top = Math.max(top, coin.y + coinBox.maxY);
+    if (coinBox.visible && state.restX + rodHalfWidth > coin.x + coinBox.minX &&
+        state.restX - rodHalfWidth < coin.x + coinBox.maxX) top = Math.max(top, coin.y + coinBox.maxY);
     state.restY = Math.max(state.restY, top + gap + rodHalfHeight);
   }
   positionJoystick(control, rod, root, state, true);

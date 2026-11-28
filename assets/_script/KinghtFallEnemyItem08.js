@@ -38,7 +38,7 @@ var def_KinghtFallEnemyItem08 = function (t) {
       targetNode = n.node; targetGeneration = targetNode._combatGeneration;
       e = GameToolsOverrides.typeCounterDamage(this, n, e);
       var origin = Navigation.positionOf(sourceNode, game);
-      var impact = Navigation.attackPointOf(n, game, origin, selected.polygon);
+      var impact = Navigation.attackPointOf(n, game, origin, selected.polygon, selected.wallPoint);
       var offset = n.getNavigationGateShapes && targetNode.convertToNodeSpaceAR(game.ndMain.convertToWorldSpaceAR(cc.v2(impact)));
       this.vec2_2.x = impact.x; this.vec2_2.y = impact.y;
       cc.Vec2.subtract(this.vec2_2, this.vec2_2, this.vec2_1);

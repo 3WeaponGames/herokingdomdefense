@@ -44,8 +44,48 @@ function fixture(type = 'KinghtFallEnemyItem02') {
   return { ...e, gate, leaf, tower, unit, hits, impacts, effects };
 }
 
-test('melee attacks hit the gate and both wings from either side and damage the shared wall', () => {
+function fillGate(e) {
+  return Array.from({ length: 4 }, (_, index) => {
+    const enemy = e.actor('KinghtFallEnemyItem02', -30, index * 4);
+    delete enemy.getFind;
+    enemy.cfg = { ...e.unit.cfg, EnemyTargeting: {mode:'priority',order:['wall']} };
+    assert.equal(enemy.getUpdateTarget().tag, e.gate.node);
+    return enemy;
+  });
+}
+
+test('enemies reserve the gate first, spread to both wings when full, and retake freed gate space', () => {
+  const e = fixture(), { unit, gate, hits, impacts } = e;
+  const first = unit.getUpdateTarget();
+  assert.equal(first.tag, gate.node);
+  assert.equal(first.canAtt, false, 'Melee moves to the gate even though a wing is already in reach');
+  assert.equal(unit.pickAttackTarget(e.game), null);
+  unit.node.setPosition(-30, 42);
+  assert.equal(unit.getUpdateTarget().canAtt, true);
+  unit.doAttack();
+  assert.deepEqual(impacts.at(-1), { x: -8, y: 35 });
+  assert.deepEqual(hits, ['wall']);
+
+  unit._isPooled = true;
+  const atGate = fillGate(e);
+  const overflow = [-90, 90].map(y => {
+    const enemy = e.actor('KinghtFallEnemyItem02', -30, y);
+    delete enemy.getFind;
+    enemy.cfg = { ...unit.cfg };
+    return enemy;
+  });
+  assert.equal(overflow[0].getUpdateTarget().tag, gate.ndAniOther[0].node);
+  assert.equal(overflow[1].getUpdateTarget().tag, gate.ndAniOther[1].node);
+  assert.equal(overflow[1].pickAttackTarget(e.game).tag, gate.ndAniOther[1].node);
+  atGate[0].node._combatGeneration = 2;
+  e.nav.beginFrame(e.game);
+  assert.equal(overflow[1].getUpdateTarget().tag, gate.node);
+  assert.equal(overflow[0].getUpdateTarget().tag, gate.ndAniOther[0].node);
+});
+
+test('melee attacks hit a gateless wall and both wings from either side', () => {
   const { gate, unit, hits, impacts } = fixture();
+  gate.wallHasGate = false;
   const parts = gate.getAttackTargetParts();
   assert.equal(parts.length, 3);
   for (const x of [-30, 30]) for (const [y, part] of [[0, parts[0]], [-100, parts[1]], [100, parts[2]]]) {
@@ -58,7 +98,6 @@ test('melee attacks hit the gate and both wings from either side and damage the 
     assert.deepEqual(impacts.at(-1), { x: Math.sign(x) * 8, y });
   }
   assert.deepEqual(hits, Array(6).fill('wall'));
-  gate.wallHasGate = false;
   assert.equal(gate.getAttackTargetParts().length, 3);
   gate.isDestroyed = true;
   assert.equal(gate.getAttackTargetParts().length, 0);
@@ -85,12 +124,13 @@ test('wall targeting follows the nearest compound fixture even when fixtures sha
   assert.deepEqual({ x: aim.x, y: aim.y }, { x: 6, y: 20 });
 });
 
-test('an intact wall blocks cached tower targets and redirects tower priority to its wing', () => {
-  const { nav, game, gate, tower, unit, hits } = fixture();
+test('an intact wall blocks cached tower targets and redirects tower priority to a wing when the gate is crowded', () => {
+  const e = fixture(), { nav, game, gate, tower, unit, hits } = e;
   game.gameData.buildings.push(tower);
   unit.cfg = { ...unit.cfg, AttackRange: 80, EnemyTargeting: { mode: 'priority', order: ['tower'] } };
   tower.node.setPosition(-100, 100);
   assert.equal(unit.getUpdateTarget().building, tower);
+  fillGate(e);
   tower.node.setPosition(40, 100);
   nav.invalidate(game);
   const selected = unit.getUpdateTarget();
@@ -104,7 +144,7 @@ test('an intact wall blocks cached tower targets and redirects tower priority to
   assert.deepEqual(hits, ['wall', 'tower']);
 });
 
-test('legacy ranged and flying enemies aim at the wall section before they can hit the tower', () => {
+test('legacy ranged and flying enemies aim at the gate before they can hit the tower', () => {
   for (const actor of ['KinghtFallEnemyLong', 'KinghtFallEnemyItem08']) {
     const e = fixture(actor), { game, gate, tower, unit, hits, impacts } = e;
     game.gameData.buildings.push(tower);
@@ -113,19 +153,41 @@ test('legacy ranged and flying enemies aim at the wall section before they can h
     game.onShotEnemy = () => ({ pos: e.cc.v2(), ctr: { setParent() {}, setTag(_, target, hit, offset) { shot = { target, hit, offset }; } } });
     unit.doAttack();
     assert.equal(shot.target, gate.node);
-    assert.deepEqual({ x: shot.offset.x, y: shot.offset.y }, { x: -8, y: 100 });
+    assert.deepEqual({ x: shot.offset.x, y: shot.offset.y }, { x: -8, y: 35 });
     const space = new Node('Projectile layer', game.ndMain, 20, 40), bullet = { node: new Node('Projectile', space), tagNode: shot.target, tagPos: new Vec2(), targetOffset: shot.offset };
     const { setup } = require('../testing/backend-gameplay-harness.cjs');
     setup().load('KinghtFallBulletBase').default.prototype.readTargetPosition.call(bullet);
-    assert.deepEqual({ x: bullet.tagPos.x, y: bullet.tagPos.y }, { x: -28, y: 60 });
+    assert.deepEqual({ x: bullet.tagPos.x, y: bullet.tagPos.y }, { x: -28, y: -5 });
     shot.hit();
-    assert.deepEqual(impacts, [{ x: -8, y: 100 }]);
+    assert.deepEqual(impacts, [{ x: -8, y: 35 }]);
     gate.isDestroyed = true;
     unit.doAttack();
     assert.equal(shot.target, tower.node);
     shot.hit();
     assert.deepEqual(hits, ['wall', 'tower']);
   }
+});
+
+test('pursuit and ranged impacts use exposed wall faces beside terrain and skip buried parts', () => {
+  const e = fixture('KinghtFallEnemyLong'), { game, gate, unit, nav } = e;
+  gate.wallHasGate = false;
+  unit.cfg = { ...unit.cfg, AttackRange: 120 };
+  unit.node.setPosition(-55, 110);
+  e.box(1, 105, 34, 58);
+  const terrain = nav.get(game).mapGrid();
+  assert.equal(terrain.isWalkable({x:-8,y:110},0), false, 'The old closest point is inside the cliff');
+  const target = unit.getUpdateTarget();
+  assert(target.canAtt && terrain.segmentClear(unit.node, target.wallPoint, 0));
+  assert.deepEqual(nav.attackPointOf(gate, game, unit.node, target.polygon, target.wallPoint), target.wallPoint);
+  assert(terrain.isWalkable(nav.attackPositionOf(target, unit, game), 0));
+  let aim;
+  game.onShotEnemy = () => ({pos:e.cc.v2(),ctr:{setParent(){},setTag(_n,_target,_hit,offset){aim=offset;}}});
+  unit.doAttack();
+  assert.deepEqual({x:aim.x,y:aim.y},{x:target.wallPoint.x,y:target.wallPoint.y});
+  e.box(0, 0, 34, 340);
+  nav.invalidate(game);
+  assert.equal(unit.getUpdateTarget(), null);
+  assert.equal(unit.pickAttackTarget(game), null);
 });
 
 test('legacy splash damage cannot hit a tower through a live wall', () => {

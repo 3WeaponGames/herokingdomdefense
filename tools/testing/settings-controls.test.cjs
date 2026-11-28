@@ -79,6 +79,58 @@ test('Settings matches the shared concept while Pause keeps details above four d
  }
  assert.deepEqual(f.writes,[]);
 });
+test('developer controls fit narrow Settings and open the right tool with a touch', () => {
+ const f = settings(), calls = [];
+ let debug = false, enabled = false, currentPause = null;
+ const mode = {
+  isAvailable: () => debug, isEnabled: () => enabled, ownsBattlePause: pause => pause === currentPause,
+  toggle() { enabled = !enabled; calls.push(['test', enabled]); },
+  toggleRewardTesting(startScreen, pause) { calls.push(['reward', startScreen, pause]); return true; },
+  toggleBattleTesting(tool, pause) { calls.push([tool, pause]); return true; }
+ };
+ Object.assign(f.h.modules, {
+  TestMode: { TestMode: { getInstance: () => mode } },
+  PlatformSetting: {}, PlatformConfig: {}, KinghtFallConfig: {}, SdkMgr: {}, ServerDataMgr: {}, PlayerMgr: {}
+ });
+ const Settings = f.load('KinghtFallUISetting').default, layouts = f.load('SettingsPanelLayout');
+ function panel() {
+  const owner = Object.assign(new Settings(), f.owner(540, 820));
+  owner.closeNotAni = () => { owner.isclose = true; };
+  return owner;
+ }
+ function tools(owner) { return owner.node.getChildByName('root').getChildByName('DeveloperTools'); }
+ const lobby = panel();
+ layouts.settings(lobby);
+ assert.equal(tools(lobby), undefined);
+ assert.deepEqual(calls, []);
+ debug = true;
+ layouts.settings(lobby);
+ f.start(lobby.node);
+ const group = tools(lobby), toggle = group.getChildByName('ToggleTestMode');
+ const reward = group.getChildByName('RewardTesting'), wave = group.getChildByName('WaveAdjuster');
+ assert(reward.x + reward.width / 2 < wave.x - wave.width / 2);
+ assert(group.y + toggle.height / 2 < lobby.node.getChildByName('root').getChildByName('IdleControlHelp').y - 28);
+ const touch = { stopPropagation() {} };
+ assert.equal(wave.getComponent(f.h.cc.Button).interactable, false);
+ wave.handlers.end(touch);
+ assert.deepEqual(calls, []);
+ toggle.handlers.end(touch);
+ layouts.settings(lobby);
+ assert.equal(toggle.getChildByName('Caption').getComponent(f.h.cc.Label).string, 'settings.controlsOn');
+ reward.handlers.end(touch);
+ assert.equal(lobby.isclose, true);
+ assert.deepEqual(calls, [['test', true], ['reward', null, undefined]]);
+
+ const campaign = panel();
+ currentPause = campaign._pauseParent = { node: {}, _settingsUI: campaign, menuMetadata: { mode: 'campaign' } };
+ layouts.settings(campaign);
+ const battleWave = tools(campaign).getChildByName('WaveAdjuster');
+ assert.equal(battleWave.getComponent(f.h.cc.Button).interactable, true);
+ battleWave.handlers.end(touch);
+ assert.equal(campaign.isclose, true);
+ assert.deepEqual(calls.at(-1), ['wave', currentPause]);
+ assert.deepEqual(f.writes, []);
+});
 test('Pause prefab owns complete independent native Slider subtrees and declared controller properties',()=>{
  const root=path.resolve(__dirname,'../..'),d=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallPrefabs/gamePop/KinghtFallUISuspend.prefab'))),owner=d.find(x=>x.sprfBgList&&x.ndParent);
  for(const key of ['musicSlider','effectSlider']){const slider=d[owner[key].__id__];assert.equal(slider.__type__,'cc.Slider');const n=d[slider.node.__id__];assert.equal(d[n._parent.__id__]._active,false);const handle=d[slider._N$handle.__id__];assert.equal(handle.__type__,'cc.Button');assert.equal(d[handle.node.__id__]._parent.__id__,slider.node.__id__);}

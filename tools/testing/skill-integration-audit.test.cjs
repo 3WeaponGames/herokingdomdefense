@@ -65,12 +65,12 @@ test('Vampire quota uses the original maximum HP and its cue stays in the healin
  }
 });
 
-test('Bruiser life steal keeps its healing and HP feedback without layering cartoon healing audio on an attack',()=>{
+test('hero life steal keeps its healing and HP feedback without a second sound on the attack',()=>{
  for(const style of ['bruiser','fighter']){
   const h=fixture(),target=h.enemy(),sounds=[];h.d.heroStyle=style;h.hero.heroStyle=style;h.hero.hpMax=100;h.hero.hp=20;h.hero._heroSecondary={lifeSteal:.1};
   h.e.cc.resources={};h.e.stubs.BattleSounds={effect:id=>sounds.push(id)};
   const context=h.combat.primaryContext(h.hero,target,5,false);target.hp-=5;h.combat.primaryImpact(target,h.hero,context,5);
-  assert.equal(h.hero.hp,20.5);assert.deepEqual(sounds,style==='bruiser'?[]:['healing-receive']);
+  assert.equal(h.hero.hp,20.5);assert.deepEqual(sounds,[],style);
  }
 });
 

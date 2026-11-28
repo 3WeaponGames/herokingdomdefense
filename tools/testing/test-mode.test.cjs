@@ -346,6 +346,32 @@ test('native F4 uses key code 115 and leaves the Simulator reload key alone', ()
   native.system.emit('down', { keyCode: 115 });
   assert.equal(toggles, 2);
 });
+test('the native Debug entry points accept the owning Pause and reject the release APK', () => {
+  const opened = [];
+  const wave = { toggle: (target, fromPause) => { opened.push(['wave', target, fromPause]); return fromPause; } };
+  const rewards = { toggle: (_mode, startScreen, fromPause) => { opened.push(['reward', startScreen, fromPause]); return true; } };
+  const { service, calls } = environment({ debug: true, web: false, wave, rewards });
+  const pause = { node: { active: true } };
+  const dialog = { kind: 'pause', node: pause.node, paused: true, isCurrent: () => true };
+  const battle = { node: { active: true }, _battleDialog: dialog, _pauseOwners: new Set([dialog]) };
+  assert.equal(service.toggleRewardTesting(), true);
+  service.setGameplayTarget(battle);
+  assert.equal(service.ownsBattlePause(pause), true);
+  assert.equal(service.toggleRewardTesting(null, pause), true);
+  assert.equal(service.toggleBattleTesting('wave', pause), true);
+  assert.equal(service.toggleBattleTesting('wave', { node: {} }), false);
+  battle._pauseOwners.add({});
+  assert.equal(service.ownsBattlePause(pause), false);
+  assert.deepEqual(opened, [['reward', undefined, false], ['reward', null, true], ['wave', battle, true], ['wave', battle, false]]);
+  assert.equal(calls.writes, 0);
+
+  const release = environment({ web: false, wave, rewards }).service;
+  release.setGameplayTarget(battle);
+  assert.equal(release.toggleRewardTesting(null, pause), false);
+  assert.equal(release.toggleBattleTesting('wave', pause), false);
+  assert.equal(release.toggle(), false);
+  assert.equal(opened.length, 4);
+});
 test('the lobby reward button is available only in the ready lobby with Test Mode enabled', () => {
   let opened = 0;
   const rewards = { toggle() { opened++; return true; } };

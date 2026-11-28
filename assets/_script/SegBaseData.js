@@ -9,6 +9,10 @@ var $z1ServerDataMgr = require("ServerDataMgr");
 var $z1BaseData = require("BaseData");
 var $z1EventMgr = require("EventMgr");
 var $z1Utils = require("Utils");
+function previewProgress(key) {
+  var cache = $z1CacheUtils.CacheUtils;
+  return cache.isPreviewProgress && cache.isPreviewProgress(key);
+}
 exports.SegData = function () {
   this.maxNum = 0;
 };
@@ -94,7 +98,7 @@ var exp_SegBaseData = function (t) {
     for (var index = 0; index <= limit; index++) {
       var key = this.gameKey + index, localRaw, serverRaw;
       try { localRaw = $z1CacheUtils.CacheUtils.getData(key); } catch (error) { this.saveBlockedByRecovery = true; }
-      if (includeServer) serverRaw = $z1ServerDataMgr.ServerdataMgr.getDataByKey(key);
+      if (includeServer && !previewProgress(key)) serverRaw = $z1ServerDataMgr.ServerdataMgr.getDataByKey(key);
       if (!localRaw && !serverRaw) {
         if (found && isFinite(limit) && index < limit) this.saveBlockedByRecovery = true;
         break;
@@ -168,7 +172,7 @@ var exp_SegBaseData = function (t) {
             n.segmentRecords.set(e, i);
             n._segmentRevisions.set(e, (n._segmentRevisions.get(e) || 0) + 1);
             n.changleIndex.delete(e);
-            if ($z1ServerDataMgr.ServerdataMgr.getNeedSaveServer()) {
+            if (!previewProgress(n.gameKey + e) && $z1ServerDataMgr.ServerdataMgr.getNeedSaveServer()) {
               n.saveMap.set(e, e);
               pendingCloud.push({ data: i, index: e });
             }
@@ -188,7 +192,8 @@ var exp_SegBaseData = function (t) {
   };
   _ctor.prototype.UpdateData2 = function (t, e, force) {
     undefined === e && (e = 0);
-    if (this.pause || this.saveBlockedByRecovery || this.localSavePending || this.deferSave || this.clearPending) return;
+    if (this.pause || this.saveBlockedByRecovery || this.localSavePending || this.deferSave || this.clearPending ||
+        previewProgress(this.gameKey + e)) return;
     if (!$z1ServerDataMgr.ServerdataMgr.getNeedSaveServer()) return;
     this.saveMap.set(e, e);
     if (this._segmentRequests.has(e)) return;

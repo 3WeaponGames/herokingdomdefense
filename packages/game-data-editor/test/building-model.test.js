@@ -20,6 +20,12 @@ test('building catalog shows every authored type and branch without modifying so
   assert.equal(JSON.stringify(base),before,'view models never seed, normalize, or mutate branches');
   assert.equal(buildingIssues(docs()).length,0,'existing optional fields and terminal branches remain valid');
 });
+test('wall upgrades allow level 3 only from level 2',()=>{
+  const d=docs(),walls=d.A.data.BuildEnum['6'].levelList,at=['BuildEnum','6','levelList',0,'BranchBuild',1];
+  assert.equal(Schema.descriptor('level',{table:'BuildEnum',id:'6',building:d.A.data.BuildEnum['6'],levelIndex:2}).max,3);
+  walls[0].BranchBuild.push(3);
+  assert(buildingIssues(d).some(issue=>issue.path.join('/')===at.join('/')&&/next level/.test(issue.message)));
+});
 test('barracks roster options match implemented allies and branch summaries expose assignments',()=>{
   assert.deepEqual(Model.alliedUnits(base,catalog,'en').map(o=>o.value),[90001,90002,90003,90004]);
   const d=Schema.clone(base);delete (d.AllyCfg||d.SoldierCfg)['90002'].prefab;
@@ -34,14 +40,14 @@ test('building field metadata uses runtime units and keeps reserved wall data re
   assert(at(3,2).min>0);assert(at(1,1).min>0);assert(at(2,1).min>0);
   assert(at(6,0).readOnly);assert(!/silver/i.test(at(6,0).label));
   const level=Schema.descriptor('level',{table:'BuildEnum'});assert.equal(level.integer,true);assert.equal(level.min,1);
-  for(const [id,max]of [[1,4],[2,4],[3,4],[4,4],[5,4],[6,2]])assert.equal(Schema.descriptor('level',{table:'BuildEnum',id}).max,max);
+  for(const [id,max]of [[1,4],[2,4],[3,4],[4,4],[5,4],[6,3]])assert.equal(Schema.descriptor('level',{table:'BuildEnum',id}).max,max);
   assert.equal(Schema.descriptor('level',{table:'BuildEnum',id:99}).max,undefined,'unknown types retain their own authoring contract');
 });
 test('unsafe roster, rate, level and upgrade connection drafts are rejected without repair',()=>{
   for(const [id,key,value] of [
     ['3',['Data',0],1.5],['3',['Data',2],0],['3',['Data',1],90005],
     ['3',['Data'],null],['2',['Data',1],0],['1',['level'],0],['1',['level'],1.5],
-    ['1',['level'],5],['2',['level'],5],['3',['level'],5],['4',['level'],5],['5',['level'],5],['6',['level'],3],
+    ['1',['level'],5],['2',['level'],5],['3',['level'],5],['4',['level'],5],['5',['level'],5],['6',['level'],4],
     ['2',['BranchBuild'],[2,2]],['2',['BranchBuild'],[]],['2',['BranchBuild'],{}],
     ['2',['BranchBuild'],[999]],['2',['BranchBuild'],[1]]
   ]){
