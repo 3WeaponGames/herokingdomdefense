@@ -13,7 +13,7 @@ const SECOND_GROUP_LEAD=2.5;
 const MAX_SEARCH_UNITS=25000;
 const MAX_EVENTS_PER_PASS=400000;
 const MAX_TACTICAL_EVENTS=60000;
-const {coincident,defeatTick}=Pressure;
+const {coincident,defeatTick,defeatSchedule,defeatedBy,travelSeconds}=Pressure;
 const atMost=(value,limit)=>value<=limit||coincident(value,limit);
 const finalSpawn=row=>row.startSeconds+(row.count-1)*row.intervalSeconds;
 const firstSpawn=rows=>rows.reduce((time,row)=>Math.min(time,row.startSeconds),Infinity);
@@ -90,34 +90,53 @@ function openingsAreOrdered(groups){
  return true;
 }
 
-function spawnTimes(row){
- return Array.from({length:row.count},(_,index)=>row.startSeconds+index*row.intervalSeconds);
+function spawnEvents(row,travel,start=row.startSeconds,gap=row.intervalSeconds){
+ const delay=travelSeconds(travel,row);
+ return Array.from({length:row.count},(_,index)=>{
+  const time=start+index*gap;
+  return {time,ready:time+delay};
+ });
+}
+
+const eventOrder=(a,b)=>a.time-b.time;
+
+function canFitTravel(fixed,row,start,gap,rate,cap,travel){
+ const events=fixed.concat(spawnEvents(row,travel,start,gap)).sort(eventOrder);
+ const defeats=defeatSchedule(events,rate);
+ if(!defeats)return false;
+ let departed=0;
+ for(const [index,event] of events.entries()){
+  while(departed<defeats.length&&atMost(defeats[departed].time,event.time))departed++;
+  if(index+1-departed>cap)return false;
+ }
+ return true;
 }
 
 // Timing candidates use a count-only merge. In Wave Overview, a defeat tick
 // removes the oldest survivor before new arrivals at the same time join it.
-function canFit(fixed,row,start,gap,rate,cap){
+function canFit(fixed,row,start,gap,rate,cap,travel){
+ if(travel)return canFitTravel(fixed,row,start,gap,rate,cap,travel);
  let fixedIndex=0,rowIndex=0,tick=0,alive=0;
  const nextRow=()=>rowIndex<row.count?start+rowIndex*gap:Infinity;
  while(fixedIndex<fixed.length||rowIndex<row.count){
-  const time=Math.min(fixed[fixedIndex]??Infinity,nextRow());
+  const time=Math.min(fixed[fixedIndex]?.time??Infinity,nextRow());
   const nextTick=defeatTick(time,rate);
   alive=Math.max(0,alive-(nextTick-tick));
   tick=nextTick;
-  while(fixedIndex<fixed.length&&coincident(fixed[fixedIndex],time)){fixedIndex++;alive++;}
+  while(fixedIndex<fixed.length&&coincident(fixed[fixedIndex].time,time)){fixedIndex++;alive++;}
   while(rowIndex<row.count&&coincident(nextRow(),time)){rowIndex++;alive++;}
   if(alive>cap)return false;
  }
  return true;
 }
 
-function fitsBossTail(fixed,choice,finale,rate,cap,limit){
- const startSeconds=Math.max(fixed[fixed.length-1]??0,finalSpawn(choice));
+function fitsBossTail(fixed,choice,finale,rate,cap,limit,travel){
+ const startSeconds=Math.max(fixed.at(-1)?.time??0,finalSpawn(choice));
  if(finale.start!==null&&!coincident(startSeconds,finale.start))return false;
  const last=startSeconds+finale.span;
  if(!Number.isFinite(last)||!atMost(last,limit)||!Number.isSafeInteger(defeatTick(last,rate)))return false;
- const arrivals=fixed.concat(finale.offsets.map(offset=>startSeconds+offset)).sort((a,b)=>a-b);
- return canFit(arrivals,choice,choice.startSeconds,choice.intervalSeconds,rate,cap);
+ const arrivals=fixed.concat(finale.offsets.map(event=>({time:startSeconds+event.time,ready:startSeconds+event.ready}))).sort(eventOrder);
+ return canFit(arrivals,choice,choice.startSeconds,choice.intervalSeconds,rate,cap,travel);
 }
 
 function samples(minimum,maximum,preferred,step,gridSize,nearby){
@@ -184,9 +203,13 @@ function intervals(row,floor,limit,rate,keepIntervals){
  });
 }
 
-function place(groups,locked,limit,rate,cap,{keepIntervals,early,goals,spawnOneFirst,floors,pins,finale}){
+function place(groups,locked,limit,rate,cap,{keepIntervals,early,goals,spawnOneFirst,floors,pins,finale,travel}){
  // Reserve the other pinned arrivals while placing each stream.
- let fixed=locked.flatMap(spawnTimes).concat(pins?[...pins.values()]:[]).sort((a,b)=>a-b),opening=0,budget=MAX_EVENTS_PER_PASS,one=Infinity;
+ const reserved=pins?groups.flat().filter(row=>pins.has(row.id)).map(row=>{
+  const time=pins.get(row.id);
+  return {time,ready:time+travelSeconds(travel,row),pin:row.id};
+ }):[];
+ let fixed=locked.flatMap(row=>spawnEvents(row,travel)).concat(reserved).sort(eventOrder),opening=0,budget=MAX_EVENTS_PER_PASS,one=Infinity;
  const placed=new Map();
  const lastGroup=groups[groups.length-1],lastRow=lastGroup?.[lastGroup.length-1];
  for(const group of groups){
@@ -197,7 +220,7 @@ function place(groups,locked,limit,rate,cap,{keepIntervals,early,goals,spawnOneF
    const lead=spawnOneFirst&&row.spawnId!==1?snapTiming(one+TIMING_STEP,Math.ceil):0;
    const floor=Math.max(opening,lead,floors?.get(row.id)??0,pin??goal?.start??0);
    if(!Number.isFinite(floor)||(pin!==undefined&&pin<floor))return null;
-   if(pin!==undefined)fixed.splice(fixed.indexOf(pin),1);
+   if(pin!==undefined)fixed.splice(fixed.findIndex(event=>event.pin===row.id),1);
    let choice,chosenEnd=Infinity;
    candidates: for(const gap of intervals(row,floor,end,rate,keepIntervals)){
     const possible=pin===undefined?starts(row,gap,floor,end,rate,early,goal?.peak):[pin];
@@ -209,9 +232,9 @@ function place(groups,locked,limit,rate,cap,{keepIntervals,early,goals,spawnOneF
      budget-=fixed.length+row.count+(tail?.offsets.length??0);
      if(budget<0)return null;
      if(!Number.isFinite(last)||!atMost(last,end)||!Number.isSafeInteger(defeatTick(last,rate)))continue;
-     if(canFit(fixed,row,start,gap,rate,cap)){
+     if(canFit(fixed,row,start,gap,rate,cap,travel)){
       const candidate={...row,startSeconds:start,intervalSeconds:gap};
-      if(tail&&!fitsBossTail(fixed,candidate,tail,rate,cap,limit))continue;
+      if(tail&&!fitsBossTail(fixed,candidate,tail,rate,cap,limit,travel))continue;
       choice=candidate;
       chosenEnd=last;
       if(!early)break candidates;
@@ -222,7 +245,7 @@ function place(groups,locked,limit,rate,cap,{keepIntervals,early,goals,spawnOneF
    if(!choice)return null;
    if(row.spawnId===1)one=Math.min(one,choice.startSeconds);
    groupOpening=Math.min(groupOpening,choice.startSeconds);
-   fixed=fixed.concat(spawnTimes(choice)).sort((a,b)=>a-b);
+   fixed=fixed.concat(spawnEvents(choice,travel)).sort(eventOrder);
    placed.set(row.id,choice);
   }
   opening=groupOpening;
@@ -230,7 +253,7 @@ function place(groups,locked,limit,rate,cap,{keepIntervals,early,goals,spawnOneF
  return placed;
 }
 
-function placePinnedGroups(groups,locked,timing,horizons,rate,cap,spawnOneFirst,finale,accept){
+function placePinnedGroups(groups,locked,timing,horizons,rate,cap,spawnOneFirst,finale,travel,accept){
  const ordered=groups.flat(),{windows,floors}=timing;
  const choices=windows.filter(group=>group.auto.length).sort((a,b)=>a.time-b.time).map(({time,auto})=>{
   const candidates=spawnOneFirst&&auto.some(row=>row.spawnId===1)?auto.filter(row=>row.spawnId===1):auto.slice();
@@ -251,7 +274,7 @@ function placePinnedGroups(groups,locked,timing,horizons,rate,cap,spawnOneFirst,
     sequence.unshift({...lead,startSeconds:pins.get(lead.id)??0});
    }
    for(const early of [false,true]){
-    const placed=place([sequence],locked,horizon,rate,cap,{keepIntervals:false,early,floors,pins,spawnOneFirst,finale});
+    const placed=place([sequence],locked,horizon,rate,cap,{keepIntervals:false,early,floors,pins,spawnOneFirst,finale,travel});
     const result=accept(placed);
     if(result)return result;
    }
@@ -260,26 +283,27 @@ function placePinnedGroups(groups,locked,timing,horizons,rate,cap,spawnOneFirst,
  return null;
 }
 
-function separateStreams(groups,lockedProjection,rate,spawnOneFirst){
+function separateStreams(groups,lockedProjection,rate,spawnOneFirst,travel){
  const duration=lockedProjection.duration;
- let start=duration+lockedProjection.at(duration).units*rate;
+ let start=travel?(lockedProjection.timelineEnd??duration):duration+lockedProjection.at(duration).units*rate;
  const placed=new Map();
  for(const group of groups){
   for(const row of group){
+   const clearance=rate+travelSeconds(travel,row);
    const choice={...row,
     startSeconds:snapTiming(Math.max(start,row.startSeconds),Math.ceil),
-    intervalSeconds:row.count>1?snapTiming(Math.max(rate,row.intervalSeconds,TIMING_STEP),Math.ceil):snapTiming(row.intervalSeconds)
+    intervalSeconds:row.count>1?snapTiming(Math.max(clearance,row.intervalSeconds,TIMING_STEP),Math.ceil):snapTiming(row.intervalSeconds)
    };
    const last=finalSpawn(choice);
    if(!Number.isFinite(last))return null;
-   start=last+(spawnOneFirst?Math.max(rate,TIMING_STEP):rate);
+   start=last+(spawnOneFirst?Math.max(clearance,TIMING_STEP):clearance);
    placed.set(row.id,choice);
   }
  }
  return placed;
 }
 
-function tacticalContext(rows,unitThreats,spawnGroups,rate,pacing){
+function tacticalContext(rows,unitThreats,spawnGroups,rate,pacing,travel){
  if(!unitThreats&&!pacing)return null;
  const groupBySpawn=new Map();
  for(const [index,group] of spawnGroups.entries()){
@@ -311,7 +335,7 @@ function tacticalContext(rows,unitThreats,spawnGroups,rate,pacing){
   totalRows++;
  }
  if(!totalRows||!matchedRows&&!pacing)return null;
- return {profiles,frontlineGroups,matchedRows,totalRows,importantArrivals,beat,rate,pacing};
+ return {profiles,frontlineGroups,matchedRows,totalRows,importantArrivals,beat,rate,pacing,travel};
 }
 
 function firstStarts(rows,profiles,qualifies){
@@ -348,7 +372,7 @@ function sidePacingCost(arrivals,context){
 // The same global FIFO defeats used by Wave Overview drive the weighted living
 // pressure. Short arrival bursts and local formation timing are soft objectives.
 function tacticalScore(rows,context){
- const {profiles,frontlineGroups,beat,rate,pacing}=context;
+ const {profiles,frontlineGroups,beat,rate,pacing,travel}=context;
  const arrivals=[],events=pacing?[]:null;
  const fronts=firstStarts(rows,profiles,profile=>profile.front);
  const openers=firstStarts(rows,profiles,profile=>profile.opener);
@@ -356,12 +380,16 @@ function tacticalScore(rows,context){
  for(const time of openers.values())waveOpener=Math.min(waveOpener,time);
  for(const [order,row] of rows.entries()){
   if(!row.count)continue;
-  const profile=profiles.get(row.id);
+  const profile=profiles.get(row.id),delay=travelSeconds(travel,row);
   for(let index=0;index<row.count;index++){
-   arrivals.push({time:row.startSeconds+index*row.intervalSeconds,order,profile});
+   const time=row.startSeconds+index*row.intervalSeconds;
+   arrivals.push({time,ready:time+delay,order,profile});
   }
  }
  arrivals.sort((left,right)=>left.time-right.time||left.order-right.order);
+ const defeats=travel?defeatSchedule(arrivals,rate):null;
+ if(travel&&!defeats)return null;
+ const tickAt=defeats?time=>defeatedBy(defeats,time):time=>defeatTick(time,rate);
  let from=0,to=0,previousTick=0,burstFrom=0,liveWeight=0,burstWeight=0;
  let peakAlive=0,peakThreat=0,peakThreatTime=0,peakBurst=0,peakBurstTime=0;
  let sampledThreat=0,sampledBurst=0,formationPenalty=0,formationCount=0;
@@ -372,15 +400,15 @@ function tacticalScore(rows,context){
   if(profile.front)livingFronts.set(profile.group,(livingFronts.get(profile.group)||0)+count);
  };
  while(to<arrivals.length){
-  const time=arrivals[to].time,tick=defeatTick(time,rate);
+  const time=arrivals[to].time,tick=tickAt(time);
   if(!Number.isSafeInteger(tick))return null;
   if(to){
-   const clearedAt=Math.max(previousArrival,(previousTick+to-from)*rate);
+   const clearedAt=Math.max(previousArrival,defeats?(tick>=to?defeats[to-1].time:time):(previousTick+to-from)*rate);
    quietGap=Math.max(quietGap,time-clearedAt);
   }
   const nextFrom=from+Math.min(to-from,tick-previousTick),first=to;
   while(from<nextFrom){
-   const {profile}=arrivals[from++];
+   const {profile}=defeats?defeats[from++].event:arrivals[from++];
    liveWeight-=profile.weight;
    addFront(profile,-1);
   }
@@ -425,7 +453,7 @@ function tacticalScore(rows,context){
   .25*Math.min(8,Math.max(0,quietGap-beat)/beatSize);
  const tacticalCost=peakThreat+.34*peakBurst+.16*sampledThreat/average+.08*sampledBurst/average+
   formationPenalty/Math.sqrt(formationCount||1)+openingPenalty/Math.sqrt(openingCount||1)+timingPenalty;
- const shape=pacing?Pacing.measure(events,pacing,rate):null;
+ const shape=pacing?Pacing.measure(events,pacing,rate,tickAt):null;
  const openingDelay=Math.max(0,first-Math.min(.5,context.originalOpening));
  const score=shape ? .55*tacticalCost+shape.score+2.5*Math.min(8,openingDelay)+sidePacingCost(arrivals,context) : tacticalCost;
  return {score,peakAlive,peakThreat,peakThreatTime,peakBurst,peakBurstTime,coveredBackliners,pacing:shape};
@@ -565,7 +593,7 @@ function refinePushes(rows,initial,context,horizon,free,groups,locked,cap,checkO
     goals.set(row.id,priority?{start:row===opener?0:Math.min(TIMING_STEP,follow),limit}:{start,peak,limit});
    }
   }
-  const placed=place([placement],locked,horizon,rate,cap,{keepIntervals:false,early:false,goals,spawnOneFirst,finale:context.finale});
+  const placed=place([placement],locked,horizon,rate,cap,{keepIntervals:false,early:false,goals,spawnOneFirst,finale:context.finale,travel:context.travel});
   if(!placed||checkOrder&&!openingsAreOrdered(groups.map(group=>group.map(row=>placed.get(row.id)))))continue;
   const candidate=Waves.alignBossStarts(rows.map(row=>placed.get(row.id)||row),context.bosses);
   const score=tacticalScore(candidate,context);
@@ -575,15 +603,15 @@ function refinePushes(rows,initial,context,horizon,free,groups,locked,cap,checkO
 }
 
 function plan(wave,{
- interval,defeatSeconds=Pressure.DEFAULT_DEFEAT_SECONDS,peakCap=DEFAULT_PEAK_CAP,lastSpawnLimit=null,pushPeaks=null,totalUnits=null,
- spawnGroups=[],spawnOrder=[],groupStarts={},timingEdits=null,isManual=Waves.isTimingManual,unitThreats
+ interval,defeatSeconds=Pressure.defeatSecondsFor(wave),peakCap=DEFAULT_PEAK_CAP,lastSpawnLimit=null,pushPeaks=null,totalUnits=null,
+ spawnGroups=[],spawnOrder=[],groupStarts={},timingEdits=null,isManual=Waves.isTimingManual,unitThreats,travel
 }={}){
  if(!Number.isSafeInteger(peakCap)||peakCap<1)throw Error('Max enemies alive must be a positive whole number.');
  if(lastSpawnLimit!==null&&(!Number.isFinite(lastSpawnLimit)||lastSpawnLimit<0))throw Error('Last spawn by must be zero or greater.');
  if(totalUnits!==null&&(!Number.isSafeInteger(totalUnits)||totalUnits<1||totalUnits>MAX_SEARCH_UNITS)){
   throw Error('Target unit count must be a whole number from 1 to '+MAX_SEARCH_UNITS+'.');
  }
- const project=source=>Pressure.build(source,[],interval,defeatSeconds);
+ const project=source=>Pressure.build(source,[],interval,defeatSeconds,travel);
  const original=project(wave),before=summary(original);
  const changes=[];
  const fail=(reason,message,details={})=>({ok:false,reason,message,before,changes,...details});
@@ -624,8 +652,8 @@ function plan(wave,{
  if(bosses.size&&peakCap<=bosses.size){
   return fail('peak-exceeded','The final regular unit and its bosses need room for at least '+(bosses.size+1)+' enemies alive.');
  }
- const offsets=bosses.size?entries.filter(row=>bosses.has(row.id)).flatMap(row=>spawnTimes({...row,startSeconds:0})):[];
- const finale=bosses.size?{start:timing.bossStart,offsets,span:offsets.reduce((latest,time)=>Math.max(latest,time),0)}:null;
+ const offsets=bosses.size?entries.filter(row=>bosses.has(row.id)).flatMap(row=>spawnEvents(row,travel,0)):[];
+ const finale=bosses.size?{start:timing.bossStart,offsets,span:offsets.reduce((latest,event)=>Math.max(latest,event.time),0)}:null;
  if(Array.isArray(pushPeaks)&&pushPeaks.includes(null)){
   const latestStart=timing.windows.reduce((latest,group)=>Math.max(latest,group.time),0);
   const suggested=Pacing.suggestedPeaks(pushPeaks.length,working.totals.units,peakCap,defeatSeconds,lastSpawnLimit,latestStart);
@@ -675,7 +703,7 @@ function plan(wave,{
 
  function finish(baseline,checkOrder,refine=true){
   if(Math.max(original.totals.units,working.totals.units)>MAX_SEARCH_UNITS)return baseline;
-  const context=tacticalContext(entries,unitThreats,spawnGroups,defeatSeconds,pacing);
+  const context=tacticalContext(entries,unitThreats,spawnGroups,defeatSeconds,pacing,travel);
   if(!context)return baseline;
   const rows=baseline.changes.length?Waves.entries(baseline.afterWave,interval):entries;
   context.originalOpening=firstSpawn(rows.filter(row=>row.count));
@@ -762,9 +790,10 @@ function plan(wave,{
  if(!fitsDeadline(fixed.lastSpawn))return fail('locked-deadline',`Manual rows spawn through ${fixed.lastSpawn} s. Unlock or adjust a manual row, or raise the last spawn limit.`,{fixed});
 
  const requiredDefeats=Math.max(0,working.totals.units-peakCap);
- const minimumLastSpawn=requiredDefeats*defeatSeconds;
+ const shortestTravel=travel&&requiredDefeats?entries.reduce((earliest,row)=>row.count>0?Math.min(earliest,travelSeconds(travel,row)):earliest,Infinity):0;
+ const minimumLastSpawn=shortestTravel+requiredDefeats*defeatSeconds;
  if(!Number.isFinite(minimumLastSpawn))return fail('projection-unavailable','The selected defeat interval would push the last spawn beyond the timing projection range.');
- if(lastSpawnLimit!==null&&defeatTick(lastSpawnLimit,defeatSeconds)<requiredDefeats){
+ if(lastSpawnLimit!==null&&!atMost(minimumLastSpawn,lastSpawnLimit)){
   return fail('deadline-too-short',`This wave needs at least ${minimumLastSpawn} s to stay at ${peakCap} enemies alive with the selected defeat interval.`,{minimumLastSpawn});
  }
  if(working.totals.units>MAX_SEARCH_UNITS){
@@ -790,11 +819,11 @@ function plan(wave,{
   // Leave room to drain earlier streams when an explicit opening is late.
   const extra=(working.totals.units+1)*Math.max(TIMING_STEP,defeatSeconds);
   const expanded=lastSpawnLimit??Math.min(Number.MAX_VALUE,Math.max(limit,fixed.lastSpawn)+extra);
-  const planned=placePinnedGroups(groups,locked,timing,new Set([compactLimit,limit,expanded]),defeatSeconds,peakCap,spawnOneFirst,finale,result);
+  const planned=placePinnedGroups(groups,locked,timing,new Set([compactLimit,limit,expanded]),defeatSeconds,peakCap,spawnOneFirst,finale,travel,result);
   return planned??fail('group-start-limits','No proposal fit the set spawn-group times and wave limits. Adjust a group start, a Manual row, the peak cap, or the last-spawn limit.');
  }
  if(compactLimit<limit&&Number.isSafeInteger(defeatTick(compactLimit,defeatSeconds))){
-  const compact=result(place(groups,locked,compactLimit,defeatSeconds,peakCap,{keepIntervals:false,early:false,spawnOneFirst,finale}));
+  const compact=result(place(groups,locked,compactLimit,defeatSeconds,peakCap,{keepIntervals:false,early:false,spawnOneFirst,finale,travel}));
   if(compact)return compact;
  }
  if(Number.isSafeInteger(defeatTick(limit,defeatSeconds))){
@@ -804,15 +833,15 @@ function plan(wave,{
    ...(finale?[{keepIntervals:true,early:true}]:[]),
    {keepIntervals:false,early:true}
   ]){
-   const proposal=result(place(groups,locked,limit,defeatSeconds,peakCap,{...options,spawnOneFirst,finale}));
+   const proposal=result(place(groups,locked,limit,defeatSeconds,peakCap,{...options,spawnOneFirst,finale,travel}));
    if(proposal)return proposal;
   }
  }
  if(lastSpawnLimit>limit&&Number.isSafeInteger(defeatTick(lastSpawnLimit,defeatSeconds))){
-  const extended=result(place(groups,locked,lastSpawnLimit,defeatSeconds,peakCap,{keepIntervals:false,early:false,spawnOneFirst,finale}));
+  const extended=result(place(groups,locked,lastSpawnLimit,defeatSeconds,peakCap,{keepIntervals:false,early:false,spawnOneFirst,finale,travel}));
   if(extended)return extended;
  }
- const fallback=result(separateStreams(groups,fixedProjection,defeatSeconds,spawnOneFirst));
+ const fallback=result(separateStreams(groups,fixedProjection,defeatSeconds,spawnOneFirst,travel));
  if(fallback)return fallback;
  const priority=spawnOneFirst?' with Spawn 1 sending first':'';
  return fail('search-limit','No valid timing proposal was found in '+TIMING_STEP+' s steps'+priority+'. Try a higher peak cap, a later last spawn limit, or unlock a manual row.',{minimumLastSpawn});

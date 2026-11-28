@@ -127,27 +127,28 @@ test('wave timing balance requires a fresh preview and applies one full-wave dra
  assert.equal(field('Push 4 peak (s)').parentNode.hidden,true);
  pushes.value='2';pushes.onchange();
  assert.equal(field('Push 3 peak (s)').parentNode.hidden,true);
- field('Push 1 peak (s)').value='2';
- cap.value='2';deadline.value='3';await preview.onclick();
- assert.match(modal.dialog.textContent,/at least 4 s/);
+ cap.value='2';deadline.value='1';await preview.onclick();
+ assert.match(modal.dialog.textContent,/one defeat every 4 s/);
+ assert.match(modal.dialog.textContent,/at least 8 s/);
  assert.match(modal.dialog.textContent,/Peak enemies alive4 at 0 s/);
  assert(modal.applyButton.disabled);
- deadline.value='8';deadline.oninput();await preview.onclick();
+ field('Push 1 peak (s)').value='2';
+ deadline.value='12';deadline.oninput();await preview.onclick();
  assert(!modal.applyButton.disabled);
  const stats=dialog().find(node=>node.classList.contains('world-wave-balance-metrics'));
  assert.match(stats.textContent,/Peak enemies alive4 at 0 s[12] at/);
  assert.match(stats.textContent,/Distinct pushes/);
  assert.match(stats.textContent,/Push 2 peak/);
  assert.deepEqual(f.state.snap.value,before);assert.equal(f.edits(),0);
- deadline.value='7';deadline.oninput();
+ deadline.value='11';deadline.oninput();
  await assert.rejects(apply(),/Preview these settings/);
  await preview.onclick();await apply();
  const saved=f.state.snap.value.config.WaveCfg[0];
- assert.deepEqual(saved.editorTimingBalance,{peakCap:2,lastSpawnLimit:7,defeatSeconds:2,pushPeaks:[2,null]});
+ assert.deepEqual(saved.editorTimingBalance,{peakCap:2,lastSpawnLimit:11,defeatSeconds:4,defeatSecondsMode:'default',pushPeaks:[2,null]});
  assert.deepEqual(saved.SpawnTimeline[0],wave.SpawnTimeline[0]);
  assert.equal(f.edits(),1);
  const measured=require('../worlds/wave-pressure').build(saved,f.state.catalog.units,.5);
- assert(measured.peaks.units.value<=2);assert(measured.duration<=7);
+ assert(measured.peaks.units.value<=2);assert(measured.duration<=11);
 
  f.context.right.textContent='';f.panels.right();
  await descendants(f.context.right).find(node=>node.classList.contains('world-wave-balance-button')).onclick();
@@ -156,10 +157,10 @@ test('wave timing balance requires a fresh preview and applies one full-wave dra
  assert.equal(field('Push count').value,'2');
  assert.equal(field('Push 1 peak (s)').value,'2');
  assert.equal(field('Push 2 peak (s)').value,'');
- assert.equal(field('Push 2 peak (s)').placeholder,'7');
+ assert.equal(field('Push 2 peak (s)').placeholder,'11');
  suggested.onclick();
  assert.equal(savedCap.value,'5');assert(suggested.disabled);
- assert.equal(field('Last spawn by (s)').value,'7');assert(modal.applyButton.disabled);
+ assert.equal(field('Last spawn by (s)').value,'11');assert(modal.applyButton.disabled);
  assert.equal(saved.editorTimingBalance.peakCap,2);assert.equal(f.edits(),1);
 });
 
@@ -321,6 +322,8 @@ test('stage balance scales current totals and applies the whole populated stage 
  await review.preview();
  assert.deepEqual(review.row('Wave 1').slice(1,4),['4','4','4']);
  assert.deepEqual(review.row('Wave 2').slice(1,4),['1','1','1']);
+ assert.equal(review.row('Wave 1').at(-2),'0.5 s');
+ assert.equal(review.row('Wave 2').at(-2),'4 s');
  review.percentage.value='80';review.percentage.oninput();
  await review.preview();
  assert.deepEqual(review.row('Wave 1').slice(1,4),['4','3','4']);
@@ -426,6 +429,7 @@ test('balance plans with the enemy mix below the count cap and previews the unit
  const f=fixture(),wave=f.state.snap.value.config.WaveCfg[0];
  f.state.tab='Waves';
  wave.HealthCoefficient=1;wave.AttackCoefficient=1;
+ wave.editorTimingBalance={defeatSeconds:1};
  f.state.catalog.units=[
   {id:3,name:'Shield',unitType:'guardian',health:120,damage:4,attackRate:1,attack:{delivery:'melee',pattern:'single'}},
   {id:5,name:'Wyrm',unitType:'mystic',flight:true,health:75,damage:16,attackRate:1,attack:{delivery:'ranged',pattern:'splash',splashRadius:90}},
@@ -470,6 +474,22 @@ test('wave overview restores each reviewed defeat rate and reports a breached sa
  assert.match(f.context.top.textContent,/Peak 4 \/ 1 enemies · Last spawn 4 s \/ 3 s/);
  f.state.wave=1;f.panels.top();assert.equal(rate().value,'1.25');
  f.state.wave=0;f.panels.top();assert.equal(rate().value,'0.75');assert.equal(f.edits(),0);
+});
+
+test('the wave overview refreshes the rate for the selected wave and can restore its default',()=>{
+ const f=fixture(),waves=f.state.snap.value.config.WaveCfg;
+ f.state.tab='Waves';
+ waves[1].editorTimingBalance={defeatSeconds:2};
+ waves.push({...clone(waves[0]),Wave:10,editorTimingBalance:{defeatSeconds:2,defeatSecondsMode:'custom'}});
+ const before=clone(f.state.snap.value);
+ const rate=()=>descendants(f.context.top).find(node=>node.attributes?.['aria-label']==='Seconds per defeat');
+ function change(value){const input=rate();input.value=value;input.onchange();}
+ f.panels.top();assert.equal(rate().value,'4');
+ change('1.5');assert.equal(rate().value,'1.5');
+ f.state.wave=1;f.panels.top();assert.equal(rate().value,'4');
+ f.state.wave=2;f.panels.top();assert.equal(rate().value,'2');
+ change('');assert.equal(rate().value,'1');
+ assert.deepEqual(f.state.snap.value,before);assert.equal(f.edits(),0);
 });
 
 test('wave count and timing fields select all on click and commit once on Enter',()=>{
@@ -862,6 +882,27 @@ test('Duplicate path sits directly above Delete path, retains spawn references a
 });
 test('rendering every contextual stage tab makes no draft changes or edit requests',()=>{
  const f=fixture(),before=JSON.stringify(f.state.snap.value);for(const tab of ['Stage','Buildings','Spawns','Paths','Waves']){f.state.tab=tab;f.panels.top();f.panels.tabs();f.panels.left();f.panels.right();assert.equal(JSON.stringify(f.state.snap.value),before,tab);}assert.equal(f.edits(),0);
+});
+
+test('a path chokepoint draft updates the wave overview without editing the wave',async()=>{
+ const f=fixture(),stage=f.state.snap.value;
+ stage.graphs.length=1;
+ stage.config.WaveCfg[0].SpawnTimeline.length=1;
+ f.state.catalog.units[0].speed=100;
+ const before=clone(stage);
+ function draw(tab){f.state.tab=tab;f.context.right.textContent='';f.panels.right();}
+ f.state.selection=['node:goal'];draw('Paths');
+ const marker=descendants(f.context.right).find(node=>node.fieldName==='Chokepoint');
+ assert.equal(marker.checked,false);
+ assert.equal(f.edits(),0);
+ await marker.change(true);
+ assert.equal(f.edits(),1);
+ assert.deepEqual(f.state.snap.value.graphs[0],{...before.graphs[0],chokepoint:'goal'});
+ draw('Waves');
+ f.panels.top();
+ assert.match(f.context.top.textContent,/First contact ~2 s · First defeat ~6 s/);
+ assert.deepEqual(f.state.snap.value.config,before.config);
+ assert.equal(f.edits(),1);
 });
 
 test('the Stage and Buildings tabs can change building levels independently of the hall',()=>{

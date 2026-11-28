@@ -3,6 +3,7 @@
 const Blockers=require('./blockers'),Physics=require('./physics-polygons'),GateFacing=require('../../../assets/_script/GateFacing');
 const StageNames=require('./stage-names'),SilverOfferSchedule=require('../../../assets/_script/SilverOfferSchedule');
 const SpawnGroups=require('./spawn-groups');
+const Chokepoint=require('./path-chokepoint');
 const clone=value=>JSON.parse(JSON.stringify(value));
 const BIOMES=['forest','deep-forest','autumn','desert','snow','ice','fire','lava'];
 // Portable storage keys. Only foundation is required in the authored draw order.
@@ -162,6 +163,7 @@ function graphIssues(graph,spawnIds,buildingIds){
   if(!finite(n.x)||!finite(n.y))issues.push('Invalid path node position for point '+identifier(n.id)+'.');
  }
  if(!nodes.has(graph.entry))issues.push('Path needs a starting node.');
+ if(graph.chokepoint!==undefined&&!Chokepoint.point(graph))issues.push('Choose a valid chokepoint on this path or clear the marker.');
  for(const edge of edges){
   if(!outgoing.has(edge.from))outgoing.set(edge.from,[]);
   outgoing.get(edge.from).push(edge);

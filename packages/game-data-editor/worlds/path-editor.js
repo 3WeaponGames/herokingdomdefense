@@ -3,6 +3,7 @@
 // A point edit never guesses which conditional branch the author intended.
 const M=require('./model'),Doc=require('../lib/json-document');
 const Names=require('./stage-names'),CardOrder=require('./stage-card-order');
+const Chokepoint=require('./path-chokepoint');
 const clone=value=>M.clone(value),condition=edge=>edge.requiresAnyBuilding||[];
 function locate(stage,graphId,nodeId){
  if(!stage||!Array.isArray(stage.graphs))throw Error('Select a path.');
@@ -31,6 +32,7 @@ function splitSegment(plan,edge,fraction,nodeIndex){
  if(![from.x,from.y,to.x,to.y].every(Number.isFinite))throw Error('Both neighboring points need finite positions.');
  const added={id:unique(graph.nodes,'node-'),x:from.x*(1-fraction)+to.x*fraction,y:from.y*(1-fraction)+to.y*fraction,goal:false};
  const second={id:unique(graph.edges,'edge-'),from:added.id,to:edge.to,weight:1};
+ Chokepoint.split(graph,edge.id,second.id,fraction,added.id);
  edge.to=added.id;graph.edges.splice(graph.edges.indexOf(edge)+1,0,second);graph.nodes.splice(nodeIndex,0,added);
  validate(plan.before,graph);return Object.assign(plan,{selected:added.id});
 }
@@ -62,8 +64,12 @@ function removePlan(stage,graphId,nodeId){
  }else{
   const links=incoming.length?incoming:predecessors;
   if(links.length!==1||outgoing.length!==1)throw Error('Only a linear point can be removed safely. Keep branch and join points, or edit their segments explicitly.');
-  const replacement=stitch(links[0],outgoing[0]);graph.edges[graph.edges.indexOf(links[0])]=replacement;selected=outgoing[0].to;
+  const replacement=stitch(links[0],outgoing[0]);
+  Chokepoint.join(graph,links[0],outgoing[0]);
+  graph.edges[graph.edges.indexOf(links[0])]=replacement;selected=outgoing[0].to;
  }
+ if(graph.chokepoint===nodeId)delete graph.chokepoint;
+ for(const edge of graph.edges)if(edge.from===nodeId||edge.to===nodeId)Chokepoint.removeEdge(graph,edge.id);
  graph.nodes=graph.nodes.filter(value=>value.id!==nodeId);graph.edges=graph.edges.filter(edge=>edge.from!==nodeId&&edge.to!==nodeId);
  validate(plan.before,graph);return Object.assign(plan,{selected});
 }
@@ -87,4 +93,11 @@ function duplicatePath(stage,graphId){
  // Point/edge IDs are scoped to their graph; retain their topology and metadata.
  stage.graphs.push(copy);Names.refreshPaths(stage);CardOrder.move(stage.graphs,copy.id,graphId,true);return copy.id;
 }
-module.exports={insertNode,insertOnEdge,removeNode,availability,duplicatePath};
+function setChokepoint(stage,graphId,marker){
+ const graph=(stage.graphs||[]).find(graph=>graph.id===graphId);
+ if(!graph)throw Error('Select an existing path.');
+ if(marker===null){delete graph.chokepoint;return;}
+ if(!Chokepoint.point({...graph,chokepoint:marker}))throw Error('Choose a valid point on this path.');
+ graph.chokepoint=clone(marker);
+}
+module.exports={insertNode,insertOnEdge,removeNode,availability,duplicatePath,setChokepoint};

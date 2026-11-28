@@ -10,7 +10,7 @@ const Waves=require('../worlds/wave-editor');
 
 const row=(id,spawnId,count,startSeconds,intervalSeconds,fields={})=>({id,spawnId,unitId:99,count,startSeconds,intervalSeconds,...fields});
 const wave=(...SpawnTimeline)=>({SpawnTimeline,HealthCoefficient:1,AttackCoefficient:1});
-const plan=(source,options)=>Balance.plan(source,{interval:.5,...options});
+const plan=(source,options)=>Balance.plan(source,{interval:.5,defeatSeconds:2,...options});
 
 const roleThreats=new Map([
  [1,{weight:1.3,frontline:true,phase:0}],
@@ -162,7 +162,7 @@ test('finds four separate pushes without Array.prototype.at and preserves the Ma
  const pacing=result.tactical.after.pacing;
  assert.equal(pacing.distinct,4);
  assert(pacing.peaks.every((peak,index)=>Math.abs(peak.time-pushPeaks[index])<=3));
- const projection=Pressure.build(result.afterWave,[],.5);
+ const projection=Pressure.build(result.afterWave,[],.5,2);
  assert(projection.peaks.units.value<=options.peakCap&&projection.duration<=options.lastSpawnLimit);
  for(const [index,lull] of pacing.lulls.entries()){
   assert.equal(lull.value,projection.at(lull.time).units);
@@ -354,7 +354,7 @@ test('balances against all fixed rows and previews exactly what the draft operat
  assert.equal(draft.SpawnTimeline[2].unitGroupId,'group-1');
  assert.equal(draft.SpawnTimeline[2].futureField,'keep');
  assert.deepEqual(draft,result.afterWave);
- assert.equal(Pressure.build(draft,[],.5).peaks.units.value,4);
+ assert.equal(Pressure.build(draft,[],.5,2).peaks.units.value,4);
 });
 
 test('increases a dense interval when start staggering alone cannot meet the cap',()=>{
@@ -502,7 +502,7 @@ test('legacy preview leaves the authored lane strings and source metadata intact
  assert.deepEqual(result.afterWave.RefreshSoldierKind,original.RefreshSoldierKind);
  assert.deepEqual(result.afterWave.future,{retain:true});
  assert.equal(Pressure.build(result.afterWave,[],.5).totals.units,10);
- assert(Pressure.build(result.afterWave,[],.5).peaks.units.value<=3);
+ assert(Pressure.build(result.afterWave,[],.5,2).peaks.units.value<=3);
 });
 
 test('reports bounded-search failure separately from proven impossibility',()=>{

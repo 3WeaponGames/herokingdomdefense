@@ -159,6 +159,6 @@ test('all twenty-four campaign stages recover valid layouts without changing the
 test('Stage 2 routes and waypoint positions in the playable prefab match the authoring layout',()=>{
  const root=path.resolve(__dirname,'../../..');
  const authored=L.read(root,'authoring/worlds/stages/A-2.json'),playable=L.adaptStage(root,'A',2);
- assert.deepEqual(playable.graphs,authored.graphs);
+ assert.deepEqual(playable.graphs,authored.graphs.map(({chokepoint,...route})=>route));
  assert.deepEqual(playable.spawns,authored.spawns);
 });

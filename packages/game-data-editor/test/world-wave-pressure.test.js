@@ -11,7 +11,7 @@ const units=[{id:1,health:8,damage:6},{id:2,health:20,damage:2},{id:3,health:4,d
 test('wave pressure separates scaled totals from the living snapshot and records independent peak times',()=>{
  const source=wave([spawn(1,0),spawn(2,1),spawn(3,2)],{HealthCoefficient:2,AttackCoefficient:.5});
  const before=JSON.stringify({source,units});
- const summary=Pressure.build(source,units,.5);
+ const summary=Pressure.build(source,units,.5,2);
  assert.equal(summary.duration,2);
  assert.deepEqual(summary.totals,{units:3,health:64,damage:12});
  assert.deepEqual(summary.peaks,{units:{value:2,time:1},health:{value:56,time:1},damage:{value:9,time:2}});
@@ -28,26 +28,43 @@ test('coincident arrivals enter in authored row order even when floating point a
   {...spawn(3,.3),id:'second'},
   {...spawn(2,8),id:'last'}
  ],{editorUnitOrder:['second','first','last']});
- const summary=Pressure.build(source,units,.5);
+ const summary=Pressure.build(source,units,.5,2);
  assert.deepEqual(summary.at(.3),{units:4,health:28,damage:33});
  assert.deepEqual(summary.at(6),{units:1,health:4,damage:15});
  assert.deepEqual(summary.at(8),{units:1,health:20,damage:2});
 });
 
-test('periodic defeats skip empty ticks and occur before tied spawns',()=>{
- const source=wave([spawn(1,9),spawn(2,12),spawn(3,14)]);
+test('late waves default to one second per defeat and skip empty ticks',()=>{
+ const source=wave([spawn(1,9),spawn(2,12),spawn(3,14)],{Wave:10});
  const summary=Pressure.build(source,units,1);
  assert.deepEqual(summary.at(8),{units:0,health:0,damage:0});
  assert.deepEqual(summary.at(9.5),{units:1,health:8,damage:6});
  assert.deepEqual(summary.at(10),{units:0,health:0,damage:0});
+ assert.equal(summary.at(11).units,0);
  assert.equal(summary.at(12).health,20);
+ assert.equal(summary.at(13).units,0);
  assert.equal(summary.at(14).health,4);
  assert.equal(Pressure.build(source,units,1,5).at(14).units,2);
 });
 
+test('the wave curve changes the first defeat after contact and respects explicit overrides',()=>{
+ const travel=()=>({seconds:7});
+ for(const [index,seconds] of [4,4,3,3,2,1,1,1,1,1].entries()){
+  const source=wave([spawn(1,0)],{Wave:index+1,editorTimingBalance:{defeatSeconds:2}});
+  const summary=Pressure.build(source,units,.5,undefined,travel);
+  assert.equal(summary.travel.firstDefeat,7+seconds,'Wave '+(index+1));
+  assert.equal(summary.at(7+seconds-.01).units,1);
+  assert.equal(summary.at(7+seconds).units,0);
+ }
+ const early={Wave:1,editorTimingBalance:{defeatSeconds:2,defeatSecondsMode:'custom'}};
+ assert.equal(Pressure.defeatSecondsFor(early),2);
+ assert.equal(Pressure.defeatSecondsFor({Wave:4,editorTimingBalance:{defeatSeconds:4,defeatSecondsMode:'default'}}),3);
+ assert.equal(Pressure.defeatSecondsFor({},2),4);
+});
+
 test('legacy rows retain their original timing and empty rows contribute zero',()=>{
  const legacy={RefreshSoldierKind:['1#1,2;-1,1;2,1'],HealthCoefficient:1,AttackCoefficient:1};
- const summary=Pressure.build(legacy,units,.5);
+ const summary=Pressure.build(legacy,units,.5,2);
  assert.equal(summary.duration,2);
  assert.deepEqual(summary.at(.4),{units:0,health:0,damage:0});
  assert.deepEqual(summary.at(1.5),{units:2,health:16,damage:12});
@@ -60,7 +77,7 @@ test('legacy rows retain their original timing and empty rows contribute zero',(
 
 test('unknown and overflowing health do not lose counts or poison later survivor snapshots',()=>{
  const source=wave([spawn(1,0),spawn(1,0),spawn(2,4)]);
- const summary=Pressure.build(source,[{id:1,health:1e308,damage:42},{id:2,health:5}],.5);
+ const summary=Pressure.build(source,[{id:1,health:1e308,damage:42},{id:2,health:5}],.5,2);
  assert.equal(summary.totals.health,null);
  assert.equal(summary.totals.damage,null);
  assert.deepEqual(summary.at(0),{units:2,health:null,damage:84});
@@ -72,13 +89,13 @@ test('unknown and overflowing health do not lose counts or poison later survivor
 
 test('dense and sparse single streams support large schedules without expanding each unit',()=>{
  const count=10_000_000;
- const dense=Pressure.build(wave([spawn(1,0,count,.25)]),units,.5);
+ const dense=Pressure.build(wave([spawn(1,0,count,.25)]),units,.5,2);
  assert.equal(dense.projected,true);
  assert.equal(dense.duration,2_499_999.75);
  assert.deepEqual(dense.peaks.units,{value:8_750_001,time:dense.duration});
  assert.deepEqual(dense.at(2),{units:8,health:64,damage:48});
  assert.deepEqual(dense.at(dense.duration),{units:8_750_001,health:70_000_008,damage:52_500_006});
- const sparse=Pressure.build(wave([spawn(1,1,count,5)]),units,.5);
+ const sparse=Pressure.build(wave([spawn(1,1,count,5)]),units,.5,2);
  assert.equal(sparse.projected,true);
  assert.deepEqual(sparse.peaks.units,{value:1,time:1});
  assert.equal(sparse.at(2).units,0);
@@ -99,4 +116,19 @@ test('invalid timing is rejected without producing fake projections',()=>{
   assert.throws(()=>Pressure.build(source,units,.5),/timing or unit count/);
  }
  assert.throws(()=>Pressure.build(wave([]),units,.5,0),/Seconds per defeat/);
+});
+
+test('chokepoint defeats use contact order and restart after a quiet interval',()=>{
+ const source=wave([spawn(1,0),spawn(2,5),spawn(3,11)]);
+ const travel=row=>({seconds:[8,2,3][row.unitId-1]});
+ const summary=Pressure.build(source,units,.5,undefined,travel);
+ assert.equal(summary.duration,11);
+ assert.equal(summary.timelineEnd,15);
+ assert.deepEqual(summary.travel,{firstArrival:7,firstDefeat:8,viaGoal:0,fromSpawn:0});
+ assert.deepEqual(summary.at(7.99),{units:2,health:28,damage:8});
+ assert.deepEqual(summary.at(8),{units:1,health:8,damage:6});
+ assert.equal(summary.at(9).units,0);
+ assert.equal(summary.at(14.99).units,1);
+ assert.equal(summary.at(15).units,0);
+ assert.equal(Pressure.build(source,units,.5,2,travel).travel.firstDefeat,9);
 });

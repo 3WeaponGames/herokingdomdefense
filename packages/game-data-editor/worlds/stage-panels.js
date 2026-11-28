@@ -103,7 +103,7 @@ function create(c){
   if(state.tab==='Waves'){
    const row=stage().config.WaveCfg?.[state.wave];
    main.classList.add('world-stage-primary-overview');
-   waveOverview.render(main,{key:stage().id+'\u0000'+state.wave,label:waveLabel(row,state.wave),wave:row,units:unitRows(),interval:catalog().interval});
+   waveOverview.render(main,{key:stage().id+'\u0000'+state.wave,label:waveLabel(row,state.wave),stage:stage(),wave:row,waveNumber:state.wave+1,units:unitRows(),interval:catalog().interval});
   }
   parent.appendChild(main);
   const actions=el('div',undefined,'world-stage-header-actions');parent.appendChild(actions);button(actions,'Fit map',c.fit);button(actions,state.previewBusy?'Preparing preview…':'Preview draft',c.startPreview).disabled=!!state.previewBusy;if(state.previewOpen)button(actions,'Close preview',c.closePreview);
@@ -426,12 +426,25 @@ function create(c){
   if(graph.spread!==undefined){const width=field(c.right,'Path half-width',numericValue(graph.spread),value=>{if(!Number.isFinite(value)||value<0||value>1500)throw Error('Choose a width from 0 to 1500.');return edit(s=>s.graphs.find(g=>g.id===graph.id).spread=value);});width.min='0';width.max='1500';}
   note(c.right,'Enemies retain a lane based on their spawn position. Lanes tighten around obstacles and keep the same branches and final goal. Width 0 follows the center line.');
   note(c.right,'Teal arrows show travel direction. Click a line to insert a point. Ctrl-click a line for its connection settings. Right-click a point to remove it.');
+  const setChokepoint=marker=>edit(s=>Paths.setChokepoint(s,graph.id,marker));
+  if(graph.chokepoint!==undefined)button(c.right,'Clear chokepoint',()=>setChokepoint(null));
   const selected=state.selection.find(id=>id.startsWith('node:')),node=selected&&graph.nodes.find(n=>'node:'+n.id===selected);
-  section(c.right,'Selected point');if(node){const at=Paths.availability(stage(),graph.id,node.id);field(c.right,'X',numericValue(node.x),value=>c.patchSelected('x',Number(value)));field(c.right,'Y',numericValue(node.y),value=>c.patchSelected('y',Number(value)));field(c.right,'Goal',!!node.goal,value=>c.patchSelected('goal',value));button(c.right,'Use as start',()=>edit(s=>s.graphs.find(g=>g.id===graph.id).entry=node.id));const add=button(c.right,node.goal?'Insert point before goal':'Insert next point',()=>c.insertPathNode(node.id));add.disabled=!at.insert;add.title=at.insertReason||'Ctrl-click this point';const remove=button(c.right,'Remove point',()=>c.removePathNode(node.id));remove.disabled=!at.remove;remove.title=at.removeReason||'Right-click this point';}else note(c.right,'Click a path point to move it or edit it here.');
+  section(c.right,'Selected point');if(node){const at=Paths.availability(stage(),graph.id,node.id);field(c.right,'X',numericValue(node.x),value=>c.patchSelected('x',Number(value)));field(c.right,'Y',numericValue(node.y),value=>c.patchSelected('y',Number(value)));field(c.right,'Goal',!!node.goal,value=>c.patchSelected('goal',value));
+   field(c.right,'Chokepoint',graph.chokepoint===node.id,value=>setChokepoint(value?node.id:null));
+   button(c.right,'Use as start',()=>edit(s=>s.graphs.find(g=>g.id===graph.id).entry=node.id));const add=button(c.right,node.goal?'Insert point before goal':'Insert next point',()=>c.insertPathNode(node.id));add.disabled=!at.insert;add.title=at.insertReason||'Ctrl-click this point';const remove=button(c.right,'Remove point',()=>c.removePathNode(node.id));remove.disabled=!at.remove;remove.title=at.removeReason||'Right-click this point';}else note(c.right,'Select a point to mark where this route reaches a defense.');
   const edgeId=state.selection.find(id=>id.startsWith('edge:')),edge=edgeId&&graph.edges.find(e=>'edge:'+e.id===edgeId);
   if(edge){
    const options=details('Selected connection','path:'+graph.id+':edge:'+edge.id,true);
    c.right.appendChild(options);field(options,'Branch weight',numericValue(edge.weight),value=>c.patchSelected('weight',Number(value)));
+   const marked=graph.chokepoint?.edgeId===edge.id;
+   field(options,'Chokepoint on segment',marked,value=>setChokepoint(value?{edgeId:edge.id,fraction:.5}:null));
+   if(marked){
+    const position=field(options,'Chokepoint position (%)',Number((graph.chokepoint.fraction*100).toFixed(2)),value=>{
+     const fraction=Number(value)/100;
+     return setChokepoint(fraction===0?edge.from:fraction===1?edge.to:{edgeId:edge.id,fraction});
+    });
+    position.step='any';position.min='0';position.max='100';
+   }
    note(options,'Weights matter only when a point has multiple outgoing branches. Equal weights choose branches equally.');
    note(options,'Available when any selected building exists. Leave all unchecked for an unconditional connection.');
    conditionFields(options,edge.requiresAnyBuilding,update=>edit(s=>{
@@ -751,19 +764,21 @@ function create(c){
   }
   const source=current.config.WaveCfg[index],fingerprint=JSON.stringify(source),revision=state.snap.version;
   const unitRevision=state.snap.unitCatalogRevision||0;
-  const interval=catalog().interval,defeatSeconds=waveOverview.defeatSeconds,spawnGroups=SpawnGroups.list(current);
+  const interval=catalog().interval,spawnGroups=SpawnGroups.list(current);
+  const {defeatSeconds,defeatSecondsMode}=waveOverview.rateFor(target.key,source,index+1);
   const referenceTotal=()=>WaveCounts.suggestedTotal(catalog().waveCountTargets||[],index);
   const suggestedTotal=referenceTotal();
   const assertCurrent=(draft=stage())=>{
+   const rate=waveOverview.rateFor(target.key,draft.config.WaveCfg?.[index],index+1);
    if(state.closed||state.active===false||state.loading||draft.id!==target.stageId||state.tab!=='Waves'||state.wave!==index||
      state.snap.version!==revision||(state.snap.unitCatalogRevision||0)!==unitRevision||JSON.stringify(draft.config.WaveCfg?.[index])!==fingerprint||
-      waveOverview.defeatSeconds!==defeatSeconds||catalog().interval!==interval||referenceTotal()!==suggestedTotal||
+      rate.defeatSeconds!==defeatSeconds||rate.defeatSecondsMode!==defeatSecondsMode||catalog().interval!==interval||referenceTotal()!==suggestedTotal||
       JSON.stringify(SpawnGroups.list(draft))!==JSON.stringify(spawnGroups)){
     throw Error('The wave, unit stats, or balance inputs changed. Reopen Balance wave to review the latest values.');
    }
   };
   const units=unitRows(),unitsById=new Map(units.map(unit=>[unit.id,unit]));
-  return WaveBalance.open(c,{label:waveLabel(source,index),wave:source,waveIndex:index,stage:current,units,interval,defeatSeconds,spawnGroups,suggestedTotal,assertCurrent,
+  return WaveBalance.open(c,{label:waveLabel(source,index),wave:source,waveIndex:index,stage:current,units,interval,defeatSeconds,defeatSecondsMode,spawnGroups,suggestedTotal,assertCurrent,
    apply:({limits,changes,manualRows})=>waveEdit(target,(draft,at)=>{
     assertCurrent(draft);
     Waves.applyBalancedTiming(draft,at,changes,interval,unitsById);

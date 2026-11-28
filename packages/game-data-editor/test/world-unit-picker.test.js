@@ -79,6 +79,13 @@ test('the Waves roster shows standard profiles and Wreckers with their kingdoms'
  assert.equal(new Set(groups.map(group=>group.units[0].name.toLowerCase())).size,groups.length);
  const pirates=groups.filter(group=>group.units[0].name==='Corsair Wraith');
  assert.equal(pirates.length,1);assert(pirates[0].units.some(unit=>unit.id===91081));
+ assert(pirates[0].units.every(unit=>unit.targeting?.mode==='hero'));
+ const octopus=groups.find(group=>group.units[0].name==='Drowned Octopus');
+ assert(octopus.units.every(unit=>unit.enemyClass==='normal'));
+ for(const [name,mode,flight] of [['Snow Crab','hero',false],['Wing Demon Vampire','hero',true],['Devil Bee','castle',true]]){
+  const group=groups.find(group=>group.units[0].name===name);
+  assert(group.units.every(unit=>unit.targeting?.mode===mode&&unit.flight===flight),name+' keeps its targeting and flight across profiles');
+ }
  const scorpions=groups.filter(group=>group.units[0].name==='Stone Scorpion');
  assert.equal(scorpions.length,1);assert(scorpions[0].units.some(unit=>unit.id===91090));
  for(const [role,id] of Object.entries(profiles.families[90010].profiles)){
@@ -94,7 +101,7 @@ test('the Waves roster shows standard profiles and Wreckers with their kingdoms'
   skeleton:['Grave Goby','ranged','single','castle'],
   orc:['Rhino Armor','melee','splash','castle'],
   ice:['Winter Iron','melee','splash','buildings-first'],
-  demon:['Hellgate Behemoth','melee','splash','castle']
+  demon:['Hellgate Behemoth','melee','splash','buildings-first']
  };
  assert.deepEqual(wreckers.map(unit=>unit.kingdom).sort(),Kingdoms.CHOICES.map(choice=>choice.value).filter(value=>value!=='unassigned').sort());
  for(const unit of wreckers){
@@ -112,6 +119,10 @@ test('the Waves roster shows standard profiles and Wreckers with their kingdoms'
   'Black Plague','Blood Beetle','Carrion Bird','Evilmass Knight','Green Cactus','Larva Knight','Plague Doctor','Purple Scorpion',
   'Worm Lightning','Worm Poison'
  ]);
+ for(const [name,rank] of [['Black Plague','normal'],['Worm Lightning','elite']]){
+  const group=groups.find(group=>group.units[0].name===name);
+  assert(group.units.every(unit=>unit.enemyClass===rank),name+' consistently uses its new rank');
+ }
  assert.deepEqual(namesIn('plant'),[
   'Flower Daisy','Flower Mantis','Fungus Rock','Hornet Bee','Iron Fly','Iron Golem',
   'Mushroom Walker','Pitcher Plant','Pumpkin Orange','Spiky Plant','Stump Walker'
@@ -198,11 +209,17 @@ test('every beta stage spawns its kingdom’s required roles and ordinary melee 
  const castleProfiles={
   slime:families[91154].profiles.wrecker,'sun-tomb':91010,plant:families[91110].profiles.vanguard,
   skeleton:families[91028].profiles.wrecker,orc:families[91136].profiles.wrecker,
-  ice:families[91073].profiles.vanguard,demon:families[91186].profiles.wrecker
+  ice:families[91073].profiles.vanguard,demon:91060
+ };
+ const fodderFamilies={slime:91037,'sun-tomb':91122,plant:91130,skeleton:91091,orc:91128,ice:91093,demon:91104};
+ const modelId=id=>{
+  const canonical=Fighting.canonicalId(settings,id);
+  return settings.unitProfiles.entries[canonical]?.baseId??canonical;
  };
  function ordinary(unit,delivery){
+  const combatTarget=unit.target==='nearest'||(delivery==='ranged'&&unit.target==='hero');
   return unit.enemyClass==='normal'&&unit.attack.delivery===delivery&&unit.attack.pattern==='single'&&unit.attack.damage>0&&
-   !unit.skills.length&&!Object.keys(unit.attack.onHit||{}).length&&unit.target==='nearest';
+   !unit.skills.length&&!Object.keys(unit.attack.onHit||{}).length&&combatTarget;
  }
  for(const stage of config.LevelCfg.filter(stage=>stage.Level<=14)){
   const label='Stage '+stage.Level,kingdom=rotation[Math.floor((stage.Level-1)/2)];
@@ -218,7 +235,7 @@ test('every beta stage spawns its kingdom’s required roles and ordinary melee 
    });
   }
   const members=[...roster.values()];
-  const fodder=members.find(unit=>!unit.flight&&ordinary(unit,'melee')&&waves.every(wave=>wave.has(unit.id)));
+  const fodder=members.find(unit=>modelId(unit.baseId)===fodderFamilies[kingdom]&&!unit.flight&&ordinary(unit,'melee')&&waves.every(wave=>wave.has(unit.id)));
   assert(fodder,label+' needs ordinary melee in every wave');
   assert(members.some(unit=>!unit.flight&&unit.role==='vanguard'&&unit.target==='hero'&&unit.attack.damage>0),label+' needs a ground Vanguard hero targeter');
   const castle=members.filter(unit=>unit.target==='castle'&&unit.attack.damage>0);
@@ -237,6 +254,19 @@ test('every beta stage spawns its kingdom’s required roles and ordinary melee 
   }
   assert([...waves.at(-1)].some(id=>roster.get(id).enemyClass==='boss'),label+' needs a final-wave boss');
   assert(waves.slice(0,-1).every(wave=>[...wave].every(id=>roster.get(id).enemyClass!=='boss')),label+' has a boss before the final wave');
+  if(stage.Level>1){
+   const expected=new Set(Object.keys(families).map(Number).filter(id=>!settings.unitProfiles.aliases[id]&&Kingdoms.resolve(id,units,settings)===kingdom));
+   const finalWave=waves.at(-1),finalModels=new Set([...finalWave].map(id=>modelId(roster.get(id).baseId)));
+   for(const id of finalWave){
+    const transform=runtime[id].TransformSkill;
+    if(!transform)continue;
+    assert.equal(Classes.resolve(settings,transform.unitId),'boss');
+    const form=modelId(transform.unitId);
+    assert(!members.some(unit=>modelId(unit.baseId)===form),label+' should introduce the second form through transformation');
+    finalModels.add(form);
+   }
+   assert.deepEqual(finalModels,expected,label+' finale should contain the full kingdom roster');
+  }
  }
 });
 

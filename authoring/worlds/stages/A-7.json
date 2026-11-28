@@ -178,13 +178,18 @@
         "SpawnTimeline": [
           {
             "unitId": 91091,
-            "spawnId": 4,
-            "count": 9,
+            "spawnId": 1,
+            "count": 7,
             "startSeconds": 0.5,
-            "intervalSeconds": 1.5,
-            "id": "legacy-4-0"
+            "intervalSeconds": 1,
+            "id": "legacy-4-0",
+            "routeGraphId": "s07-g1-hall"
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 7,
+          "totalUnits": 7
+        }
       },
       {
         "id": 7,
@@ -211,21 +216,27 @@
         "SpawnTimeline": [
           {
             "unitId": 91091,
-            "spawnId": 4,
-            "count": 11,
+            "spawnId": 1,
+            "count": 8,
             "startSeconds": 0.5,
-            "intervalSeconds": 1.5,
-            "id": "legacy-4-0"
+            "intervalSeconds": 1,
+            "id": "legacy-4-0",
+            "routeGraphId": "s07-g1-hall"
           },
           {
-            "unitId": 91081,
-            "spawnId": 5,
+            "id": "entry-1",
+            "unitId": 100672,
+            "spawnId": 2,
             "count": 2,
-            "startSeconds": 5,
-            "intervalSeconds": 4,
-            "id": "entry-2"
+            "startSeconds": 2.5,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g1-hall"
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 10,
+          "totalUnits": 10
+        }
       },
       {
         "id": 7,
@@ -253,29 +264,36 @@
         "SpawnTimeline": [
           {
             "unitId": 91091,
-            "spawnId": 4,
-            "count": 14,
+            "spawnId": 1,
+            "count": 8,
             "startSeconds": 0.5,
-            "intervalSeconds": 1.5,
-            "id": "legacy-4-0"
+            "intervalSeconds": 1,
+            "id": "legacy-4-0",
+            "routeGraphId": "s07-g1-hall"
           },
           {
-            "unitId": 91081,
-            "spawnId": 6,
-            "count": 3,
+            "id": "entry-4",
+            "unitId": 100672,
+            "spawnId": 2,
+            "count": 2,
             "startSeconds": 5.5,
-            "intervalSeconds": 4,
-            "id": "entry-2"
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g1-hall"
           },
           {
             "unitId": 91004,
-            "spawnId": 5,
-            "count": 4,
-            "startSeconds": 7.5,
-            "intervalSeconds": 4,
-            "id": "entry-3"
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 7,
+            "intervalSeconds": 1.5,
+            "id": "entry-3",
+            "routeGraphId": "s07-g1-hall"
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 12,
+          "totalUnits": 12
+        }
       },
       {
         "id": 7,
@@ -303,48 +321,61 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 91004,
-            "spawnId": 3,
-            "count": 3,
-            "startSeconds": 0.5,
-            "intervalSeconds": 4,
-            "id": "entry-2"
-          },
-          {
             "unitId": 91091,
-            "spawnId": 1,
-            "count": 7,
-            "startSeconds": 2.5,
-            "intervalSeconds": 1.5,
-            "id": "legacy-1-0",
-            "unitGroupId": "unit-group-1"
-          },
-          {
-            "unitId": 91091,
-            "spawnId": 4,
-            "count": 7,
-            "startSeconds": 12.5,
-            "intervalSeconds": 2.5,
-            "id": "legacy-4-0",
-            "unitGroupId": "unit-group-1"
-          },
-          {
-            "unitId": 91081,
-            "spawnId": 6,
-            "count": 4,
-            "startSeconds": 15.5,
-            "intervalSeconds": 3.5,
-            "id": "entry-3"
-          },
-          {
-            "unitId": 91145,
             "spawnId": 5,
-            "count": 3,
-            "startSeconds": 18,
-            "intervalSeconds": 4,
-            "id": "legacy-5-0"
+            "count": 7,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1,
+            "id": "entry-4"
+          },
+          {
+            "id": "entry-5",
+            "unitId": 100672,
+            "spawnId": 6,
+            "count": 2,
+            "startSeconds": 2.5,
+            "intervalSeconds": 1
+          },
+          {
+            "unitId": 91004,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 3,
+            "intervalSeconds": 1,
+            "id": "entry-2",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 12,
+            "count": 7,
+            "startSeconds": 3.5,
+            "intervalSeconds": 1,
+            "id": "legacy-1-0",
+            "unitGroupId": "unit-group-1",
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-6",
+            "unitId": 100672,
+            "spawnId": 7,
+            "count": 2,
+            "startSeconds": 5,
+            "intervalSeconds": 1
+          },
+          {
+            "id": "entry-7",
+            "unitId": 91004,
+            "spawnId": 8,
+            "count": 1,
+            "startSeconds": 5.5,
+            "intervalSeconds": 0.5
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 20,
+          "totalUnits": 21
+        }
       },
       {
         "id": 7,
@@ -373,47 +404,97 @@
         "SpawnTimeline": [
           {
             "unitId": 91091,
-            "spawnId": 4,
-            "count": 9,
+            "spawnId": 6,
+            "count": 5,
             "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
+            "id": "entry-1"
+          },
+          {
+            "unitId": 100672,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 1,
+            "intervalSeconds": 1.5,
+            "id": "entry-4",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 7,
+            "count": 7,
+            "startSeconds": 1.5,
             "intervalSeconds": 1.5,
             "id": "legacy-4-0",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91081,
-            "spawnId": 6,
-            "count": 4,
-            "startSeconds": 3.5,
-            "intervalSeconds": 3.5,
-            "id": "entry-3"
+            "unitId": 91004,
+            "spawnId": 2,
+            "count": 1,
+            "startSeconds": 2.5,
+            "intervalSeconds": 0.5,
+            "id": "entry-6",
+            "routeGraphId": "s07-g1-hall"
           },
           {
             "unitId": 91091,
+            "spawnId": 3,
+            "count": 4,
+            "startSeconds": 4.5,
+            "intervalSeconds": 1.5,
+            "id": "entry-2",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-7",
+            "unitId": 100672,
             "spawnId": 8,
-            "count": 7,
-            "startSeconds": 15,
-            "intervalSeconds": 2,
-            "id": "entry-4",
-            "unitGroupId": "unit-group-0"
+            "count": 1,
+            "startSeconds": 7.5,
+            "intervalSeconds": 0.5
           },
           {
-            "unitId": 1000021000,
-            "spawnId": 7,
-            "count": 2,
-            "startSeconds": 18,
-            "intervalSeconds": 3.5,
-            "id": "entry-5"
-          },
-          {
+            "id": "entry-8",
             "unitId": 91004,
             "spawnId": 9,
-            "count": 3,
-            "startSeconds": 20.5,
-            "intervalSeconds": 3,
-            "id": "entry-6"
+            "count": 1,
+            "startSeconds": 8.5,
+            "intervalSeconds": 0.5
+          },
+          {
+            "id": "entry-9",
+            "unitId": 100734,
+            "spawnId": 10,
+            "count": 1,
+            "startSeconds": 10.5,
+            "intervalSeconds": 0.5,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-10",
+            "unitId": 101855,
+            "spawnId": 11,
+            "count": 1,
+            "startSeconds": 11,
+            "intervalSeconds": 0.5,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-11",
+            "unitId": 101855,
+            "spawnId": 4,
+            "count": 1,
+            "startSeconds": 11.5,
+            "intervalSeconds": 0.5
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 21,
+          "totalUnits": 24
+        }
       },
       {
         "id": 7,
@@ -443,73 +524,100 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 91004,
-            "spawnId": 8,
-            "count": 4,
-            "startSeconds": 0.5,
-            "intervalSeconds": 4,
-            "id": "entry-2"
-          },
-          {
-            "unitId": 91091,
-            "spawnId": 7,
-            "count": 8,
-            "startSeconds": 2,
-            "intervalSeconds": 1.5,
-            "id": "entry-3",
-            "unitGroupId": "unit-group-1"
-          },
-          {
-            "unitId": 91091,
-            "spawnId": 12,
-            "count": 5,
-            "startSeconds": 14,
-            "intervalSeconds": 2.5,
-            "id": "entry-4",
-            "unitGroupId": "unit-group-1"
-          },
-          {
-            "unitId": 100672,
-            "spawnId": 11,
-            "count": 4,
-            "startSeconds": 17,
-            "intervalSeconds": 3,
-            "id": "entry-5"
-          },
-          {
-            "unitId": 91081,
-            "spawnId": 10,
-            "count": 3,
-            "startSeconds": 20,
-            "intervalSeconds": 3,
-            "id": "entry-6"
-          },
-          {
             "unitId": 91091,
             "spawnId": 1,
             "count": 6,
-            "startSeconds": 5,
-            "intervalSeconds": 1.5,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
             "id": "legacy-1-0",
-            "unitGroupId": "unit-group-1"
+            "unitGroupId": "unit-group-1",
+            "routeGraphId": "s07-g1-hall"
           },
           {
-            "unitId": 1000021000,
+            "unitId": 91091,
+            "spawnId": 2,
+            "count": 5,
+            "startSeconds": 0.5,
+            "intervalSeconds": 0.5,
+            "id": "entry-3",
+            "unitGroupId": "unit-group-1",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 91004,
             "spawnId": 2,
             "count": 2,
-            "startSeconds": 8,
-            "intervalSeconds": 3.5,
-            "id": "entry-7"
+            "startSeconds": 2,
+            "intervalSeconds": 0.5,
+            "id": "entry-2",
+            "routeGraphId": "s07-g1-hall"
           },
           {
-            "unitId": 91035,
+            "id": "entry-1",
+            "unitId": 101855,
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 2.5,
+            "intervalSeconds": 0.5,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 100672,
+            "spawnId": 1,
+            "count": 1,
+            "startSeconds": 3,
+            "intervalSeconds": 0.5,
+            "id": "entry-5",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-9",
+            "unitId": 101855,
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 3.5,
+            "intervalSeconds": 0.5,
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 2,
+            "count": 4,
+            "startSeconds": 4,
+            "intervalSeconds": 0.5,
+            "id": "entry-4",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-10",
+            "unitId": 91004,
             "spawnId": 3,
             "count": 1,
-            "startSeconds": 10,
+            "startSeconds": 4.5,
             "intervalSeconds": 0.5,
-            "id": "entry-8"
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-11",
+            "unitId": 91091,
+            "spawnId": 4,
+            "count": 6,
+            "startSeconds": 8,
+            "intervalSeconds": 0.5
+          },
+          {
+            "id": "entry-12",
+            "unitId": 100672,
+            "spawnId": 5,
+            "count": 1,
+            "startSeconds": 10,
+            "intervalSeconds": 0.5
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 29,
+          "totalUnits": 30
+        }
       },
       {
         "id": 7,
@@ -541,64 +649,116 @@
         "SpawnTimeline": [
           {
             "unitId": 91091,
-            "spawnId": 12,
-            "count": 8,
+            "spawnId": 2,
+            "count": 7,
             "startSeconds": 0.5,
-            "intervalSeconds": 2,
-            "id": "entry-4",
+            "intervalSeconds": 1,
+            "id": "legacy-2-0",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 9,
+            "count": 6,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1,
+            "id": "entry-9",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91081,
+            "id": "entry-11",
+            "unitId": 101855,
+            "spawnId": 10,
+            "count": 2,
+            "startSeconds": 4.5,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "unitId": 100672,
             "spawnId": 11,
-            "count": 5,
-            "startSeconds": 4,
-            "intervalSeconds": 2.5,
-            "id": "entry-5"
+            "count": 2,
+            "startSeconds": 5,
+            "intervalSeconds": 1,
+            "id": "entry-2",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "unitId": 91145,
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 6,
+            "intervalSeconds": 1,
+            "id": "entry-8",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 12,
+            "count": 6,
+            "startSeconds": 7,
+            "intervalSeconds": 1,
+            "id": "entry-4",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-12",
+            "unitId": 101855,
+            "spawnId": 4,
+            "count": 2,
+            "startSeconds": 9,
+            "intervalSeconds": 1
+          },
+          {
+            "id": "entry-13",
+            "unitId": 100539,
+            "spawnId": 7,
+            "count": 1,
+            "startSeconds": 9.5,
+            "intervalSeconds": 0.5
           },
           {
             "unitId": 91004,
-            "spawnId": 1,
-            "count": 3,
-            "startSeconds": 5,
-            "intervalSeconds": 4,
+            "spawnId": 8,
+            "count": 2,
+            "startSeconds": 10,
+            "intervalSeconds": 1,
             "id": "entry-6"
           },
           {
             "unitId": 91091,
-            "spawnId": 2,
-            "count": 7,
-            "startSeconds": 7,
-            "intervalSeconds": 1.5,
-            "id": "legacy-2-0",
-            "unitGroupId": "unit-group-0"
-          },
-          {
-            "unitId": 1000021000,
-            "spawnId": 3,
-            "count": 2,
-            "startSeconds": 9,
-            "intervalSeconds": 3.5,
-            "id": "entry-7"
-          },
-          {
-            "unitId": 91091,
             "spawnId": 5,
-            "count": 11,
-            "startSeconds": 29,
-            "intervalSeconds": 1.5,
+            "count": 7,
+            "startSeconds": 10.5,
+            "intervalSeconds": 1,
             "id": "legacy-5-0",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91145,
+            "id": "entry-14",
+            "unitId": 100734,
             "spawnId": 6,
-            "count": 3,
-            "startSeconds": 12,
-            "intervalSeconds": 4,
-            "id": "entry-8"
+            "count": 1,
+            "startSeconds": 14.5,
+            "intervalSeconds": 0.5
+          },
+          {
+            "id": "entry-15",
+            "unitId": 100672,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 15,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g1-hall"
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 31,
+          "totalUnits": 40
+        }
       },
       {
         "id": 7,
@@ -630,72 +790,133 @@
         "SpawnTimeline": [
           {
             "unitId": 91091,
-            "spawnId": 1,
-            "count": 10,
+            "spawnId": 3,
+            "count": 5,
             "startSeconds": 0.5,
-            "intervalSeconds": 1.5,
+            "intervalSeconds": 2,
             "id": "legacy-1-0",
-            "unitGroupId": "unit-group-0"
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-hall"
           },
           {
-            "unitId": 91145,
+            "unitId": 91091,
             "spawnId": 2,
-            "count": 5,
-            "startSeconds": 3,
-            "intervalSeconds": 3,
-            "id": "entry-4"
+            "count": 8,
+            "startSeconds": 2,
+            "intervalSeconds": 2,
+            "id": "entry-1",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 10,
+            "count": 8,
+            "startSeconds": 3.5,
+            "intervalSeconds": 2,
+            "id": "entry-3",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g4-hall"
           },
           {
             "unitId": 1000021000,
-            "spawnId": 5,
-            "count": 3,
-            "startSeconds": 8,
-            "intervalSeconds": 3.5,
+            "spawnId": 4,
+            "count": 2,
+            "startSeconds": 13,
+            "intervalSeconds": 2,
             "id": "entry-5"
+          },
+          {
+            "id": "entry-10",
+            "unitId": 100672,
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 13,
+            "intervalSeconds": 2,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 91004,
+            "spawnId": 5,
+            "count": 2,
+            "startSeconds": 13.5,
+            "intervalSeconds": 2.5,
+            "id": "entry-8"
+          },
+          {
+            "id": "entry-11",
+            "unitId": 91004,
+            "spawnId": 11,
+            "count": 2,
+            "startSeconds": 14.5,
+            "intervalSeconds": 2.5,
+            "routeGraphId": "s07-g4-hall"
           },
           {
             "unitId": 91091,
             "spawnId": 6,
-            "count": 8,
-            "startSeconds": 9,
+            "count": 5,
+            "startSeconds": 17,
             "intervalSeconds": 2,
             "id": "legacy-6-0",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91081,
-            "spawnId": 4,
-            "count": 5,
-            "startSeconds": 21,
-            "intervalSeconds": 3,
-            "id": "entry-6"
-          },
-          {
-            "unitId": 91091,
-            "spawnId": 9,
-            "count": 8,
-            "startSeconds": 4,
+            "id": "entry-12",
+            "unitId": 100672,
+            "spawnId": 12,
+            "count": 2,
+            "startSeconds": 17.5,
             "intervalSeconds": 2,
-            "id": "entry-7",
-            "unitGroupId": "unit-group-0"
+            "routeGraphId": "s07-g4-hall"
           },
           {
-            "unitId": 91004,
+            "unitId": 91081,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 17.5,
+            "intervalSeconds": 2,
+            "id": "entry-6",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-13",
+            "unitId": 100672,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 19.5,
+            "intervalSeconds": 2,
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-14",
+            "unitId": 100539,
             "spawnId": 7,
-            "count": 4,
-            "startSeconds": 8,
-            "intervalSeconds": 3.5,
-            "id": "entry-8"
+            "count": 1,
+            "startSeconds": 20,
+            "intervalSeconds": 0.5
           },
           {
-            "unitId": 91035,
+            "id": "entry-15",
+            "unitId": 91081,
             "spawnId": 8,
             "count": 2,
-            "startSeconds": 10,
-            "intervalSeconds": 4,
-            "id": "entry-9"
+            "startSeconds": 22.5,
+            "intervalSeconds": 2
+          },
+          {
+            "id": "entry-16",
+            "unitId": 1000021000,
+            "spawnId": 2,
+            "count": 1,
+            "startSeconds": 22.5,
+            "intervalSeconds": 0.5,
+            "routeGraphId": "s07-g1-alternate"
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 29,
+          "totalUnits": 44
+        }
       },
       {
         "id": 7,
@@ -727,73 +948,144 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 91004,
-            "spawnId": 5,
+            "unitId": 91091,
+            "spawnId": 1,
             "count": 5,
             "startSeconds": 0.5,
-            "intervalSeconds": 4,
-            "id": "legacy-5-0"
+            "intervalSeconds": 1.5,
+            "id": "entry-4",
+            "unitGroupId": "unit-group-1",
+            "routeGraphId": "s07-g1-alternate"
           },
           {
             "unitId": 91091,
-            "spawnId": 6,
-            "count": 11,
-            "startSeconds": 2,
+            "spawnId": 5,
+            "count": 6,
+            "startSeconds": 0.5,
             "intervalSeconds": 1.5,
             "id": "legacy-6-0",
             "unitGroupId": "unit-group-1"
           },
           {
             "unitId": 91091,
-            "spawnId": 9,
-            "count": 10,
-            "startSeconds": 4,
-            "intervalSeconds": 2,
-            "id": "entry-4",
-            "unitGroupId": "unit-group-1"
+            "spawnId": 12,
+            "count": 5,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
+            "id": "legacy-12-1",
+            "unitGroupId": "unit-group-1",
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "unitId": 100672,
+            "spawnId": 7,
+            "count": 2,
+            "startSeconds": 5,
+            "intervalSeconds": 1.5,
+            "id": "entry-6"
+          },
+          {
+            "id": "entry-10",
+            "unitId": 91145,
+            "spawnId": 2,
+            "count": 2,
+            "startSeconds": 7.5,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g1-alternate"
           },
           {
             "unitId": 91081,
-            "spawnId": 7,
-            "count": 5,
-            "startSeconds": 7,
-            "intervalSeconds": 3.5,
+            "spawnId": 6,
+            "count": 3,
+            "startSeconds": 7.5,
+            "intervalSeconds": 1.5,
             "id": "entry-5"
           },
           {
             "unitId": 100672,
-            "spawnId": 8,
-            "count": 3,
-            "startSeconds": 9,
-            "intervalSeconds": 4,
-            "id": "entry-6"
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 8,
+            "intervalSeconds": 1.5,
+            "id": "entry-9",
+            "routeGraphId": "s07-g1-hall"
           },
           {
-            "unitId": 91035,
-            "spawnId": 10,
-            "count": 3,
-            "startSeconds": 38,
-            "intervalSeconds": 4,
-            "id": "entry-7"
+            "id": "entry-11",
+            "unitId": 91081,
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 9.5,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g1-alternate"
           },
           {
             "unitId": 91091,
-            "spawnId": 12,
-            "count": 9,
-            "startSeconds": 39,
+            "spawnId": 2,
+            "count": 5,
+            "startSeconds": 9.5,
             "intervalSeconds": 1.5,
-            "id": "legacy-12-1",
-            "unitGroupId": "unit-group-1"
+            "id": "entry-3",
+            "unitGroupId": "unit-group-1",
+            "routeGraphId": "s07-g1-hall"
           },
           {
-            "unitId": 101855,
-            "spawnId": 11,
+            "unitId": 91091,
+            "spawnId": 1,
+            "count": 4,
+            "startSeconds": 10.5,
+            "intervalSeconds": 1.5,
+            "id": "entry-1",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-12",
+            "unitId": 1000021000,
+            "spawnId": 8,
             "count": 2,
-            "startSeconds": 41,
-            "intervalSeconds": 4,
-            "id": "entry-8"
+            "startSeconds": 10.5,
+            "intervalSeconds": 1.5
+          },
+          {
+            "id": "entry-13",
+            "unitId": 91091,
+            "spawnId": 9,
+            "count": 5,
+            "startSeconds": 11,
+            "intervalSeconds": 1.5
+          },
+          {
+            "id": "entry-14",
+            "unitId": 100672,
+            "spawnId": 2,
+            "count": 2,
+            "startSeconds": 14.5,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-15",
+            "unitId": 91145,
+            "spawnId": 10,
+            "count": 2,
+            "startSeconds": 17.5,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-16",
+            "unitId": 1000021000,
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 19,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g1-hall"
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 35,
+          "totalUnits": 49
+        }
       },
       {
         "id": 7,
@@ -826,72 +1118,152 @@
         "SpawnTimeline": [
           {
             "unitId": 91091,
-            "spawnId": 9,
-            "count": 12,
+            "spawnId": 2,
+            "count": 5,
             "startSeconds": 0.5,
-            "intervalSeconds": 1.5,
+            "intervalSeconds": 2,
+            "id": "entry-19",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 7,
+            "count": 6,
+            "startSeconds": 1.5,
+            "intervalSeconds": 2,
             "id": "entry-14",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91081,
-            "spawnId": 7,
-            "count": 5,
-            "startSeconds": 4,
-            "intervalSeconds": 3.5,
-            "id": "entry-15"
-          },
-          {
-            "unitId": 91004,
-            "spawnId": 10,
-            "count": 5,
-            "startSeconds": 15,
-            "intervalSeconds": 4,
-            "id": "entry-16"
-          },
-          {
             "unitId": 91091,
-            "spawnId": 12,
-            "count": 8,
-            "startSeconds": 16,
+            "spawnId": 6,
+            "count": 6,
+            "startSeconds": 3,
             "intervalSeconds": 2,
-            "id": "entry-17",
+            "id": "entry-2",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 100734,
-            "spawnId": 11,
+            "unitId": 91004,
+            "spawnId": 1,
             "count": 3,
-            "startSeconds": 17,
-            "intervalSeconds": 4,
-            "id": "entry-18"
+            "startSeconds": 5,
+            "intervalSeconds": 2.5,
+            "id": "entry-3",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "unitId": 91081,
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 6.5,
+            "intervalSeconds": 2,
+            "id": "entry-15",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 91004,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 7,
+            "intervalSeconds": 2.5,
+            "id": "entry-16",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 91145,
+            "spawnId": 8,
+            "count": 3,
+            "startSeconds": 9,
+            "intervalSeconds": 2,
+            "id": "entry-20"
           },
           {
             "unitId": 91091,
             "spawnId": 2,
-            "count": 9,
-            "startSeconds": 5,
-            "intervalSeconds": 2,
-            "id": "entry-19",
-            "unitGroupId": "unit-group-0"
-          },
-          {
-            "unitId": 91145,
-            "spawnId": 1,
             "count": 5,
-            "startSeconds": 8,
-            "intervalSeconds": 3.5,
-            "id": "entry-20"
+            "startSeconds": 10,
+            "intervalSeconds": 2,
+            "id": "entry-1",
+            "routeGraphId": "s07-g1-alternate"
           },
           {
-            "unitId": 91035,
-            "spawnId": 3,
+            "id": "entry-5",
+            "unitId": 91145,
+            "spawnId": 2,
+            "count": 2,
+            "startSeconds": 10.5,
+            "intervalSeconds": 2,
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-6",
+            "unitId": 100672,
+            "spawnId": 9,
             "count": 3,
-            "startSeconds": 9,
-            "intervalSeconds": 4,
-            "id": "entry-21"
+            "startSeconds": 10.5,
+            "intervalSeconds": 2
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 3,
+            "count": 5,
+            "startSeconds": 11.5,
+            "intervalSeconds": 2,
+            "id": "entry-17",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-7",
+            "unitId": 91091,
+            "spawnId": 10,
+            "count": 6,
+            "startSeconds": 15,
+            "intervalSeconds": 2,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-8",
+            "unitId": 91145,
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 16.5,
+            "intervalSeconds": 2,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-9",
+            "unitId": 100672,
+            "spawnId": 4,
+            "count": 2,
+            "startSeconds": 19.5,
+            "intervalSeconds": 2
+          },
+          {
+            "id": "entry-10",
+            "unitId": 100539,
+            "spawnId": 11,
+            "count": 1,
+            "startSeconds": 21,
+            "intervalSeconds": 0.5,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-11",
+            "unitId": 91081,
+            "spawnId": 12,
+            "count": 2,
+            "startSeconds": 23,
+            "intervalSeconds": 2,
+            "routeGraphId": "s07-g4-hall"
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 38,
+          "totalUnits": 55
+        }
       },
       {
         "id": 7,
@@ -922,89 +1294,160 @@
         "SpawnTimeline": [
           {
             "unitId": 91091,
-            "spawnId": 10,
-            "count": 12,
-            "startSeconds": 0.5,
-            "intervalSeconds": 1.5,
-            "id": "entry-2",
-            "unitGroupId": "unit-group-0"
-          },
-          {
-            "unitId": 1000021000,
-            "spawnId": 12,
-            "count": 3,
-            "startSeconds": 3,
-            "intervalSeconds": 3.5,
-            "id": "entry-3"
-          },
-          {
-            "unitId": 91004,
-            "spawnId": 2,
-            "count": 4,
-            "startSeconds": 5,
-            "intervalSeconds": 4,
-            "id": "entry-4"
-          },
-          {
-            "unitId": 91091,
-            "spawnId": 1,
-            "count": 7,
-            "startSeconds": 6,
-            "intervalSeconds": 2,
-            "id": "legacy-1-0",
-            "unitGroupId": "unit-group-0"
-          },
-          {
-            "unitId": 91145,
-            "spawnId": 3,
-            "count": 3,
-            "startSeconds": 8,
-            "intervalSeconds": 4,
-            "id": "entry-5"
-          },
-          {
-            "unitId": 91091,
             "spawnId": 6,
-            "count": 10,
-            "startSeconds": 12,
-            "intervalSeconds": 2,
+            "count": 7,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1,
             "id": "entry-6",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91081,
-            "spawnId": 5,
+            "unitId": 91091,
+            "spawnId": 2,
             "count": 6,
-            "startSeconds": 26,
-            "intervalSeconds": 3,
-            "id": "entry-7"
+            "startSeconds": 1.5,
+            "intervalSeconds": 1,
+            "id": "legacy-1-0",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-alternate"
           },
           {
-            "unitId": 101855,
-            "spawnId": 4,
-            "count": 2,
-            "startSeconds": 28,
-            "intervalSeconds": 4,
-            "id": "entry-8"
+            "id": "entry-11",
+            "unitId": 100672,
+            "spawnId": 1,
+            "count": 3,
+            "startSeconds": 3,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g1-hall"
           },
           {
             "unitId": 91091,
             "spawnId": 7,
-            "count": 5,
-            "startSeconds": 38,
-            "intervalSeconds": 1.5,
+            "count": 6,
+            "startSeconds": 3,
+            "intervalSeconds": 1,
             "id": "entry-9",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91035,
-            "spawnId": 8,
+            "unitId": 101855,
+            "spawnId": 2,
             "count": 2,
-            "startSeconds": 40,
-            "intervalSeconds": 3.5,
-            "id": "entry-10"
+            "startSeconds": 7,
+            "intervalSeconds": 1,
+            "id": "entry-8",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 3,
+            "count": 6,
+            "startSeconds": 9,
+            "intervalSeconds": 1,
+            "id": "entry-2",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-12",
+            "unitId": 101855,
+            "spawnId": 8,
+            "count": 3,
+            "startSeconds": 9,
+            "intervalSeconds": 1
+          },
+          {
+            "unitId": 1000021000,
+            "spawnId": 3,
+            "count": 3,
+            "startSeconds": 10.5,
+            "intervalSeconds": 1,
+            "id": "entry-3",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 91145,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 11.5,
+            "intervalSeconds": 1,
+            "id": "entry-5",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 2,
+            "count": 5,
+            "startSeconds": 12.5,
+            "intervalSeconds": 1,
+            "id": "entry-1",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-13",
+            "unitId": 1000021000,
+            "spawnId": 9,
+            "count": 3,
+            "startSeconds": 14.5,
+            "intervalSeconds": 1
+          },
+          {
+            "id": "entry-14",
+            "unitId": 91091,
+            "spawnId": 10,
+            "count": 5,
+            "startSeconds": 15.5,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-15",
+            "unitId": 100672,
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 16.5,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-16",
+            "unitId": 1000021000,
+            "spawnId": 4,
+            "count": 2,
+            "startSeconds": 20,
+            "intervalSeconds": 1
+          },
+          {
+            "id": "entry-17",
+            "unitId": 100734,
+            "spawnId": 11,
+            "count": 1,
+            "startSeconds": 20.5,
+            "intervalSeconds": 0.5,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-18",
+            "unitId": 91145,
+            "spawnId": 5,
+            "count": 2,
+            "startSeconds": 21,
+            "intervalSeconds": 1
+          },
+          {
+            "id": "entry-19",
+            "unitId": 91145,
+            "spawnId": 12,
+            "count": 2,
+            "startSeconds": 22.5,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g4-hall"
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 42,
+          "totalUnits": 60
+        }
       },
       {
         "id": 7,
@@ -1035,90 +1478,169 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 91004,
-            "spawnId": 2,
-            "count": 5,
+            "unitId": 91091,
+            "spawnId": 7,
+            "count": 9,
             "startSeconds": 0.5,
-            "intervalSeconds": 3,
-            "id": "entry-1"
-          },
-          {
-            "unitId": 91091,
-            "spawnId": 1,
-            "count": 9,
-            "startSeconds": 2,
-            "intervalSeconds": 1.5,
-            "id": "legacy-1-0",
-            "unitGroupId": "unit-group-1"
-          },
-          {
-            "unitId": 91091,
-            "spawnId": 6,
-            "count": 9,
-            "startSeconds": 8,
-            "intervalSeconds": 2,
+            "intervalSeconds": 1,
             "id": "legacy-6-0",
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 91081,
-            "spawnId": 5,
+            "unitId": 91091,
+            "spawnId": 2,
             "count": 6,
-            "startSeconds": 10,
-            "intervalSeconds": 2.5,
-            "id": "entry-5"
+            "startSeconds": 0.5,
+            "intervalSeconds": 1,
+            "id": "legacy-1-0",
+            "unitGroupId": "unit-group-1",
+            "routeGraphId": "s07-g1-hall"
           },
           {
-            "unitId": 100734,
-            "spawnId": 4,
+            "unitId": 91091,
+            "spawnId": 3,
+            "count": 6,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1,
+            "id": "entry-8",
+            "unitGroupId": "unit-group-1",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 91004,
+            "spawnId": 1,
             "count": 3,
-            "startSeconds": 12,
-            "intervalSeconds": 3.5,
-            "id": "entry-6"
+            "startSeconds": 6,
+            "intervalSeconds": 1,
+            "id": "entry-1",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-3",
+            "unitId": 101855,
+            "spawnId": 3,
+            "count": 3,
+            "startSeconds": 6.5,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g1-hall"
           },
           {
             "unitId": 100672,
-            "spawnId": 7,
+            "spawnId": 2,
+            "count": 2,
+            "startSeconds": 9,
+            "intervalSeconds": 1,
+            "id": "entry-7",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 91081,
+            "spawnId": 8,
             "count": 3,
-            "startSeconds": 4,
-            "intervalSeconds": 3.5,
-            "id": "entry-7"
+            "startSeconds": 10.5,
+            "intervalSeconds": 1,
+            "id": "entry-5"
           },
           {
             "unitId": 91091,
-            "spawnId": 8,
-            "count": 9,
-            "startSeconds": 5,
-            "intervalSeconds": 1.5,
-            "id": "entry-8",
-            "unitGroupId": "unit-group-1"
+            "spawnId": 3,
+            "count": 5,
+            "startSeconds": 12,
+            "intervalSeconds": 1,
+            "id": "entry-2",
+            "routeGraphId": "s07-g1-alternate"
           },
           {
-            "unitId": 1000021000,
+            "id": "entry-4",
+            "unitId": 91004,
+            "spawnId": 4,
+            "count": 3,
+            "startSeconds": 12.5,
+            "intervalSeconds": 1
+          },
+          {
+            "id": "entry-12",
+            "unitId": 101855,
             "spawnId": 9,
             "count": 3,
-            "startSeconds": 6,
-            "intervalSeconds": 3.5,
-            "id": "entry-9"
-          },
-          {
-            "unitId": 91035,
-            "spawnId": 11,
-            "count": 2,
-            "startSeconds": 35,
-            "intervalSeconds": 3.5,
-            "id": "entry-10"
+            "startSeconds": 13,
+            "intervalSeconds": 1
           },
           {
             "unitId": 91091,
-            "spawnId": 12,
-            "count": 9,
-            "startSeconds": 36,
+            "spawnId": 5,
+            "count": 5,
+            "startSeconds": 16.5,
             "intervalSeconds": 1,
             "id": "entry-11",
             "unitGroupId": "unit-group-1"
+          },
+          {
+            "id": "entry-13",
+            "unitId": 91091,
+            "spawnId": 10,
+            "count": 8,
+            "startSeconds": 17,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-14",
+            "unitId": 91081,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 18,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 100734,
+            "spawnId": 6,
+            "count": 1,
+            "startSeconds": 21.5,
+            "intervalSeconds": 0.5,
+            "id": "entry-6"
+          },
+          {
+            "id": "entry-15",
+            "unitId": 100672,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 22,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-16",
+            "unitId": 100539,
+            "spawnId": 11,
+            "count": 1,
+            "startSeconds": 25,
+            "intervalSeconds": 0.5,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-17",
+            "unitId": 91004,
+            "spawnId": 12,
+            "count": 3,
+            "startSeconds": 25.5,
+            "intervalSeconds": 1,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-18",
+            "unitId": 100672,
+            "spawnId": 7,
+            "count": 3,
+            "startSeconds": 28,
+            "intervalSeconds": 1
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 46,
+          "totalUnits": 68
+        }
       },
       {
         "id": 7,
@@ -1150,89 +1672,186 @@
         "SpawnTimeline": [
           {
             "unitId": 91091,
-            "spawnId": 6,
-            "count": 11,
+            "spawnId": 8,
+            "count": 7,
             "startSeconds": 0.5,
             "intervalSeconds": 1.5,
             "id": "legacy-6-0",
             "unitGroupId": "unit-group-0"
           },
           {
+            "unitId": 91091,
+            "spawnId": 3,
+            "count": 6,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
+            "id": "legacy-3-0",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 1,
+            "count": 6,
+            "startSeconds": 0.5,
+            "intervalSeconds": 1.5,
+            "id": "entry-4",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
             "unitId": 91004,
-            "spawnId": 5,
-            "count": 5,
-            "startSeconds": 4,
-            "intervalSeconds": 3,
+            "spawnId": 9,
+            "count": 4,
+            "startSeconds": 7.5,
+            "intervalSeconds": 1.5,
             "id": "legacy-5-0"
           },
           {
-            "unitId": 91091,
-            "spawnId": 7,
-            "count": 10,
-            "startSeconds": 4,
-            "intervalSeconds": 1.5,
-            "id": "entry-4",
-            "unitGroupId": "unit-group-0"
-          },
-          {
             "unitId": 91081,
-            "spawnId": 8,
-            "count": 5,
-            "startSeconds": 5,
-            "intervalSeconds": 3,
-            "id": "entry-5"
+            "spawnId": 2,
+            "count": 3,
+            "startSeconds": 8,
+            "intervalSeconds": 1.5,
+            "id": "entry-5",
+            "routeGraphId": "s07-g1-alternate"
           },
           {
-            "unitId": 1000021000,
-            "spawnId": 9,
+            "id": "entry-3",
+            "unitId": 100672,
+            "spawnId": 3,
             "count": 3,
-            "startSeconds": 7,
-            "intervalSeconds": 3,
-            "id": "entry-6"
+            "startSeconds": 9.5,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 101855,
+            "spawnId": 4,
+            "count": 3,
+            "startSeconds": 10.5,
+            "intervalSeconds": 1.5,
+            "id": "entry-8"
+          },
+          {
+            "id": "entry-10",
+            "unitId": 101855,
+            "spawnId": 10,
+            "count": 4,
+            "startSeconds": 13,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g4-hall"
           },
           {
             "unitId": 91091,
-            "spawnId": 11,
-            "count": 8,
-            "startSeconds": 23,
-            "intervalSeconds": 2,
+            "spawnId": 1,
+            "count": 6,
+            "startSeconds": 13.5,
+            "intervalSeconds": 1.5,
+            "id": "entry-1",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-11",
+            "unitId": 91081,
+            "spawnId": 5,
+            "count": 2,
+            "startSeconds": 14,
+            "intervalSeconds": 1.5
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 6,
+            "count": 6,
+            "startSeconds": 16,
+            "intervalSeconds": 1.5,
             "id": "legacy-11-1",
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91145,
-            "spawnId": 12,
-            "count": 6,
-            "startSeconds": 25,
-            "intervalSeconds": 2.5,
-            "id": "entry-7"
-          },
-          {
-            "unitId": 101855,
-            "spawnId": 10,
-            "count": 3,
-            "startSeconds": 26,
-            "intervalSeconds": 3.5,
-            "id": "entry-8"
-          },
-          {
+            "id": "entry-12",
             "unitId": 91091,
-            "spawnId": 3,
-            "count": 8,
-            "startSeconds": 20,
+            "spawnId": 11,
+            "count": 6,
+            "startSeconds": 17.5,
             "intervalSeconds": 1.5,
-            "id": "legacy-3-0",
-            "unitGroupId": "unit-group-0"
+            "routeGraphId": "s07-g4-hall"
           },
           {
-            "unitId": 91035,
+            "unitId": 100539,
             "spawnId": 1,
+            "count": 1,
+            "startSeconds": 18,
+            "intervalSeconds": 0.5,
+            "id": "entry-2",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-13",
+            "unitId": 100672,
+            "spawnId": 2,
+            "count": 2,
+            "startSeconds": 19,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-14",
+            "unitId": 91004,
+            "spawnId": 2,
             "count": 3,
-            "startSeconds": 36,
-            "intervalSeconds": 3,
-            "id": "entry-9"
+            "startSeconds": 19,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-15",
+            "unitId": 91004,
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 21,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-16",
+            "unitId": 100734,
+            "spawnId": 12,
+            "count": 2,
+            "startSeconds": 24,
+            "intervalSeconds": 2.5,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-17",
+            "unitId": 91081,
+            "spawnId": 7,
+            "count": 4,
+            "startSeconds": 26,
+            "intervalSeconds": 1.5
+          },
+          {
+            "id": "entry-18",
+            "unitId": 100672,
+            "spawnId": 8,
+            "count": 3,
+            "startSeconds": 29,
+            "intervalSeconds": 1.5
+          },
+          {
+            "id": "entry-19",
+            "unitId": 91091,
+            "spawnId": 9,
+            "count": 6,
+            "startSeconds": 33,
+            "intervalSeconds": 1.5
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 50,
+          "totalUnits": 79
+        }
       },
       {
         "id": 7,
@@ -1265,98 +1884,260 @@
         "SpawnTimeline": [
           {
             "unitId": 91091,
-            "spawnId": 7,
-            "count": 13,
+            "spawnId": 3,
+            "count": 9,
             "startSeconds": 0.5,
-            "intervalSeconds": 1,
+            "intervalSeconds": 2,
             "id": "entry-5",
-            "unitGroupId": "unit-group-0"
-          },
-          {
-            "unitId": 91081,
-            "spawnId": 8,
-            "count": 5,
-            "startSeconds": 3,
-            "intervalSeconds": 3,
-            "id": "entry-6"
-          },
-          {
-            "unitId": 91145,
-            "spawnId": 11,
-            "count": 5,
-            "startSeconds": 10,
-            "intervalSeconds": 3,
-            "id": "entry-7"
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-hall"
           },
           {
             "unitId": 91091,
-            "spawnId": 12,
-            "count": 11,
-            "startSeconds": 11,
-            "intervalSeconds": 1.5,
-            "id": "legacy-12-1",
-            "unitGroupId": "unit-group-0"
+            "spawnId": 10,
+            "count": 8,
+            "startSeconds": 0.5,
+            "intervalSeconds": 2,
+            "id": "legacy-1-0",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g4-hall"
           },
           {
-            "unitId": 1000021000,
-            "spawnId": 10,
-            "count": 4,
-            "startSeconds": 12,
-            "intervalSeconds": 3,
-            "id": "entry-8"
+            "unitId": 91091,
+            "spawnId": 2,
+            "count": 7,
+            "startSeconds": 0.5,
+            "intervalSeconds": 2,
+            "id": "entry-12",
+            "routeGraphId": "s07-g1-alternate"
           },
           {
             "unitId": 91004,
+            "spawnId": 11,
+            "count": 1,
+            "startSeconds": 10.5,
+            "intervalSeconds": 0.5,
+            "id": "entry-9",
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "unitId": 91081,
             "spawnId": 3,
-            "count": 7,
-            "startSeconds": 5,
-            "intervalSeconds": 2.5,
-            "id": "entry-9"
+            "count": 1,
+            "startSeconds": 10.5,
+            "intervalSeconds": 0.5,
+            "id": "entry-6",
+            "routeGraphId": "s07-g1-alternate"
           },
           {
-            "unitId": 91091,
+            "unitId": 100672,
             "spawnId": 1,
-            "count": 7,
-            "startSeconds": 6,
-            "intervalSeconds": 2,
-            "id": "legacy-1-0",
-            "unitGroupId": "unit-group-0"
+            "count": 1,
+            "startSeconds": 11,
+            "intervalSeconds": 0.5,
+            "id": "entry-4",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-alternate"
           },
           {
-            "unitId": 100734,
-            "spawnId": 2,
+            "unitId": 91145,
+            "spawnId": 12,
+            "count": 1,
+            "startSeconds": 13,
+            "intervalSeconds": 0.5,
+            "id": "entry-7",
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-13",
+            "unitId": 100672,
+            "spawnId": 7,
             "count": 3,
-            "startSeconds": 7,
-            "intervalSeconds": 3,
-            "id": "entry-10"
+            "startSeconds": 13.5,
+            "intervalSeconds": 2
           },
           {
             "unitId": 91035,
             "spawnId": 4,
-            "count": 4,
-            "startSeconds": 12,
-            "intervalSeconds": 3,
+            "count": 1,
+            "startSeconds": 15,
+            "intervalSeconds": 0.5,
             "id": "entry-11"
           },
           {
+            "unitId": 1000021000,
+            "spawnId": 2,
+            "count": 1,
+            "startSeconds": 15,
+            "intervalSeconds": 0.5,
+            "id": "entry-8",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-14",
+            "unitId": 91004,
+            "spawnId": 3,
+            "count": 3,
+            "startSeconds": 15.5,
+            "intervalSeconds": 2,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-15",
+            "unitId": 101855,
+            "spawnId": 5,
+            "count": 1,
+            "startSeconds": 17,
+            "intervalSeconds": 0.5
+          },
+          {
             "unitId": 91091,
-            "spawnId": 6,
-            "count": 7,
-            "startSeconds": 33,
-            "intervalSeconds": 1.5,
-            "id": "legacy-6-0",
+            "spawnId": 8,
+            "count": 8,
+            "startSeconds": 17,
+            "intervalSeconds": 2,
+            "id": "legacy-12-1",
             "unitGroupId": "unit-group-0"
           },
           {
+            "unitId": 91091,
+            "spawnId": 1,
+            "count": 7,
+            "startSeconds": 17.5,
+            "intervalSeconds": 2,
+            "id": "legacy-6-0",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-16",
+            "unitId": 101855,
+            "spawnId": 6,
+            "count": 3,
+            "startSeconds": 18,
+            "intervalSeconds": 2
+          },
+          {
+            "unitId": 91091,
+            "spawnId": 1,
+            "count": 8,
+            "startSeconds": 18.5,
+            "intervalSeconds": 2,
+            "id": "entry-1",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "unitId": 100734,
+            "spawnId": 9,
+            "count": 2,
+            "startSeconds": 27.5,
+            "intervalSeconds": 2.5,
+            "id": "entry-10"
+          },
+          {
+            "id": "entry-17",
+            "unitId": 91145,
+            "spawnId": 2,
+            "count": 2,
+            "startSeconds": 27.5,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "unitId": 100539,
+            "spawnId": 2,
+            "count": 2,
+            "startSeconds": 28.5,
+            "intervalSeconds": 2.5,
+            "id": "entry-2",
+            "unitGroupId": "unit-group-0",
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-18",
+            "unitId": 91004,
+            "spawnId": 10,
+            "count": 3,
+            "startSeconds": 30,
+            "intervalSeconds": 2,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-19",
+            "unitId": 100672,
+            "spawnId": 3,
+            "count": 3,
+            "startSeconds": 30.5,
+            "intervalSeconds": 2,
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-20",
+            "unitId": 1000021000,
+            "spawnId": 3,
+            "count": 2,
+            "startSeconds": 32,
+            "intervalSeconds": 2,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-21",
+            "unitId": 91081,
+            "spawnId": 1,
+            "count": 2,
+            "startSeconds": 32.5,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g1-alternate"
+          },
+          {
+            "id": "entry-22",
+            "unitId": 91145,
+            "spawnId": 11,
+            "count": 2,
+            "startSeconds": 35,
+            "intervalSeconds": 1.5,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
             "count": 1,
-            "startSeconds": 40,
+            "startSeconds": 35.5,
             "intervalSeconds": 0.5,
             "spawnId": 1,
             "unitId": 91092,
             "id": "entry-3",
-            "editorManualTiming": true
+            "editorManualTiming": true,
+            "routeGraphId": "s07-g1-hall"
+          },
+          {
+            "id": "entry-23",
+            "unitId": 91004,
+            "spawnId": 4,
+            "count": 3,
+            "startSeconds": 38.5,
+            "intervalSeconds": 2
+          },
+          {
+            "id": "entry-24",
+            "unitId": 1000021000,
+            "spawnId": 12,
+            "count": 2,
+            "startSeconds": 39,
+            "intervalSeconds": 2,
+            "routeGraphId": "s07-g4-hall"
+          },
+          {
+            "id": "entry-25",
+            "unitId": 91145,
+            "spawnId": 5,
+            "count": 3,
+            "startSeconds": 43.5,
+            "intervalSeconds": 1.5
           }
-        ]
+        ],
+        "editorTimingBalance": {
+          "peakCap": 53,
+          "totalUnits": 90
+        }
       }
     ],
     "EnvironmentMapId": "map-expansion-snow-staggered-spurs",
@@ -6670,7 +7451,11 @@
           "weight": 1
         }
       ],
-      "editorOrder": 0
+      "editorOrder": 0,
+      "chokepoint": {
+        "edgeId": "edge-1",
+        "fraction": 0.543881
+      }
     },
     {
       "id": "s07-g1-alternate",
@@ -6791,7 +7576,11 @@
           "weight": 1
         }
       ],
-      "editorOrder": 1
+      "editorOrder": 1,
+      "chokepoint": {
+        "edgeId": "e3",
+        "fraction": 0.420149
+      }
     },
     {
       "id": "s07-g2-hall",
@@ -6852,7 +7641,11 @@
           "weight": 1
         }
       ],
-      "editorOrder": 2
+      "editorOrder": 2,
+      "chokepoint": {
+        "edgeId": "e1",
+        "fraction": 0.633635
+      }
     },
     {
       "id": "s07-g3-hall",
@@ -6949,7 +7742,11 @@
           "weight": 1
         }
       ],
-      "editorOrder": 4
+      "editorOrder": 4,
+      "chokepoint": {
+        "edgeId": "e3",
+        "fraction": 0.342225
+      }
     },
     {
       "id": "s07-g4-hall",
@@ -7022,7 +7819,11 @@
           "weight": 1
         }
       ],
-      "editorOrder": 6
+      "editorOrder": 6,
+      "chokepoint": {
+        "edgeId": "e2",
+        "fraction": 0.937573
+      }
     },
     {
       "id": "s07-g4-b22",
@@ -7204,7 +8005,11 @@
           "weight": 1
         }
       ],
-      "editorOrder": 5
+      "editorOrder": 5,
+      "chokepoint": {
+        "edgeId": "e3",
+        "fraction": 0.153482
+      }
     },
     {
       "id": "s07-g2-b17",
@@ -7303,7 +8108,11 @@
           "weight": 1
         }
       ],
-      "editorOrder": 3
+      "editorOrder": 3,
+      "chokepoint": {
+        "edgeId": "e1",
+        "fraction": 0.632564
+      }
     },
     {
       "id": "path-1",
@@ -7379,7 +8188,11 @@
           "weight": 1
         }
       ],
-      "editorOrder": 8
+      "editorOrder": 8,
+      "chokepoint": {
+        "edgeId": "e1",
+        "fraction": 0.948533
+      }
     }
   ],
   "hero": {
@@ -7389,7 +8202,7 @@
   "nextBuilding": 31,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "8b2f48757abf69b3ddb01367888b91b03c3da663a85fc461dff0ea8d69f331da",
+  "sourceRevision": "babaa0ed64eb98289e6cbc817d8e1ff03bd27a57df3717fe4b3fbea542bf02b4",
   "templates": {
     "Map07": [
       {

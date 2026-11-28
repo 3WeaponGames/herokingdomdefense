@@ -77,8 +77,9 @@ function compose(root,map,stage,bake,sources){
  for(const c of data)if(c&&c.ndBotnNodeList&&barracks.has(c.ID)){const b=barracks.get(c.ID);if(Object.prototype.hasOwnProperty.call(b,'spawnPosition')){if(!require('../../../assets/_script/BuildingSpawnPositions').point(b.spawnPosition))throw Error('Choose a valid initial squad destination.');c.squadSpawnPosition=Object.assign({},clone(b.spawnPosition),{__type__:'cc.Vec2'});}else c.squadSpawnPosition=null;}
  append(data,'ndStar',layers.ndPath,stage.hero.x,stage.hero.y);for(const spawn of stage.spawns.filter(s=>s.enabled!==false))append(data,'ndEnemy'+spawn.id,layers.ndPath,spawn.x,spawn.y);
  if(TaskPosition.valid(stage.tasksPosition))append(data,TaskPosition.marker,layers.ndPath,stage.tasksPosition.x,stage.tasksPosition.y);
- // Graph metadata travels with the prefab; the graph is walked at spawn time.
- const holder=append(data,'Authored routes',layers.ndPath,0,0),metadata={__type__:Legacy.script(root,'AuthoredStagePaths'),graphs:JSON.stringify(stage.graphs),spawns:JSON.stringify(stage.spawns)},disabled=stage.buildings.filter(b=>b.enabled===false);
+ // Chokepoints belong to the authoring document. The game walks the route geometry at spawn time.
+ const routes=stage.graphs.map(({chokepoint,...route})=>route);
+ const holder=append(data,'Authored routes',layers.ndPath,0,0),metadata={__type__:Legacy.script(root,'AuthoredStagePaths'),graphs:JSON.stringify(routes),spawns:JSON.stringify(stage.spawns)},disabled=stage.buildings.filter(b=>b.enabled===false);
  // Keep unavailable authoring records recoverable without materializing their
  // artwork, actors, colliders or hall unlocks in the runtime prefab.
  if(disabled.length)metadata.disabledBuildings=JSON.stringify(disabled);

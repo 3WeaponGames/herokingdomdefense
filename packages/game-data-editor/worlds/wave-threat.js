@@ -5,7 +5,7 @@ const Flight=require('../../../assets/_script/FlightTargeting');
 const Skills=require('../../../assets/_script/EnemySkills');
 const Records=require('../lib/unit-records');
 const Stats=require('./wave-stats');
-const {DEFAULT_DEFEAT_SECONDS}=require('./wave-pressure');
+const {defeatSecondsFor}=require('./wave-pressure');
 
 // Positions are opening preferences for the timer. The planner still validates
 // the wave against its peak cap, deadline, spawn order and Manual timings.
@@ -72,7 +72,7 @@ function additionalTargets(attack){
  }
 }
 
-function profile(unit,wave=BASE_WAVE,defeatSeconds=DEFAULT_DEFEAT_SECONDS){
+function profile(unit,wave=BASE_WAVE,defeatSeconds=defeatSecondsFor(wave)){
  const attack=unit?.attack||{},role=typeof unit?.unitType==='string'&&unit.unitType.trim()?unit.unitType.trim().toLowerCase():'untyped';
  const roleSettings=ROLES.get(role);
  const enemyClass=unit?.enemyClass==='boss'||unit?.enemyClass==='elite'?unit.enemyClass:'normal';
@@ -84,7 +84,7 @@ function profile(unit,wave=BASE_WAVE,defeatSeconds=DEFAULT_DEFEAT_SECONDS){
  const attackRate=number(unit?.attackRate),speed=number(unit?.speed);
  const {health,damage,baseHealth,baseDamage}=Stats.resolve({health:unit?.health,damage:unit?.damage===undefined?attack.damage:unit.damage},wave);
  const healthRegenPercent=number(unit?.healthRegenPercent)||0;
- const recoveryTime=number(defeatSeconds)??DEFAULT_DEFEAT_SECONDS;
+ const recoveryTime=number(defeatSeconds)??defeatSecondsFor(wave);
  const effective=health===null?null:health*(1+healthRegenPercent*recoveryTime);
  const effectiveHealth=number(effective);
  // Hits refresh the same effect on a target. Estimate uptime from hit rate

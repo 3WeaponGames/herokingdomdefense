@@ -1,15 +1,19 @@
 'use strict';
-const Pressure=require('./wave-pressure'),Stats=require('./wave-stats');
+const Pressure=require('./wave-pressure'),Stats=require('./wave-stats'),Travel=require('./wave-travel');
 const fields=[['units','Units'],['health','HP'],['damage','Damage / hit']];
 const seconds=value=>Stats.format(value)+' s';
 const scheduledSeconds=value=>Stats.factor(value)+' s';
 
 function create(el){
- let selection,time=0,preferredRate=Pressure.DEFAULT_DEFEAT_SECONDS,defeatSeconds=preferredRate,selectedRate=null;
- function render(parent,{key,label,wave,units,interval}){
-  if(key!==selection){selection=key;time=0;selectedRate=null;}
-  const savedBalance=wave?.editorTimingBalance,savedRate=savedBalance?.defeatSeconds;
-  defeatSeconds=selectedRate??(Number.isFinite(savedRate)&&savedRate>0?savedRate:preferredRate);
+ let selection,time=0,selectedRate;
+ function rateFor(key,wave,waveNumber){
+  const override=key===selection&&selectedRate!==undefined?selectedRate:Pressure.savedDefeatOverride(wave);
+  return {defeatSeconds:override??Pressure.defaultDefeatSeconds(wave,waveNumber),defeatSecondsMode:override===null?'default':'custom'};
+ }
+ function render(parent,{key,label,stage,wave,waveNumber,units,interval}){
+  if(key!==selection){selection=key;time=0;selectedRate=undefined;}
+  const savedBalance=wave?.editorTimingBalance;
+  const rate=()=>rateFor(key,wave,waveNumber).defeatSeconds;
   const panel=el('section',undefined,'world-wave-overview');
   panel.setAttribute('aria-label',label+' overview');
   parent.appendChild(panel);
@@ -19,8 +23,11 @@ function create(el){
   heading.appendChild(el('h3',label+' overview'));
   controls.appendChild(heading);
 
-  let model;
-  try{model=Pressure.build(wave,units,interval,defeatSeconds);}
+  let model,travel;
+  try{
+   travel=Travel.create(stage,units).forWave(wave,interval);
+   model=Pressure.build(wave,units,interval,rate(),travel);
+  }
   catch(error){
    const notice=el('p','Wave overview unavailable.','world-note');
    notice.title=error.message;controls.appendChild(notice);
@@ -33,16 +40,16 @@ function create(el){
   timeline.appendChild(el('span','Time'));timeline.appendChild(slider);timeline.appendChild(position);
   controls.appendChild(timeline);
 
-  const rate=el('label',undefined,'world-wave-overview-rate');
-  rate.appendChild(el('span','Seconds per defeat'));
+  const rateField=el('label',undefined,'world-wave-overview-rate');
+  rateField.appendChild(el('span','Seconds per defeat'));
   const rateInput=el('input');
-  rateInput.type='number';rateInput.min='0';rateInput.step='any';rateInput.value=String(defeatSeconds);
+  rateInput.type='number';rateInput.min='0';rateInput.step='any';rateInput.value=String(rate());
+  rateInput.title='Clear to use this wave’s default of '+seconds(Pressure.defaultDefeatSeconds(wave,waveNumber))+'.';
   rateInput.setAttribute('aria-label','Seconds per defeat');
-  rate.appendChild(rateInput);
-  const rule=el('small','Oldest enemy first');
-  rule.title='Defeats are timed from 0 s. At each tick, remove the oldest living enemy before spawning new ones.';
-  rate.appendChild(rule);
-  controls.appendChild(rate);
+  rateField.appendChild(rateInput);
+  const rule=el('small');
+  rateField.appendChild(rule);
+  controls.appendChild(rateField);
   const notice=el('small','Timeline estimate unavailable for this schedule.','world-warn');
   controls.appendChild(notice);
   const breached=el('small',undefined,'world-warn');
@@ -69,13 +76,23 @@ function create(el){
   function showTime(){
    const label=seconds(time),snapshot=model.at(time);
    position.textContent=label;
-   slider.setAttribute('aria-valuetext',label+' of '+seconds(model.duration));
+   slider.setAttribute('aria-valuetext',label+' of '+seconds(model.timelineEnd??model.duration));
    fields.forEach(([name],i)=>{live[i].value.textContent=Stats.format(snapshot[name]);});
   }
   function showModel(){
    duration.textContent='Last spawn '+scheduledSeconds(model.duration);
-   time=Math.min(time,model.duration);
-   slider.max=String(model.duration);slider.value=String(time);slider.disabled=!model.projected||model.duration===0;
+   const end=model.timelineEnd??model.duration;
+   time=Math.min(time,end);
+   slider.max=String(end);slider.value=String(time);slider.disabled=!model.projected||end===0;
+   if(model.travel){
+    const {firstArrival,firstDefeat,viaGoal,fromSpawn}=model.travel;
+    rule.textContent='First contact ~'+seconds(firstArrival)+' · First defeat ~'+seconds(firstDefeat);
+    rule.title='Travel uses the weighted median route distance and unit movement speed. Defeats start after contact.'+
+     (viaGoal?' Unmarked route options use their goal.':'')+(fromSpawn?' Units without travel data use their spawn time.':'');
+   }else{
+    rule.textContent='Oldest enemy first';
+    rule.title='Mark a chokepoint in Paths to include travel. The spawn-time estimate uses defeat ticks from 0 s.';
+   }
    notice.hidden=model.projected;
    const peak=model.peaks.units.value,cap=savedBalance?.peakCap,deadline=savedBalance?.lastSpawnLimit;
    const problems=[];
@@ -96,14 +113,17 @@ function create(el){
   slider.oninput=()=>{time=Number(slider.value);showTime();};
   rateInput.onchange=()=>{
    if(rateInput.isConnected===false)return;
-   const next=Number(rateInput.value);
-   if(!Number.isFinite(next)||next<=0){rateInput.value=String(defeatSeconds);return;}
-   if(next===defeatSeconds)return;
-   model=Pressure.build(wave,units,interval,next);defeatSeconds=selectedRate=preferredRate=next;showModel();
+   const next=rateInput.value.trim()===''?null:Number(rateInput.value);
+   if(rateInput.validity?.badInput||next!==null&&(!Number.isFinite(next)||next<=0)){
+    rateInput.value=String(rate());return;
+   }
+   selectedRate=next;
+   rateInput.value=String(rate());
+   model=Pressure.build(wave,units,interval,rate(),travel);showModel();
   };
   showModel();
  }
- return {render,get defeatSeconds(){return defeatSeconds;}};
+ return {render,rateFor};
 }
 
 module.exports={create};

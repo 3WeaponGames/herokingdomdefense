@@ -1,10 +1,27 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),path=require('node:path');
 const P=require('../worlds/path-editor'),M=require('../worlds/model'),L=require('../worlds/legacy'),Spawn=require('../../../assets/_script/AuthoredSpawnPlan');
+const Chokepoint=require('../worlds/path-chokepoint');
 const clone=value=>JSON.parse(JSON.stringify(value));
 function stage(){return{future:{keep:true},graphs:[{id:'path',entry:'start',spawnIds:[1],future:{keep:[1]},nodes:[{id:'start',x:0,y:0,future:{keep:true}},{id:'middle',x:100,y:50},{id:'goal',x:200,y:0,goal:true,future:'goal'}],edges:[{id:'first',from:'start',to:'middle',weight:3,future:{keep:[1]}},{id:'last',from:'middle',to:'goal',weight:7,presentation:{color:'blue'}}]}]};}
 const graph=s=>s.graphs[0];
 function route(s,built,value){return Spawn.route(s.graphs,1,built,null,()=>value).map(node=>node.nodeId);}
+
+test('a segment chokepoint preserves its location through a point insertion and removal',()=>{
+ const s=stage(),before=clone(s),original=route(s,[],.5);
+ const marker={edgeId:'last',fraction:.75};
+ P.setChokepoint(s,'path',marker);
+ assert.deepEqual(route(s,[],.5),original);
+ assert.deepEqual(graph(s),{...before.graphs[0],chokepoint:marker});
+ const point=Chokepoint.point(graph(s));
+ const inserted=P.insertOnEdge(s,'path',graph(s).edges[1],.75);
+ assert.equal(graph(s).chokepoint,inserted);
+ P.removeNode(s,'path',inserted);
+ const restored=Chokepoint.point(graph(s));
+ assert(Math.hypot(restored.x-point.x,restored.y-point.y)<1e-10);
+ P.setChokepoint(s,'path',null);
+ assert.deepEqual(s,before);
+});
 
 test('duplicating a path copies its complete topology and conditions, selects a free graph ID and uses a spawn-based name',()=>{
  const s=stage();s.spawns=[{id:1,name:'North entrance'}];s.config={WaveCfg:[{SpawnTimeline:[{id:'group',spawnId:1,routeGraphId:'path'}]}]};s.spawns[0].graphId='path';

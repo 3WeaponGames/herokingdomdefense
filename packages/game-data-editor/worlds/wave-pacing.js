@@ -46,13 +46,13 @@ function settings(peaks,cap,units,rowCount){
   drop:Math.max(1,Math.min(4,Math.ceil(targetSize/3)))};
 }
 
-function measure(events,pacing,rate){
+function measure(events,pacing,rate,tickAt=time=>defeatTick(time,rate)){
  const {times,breaks,openingEnd}=pacing;
  const opening={value:0,time:0},peaks=times.map(()=>({value:0,time:null})),lulls=[];
  let phase=0,prior={tick:0,alive:0};
  const recordLull=()=>{
   const time=breaks[phase++];
-  lulls.push({value:Math.max(0,prior.alive-Math.max(0,defeatTick(time,rate)-prior.tick)),time});
+  lulls.push({value:Math.max(0,prior.alive-Math.max(0,tickAt(time)-prior.tick)),time});
  };
  for(const event of events){
   const {time,alive}=event;
