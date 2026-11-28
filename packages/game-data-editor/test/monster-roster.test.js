@@ -138,7 +138,7 @@ test('pack and kingdom filters, search and wave choices leave drafts and files u
     assert.match(f.panel.$list.children[0].textContent, /No units match/);
     f.panel.$search.value = '';
     f.panel._unitPack = 'all'; f.panel._unitKingdom = 'sun-tomb'; f.panel._renderList();
-    assert.equal(f.panel.$count.textContent, '11 models · 66 profiles');
+    assert.equal(f.panel.$count.textContent, '10 models · 61 profiles');
     const visibleNames = () => Array.from(f.panel.$list.children, button => button.children[1].children[0].textContent);
     assert(visibleNames().includes('Carrion Bird')); assert(visibleNames().includes('Black Plague')); assert(visibleNames().includes('Evilmass Knight'));
     f.panel._unitPack = 'monster1'; f.panel.$search.value = 'desert bird'; f.panel._renderList();

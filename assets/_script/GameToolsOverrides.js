@@ -41,29 +41,47 @@ function roleOf(owner, settings) {
   var side = owner.heroStyle ? "hero" : owner.navigationTeam === "friendly" ? "ally" : owner.navigationTeam === "enemy" ? "enemy" : null;
   return roleFor(owner, side, settings);
 }
-function counters(owner, target) {
-  if (!owner || !target || !target.cfg && !target.heroStyle) return false;
-  var settings = config();
+function counterApplies(owner, target, settings, sourceRole) {
+  if (!target.cfg && !target.heroStyle) return false;
   var targetRole = roleOf(target, settings);
+  if (FightingTypeDamage.ignoresCounters(sourceRole, targetRole)) return false;
   if (owner.cfg && owner.cfg.OverrideCounterType === true && typeof owner.cfg.CounterType === "string") {
     return !!owner.cfg.CounterType && owner.cfg.CounterType === targetRole;
   }
-  var counter = FightingTypeDamage.counterType(settings && settings.unitTypes, roleOf(owner, settings));
+  var counter = FightingTypeDamage.counterType(settings && settings.unitTypes, sourceRole);
   if (counter !== undefined) return counter === targetRole;
   if (!owner.cfg) return false;
   var legacy = owner.cfg.CounterType;
   if (legacy === undefined) return !!(owner.cfg.Suppressed && target.cfg && owner.cfg.Suppressed == target.cfg.ID);
   return !!legacy && legacy === targetRole;
 }
+function counters(owner, target) {
+  if (!owner || !target) return false;
+  var settings = config();
+  return counterApplies(owner, target, settings, roleOf(owner, settings));
+}
+function counterMultiplier() {
+  var parameter = require("KinghtFallEnum").KinghtFallEnumParameterCfg.RestrainedArms;
+  return Number(dataManager().getParamsCfgById(parameter));
+}
+function wreckerDamage(target, amount) {
+  return typeof target.getIsWork === "function" ? amount * 1.5 : amount;
+}
+function attackDamage(owner, target, amount) {
+  if (!(amount > 0) || !owner || !target) return amount;
+  var settings = config(), sourceRole = roleOf(owner, settings);
+  if (sourceRole === "wrecker") return wreckerDamage(target, amount);
+  return counterApplies(owner, target, settings, sourceRole) ? amount * counterMultiplier() : amount;
+}
 // Used by hit paths that have no legacy per-unit bonus. Projectiles may pass the
 // source role captured at release.
 function typeCounterDamage(owner, target, amount, releasedRole) {
   if (!(amount > 0) || !owner || !target) return amount;
-  var settings = config();
-  var counter = FightingTypeDamage.counterType(settings && settings.unitTypes, releasedRole || roleOf(owner, settings));
+  var settings = config(), sourceRole = releasedRole || roleOf(owner, settings);
+  if (sourceRole === "wrecker") return wreckerDamage(target, amount);
+  var counter = FightingTypeDamage.counterType(settings && settings.unitTypes, sourceRole);
   if (!counter || counter !== roleOf(target, settings)) return amount;
-  var parameter = require("KinghtFallEnum").KinghtFallEnumParameterCfg.RestrainedArms;
-  return amount * Number(dataManager().getParamsCfgById(parameter));
+  return amount * counterMultiplier();
 }
 function damageTaken(owner, side, amount) {
   if (side !== "hero" || !(amount > 0) || !owner) return amount;
@@ -400,6 +418,7 @@ exports.clear = clear;
 exports.isPending = isPending;
 exports.keyFor = keyFor;
 exports.counters = counters;
+exports.attackDamage = attackDamage;
 exports.typeCounterDamage = typeCounterDamage;
 exports.damageTaken = damageTaken;
 exports.perkEnabled = perkEnabled;

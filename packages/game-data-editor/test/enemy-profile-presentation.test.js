@@ -11,6 +11,14 @@ test('fighting and stage profiles inherit parent appearance and animation speed,
 test('projectile choices inherit the parent, retain scoped overrides and never mutate the saved catalog',()=>{
  const api=load('ProjectileLooks'),data={assets:[],assignments:{'enemy:91001':{flight:'arrow',impact:'hit'},'enemy:100001':{tint:'#aabbcc'}}},before=structuredClone(data),value=api.selectSource(data,'enemy:1000000000',{cfg:{ID:1000000000,ProfileBaseID:100001}},settings);assert.deepEqual({...value},{flight:'arrow',impact:'hit',tint:'#aabbcc'});assert.deepEqual(data,before);
 });
+test('Wrecker projectiles follow the selected source fighting profile through a stage override',()=>{
+ const overrides=structuredClone(settings);
+ overrides.unitProfiles.entries[100002]={baseId:91001,sourceProfileId:100001};
+ const config={ID:1000000001,ProfileBaseID:100002};
+ const api=load('ProjectileLooks'),data={assets:[],assignments:{'enemy:91001':{flight:'arrow',impact:'hit'},'enemy:100001':{flight:'shell'},'enemy:100002':{tint:'#aabbcc'}}};
+ assert.deepEqual(Runtime.referenceIds(config,overrides),[100002,100001,91001]);
+ assert.deepEqual({...api.selectSource(data,'enemy:1000000001',{cfg:config},overrides)},{flight:'shell',impact:'hit',tint:'#aabbcc'});
+});
 test('stage admission preloads inherited character and projectile art for a Custom fighting profile',()=>{
  const config={SoldierCfg:{91001:{ID:91001,prefab:'Slime'},100001:{ID:100001,prefab:'Slime'}},GameTools:settings},level={EnemyProfiles:{1000000000:{baseId:100001,name:'Custom',stats:{}}}},base={enemies:['1000000000'],allies:[]},catalogs={characters:{profiles:{parent:{baked:{resource:'parent-rig'}}},assignments:{'enemy:91001:default':'parent'}},parts:{parts:[]},projectiles:{assets:[{id:'arrow',resource:'parent-arrow'}],assignments:{'enemy:91001':{flight:'arrow'}}}},items=Warm.presentationPlan(config,level,base,catalogs,{names:{}});assert(items.some(item=>item.path==='parent-rig'));assert(items.some(item=>item.path==='parent-arrow'));
 });

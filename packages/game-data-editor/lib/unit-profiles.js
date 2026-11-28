@@ -2,6 +2,7 @@
 // Profile metadata is authoring data. Resolved records use the existing unit
 // format and stable IDs, so spawning, pooling and legacy waves need no rewrite.
 const fs=require('fs'),path=require('path'),Catalog=require('../worlds/unit-catalog'),Records=require('./unit-records'),EnemyClasses=require('./enemy-classes'),Fighting=require('./fighting-profiles');
+const AttackRules=require('../../../assets/_script/UnitAttackRules');
 const clone=value=>value===undefined?undefined:JSON.parse(JSON.stringify(value));
 const own=(value,key)=>Object.prototype.hasOwnProperty.call(value||{},key);
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -33,6 +34,43 @@ function adopt(state,id,baseId){
 function assign(settings,table,id,value){
  const idKey=key(id);if(value===undefined||value===null){if(settings[table])delete settings[table][idKey];}
  else{if(!settings[table])settings[table]={};settings[table][idKey]=clone(value);}
+}
+function allocateProfile(table,units){
+ let id=Math.max(100000,Number(table.nextId)||100000);
+ while(own(units,id)||own(table.entries,id)||own(table.aliases,id))id++;
+ table.nextId=id+1;
+ return id;
+}
+function canAddWrecker(state,id){
+ const tools=state.overrides,fixed=Fighting.familyFor(tools,id),units=state.A.SoldierCfg,row=units[id];
+ if(!own(tools.unitTypes,'wrecker')||!fixed||own(fixed.profiles,'wrecker')||!row)return false;
+ const behavior=Records.behavior(row,id),template=units[behavior];
+ if(!Records.BEHAVIOR_TEMPLATES.includes(behavior)||!template||row.AttackType!==template.AttackType&&!AttackRules.active(row))return false;
+ const attackType=AttackRules.attackType(row);
+ return row.AttackDamage>0&&(attackType===1||attackType===2);
+}
+function addWrecker(state,sourceId){
+ const tools=state.overrides,units=state.A.SoldierCfg,table=metadata(state);
+ sourceId=Fighting.canonicalId(tools,sourceId);
+ if(!canAddWrecker(state,sourceId))throw Error('Select an attacking profile from a model without a Wrecker profile.');
+ const source=units[sourceId],baseId=table.entries[sourceId]?.baseId||sourceId,base=units[baseId];
+ const id=allocateProfile(table,units),row=units[id]=clone(source);
+ for(const field of ['MonsterSource','AppearanceSourceUnit','CampaignBaseUnit','FightingType','OverrideCounterType','Suppressed'])delete row[field];
+ row.ID=id;
+ row.BehaviorTemplate=Records.behavior(source,sourceId);
+ // Configured attacks set their delivery at runtime. Keep the underlying
+ // controller type valid in the saved record, including on converted models.
+ row.AttackType=units[row.BehaviorTemplate].AttackType;
+ row.CounterType='';
+ row.EnemyTargeting={mode:'buildings-first'};
+ for(const name of ['visuals','animationSpeeds','timings','timingDefaults','projectileSpeeds'])assign(tools,name,id,(tools[name]||{})[key(sourceId)]);
+ assign(tools,'unitTypeAssignments',id,'wrecker');
+ assign(tools,'enemyClasses',id,EnemyClasses.resolve(tools,sourceId));
+ const entry=Object.assign(adopt(state,id,baseId),{name:'Wrecker',created:true,fightingProfile:true,sourceProfileId:sourceId});
+ if(row.prefab!==base.prefab)entry.modelPrefab=row.prefab;
+ if(own(row,'loadIcon')&&row.loadIcon!==base.loadIcon)entry.battleIcon=row.loadIcon;
+ Fighting.familyFor(tools,baseId).profiles.wrecker=id;
+ return id;
 }
 function materialize(state){
  const tools=state.overrides,entries=metadata(state).entries||{},units=state.A.SoldierCfg||{};
@@ -104,11 +142,20 @@ function usages(root,state,id,drafts){
 }
 function describe(root,state,id,drafts){
  const looks=characters(root),{group,baseId}=family(state,id,looks),entries=metadata(state).entries||{},tools=state.overrides;
- const fixed=Fighting.familyFor(tools,baseId),members=fixed?Fighting.ROLES.map(role=>group.units.find(unit=>unit.id===fixed.profiles[role])):group.units;
- return {model:group.units.find(unit=>unit.id===baseId).name,baseId,fightingProfiles:!!fixed,selectedId:Fighting.canonicalId(tools,id),profiles:members.map(unit=>({id:unit.id,name:fixed?Catalog.profileLabel(unit):unit.id===baseId?'Default':entries[unit.id]&&entries[unit.id].name||Catalog.profileLabel(unit),archived:!!(entries[unit.id]&&entries[unit.id].archived),managed:!!entries[unit.id],default:unit.id===baseId,record:clone(state.A.SoldierCfg[unit.id]),visual:clone((tools.visuals||{})[key(unit.id)]||{}),role:(tools.unitTypeAssignments||{})[key(unit.id)]||'',enemyClass:EnemyClasses.resolve(tools,unit.id),timing:timing(tools,unit.id),speed:(tools.animationSpeeds||{})[key(unit.id)],overrides:clone(entries[unit.id]||null),uses:usages(root,state,unit.id,drafts)})),types:clone(tools.unitTypes||{})};
+ const fixed=Fighting.familyFor(tools,baseId),members=fixed?Fighting.rolesFor(fixed).map(role=>group.units.find(unit=>unit.id===fixed.profiles[role])):group.units;
+ const selectedId=Fighting.canonicalId(tools,id);
+ const profiles=members.map(unit=>({
+  id:unit.id,name:fixed?Catalog.profileLabel(unit):unit.id===baseId?'Default':entries[unit.id]&&entries[unit.id].name||Catalog.profileLabel(unit),
+  archived:!!entries[unit.id]?.archived,managed:!!entries[unit.id],default:unit.id===baseId,canAddWrecker:canAddWrecker(state,unit.id),
+  record:clone(state.A.SoldierCfg[unit.id]),visual:clone((tools.visuals||{})[key(unit.id)]||{}),role:(tools.unitTypeAssignments||{})[key(unit.id)]||'',
+  enemyClass:EnemyClasses.resolve(tools,unit.id),timing:timing(tools,unit.id),speed:(tools.animationSpeeds||{})[key(unit.id)],
+  overrides:clone(entries[unit.id]||null),uses:usages(root,state,unit.id,drafts)
+ }));
+ return {model:group.units.find(unit=>unit.id===baseId).name,baseId,fightingProfiles:!!fixed,selectedId,profiles,types:clone(tools.unitTypes||{})};
 }
 function operation(root,state,request,drafts){
  const next=clone(state),id=Fighting.canonicalId(next.overrides,request.id),{baseId}=family(next,id,characters(root)),units=next.A.SoldierCfg,action=request.action;
+ if(action==='add-wrecker')return {state:next,selectedId:addWrecker(next,id)};
  if(action==='set'&&['TransformSkill','EnemySkills'].includes(request.field)){
   const skill=request.value===null?undefined:request.value;
   const problem=require('../units/skills').issue(units[id],request.field,skill,units,next.overrides);
@@ -121,7 +168,7 @@ function operation(root,state,request,drafts){
  if(['add','duplicate'].includes(action)){
   if(action==='duplicate'&&Records.boss(id))throw Error('This legacy boss uses linked transformation forms. Add a profile from this model’s Default instead.');
   next.overrides.unitProfiles=clone(metadata(next));const table=next.overrides.unitProfiles;table.entries=table.entries||{};
-  let fresh=Math.max(100000,Number(table.nextId)||100000);while(units[fresh]||table.entries[fresh])fresh++;table.nextId=fresh+1;selectedId=fresh;
+  const fresh=allocateProfile(table,units);selectedId=fresh;
   const source=action==='duplicate'?id:baseId;units[fresh]=clone(units[source]);units[fresh].ID=fresh;delete units[fresh].MonsterSource;delete units[fresh].AppearanceSourceUnit;delete units[fresh].CampaignBaseUnit;
   if(action==='add'){delete units[fresh].TransformSkill;delete units[fresh].EnemySkills;}
   const behavior=Records.behavior(units[source],source);if(Records.BEHAVIOR_TEMPLATES.includes(behavior))units[fresh].BehaviorTemplate=behavior;
@@ -186,6 +233,10 @@ function validate(state){
   const at=['entries',id];if(!/^[1-9]\d*$/.test(id)||!entry||typeof entry!=='object'||Array.isArray(entry)){issue(at,'Invalid profile identifier.');continue;}
   const row=state.A.SoldierCfg[id],base=state.A.SoldierCfg[entry.baseId];
   if(!Number.isSafeInteger(entry.baseId)||!row||!row.prefab||!base||!base.prefab||Number(id)===entry.baseId||own(table.entries,entry.baseId))issue(at,'Profiles must reference a spawnable model default directly.');
+  if(own(entry,'sourceProfileId')){
+   const source=entry.sourceProfileId,fixed=Fighting.familyFor(state.overrides,entry.baseId);
+   if(entry.role!=='wrecker'||source===Number(id)||!fixed||!Fighting.ROLES.some(role=>fixed.profiles[role]===source))issue(at.concat('sourceProfileId'),'Choose a standard source profile from the same model.');
+  }
   try{validName(entry.name);}catch(error){issue(at.concat('name'),error.message);}
   for(const [group,allowed]of [['stats',STATS],['visual',VISUAL]]){
    if(entry[group]!==undefined&&(!entry[group]||typeof entry[group]!=='object'||Array.isArray(entry[group]))){issue(at.concat(group),'Invalid profile overrides.');continue;}
@@ -212,4 +263,4 @@ function checkRemovals(root,before,state,drafts){
  return ()=>{if(!equal(files,names())||files.some(file=>!fs.readFileSync(path.join(folder,file)).equals(original.get(file))))throw Error('Stage references changed during profile removal. Drafts retained; review the profile usage again.');};
 }
 function edits(before,after){const result=[];for(const id of new Set(Object.keys(before.A.SoldierCfg).concat(Object.keys(after.A.SoldierCfg))))if(!equal(before.A.SoldierCfg[id],after.A.SoldierCfg[id]))result.push({doc:'A',path:['SoldierCfg',id],...(after.A.SoldierCfg[id]?{value:after.A.SoldierCfg[id]}:{remove:true})});for(const table of new Set(Object.keys(before.overrides).concat(Object.keys(after.overrides))))if(!equal(before.overrides[table],after.overrides[table]))result.push({doc:'overrides',path:[table],value:after.overrides[table]});return result;}
-module.exports={STATS,VISUAL,key,groups,family,metadata,characters,describe,operation,reconcile,materialize,edits,usages,validate,checkRemovals};
+module.exports={STATS,VISUAL,key,groups,family,metadata,characters,describe,operation,addWrecker,reconcile,materialize,edits,usages,validate,checkRemovals};

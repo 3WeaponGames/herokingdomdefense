@@ -33,7 +33,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 var r;
 var $z1KinghtFallConfig = require("KinghtFallConfig");
-var $z1KinghtFallEnum = require("KinghtFallEnum");
 var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var $z1KinghtFallModle = require("KinghtFallModle");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
@@ -87,7 +86,7 @@ var def_KinghtFallEnemyItem10 = function (t) {
       if (!skillCurrent(this, scope, false) || !targetCurrent(victim, true)) return;
       var impact = cc.v2(Navigation.attackPointOf(n, scope.game, Navigation.positionOf(this.node, scope.game), selected.polygon, selected.wallPoint));
       var origin = this.vec2_1.clone(), form = this.cfg.BehaviorTemplate || this.cfg.ProfileBaseID || this.cfg.ID;
-      GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
+      e = GameToolsOverrides.attackDamage(this, n, e);
       var dealt = n.onAttacked(e, t);
       if (!skillCurrent(this, scope, true)) return;
       if (targetCurrent(victim, false)) scope.effects.showDamageNum(impact, dealt);

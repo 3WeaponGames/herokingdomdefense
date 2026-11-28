@@ -505,10 +505,12 @@ function create(kind){
       if(row.unitType==='enemy')this._field(typeFields,'Enemy class',EnemyClasses.resolve(this._data('overrides'),id),value=>this._change(()=>{if(!EnemyClasses.CHOICES.some(choice=>choice.value===value))throw Error('Choose Normal, Elite or Boss.');const settings=this._data('overrides');if(EnemyClasses.resolve(settings,id)===value)return [];return [{doc:'overrides',path:['enemyClasses'],value:Object.assign({},settings.enemyClasses||{},{[typeKey]:value})}];}),{options:EnemyClasses.CHOICES,help:'Normal, Elite or Boss classification for this enemy profile. Stats, abilities and combat-role counters are edited separately.'});
       this._field(typeFields,'Fighting type',assignments[typeKey]||'',value=>{const next=Object.assign({},assignments);if(value)next[typeKey]=value;else delete next[typeKey];return this._set('overrides',['unitTypeAssignments'],next);},{options:[{value:'',label:'Original battle icon'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],readOnly:row.unitType==='enemy'&&!!require('../lib/fighting-profiles').familyFor(this._data('overrides'),id),help:'Combat role used for counter bonuses. The Battle icon below overrides the type pictogram for this unit.'});
       const counterType=FightingTypeDamage.counterType(types,assignments[typeKey]);
-      if(counterType!==undefined&&row.record.OverrideCounterType!==true){
+      if(assignments[typeKey]==='wrecker'){
+        this._field(typeFields,'Countered fighting type','None',null,{readOnly:true,help:'Wreckers deal 150% damage to buildings and use standard damage against units.'});
+      }else if(counterType!==undefined&&row.record.OverrideCounterType!==true){
         this._field(typeFields,'Countered fighting type',types[counterType].name,null,{readOnly:true,help:'Inherited from this unit’s fighting type.'});
       }else{
-        this._field(typeFields,'Countered fighting type',row.record.CounterType===undefined?'__legacy':row.record.CounterType,value=>this._set('A',row.path.concat('CounterType'),value),{options:[...(row.record.CounterType===undefined?[{value:'__legacy',label:'Original matchup (legacy)'}]:[]),{value:'',label:'None'},...Object.keys(types).map(key=>({value:key,label:types[key].name}))],help:'Applies the configured damage multiplier to every opposing unit assigned to this type. Does not affect target priority.'});
+        this._field(typeFields,'Countered fighting type',row.record.CounterType===undefined?'__legacy':row.record.CounterType,value=>this._set('A',row.path.concat('CounterType'),value),{options:[...(row.record.CounterType===undefined?[{value:'__legacy',label:'Original matchup (legacy)'}]:[]),{value:'',label:'None'},...Object.keys(types).filter(key=>key!=='wrecker').map(key=>({value:key,label:types[key].name}))],help:'Applies the configured damage multiplier to every opposing unit assigned to this type. Does not affect target priority.'});
       }
       typeFields.appendChild(button('Manage types & pictograms',()=>openPanel('unit-types').catch(error=>this._status(error.message,true))));
       if(row.unitType==='ally'){
@@ -615,6 +617,7 @@ function create(kind){
       const help={
         nearest:'Selects the nearest eligible target in search range.',
         priority:'The first available group in search range wins. Omitted groups are ignored.'+(flying?' Flight units skip walls and gates.':''),
+        'buildings-first':'Targets the nearest eligible building in sight. If there is no building in sight, targets the nearest unit.',
         castle:'Heads straight for the castle. Ground units break walls in the shortest route to it.',
         hero:'Follows the spawn path until the hero enters search range. Ground units breach walls in the way.'
       };

@@ -195,6 +195,45 @@ test('configured enemy missiles and splash use the released attacker movement to
   assert.deepEqual(f.hits.slice(start).map(hit => hit.name).sort(), ['tower', 'troop']);
 });
 
+test('a Wrecker shell deals bonus damage to each structure and standard splash damage to nearby troops', () => {
+  const f = fixture(), tower = f.target('tower', 60, 0), barracks = f.target('barracks', 70, 0);
+  const troop = f.target('troop', 65, 0);
+  for (const [actor,type] of [[tower,'ArrowTower'],[barracks,'Barracks']]) {
+    actor.buildInfo = { BuildID: type };
+    actor.getIsWork = () => true;
+  }
+  f.game.ctrPlay.isDead = () => true;
+  f.d.getAttackableBuildList = () => [tower,barracks];
+  f.d.getSoldierList = () => [troop];
+  const owner = f.attacker('KinghtFallEnemyBase', { delivery: 'ranged', pattern: 'splash', splashRadius: 70, splashFalloff: 1 }, tower);
+  f.manager.data.GameTools = { unitTypeAssignments: { 'enemy:101845:default': 'wrecker' } };
+  owner.cfg = { ...owner.cfg, ID: 101845 };
+  f.e.stubs.UnitAttackCombat.releaseEnemy.call(owner);
+  owner.cfg = { ...owner.cfg, ID: 90001 };
+  f.step(1);
+  assert.deepEqual(f.amounts(), [['tower', 150], ['troop', 100], ['barracks', 150]]);
+});
+
+test('a castle-only Wrecker aims at the castle and applies its splash at impact', () => {
+  const f = fixture(), castle = f.target('castle', 60, 0), barracks = f.target('barracks', 70, 0), troop = f.target('troop', 65, 0);
+  castle.buildInfo = { BuildID: 'CastleCenter' };
+  barracks.buildInfo = { BuildID: 'Barracks' };
+  castle.getIsWork = barracks.getIsWork = () => true;
+  f.d.baseBuild = castle;
+  f.d.getAttackableBuildList = () => [castle, barracks];
+  f.d.getSoldierList = () => [troop];
+  f.game.ctrPlay.isDead = () => true;
+  const owner = f.attacker('KinghtFallEnemyBase', { delivery: 'melee', pattern: 'splash', splashRadius: 70, splashFalloff: 1 }, castle);
+  owner.cfg = { ...owner.cfg, ID: 101851, BuildingCross: 1, EnemyTargeting: { mode: 'castle' } };
+  f.manager.data.GameTools = { unitTypeAssignments: { 'enemy:101851:default': 'wrecker' } };
+  owner.getFind = () => ({ actor: troop, canAtt: true });
+  f.e.stubs.UnitAttackCombat.releaseEnemy.call(owner);
+  assert.deepEqual(f.amounts(), []);
+  owner.getFind = () => ({ building: castle, canAtt: true });
+  f.e.stubs.UnitAttackCombat.releaseEnemy.call(owner);
+  assert.deepEqual(f.amounts(), [['castle', 150], ['troop', 100], ['barracks', 150]]);
+});
+
 test('the Plague Doctor steals life on a real hit without requesting the retired healing sound', () => {
   const f = fixture(), saved = require('../../assets/KinghtFallConfig/GameJsonCfg.json').SoldierCfg[91134];
   const defender = f.target('defender', 30, 0), cues = [];

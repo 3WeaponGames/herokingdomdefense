@@ -121,6 +121,23 @@ test('Black Goat survives lethal hits at its 50% threshold and enters phase two 
   assert(regent.time.EnemySkills.some(skill=>skill.id==='weaken'));
 });
 
+test('Stump Walker transforms into the Iron Golem boss at 40% health even on an overkill hit',()=>{
+  const h=fixture(true,undefined,[91100,91082]),source=h.source;
+  source.hp=source.hpMax=250;
+  assert.equal(source.onAttacked(149,null,true),149);
+  source.updateCombatTimers(.016);
+  assert.equal(h.d.enemyList[0],source);
+  assert.equal(source.onAttacked(1000,null,true),1);
+  assert.equal(source.hp,100);
+  assert.equal(source.onAttacked(1000,null,true),0);
+  assert.equal(source.updateCombatTimers(.016),false);
+  assert.equal(h.d.enemyList.length,1);
+  const golem=h.d.enemyList[0];
+  assert.equal(golem.cfg.ID,91082);
+  assert.equal(golem.cfg.IsBoss,true);
+  assert.equal(golem.hp,h.units[91082].Health);
+});
+
 test('equipped support skills use their own intervals, ranges, and eligible targets',()=>{
   const h=fixture(true,{EnemySkills:{heal:{interval:1,radius:40,maxTargets:1,percent:30},
     haste:{interval:2,radius:40,maxTargets:1,percent:25,duration:3},

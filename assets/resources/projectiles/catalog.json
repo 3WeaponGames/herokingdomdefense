@@ -15707,6 +15707,73 @@
       "launch": "",
       "impact": "original:fireball-impact",
       "size": 40
+    },
+    "enemy:91150": {
+      "set": "spine-projectile:fly_30",
+      "flight": "spine-projectile:fly_30",
+      "launch": "",
+      "impact": "",
+      "trail": "trail:90947910-ade2-4c43-9fcb-a3c1d415642b",
+      "trailColor": "#00ff2a",
+      "launchOffsetX": 21,
+      "launchOffsetY": 25
+    },
+    "enemy:91139": {
+      "set": "toon:projectile-2-energy-orb",
+      "flight": "toon:projectile-2-energy-orb",
+      "launch": "toon:flash-2",
+      "impact": "toon:hit-2",
+      "tint": "#b4db76",
+      "size": 34,
+      "launchOffsetX": 18,
+      "launchOffsetY": 10
+    },
+    "enemy:100793": {
+      "set": "toon:projectile-14-ice",
+      "flight": "toon:projectile-14-ice",
+      "launch": "toon:flash-14",
+      "impact": "toon:hit-14",
+      "trail": false,
+      "size": 38,
+      "launchOffsetY": 11
+    },
+    "enemy:91148": {
+      "set": "toon:projectile-14-ice",
+      "flight": "toon:projectile-14-ice",
+      "launch": "toon:flash-14",
+      "impact": "toon:hit-14",
+      "trail": false,
+      "size": 42,
+      "launchOffsetY": 11
+    },
+    "enemy:101853": {
+      "set": "toon:projectile-12-forest",
+      "flight": "toon:projectile-12-forest",
+      "launch": "toon:flash-12",
+      "impact": "toon:hit-12",
+      "size": 40,
+      "launchOffsetX": 16,
+      "launchOffsetY": 18
+    },
+    "enemy:101855": {
+      "set": "toon:projectile-8-twist",
+      "size": 36,
+      "launchOffsetX": 12,
+      "launchOffsetY": 12,
+      "tint": "#c0b7ec",
+      "flight": "toon:projectile-8-twist",
+      "launch": "toon:flash-8",
+      "impact": "toon:hit-8"
+    },
+    "enemy:100422": {
+      "set": "toon:projectile-14-ice",
+      "flight": "toon:projectile-14-ice",
+      "launch": "toon:flash-14",
+      "impact": "toon:hit-14",
+      "trail": false,
+      "size": 32,
+      "launchOffsetY": 12,
+      "launchOffsetX": 10
     }
   },
   "heroArrowTiers": [

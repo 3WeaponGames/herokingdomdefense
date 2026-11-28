@@ -262,9 +262,12 @@ test('type explanations derive exact enemy and aggregate matchups from saved typ
  types.custom={name:'Custom Hunters',description:'An authored custom explanation.',icon:'@icon/custom/head',tint:'#ff8080'};
  assign['ally:99999:default']='custom';f.config.AllyCfg[99999]={ID:99999,CounterType:'fighter'};
  const before=JSON.stringify(f.config),guide=f.api.describeTypes(f.ui,91001);
- assert.equal(guide.types.length,7);assert.equal(guide.unit.strong.length,0);assert(guide.unit.weak.includes('guardian'));assert(guide.unit.weak.includes('custom'));
+ assert.equal(guide.types.length,Object.keys(types).length);assert.equal(guide.unit.strong.length,0);assert(guide.unit.weak.includes('guardian'));assert(guide.unit.weak.includes('custom'));
  assert.equal(guide.types.find(t=>t.id==='custom').description,'An authored custom explanation.');
  assert(guide.types.find(t=>t.id==='fighter').weak.includes('custom'));
+ const wrecker=guide.types.find(t=>t.id==='wrecker');
+ assert.match(wrecker.description,/150% damage to buildings/);
+ assert.equal(wrecker.strong.length+wrecker.weak.length,0);
  assert.equal(JSON.stringify(f.config),before);
  delete f.config.SoldierCfg[91001].CounterType;
  assert(f.api.describeTypes(f.ui,91001).unit.strong.includes('guardian'),'missing overrides retain exact-ID legacy behavior');
@@ -289,7 +292,7 @@ test('type tooltip is safe, scrollable and dismisses anywhere or by Escape witho
  for(const route of ['inside','outside','escape','close']){
   const f=fixture();f.api.open(f.ui,record(f,90001));const s=f.ui._enemyGuide;
   s.typeButton.emit('end',{stopPropagation(){}});const tip=s.typeTooltip;
-  assert(tip);assert.equal(s.panel.active,false);assert.equal(tip.rows.length,7);assert(tip.bar.active);assert.equal(f.ui._pauseOwners.size,1);assert.equal(f.keys.length,1);assert.equal(f.listeners.length,1);
+  assert(tip);assert.equal(s.panel.active,false);assert.equal(tip.rows.length,1+Object.keys(f.config.GameTools.unitTypes).length);assert(tip.bar.active);assert.equal(f.ui._pauseOwners.size,1);assert.equal(f.keys.length,1);assert.equal(f.listeners.length,1);
   const bounds=f.api.safeBounds(s.root),p=tip.panel;assert(p.x-p.width/2>=bounds.left+31.9);assert(p.x+p.width/2<=bounds.right-31.9);
   tip.root.emit('end',{stopPropagation(){},getLocation:()=>({x:0,y:120}),getStartLocation:()=>({x:0,y:0})});assert.equal(s.typeTooltip,tip,'dragging must not dismiss the scrolling tooltip');
   if(route==='inside')tip.root.emit('end',{target:tip.rows[1].name.node,stopPropagation(){}});

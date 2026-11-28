@@ -417,7 +417,7 @@ var def_KinghtFallEnemyBase = function (t) {
     var forced=!rule&&RelicCombat.tauntedTarget(this);
     if(forced)return {tag:forced.node,actor:forced,canAtt:cc.Vec2.distance(this.node.getPosition(),forced.node.getPosition())<=this.cfg.AttackRange};
     // A focused hero entering sight can interrupt the route on this update.
-    if (rule && rule.mode !== "priority") {
+    if (rule && (rule.mode === "hero" || rule.mode === "castle")) {
       var objective = require("EnemyTargeting").find(this, game, rule);
       this._targetSearchCache = objective ? { target: objective } : null;
       return objective;
@@ -530,7 +530,7 @@ var def_KinghtFallEnemyBase = function (t) {
       var targetNode = n.node, targetGeneration = targetNode && targetNode._combatGeneration;
       var impact = cc.v2(Navigation.attackPointOf(n, game, Navigation.positionOf(this.node, game), selected.polygon, selected.wallPoint));
       this.vec2_2.x = impact.x; this.vec2_2.y = impact.y;
-      GameToolsOverrides.counters(this, n) && (e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms)));
+      e = GameToolsOverrides.attackDamage(this, n, e);
       var origin = this.vec2_1.clone(), dealt = n.onAttacked(e, t);
       if (!attackCurrent(this, record, true) || ui.ctrEffect !== effects || !cc.isValid(effects, true)) return;
       if (cc.isValid(n, true) && n.node === targetNode && cc.isValid(targetNode, true) && targetNode._combatGeneration === targetGeneration && !n._isPooled) effects.showDamageNum(impact, dealt);

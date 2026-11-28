@@ -11,6 +11,9 @@ function open(host,api){
  const label=el('label','Profile ',toolbar),select=el('select',undefined,label);select.setAttribute('aria-label','Profile');
  const button=(parent,text,action,cls)=>{const node=el('button',text,parent);node.type='button';node.onclick=action;if(cls)node.className=cls;return node;};
  const add=button(toolbar,'Add',()=>nameForm('add','New profile')),duplicate=button(toolbar,'Duplicate',()=>nameForm('duplicate','Copy of '+current().name)),rename=button(toolbar,'Rename',()=>nameForm('rename',current().name)),remove=button(toolbar,'Remove',()=>removeForm());
+ const addWrecker=button(toolbar,'Add Wrecker profile',()=>command('add-wrecker',{}));
+ addWrecker.hidden=true;
+ addWrecker.title='Copy the selected profile’s stats and attacks into a Wrecker profile.';
  const archivedLabel=el('label','Show archived ',toolbar),archived=el('input',undefined,archivedLabel);archived.type='checkbox';archived.onchange=render;
  const names=el('div',undefined,dialog),error=el('div','',dialog);error.className='profile-error';error.setAttribute('role','alert');
  const workspace=el('div',undefined,dialog);workspace.className='profile-workspace';const form=el('div',undefined,workspace);form.className='profile-form';const previewHost=el('aside',undefined,workspace);previewHost.className='profile-preview';
@@ -41,6 +44,7 @@ function open(host,api){
  }
  function render(){
   if(closed||!view)return;const profile=current();if(!profile)return;title.textContent=view.model+' · Fighting profiles';select.textContent='';for(const item of view.profiles.filter(item=>!item.archived||archived.checked||item.id===id)){const option=el('option',item.name+(item.archived?' (archived)':''),select);option.value=item.id;}select.value=String(id);rename.disabled=remove.disabled=profile.default;duplicate.disabled=profile.archived||[90010,90011,90012].includes(id);duplicate.title=duplicate.disabled?'Create a profile from Default; linked legacy boss forms retain their original controller.':'';add.disabled=false;save.disabled=!view.dirty;undo.disabled=!view.canUndo;redo.disabled=!view.canRedo;if(use)use.disabled=view.dirty||profile.archived;
+  addWrecker.hidden=!profile.canAddWrecker;
   for(const control of [add,duplicate,rename,remove,archivedLabel])control.hidden=!!view.fightingProfiles;form.textContent='';el('h3',profile.name,form);const help=el('p',profile.default?'Default values are shared by new profiles. Explicit profile overrides keep their own values.':'Change a value to override Default. Use ↶ beside a field to inherit it again.',form);help.className='profile-note';
   const used=el('p',profile.uses.length?'Used by '+profile.uses.length+' wave or skill references. Saving changes updates those uses.':'No saved or draft uses.',form);used.className='profile-note';
   if(profile.archived)button(form,'Restore profile',()=>command('restore',{}));
@@ -49,7 +53,9 @@ function open(host,api){
   for(const name of ['Health','AttackDamage','Speed','AttackRange','SearchRange'])field(fields,Profiles.STATS[name],name,record[name]===undefined?0:record[name],{min:name==='Health'?.000001:0});
   field(fields,'Attack cooldown (seconds)','AttackInterval',1/record.AttackInterval,{min:.000001,convert:value=>1/value});
   field(fields,Profiles.STATS.BuildingCross,'BuildingCross',record.BuildingCross?1:0,{choices:[{value:1,label:'Ground'},{value:0,label:'Flight'}],convert:Number});field(fields,'Death animation (seconds)','DeathAni',record.DeathAni||0,{min:0});
-  const types=Object.keys(view.types).map(value=>({value,label:view.types[value].name}));field(fields,'Fighting type','role',profile.role,{choices:[{value:'',label:'Original battle icon'},...types],readOnly:view.fightingProfiles,noReset:view.fightingProfiles});field(fields,'Countered fighting type','CounterType',record.CounterType===undefined?'__legacy':record.CounterType,{choices:[...(record.CounterType===undefined?[{value:'__legacy',label:'Original matchup'}]:[]),{value:'',label:'None'},...types]});
+  const types=Object.keys(view.types).map(value=>({value,label:view.types[value].name})),wrecker=profile.role==='wrecker';
+  field(fields,'Fighting type','role',profile.role,{choices:[{value:'',label:'Original battle icon'},...types],readOnly:view.fightingProfiles,noReset:view.fightingProfiles});
+  field(fields,'Countered fighting type','CounterType',wrecker?'':record.CounterType===undefined?'__legacy':record.CounterType,{readOnly:wrecker,noReset:wrecker,choices:[...(record.CounterType===undefined?[{value:'__legacy',label:'Original matchup'}]:[]),{value:'',label:'None'},...types.filter(type=>type.value!=='wrecker')]});
   const settings=view.documents.overrides?.data||{};
   if(Skills.supported(record,settings)){
    el('h3','Skills',form);
@@ -62,7 +68,7 @@ function open(host,api){
    }
   }
   if(Array.isArray(record.Data)&&record.Data.length){el('h3','Behavior parameters',form);const dataFields=el('div',undefined,form);dataFields.className='profile-fields';record.Data.forEach((value,index)=>{const descriptor=require('../lib/schema').dataDescriptor({table:'SoldierCfg',id,unit:record},index);field(dataFields,descriptor.label+(descriptor.percent?' (%)':''),'Data',descriptor.percent?value*100:value,{index,min:0,noReset:true,readOnly:descriptor.readOnly||[90010,90011,90012].includes(id),convert:amount=>{const next=current().record.Data.slice();next[index]=descriptor.percent?amount/100:amount;return next;}});});const base=view.profiles.find(item=>item.default),Records=require('../lib/unit-records');if(!profile.default&&Records.behavior(record,id)===Records.behavior(base.record,base.id)){const reset=button(form,'Reset behavior parameters to Default',()=>command('reset',{field:'Data'}));reset.disabled=inherited(profile,'Data');}}
-  el('p','Fighting type controls counters and its pictogram. Attack behavior stays compatible with this model.',form).className='profile-note';el('h3','Appearance',form);const visuals=el('div',undefined,form);visuals.className='profile-fields';
+  el('p',wrecker?'Wreckers deal 150% damage to buildings and 100% damage to units.':'Fighting type controls counters and its pictogram. Attack behavior stays compatible with this model.',form).className='profile-note';el('h3','Appearance',form);const visuals=el('div',undefined,form);visuals.className='profile-fields';
   for(const [name,text]of [['scaleX','Scale X'],['scaleY','Scale Y'],['x','Offset X'],['y','Offset Y'],['rotation','Rotation']])field(visuals,text,name,own(profile.visual,name)?profile.visual[name]:Profiles.VISUAL[name],{min:name.startsWith('scale')?.01:name==='rotation'?-3600:-4096,max:name.startsWith('scale')?20:name==='rotation'?3600:4096});
   field(visuals,'Tint','tint',profile.visual.tint||'#ffffff',{type:'color'});field(visuals,'Mirror model','mirrorX',!!profile.visual.mirrorX,{type:'checkbox'});
   el('h3','Attack animation',form);const timing=el('div',undefined,form);timing.className='profile-fields';const hit=profile.timing.custom||profile.timing.saved;field(timing,'Hit / release time (seconds)','hitTime',hit?hit.attack:0,{min:0,max:10});const modelPack=record.MonsterPack||view.profiles.find(item=>item.default).record.MonsterPack;speedField=field(timing,'Attack animation speed','speed',profile.speed===undefined?(modelPack==='fantasy-bosses'?.25:modelPack==='fantasy-monsters'?.35:1):profile.speed,{min:.1,max:4});

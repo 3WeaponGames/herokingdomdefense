@@ -240,7 +240,7 @@
             "id": "legacy-1-0"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 3,
             "count": 2,
             "startSeconds": 5,
@@ -282,7 +282,7 @@
             "id": "legacy-1-0"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 2,
             "count": 3,
             "startSeconds": 5.5,
@@ -342,7 +342,7 @@
             "id": "entry-3"
           },
           {
-            "unitId": 91124,
+            "unitId": 100701,
             "spawnId": 10,
             "count": 4,
             "startSeconds": 15,
@@ -419,7 +419,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 15,
             "count": 4,
             "startSeconds": 17.5,
@@ -427,7 +427,7 @@
             "id": "entry-5"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 13,
             "count": 3,
             "startSeconds": 19.5,
@@ -462,7 +462,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 91124,
+            "unitId": 100701,
             "spawnId": 5,
             "count": 3,
             "startSeconds": 0.5,
@@ -583,7 +583,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 6,
             "count": 4,
             "startSeconds": 6,
@@ -591,7 +591,7 @@
             "id": "entry-5"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 5,
             "count": 3,
             "startSeconds": 19,
@@ -661,7 +661,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91124,
+            "unitId": 100701,
             "spawnId": 12,
             "count": 5,
             "startSeconds": 3,
@@ -773,7 +773,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 11,
             "count": 6,
             "startSeconds": 7,
@@ -851,7 +851,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 2,
             "count": 5,
             "startSeconds": 4,
@@ -893,7 +893,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 12,
             "count": 5,
             "startSeconds": 6,
@@ -945,7 +945,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91124,
+            "unitId": 100701,
             "spawnId": 5,
             "count": 4,
             "startSeconds": 3,
@@ -1082,7 +1082,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 5,
             "count": 3,
             "startSeconds": 8,
@@ -1186,7 +1186,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 9,
             "count": 6,
             "startSeconds": 5,
@@ -1323,7 +1323,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91124,
+            "unitId": 100701,
             "spawnId": 8,
             "count": 6,
             "startSeconds": 6,
@@ -1411,7 +1411,7 @@
             "unitGroupId": "unit-group-2"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 15,
             "count": 6,
             "startSeconds": 7,
@@ -1533,7 +1533,7 @@
     "HomeLevel4Unlock": [],
     "EnemyProfiles": {
       "1000030000": {
-        "baseId": 91181,
+        "baseId": 91133,
         "name": "Vanguard · 313 speed",
         "stats": {
           "Speed": 313
@@ -9305,7 +9305,7 @@
   "nextBuilding": 72,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "f70d9671fd41cf45d5e3638d2b7e9c3db0e224566a271b967f0d6ea4557ee330",
+  "sourceRevision": "468ca63b436ef245f10868d4a5c4f13719b3a645cdf2a0423995a6f192fd0213",
   "templates": {
     "Map02": [
       {

@@ -235,6 +235,23 @@ test('ordered targeting picks the first in-range group and the same rule applies
   assert.deepEqual(f.hits, ['hero','ArrowTower']);
 });
 
+test('Buildings first pursues the nearest structure in sight and falls back to troops when it is gone', () => {
+  const f = pursuit(), unit = f.make('buildings-first');
+  const barracks = f.structure('Barracks', -40, 0, 10, 10);
+  const tower = f.structure('ArrowTower', 100, 0, 10, 10);
+  assert.equal(unit.getFind().building, barracks);
+  assert.equal(unit.pickAttackTarget(f.game), null, 'The nearby troop should wait while the barracks is in sight');
+  unit.node.x = -55;
+  unit.doAttack();
+  assert.deepEqual(f.hits, ['Barracks']);
+  barracks.getIsWork = () => false;
+  tower.node.x = 300;
+  unit.node.x = -100;
+  assert.equal(unit.getFind().actor, f.troop);
+  unit.doAttack();
+  assert.deepEqual(f.hits, ['Barracks', 'troop']);
+});
+
 test('Lightning Slime follows its authored castle focus and attacks a blocking wall first', () => {
   const f = pursuit();
   const row = require('../../assets/KinghtFallConfig/GameJsonCfg.json').SoldierCfg[91154];

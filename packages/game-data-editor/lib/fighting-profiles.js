@@ -3,7 +3,8 @@
 // Opening a panel never calls plan() or creates records.
 const Records=require('./unit-records');
 const ROLES=Object.freeze(['fighter','guardian','vanguard','skirmisher','bruiser','mystic']);
-const FACTORS=Object.freeze({fighter:[1,1,1,1],guardian:[1.2,.9,.9,.9],vanguard:[.9,.95,1,1.15],skirmisher:[.9,.9,1.1,1.1],bruiser:[1.1,1.2,.9,.95],mystic:[.9,1.25,.85,.85]});
+const FACTORS=Object.freeze({fighter:[1,1,1,1],guardian:[1.2,.9,.9,.9],vanguard:[.9,.95,1,1.15],skirmisher:[.9,.9,1.1,1.1],bruiser:[1.1,1.2,.9,.95],mystic:[.9,1.25,.85,.85],wrecker:[1,1,1,1]});
+function rolesFor(family){return Object.prototype.hasOwnProperty.call(family.profiles,'wrecker')?[...ROLES,'wrecker']:ROLES;}
 const FIELDS=['Health','AttackDamage','AttackInterval','Speed'],clone=v=>JSON.parse(JSON.stringify(v)),round=v=>Number(v.toFixed(8));
 function factors(settings,role){const balance=table(settings)&&table(settings).balance;return balance&&Array.isArray(balance[role])?balance[role]:FACTORS[role];}
 function balanceIssues(settings){const balance=table(settings)&&table(settings).balance;if(balance===undefined)return[];if(!balance||typeof balance!=='object'||Array.isArray(balance))return['Enemy fighting-type balance must be a table.'];const issues=[];for(const role of ROLES)if(balance[role]!==undefined&&(!Array.isArray(balance[role])||balance[role].length<4||balance[role].slice(0,4).some(value=>typeof value!=='number'||!Number.isFinite(value)||value<.1||value>4)))issues.push('Enemy '+role+' multipliers must be between 10% and 400%.');return issues;}
@@ -69,9 +70,10 @@ function validate(settings,units){
  const selected=new Set(),aliases=t.aliases||{};
  for(const [baseId,family]of Object.entries(t.families)){
   if(!units[baseId]||!family||!family.profiles){errors.push('Fighting profiles require an existing parent unit.');continue;}
-  if(Object.keys(family.profiles).length!==6)errors.push('Each enemy unit requires exactly six fighting profiles.');
+  const roles=rolesFor(family);
+  if(Object.keys(family.profiles).length!==roles.length)errors.push('Each enemy unit requires six standard fighting profiles and can have one Wrecker profile.');
   if(family.defaultProfileId!==undefined&&!Object.values(family.profiles).includes(family.defaultProfileId))errors.push('Choose a default fighting profile from this unit.');
-  for(const role of ROLES){
+  for(const role of roles){
    const id=family.profiles[role],entry=t.entries&&t.entries[id];
    if(!units[id]||!units[id].prefab||selected.has(id)||roleOf(settings,id)!==role||Number(id)!==Number(baseId)&&(!entry||entry.baseId!==Number(baseId)))errors.push('Each enemy unit requires one matching '+role+' profile.');
    selected.add(id);
@@ -83,4 +85,4 @@ function validate(settings,units){
  }
  return errors;
 }
-module.exports={ROLES,FACTORS,FIELDS,factors,balanceIssues,applyBalance,canonicalId,familyFor,defaultProfileId,roleOf,remapWaves,plan,validate};
+module.exports={ROLES,FACTORS,FIELDS,rolesFor,factors,balanceIssues,applyBalance,canonicalId,familyFor,defaultProfileId,roleOf,remapWaves,plan,validate};

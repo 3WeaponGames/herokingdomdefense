@@ -5,7 +5,7 @@ var fields = ['Health','AttackDamage','AttackInterval','Speed','AttackRange','Se
 function clone(value) { return JSON.parse(JSON.stringify(value)); }
 // Presentation remains attached to the parent unit; a fighting type changes
 // combat stats, not its saved character or projectile artwork.
-function referenceIds(unit,settings){var ids=[],seen={},table=settings&&settings.unitProfiles||{};function add(id){if(!id||seen[id])return;seen[id]=true;ids.push(Number(id));var entry=table.entries&&table.entries[id],form=table.bossForms&&table.bossForms[id];if(entry)add(entry.baseId);else if(form)add(form.source);}add(unit&&unit.ID);if(unit&&unit.ProfileBaseID){ids=[];seen={};add(unit.ProfileBaseID);}return ids;}
+function referenceIds(unit,settings){var ids=[],seen={},table=settings&&settings.unitProfiles||{};function add(id){if(!id||seen[id])return;seen[id]=true;ids.push(Number(id));var entry=table.entries&&table.entries[id],form=table.bossForms&&table.bossForms[id];if(entry)add(entry.sourceProfileId||entry.baseId);else if(form)add(form.source);}add(unit&&unit.ID);if(unit&&unit.ProfileBaseID){ids=[];seen={};add(unit.ProfileBaseID);}return ids;}
 function validate(stage, units) {
   var table=stage&&stage.EnemyProfiles,issues=[];if(table===undefined)return issues;
   if(!table||typeof table!=='object'||Array.isArray(table))return ['Stage enemy profiles must be a table.'];

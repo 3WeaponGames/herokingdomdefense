@@ -143,7 +143,7 @@
         "StartSliver": 6,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "7#100490,10"
+          "7#100705,10"
         ],
         "WaveReward": [
           [
@@ -157,7 +157,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 7,
             "count": 10,
             "startSeconds": 0.5,
@@ -174,8 +174,8 @@
         "StartSliver": 3,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "7#100490,5",
-          "8#91086,3",
+          "7#100705,5",
+          "8#100485,3",
           "9#100470,5"
         ],
         "WaveReward": [
@@ -190,7 +190,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 7,
             "count": 11,
             "startSeconds": 0.5,
@@ -198,7 +198,7 @@
             "id": "legacy-7-0"
           },
           {
-            "unitId": 91086,
+            "unitId": 100485,
             "spawnId": 9,
             "count": 3,
             "startSeconds": 5.5,
@@ -215,10 +215,10 @@
         "StartSliver": 3,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "7#100490,7",
+          "7#100705,7",
           "8#1000018000,4",
-          "9#100490,5",
-          "2#91086,3"
+          "9#100705,5",
+          "2#100485,3"
         ],
         "WaveReward": [
           [
@@ -232,7 +232,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 7,
             "count": 14,
             "startSeconds": 0.5,
@@ -240,7 +240,7 @@
             "id": "legacy-7-0"
           },
           {
-            "unitId": 91086,
+            "unitId": 100485,
             "spawnId": 8,
             "count": 4,
             "startSeconds": 5,
@@ -248,7 +248,7 @@
             "id": "entry-1"
           },
           {
-            "unitId": 91083,
+            "unitId": 91114,
             "spawnId": 9,
             "count": 4,
             "startSeconds": 7,
@@ -265,10 +265,10 @@
         "StartSliver": 4,
         "CommerceSliver": 4,
         "RefreshSoldierKind": [
-          "7#100490,5",
+          "7#100705,5",
           "8#91086,3",
           "9#1000018000,3",
-          "1#100490,7",
+          "1#100705,7",
           "2#100471,4"
         ],
         "WaveReward": [
@@ -283,7 +283,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 2,
             "count": 10,
             "startSeconds": 0.5,
@@ -308,7 +308,7 @@
             "id": "entry-3"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 10,
             "count": 6,
             "startSeconds": 18,
@@ -335,7 +335,7 @@
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
           "7#91099,1",
-          "8#100490,7",
+          "8#100705,7",
           "9#91088,6",
           "2#100471,6"
         ],
@@ -351,7 +351,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 91083,
+            "unitId": 100607,
             "spawnId": 6,
             "count": 4,
             "startSeconds": 0.5,
@@ -359,7 +359,7 @@
             "id": "entry-2"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 4,
             "count": 8,
             "startSeconds": 2.5,
@@ -368,7 +368,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 1,
             "count": 7,
             "startSeconds": 15.5,
@@ -385,7 +385,7 @@
             "id": "entry-5"
           },
           {
-            "unitId": 91110,
+            "unitId": 91062,
             "spawnId": 2,
             "count": 3,
             "startSeconds": 20.5,
@@ -402,10 +402,10 @@
         "StartSliver": 5,
         "CommerceSliver": 8,
         "RefreshSoldierKind": [
-          "7#91083,10",
+          "7#91114,10",
           "8#91086,4",
           "9#1000018000,3",
-          "1#100490,5",
+          "1#100705,5",
           "2#91086,3"
         ],
         "WaveReward": [
@@ -420,7 +420,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 7,
             "count": 8,
             "startSeconds": 0.5,
@@ -446,7 +446,7 @@
             "id": "entry-3"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 4,
             "count": 6,
             "startSeconds": 16,
@@ -463,7 +463,7 @@
             "id": "entry-5"
           },
           {
-            "unitId": 91083,
+            "unitId": 91114,
             "spawnId": 3,
             "count": 3,
             "startSeconds": 6,
@@ -471,7 +471,7 @@
             "id": "entry-6"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 2,
             "count": 5,
             "startSeconds": 8,
@@ -501,7 +501,7 @@
           "7#91086,5",
           "8#100492,8",
           "9#91086,3",
-          "1#91083,5",
+          "1#101853,5",
           "2#91086,3",
           "3#1000018000,5"
         ],
@@ -517,7 +517,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 91083,
+            "unitId": 101853,
             "spawnId": 11,
             "count": 4,
             "startSeconds": 0.5,
@@ -525,7 +525,7 @@
             "id": "entry-2"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 10,
             "count": 8,
             "startSeconds": 2,
@@ -534,7 +534,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 9,
             "count": 8,
             "startSeconds": 15,
@@ -559,7 +559,7 @@
             "id": "entry-6"
           },
           {
-            "unitId": 100558,
+            "unitId": 100443,
             "spawnId": 4,
             "count": 2,
             "startSeconds": 32,
@@ -567,7 +567,7 @@
             "id": "entry-7"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 5,
             "count": 9,
             "startSeconds": 34,
@@ -612,7 +612,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 91110,
+            "unitId": 91062,
             "spawnId": 3,
             "count": 4,
             "startSeconds": 0.5,
@@ -620,7 +620,7 @@
             "id": "entry-5"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 2,
             "count": 10,
             "startSeconds": 2,
@@ -629,7 +629,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 10,
             "count": 9,
             "startSeconds": 5,
@@ -654,7 +654,7 @@
             "id": "entry-8"
           },
           {
-            "unitId": 91083,
+            "unitId": 100607,
             "spawnId": 8,
             "count": 5,
             "startSeconds": 37,
@@ -662,7 +662,7 @@
             "id": "entry-9"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 9,
             "count": 9,
             "startSeconds": 39,
@@ -671,7 +671,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 100558,
+            "unitId": 100443,
             "spawnId": 7,
             "count": 2,
             "startSeconds": 41,
@@ -688,10 +688,10 @@
         "StartSliver": 6,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
-          "7#91083,8",
+          "7#91114,8",
           "8#100492,7",
           "9#91086,5",
-          "1#91083,10",
+          "1#91114,10",
           "2#91086,5",
           "3#1000018000,5"
         ],
@@ -707,7 +707,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 4,
             "count": 11,
             "startSeconds": 0.5,
@@ -732,7 +732,7 @@
             "id": "entry-6"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 3,
             "count": 9,
             "startSeconds": 10,
@@ -749,7 +749,7 @@
             "id": "entry-7"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 12,
             "count": 9,
             "startSeconds": 39,
@@ -758,7 +758,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91083,
+            "unitId": 91114,
             "spawnId": 10,
             "count": 4,
             "startSeconds": 42,
@@ -766,7 +766,7 @@
             "id": "entry-9"
           },
           {
-            "unitId": 100558,
+            "unitId": 100443,
             "spawnId": 11,
             "count": 3,
             "startSeconds": 44,
@@ -784,7 +784,7 @@
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
           "7#91087,1",
-          "8#91083,9",
+          "8#101853,9",
           "9#91086,2",
           "1#91088,8",
           "2#100471,4",
@@ -802,7 +802,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 8,
             "count": 11,
             "startSeconds": 0.5,
@@ -811,7 +811,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91083,
+            "unitId": 101853,
             "spawnId": 9,
             "count": 5,
             "startSeconds": 4,
@@ -827,7 +827,7 @@
             "id": "entry-6"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 4,
             "count": 9,
             "startSeconds": 15,
@@ -844,7 +844,7 @@
             "id": "entry-8"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 1,
             "count": 10,
             "startSeconds": 7,
@@ -861,7 +861,7 @@
             "id": "entry-9"
           },
           {
-            "unitId": 100558,
+            "unitId": 100443,
             "spawnId": 2,
             "count": 2,
             "startSeconds": 10,
@@ -881,7 +881,7 @@
           "7#91086,5",
           "8#100492,8",
           "9#91086,3",
-          "1#91083,5",
+          "1#91114,5",
           "2#91086,3",
           "3#1000018000,5"
         ],
@@ -897,7 +897,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 91083,
+            "unitId": 91114,
             "spawnId": 12,
             "count": 5,
             "startSeconds": 0.5,
@@ -905,7 +905,7 @@
             "id": "entry-4"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 10,
             "count": 9,
             "startSeconds": 2,
@@ -914,7 +914,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 7,
             "count": 8,
             "startSeconds": 12,
@@ -947,7 +947,7 @@
             "id": "entry-8"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 4,
             "count": 8,
             "startSeconds": 27,
@@ -964,7 +964,7 @@
             "id": "entry-10"
           },
           {
-            "unitId": 100558,
+            "unitId": 100443,
             "spawnId": 3,
             "count": 2,
             "startSeconds": 9,
@@ -972,7 +972,7 @@
             "id": "entry-11"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 2,
             "count": 8,
             "startSeconds": 10,
@@ -1009,7 +1009,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 1,
             "count": 11,
             "startSeconds": 0.5,
@@ -1018,7 +1018,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91083,
+            "unitId": 100607,
             "spawnId": 3,
             "count": 5,
             "startSeconds": 3,
@@ -1026,7 +1026,7 @@
             "id": "entry-5"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 11,
             "count": 9,
             "startSeconds": 7,
@@ -1051,7 +1051,7 @@
             "id": "entry-8"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 9,
             "count": 7,
             "startSeconds": 26,
@@ -1060,7 +1060,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91110,
+            "unitId": 91062,
             "spawnId": 8,
             "count": 5,
             "startSeconds": 28,
@@ -1076,7 +1076,7 @@
             "id": "entry-10"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 4,
             "count": 7,
             "startSeconds": 37,
@@ -1085,7 +1085,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 100558,
+            "unitId": 100443,
             "spawnId": 5,
             "count": 3,
             "startSeconds": 39,
@@ -1102,10 +1102,10 @@
         "StartSliver": 6,
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
-          "7#91083,8",
+          "7#91114,8",
           "8#100492,7",
           "9#91086,5",
-          "1#91083,10",
+          "1#91114,10",
           "2#91086,5",
           "3#1000018000,5"
         ],
@@ -1121,7 +1121,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 5,
             "count": 12,
             "startSeconds": 0.5,
@@ -1138,7 +1138,7 @@
             "id": "entry-5"
           },
           {
-            "unitId": 91083,
+            "unitId": 91114,
             "spawnId": 3,
             "count": 5,
             "startSeconds": 8,
@@ -1146,7 +1146,7 @@
             "id": "entry-6"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 2,
             "count": 10,
             "startSeconds": 9,
@@ -1163,7 +1163,7 @@
             "id": "entry-8"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 10,
             "count": 8,
             "startSeconds": 25,
@@ -1188,7 +1188,7 @@
             "id": "entry-11"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 8,
             "count": 6,
             "startSeconds": 37,
@@ -1197,7 +1197,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 100558,
+            "unitId": 100443,
             "spawnId": 9,
             "count": 4,
             "startSeconds": 38,
@@ -1215,7 +1215,7 @@
         "CommerceSliver": 16,
         "RefreshSoldierKind": [
           "7#91087,1",
-          "8#91083,9",
+          "8#101853,9",
           "9#91086,2",
           "1#91088,8",
           "2#100471,4",
@@ -1233,7 +1233,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 9,
             "count": 13,
             "startSeconds": 0.5,
@@ -1258,7 +1258,7 @@
             "id": "entry-7"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 5,
             "count": 11,
             "startSeconds": 11,
@@ -1275,7 +1275,7 @@
             "id": "entry-9"
           },
           {
-            "unitId": 91083,
+            "unitId": 101853,
             "spawnId": 2,
             "count": 7,
             "startSeconds": 8,
@@ -1283,7 +1283,7 @@
             "id": "legacy-2-0"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 3,
             "count": 7,
             "startSeconds": 9,
@@ -1300,7 +1300,7 @@
             "id": "entry-11"
           },
           {
-            "unitId": 100558,
+            "unitId": 100443,
             "spawnId": 12,
             "count": 4,
             "startSeconds": 33,
@@ -1308,7 +1308,7 @@
             "id": "entry-12"
           },
           {
-            "unitId": 100490,
+            "unitId": 100705,
             "spawnId": 10,
             "count": 7,
             "startSeconds": 33,
@@ -1319,7 +1319,7 @@
           {
             "id": "entry-1",
             "spawnId": 7,
-            "unitId": 91077,
+            "unitId": 91100,
             "count": 1,
             "startSeconds": 42,
             "intervalSeconds": 0.5,
@@ -1356,7 +1356,7 @@
     "StageLayoutId": "A-6",
     "EnemyProfiles": {
       "1000018000": {
-        "baseId": 100496,
+        "baseId": 91084,
         "name": "Vanguard · 250 speed",
         "stats": {
           "Speed": 250
@@ -6415,7 +6415,7 @@
   "nextBuilding": 23,
   "nextSpawn": 13,
   "nextSpecial": 7,
-  "sourceRevision": "ffbac86566d3ca95cc25d748dfc5812cbca1fa3d05beedab44c6ca18ea71a272",
+  "sourceRevision": "85f16ddcc021d787d3b2d1893661565fb791ed3870307d2ad5bc941855b378f4",
   "templates": {
     "Map02": [
       {

@@ -322,7 +322,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101767,
+            "unitId": 91173,
             "spawnId": 2,
             "count": 2,
             "startSeconds": 18,
@@ -388,7 +388,7 @@
             "id": "entry-3"
           },
           {
-            "unitId": 101767,
+            "unitId": 91173,
             "spawnId": 1,
             "count": 4,
             "startSeconds": 16,
@@ -446,7 +446,7 @@
         ],
         "SpawnTimeline": [
           {
-            "unitId": 101767,
+            "unitId": 91173,
             "spawnId": 1,
             "count": 3,
             "startSeconds": 0.5,
@@ -479,7 +479,7 @@
             "id": "entry-6"
           },
           {
-            "unitId": 101666,
+            "unitId": 101852,
             "spawnId": 2,
             "count": 3,
             "startSeconds": 25,
@@ -555,7 +555,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 101767,
+            "unitId": 91173,
             "spawnId": 3,
             "count": 3,
             "startSeconds": 16,
@@ -650,7 +650,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101767,
+            "unitId": 91173,
             "spawnId": 3,
             "count": 5,
             "startSeconds": 4,
@@ -761,7 +761,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101666,
+            "unitId": 101852,
             "spawnId": 7,
             "count": 3,
             "startSeconds": 4,
@@ -913,7 +913,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101767,
+            "unitId": 91173,
             "spawnId": 13,
             "count": 4,
             "startSeconds": 30,
@@ -997,7 +997,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101767,
+            "unitId": 91173,
             "spawnId": 1,
             "count": 3,
             "startSeconds": 10,
@@ -1098,7 +1098,7 @@
             "id": "entry-16"
           },
           {
-            "unitId": 101767,
+            "unitId": 91173,
             "spawnId": 4,
             "count": 4,
             "startSeconds": 12,
@@ -1124,7 +1124,7 @@
             "unitGroupId": "unit-group-2"
           },
           {
-            "unitId": 101666,
+            "unitId": 101852,
             "spawnId": 2,
             "count": 6,
             "startSeconds": 25,
@@ -6518,7 +6518,7 @@
   "nextBuilding": 30,
   "nextSpawn": 14,
   "nextSpecial": 7,
-  "sourceRevision": "657c3f1b8a0a109db7d6b7ea1d80b1e54a091b3d0aca807e7bcce1ca385cc442",
+  "sourceRevision": "f852a6ed0fbb9203492d6e15fd2be88cfa1065881b162a15e320026cc60c9fa2",
   "templates": {
     "Map02": [
       {

@@ -16,6 +16,7 @@ var targets = [
 var modes = [
   { value: "nearest", label: "Nearest target (default)" },
   { value: "priority", label: "Custom priority order" },
+  { value: "buildings-first", label: "Buildings first" },
   { value: "castle", label: "Castle only" },
   { value: "hero", label: "Hero only" }
 ];
@@ -55,6 +56,7 @@ function allows(rule, game, actor, breach, unit) {
   if (FlightTargeting.isFlying(unit) && kind(game, actor) === "wall") return false;
   if (!rule) return true;
   if (breach) return actor === breach;
+  if (rule.mode === "buildings-first") return true;
   var type = kind(game, actor);
   return rule.mode === "priority" ? rule.order.indexOf(type) >= 0 : rule.mode === type;
 }
@@ -269,12 +271,12 @@ function find(unit, game, rule, attackOnly) {
     var distance = length(start, Navigation.positionOf(actor.node, game));
     return distance <= awareness ? { tag: actor.node, actor: actor, distance: distance, canAtt: distance <= attackRange } : null;
   }
-  var target;
-  if (!rule || rule.mode === "priority") {
+  var target, buildingsFirst = rule && rule.mode === "buildings-first";
+  if (!rule || rule.mode === "priority" || buildingsFirst) {
     var bestRank = Infinity;
     function consider(actor, building) {
       if (!actor) return;
-      var rank = rule ? rule.order.indexOf(kind(game, actor)) : 0;
+      var rank = rule && !buildingsFirst ? rule.order.indexOf(kind(game, actor)) : 0;
       if (rank < 0 || rank > bestRank) return;
       var candidate = building ? buildingTarget(unit, game, query, actor, awareness, attackRange, false, !attackOnly) : actorTarget(actor);
       if (candidate && building) {
@@ -286,10 +288,14 @@ function find(unit, game, rule, attackOnly) {
         bestRank = rank;
       }
     }
-    consider(game.ctrPlay, false);
-    data.getSoldierList().forEach(function (actor) { consider(actor, false); });
+    function considerUnits() {
+      consider(game.ctrPlay, false);
+      data.getSoldierList().forEach(function (actor) { consider(actor, false); });
+    }
+    if (!buildingsFirst) considerUnits();
     var buildings = data.getAttackableBuildList ? data.getAttackableBuildList() : data.getBulidList();
     buildings.forEach(function (building) { consider(building, true); });
+    if (buildingsFirst && !target) considerUnits();
     return target || null;
   }
 

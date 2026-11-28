@@ -355,7 +355,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101671,
+            "unitId": 101852,
             "spawnId": 1,
             "count": 2,
             "startSeconds": 18.5,
@@ -363,7 +363,7 @@
             "id": "entry-4"
           },
           {
-            "unitId": 100248,
+            "unitId": 91173,
             "spawnId": 3,
             "count": 2,
             "startSeconds": 20.5,
@@ -420,7 +420,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 101671,
+            "unitId": 101852,
             "spawnId": 6,
             "count": 3,
             "startSeconds": 6,
@@ -522,7 +522,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 101671,
+            "unitId": 101852,
             "spawnId": 2,
             "count": 1,
             "startSeconds": 7,
@@ -631,7 +631,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 100248,
+            "unitId": 91173,
             "spawnId": 4,
             "count": 3,
             "startSeconds": 10,
@@ -741,7 +741,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101671,
+            "unitId": 101852,
             "spawnId": 6,
             "count": 4,
             "startSeconds": 37,
@@ -792,7 +792,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 100248,
+            "unitId": 91173,
             "spawnId": 1,
             "count": 5,
             "startSeconds": 4,
@@ -834,7 +834,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101671,
+            "unitId": 101852,
             "spawnId": 1,
             "count": 5,
             "startSeconds": 30,
@@ -4344,7 +4344,7 @@
   "nextBuilding": 23,
   "nextSpawn": 10,
   "nextSpecial": 7,
-  "sourceRevision": "808ee3189b953235760b6d015ca264408e037e5a55f58b6eb7d8b6005adca75c",
+  "sourceRevision": "09816ec1405356cd2920b3f7ba451ef7bcef4306e29a1a71a6499dbf73313209",
   "templates": {
     "Map01": [
       {

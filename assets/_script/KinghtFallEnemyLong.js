@@ -6,8 +6,6 @@ var cc__decorate = __decorate;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var $z1KinghtFallEnum = require("KinghtFallEnum");
-var $z1KinghtFallDataMgr = require("KinghtFallDataMgr");
 var $z1KinghtFallUIGame = require("KinghtFallUIGame");
 var $z1KinghtFallBulletEnemy = require("KinghtFallBulletEnemy");
 var $z1KinghtFallEnemyBase = require("KinghtFallEnemyBase");
@@ -50,8 +48,8 @@ var def_KinghtFallEnemyLong = function (t) {
     var selected = this.pickAttackTarget(game), n = selected && (selected.actor || selected.building);
     if (n) {
       targetNode = n.node; targetGeneration = targetNode._combatGeneration;
-      // Counter bonuses belong to the released shot, not a later pooled life.
-      if (GameToolsOverrides.counters(this, n)) e *= Number($z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getParamsCfgById($z1KinghtFallEnum.KinghtFallEnumParameterCfg.RestrainedArms));
+      // Calculate the outgoing modifier at release using the current profile.
+      e = GameToolsOverrides.attackDamage(this, n, e);
       var origin = Navigation.positionOf(sourceNode, game), attacker = { cfg: this.cfg };
       var impact = Navigation.attackPointOf(n, game, origin, selected.polygon, selected.wallPoint);
       var offset = n.getNavigationGateShapes && targetNode.convertToNodeSpaceAR(game.ndMain.convertToWorldSpaceAR(cc.v2(impact)));

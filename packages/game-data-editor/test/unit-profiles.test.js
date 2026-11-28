@@ -50,8 +50,23 @@ test('profile metadata cannot mutate prototypes and unrelated malformed waves re
 test('external stage references introduced during a removal transaction cancel Save and retain both the saved record and the draft',t=>{
  const f=fixture(t),id=f.act(1,'add',{name:'Concurrent'}).id;f.store.save({version:f.store.version});const file=path.join(f.root,'assets/KinghtFallConfig/GameJsonCfg.json'),before=fs.readFileSync(file);f.act(id,'remove');let changed=false;f.store.options.beforeCommit=()=>{if(changed)return;changed=true;const folder=path.join(f.root,'authoring/worlds/stages');fs.mkdirSync(folder,{recursive:true});fs.writeFileSync(path.join(folder,'A-9.json'),JSON.stringify({id:'A-9',config:{WaveCfg:[{SpawnTimeline:[{unitId:id}]}]}}));};assert.throws(()=>f.store.save({version:f.store.version}),/Stage references changed/);assert(changed);assert(fs.readFileSync(file).equals(before));assert(f.store.changes().length);
 });
-test('every imported model exposes six compatible fighting profiles without rewriting saved data on read',()=>{
+test('every imported model exposes its standard profiles and any Wrecker without rewriting saved data on read',()=>{
  const root=path.resolve(__dirname,'../../..'),file=path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'),bytes=fs.readFileSync(file),A=JSON.parse(bytes),read=file=>JSON.parse(fs.readFileSync(path.join(root,file))),state={A,overrides:clone(A.GameTools),catalog:read('assets/resources/localization/catalog.json')},before=clone(state),FP=require('../lib/fighting-profiles');
- for(const unit of Object.values(A.SoldierCfg).filter(unit=>unit.MonsterSource)){const family=FP.familyFor(state.overrides,unit.ID);assert(family);assert.equal(Object.keys(family.profiles).length,6);for(const [role,id]of Object.entries(family.profiles)){assert.equal(FP.roleOf(state.overrides,id),role);assert.equal(state.A.SoldierCfg[id].prefab,unit.prefab);assert.equal(state.A.SoldierCfg[id].AttackType,unit.AttackType);}}
+ for(const unit of Object.values(A.SoldierCfg).filter(unit=>unit.MonsterSource)){
+  const family=FP.familyFor(state.overrides,unit.ID);
+  assert(family);
+  assert.deepEqual(Object.keys(family.profiles),FP.rolesFor(family));
+  for(const [role,id]of Object.entries(family.profiles)){
+   const row=A.SoldierCfg[id];
+   assert.equal(FP.roleOf(state.overrides,id),role);
+   assert.equal(row.prefab,unit.prefab);
+   assert([1,2,3].includes(row.AttackType));
+   if(role==='wrecker'){
+    const source=A.SoldierCfg[state.overrides.unitProfiles.entries[id].sourceProfileId];
+    assert.equal(row.BehaviorTemplate,source.BehaviorTemplate||source.ID);
+    assert.equal(row.AttackType,A.SoldierCfg[row.BehaviorTemplate].AttackType);
+   }
+  }
+ }
  assert.deepEqual(Profiles.validate(state),[]);assert.deepEqual(state,before);assert(fs.readFileSync(file).equals(bytes));
 });

@@ -67,13 +67,17 @@ function candidates(scope, exclude) {
     return true;
   });
 }
-function nearby(scope, center, range, exclude) {
+function nearby(scope, center, range, exclude, targeted) {
+  var buildingsFirst = targeted && scope.targeting && scope.targeting.mode === "buildings-first";
   return candidates(scope, exclude).map(function (actor) {
     var entry = capture(actor, scope, null, center);
     if (!entry) return null;
     entry.distance = distance(center, entry.position);
     return entry;
-  }).filter(function (entry) { return entry && entry.distance <= range; }).sort(function (a, b) { return a.distance - b.distance; });
+  }).filter(function (entry) { return entry && entry.distance <= range; }).sort(function (a, b) {
+    if (buildingsFirst && !!a.actor.getIsWork !== !!b.actor.getIsWork) return a.actor.getIsWork ? -1 : 1;
+    return a.distance - b.distance;
+  });
 }
 function effectsBattleCurrent(state) {
   return state.data.round === state.round && battleCurrent(state);
@@ -211,10 +215,7 @@ function tickEffects(game, dt) {
 function deal(scope, entry, amount, impact, current) {
   if (!(amount > 0) || !isFinite(amount) || !current() || !targetCurrent(entry) || !canTarget(scope, entry.actor) ||
       protectedByWall(scope, entry.actor)) return false;
-  if (Overrides.counters(scope.attacker, entry.actor)) {
-    var parameter = require("KinghtFallEnum").KinghtFallEnumParameterCfg.RestrainedArms;
-    amount *= Number(require("KinghtFallDataMgr").KinghtFallDataMgr.getInstance().getParamsCfgById(parameter));
-  }
+  amount = Overrides.attackDamage(scope.attacker, entry.actor, amount);
   var source = sourceCurrent(scope) ? scope.owner : null;
   var onHit = scope.rules.onHit;
   var hpBefore = onHit && onHit.lifeSteal && (entry.buildInfo || entry.actor).hp;
@@ -256,12 +257,16 @@ function deal(scope, entry, amount, impact, current) {
 function blast(scope, primary, center, current) {
   var radius = scope.rules.splashRadius;
   if (!(radius > 0)) return deal(scope, primary, scope.amount, center, current);
+  // Castle targeting controls the aim. The impact still splashes, while a
+  // breach attack stays confined to the wall blocking the route.
+  var impactScope = scope.targeting && scope.targeting.mode === "castle" && !scope.breach ?
+    Object.assign({}, scope, { targeting: null }) : scope;
   var hitWall = primary.actor.getNavigationGateShapes && targetCurrent(primary);
-  var targets = nearby(scope, center, radius, hitWall ? new Set([primary.node]) : null);
+  var targets = nearby(impactScope, center, radius, hitWall ? new Set([primary.node]) : null);
   if (hitWall) deal(scope, primary, scope.amount, center, current);
   targets.forEach(function (entry) {
     var factor = TowerCombat.splashMultiplier(entry.distance, radius, scope.rules.splashFalloff);
-    deal(scope, entry, scope.amount * factor, entry.position, current);
+    deal(impactScope, entry, scope.amount * factor, entry.position, current);
   });
 }
 function draw(shot, flight, point, direction) {
@@ -334,7 +339,7 @@ function release(owner, side) {
     else deal(scope, primary, scope.amount, primary.position, current);
     return;
   }
-  var volley = rules.pattern === "volley" ? nearby(scope, scope.origin, scope.range, new Set([primary.node])).slice(0, rules.shotsPerVolley - 1) : [];
+  var volley = rules.pattern === "volley" ? nearby(scope, scope.origin, scope.range, new Set([primary.node]), true).slice(0, rules.shotsPerVolley - 1) : [];
   [primary].concat(volley).forEach(function (entry) { launch(scope, entry); });
 }
 function move(start, end, length, budget) {
@@ -385,7 +390,7 @@ function seek(shot, flight, budget, current) {
     if (rules.pattern !== "chain" || --flight.remaining <= 0) return finish(shot, true);
     flight.amount *= 1 - rules.chainDamageLoss;
     flight.visited.add(target.node);
-    var following = flight.amount > 0 && nearby(scope, end, rules.chainRange, flight.visited)[0];
+    var following = flight.amount > 0 && nearby(scope, end, rules.chainRange, flight.visited, true)[0];
     if (!following) return finish(shot, true);
     showContact(shot);
     flight.target = following;

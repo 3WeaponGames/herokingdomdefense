@@ -94,6 +94,30 @@ test('legacy unit counters still stack with global defense when their fighting t
  enemy.cfg.CounterType='mystic';enemy.doAttack();near(h.p.hp,10000-80-100*(2/3));
 });
 
+test('Wreckers are neutral to every matchup and deal 150% damage to structures',()=>{
+ const h=fixture(),overrides=h.load('GameToolsOverrides');
+ const wrecker=h.unit('enemy','wrecker',101845),troop=h.unit('ally','skirmisher',90002);
+ h.tools.unitTypes.wrecker.counterType='skirmisher';
+ h.tools.unitTypes.skirmisher.counterType='wrecker';
+ wrecker.cfg.CounterType='skirmisher';
+ troop.cfg.CounterType='wrecker';
+ troop.cfg.OverrideCounterType=true;
+ for(const [attacker,defender]of [[wrecker,troop],[troop,wrecker]]){
+  assert.equal(overrides.counters(attacker,defender),false);
+  assert.equal(overrides.attackDamage(attacker,defender,100),100);
+  assert.equal(overrides.typeCounterDamage(attacker,defender,100),100);
+ }
+ delete troop.cfg.CounterType;
+ troop.cfg.Suppressed=wrecker.cfg.ID;
+ assert.equal(overrides.counters(troop,wrecker),false);
+ for(const buildInfo of [{BuildID:'Wall'},{BuildID:'CastleCenter'},{BuildID:'ArrowTower'},{BuildID:'Barracks'}]){
+  const building={buildInfo,getIsWork:()=>true};
+  assert.equal(overrides.attackDamage(wrecker,building,100),150);
+  assert.equal(overrides.typeCounterDamage(wrecker,building,100,'wrecker'),150);
+  assert.equal(overrides.attackDamage(troop,building,100),100);
+ }
+});
+
 test('fighter counters the skirmisher hero while late-game HP leaves the base defense gap intact',()=>{
  const h=fixture(),enemy=h.unit('enemy','fighter');
  enemy.node.setPosition(0,0);enemy.cfg.AttackRange=200;enemy.cfg.CounterType='guardian';enemy.getAttack=()=>100;

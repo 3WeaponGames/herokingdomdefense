@@ -24,3 +24,30 @@ test('canonical profile listings contain only fighting type names and legacy ref
  const f=planned(),rows=C.rows({...f.state.A,GameTools:f.state.overrides},f.state.catalog);assert.equal(rows.length,Object.keys(f.state.overrides.unitProfiles.families).length*6);assert(!rows.some(row=>row.id===92001));for(const group of C.groups(rows)){assert.equal(group.units.length,6);assert.equal(C.firstProfile(group.units).id,Number(group.key.split(':')[1]));for(const row of group.units)assert.equal(C.profileLabel(row),f.state.overrides.unitTypes[row.unitType].name);}
  assert.equal(P.family(f.state,92001).baseId,91001);assert.throws(()=>FP.plan(f.state,rows),/already configured/);for(const action of ['add','duplicate','rename','remove','archive'])assert.throws(()=>P.operation('.',f.state,{id:91001,action,name:'Other'}),/six fighting profiles/);
 });
+
+test('adding a Wrecker copies the selected attack in a draft and preserves the standard profiles',()=>{
+ const {state}=planned(),family=state.overrides.unitProfiles.families[91002],sourceId=family.profiles.guardian;
+ state.overrides.unitTypes.wrecker={name:'Wrecker'};
+ const source=state.A.SoldierCfg[sourceId];
+ source.AttackType=1;
+ source.UnitAttack={delivery:'ranged',pattern:'splash',splashRadius:80};
+ source.EnemyTargeting={mode:'castle'};
+ state.overrides.timingDefaults[P.key(sourceId)]={attack:.4};
+ state.overrides.timings[P.key(sourceId)]={attack:.6};
+ const before=clone(state);
+ const {state:draft,selectedId:id}=P.operation('.',state,{id:sourceId,action:'add-wrecker'});
+ const settings=draft.overrides,entry=settings.unitProfiles.entries[id],wrecker=draft.A.SoldierCfg[id];
+ assert.equal(FP.roleOf(settings,id),'wrecker');
+ assert.equal(entry.sourceProfileId,sourceId);
+ assert.equal(wrecker.AttackType,state.A.SoldierCfg[source.BehaviorTemplate].AttackType);
+ assert.deepEqual(wrecker.UnitAttack,source.UnitAttack);
+ assert.deepEqual(wrecker.EnemyTargeting,{mode:'buildings-first'});
+ for(const field of FP.FIELDS)assert.equal(wrecker[field],source[field]);
+ assert.deepEqual(settings.timingDefaults[P.key(id)],{attack:.4});
+ assert.deepEqual(settings.timings[P.key(id)],{attack:.6});
+ assert.deepEqual(P.validate(draft),[]);
+ assert.deepEqual(P.describe('.',draft,id).profiles.map(profile=>profile.role),[...FP.ROLES,'wrecker']);
+ assert.deepEqual(state,before);
+ assert.deepEqual(draft.A.LevelCfg,before.A.LevelCfg);
+ assert.throws(()=>P.operation('.',draft,{id:sourceId,action:'add-wrecker'}),/without a Wrecker profile/);
+});

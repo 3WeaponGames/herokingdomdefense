@@ -2,6 +2,8 @@
 const Catalog=require('./unit-catalog'),Gallery=require('./unit-model-gallery'),Stats=require('./wave-stats'),Classes=require('../lib/enemy-classes');
 const {custom}=require('../../hkd-characters/lib/unit-packs');
 const Kingdoms=require('../lib/unit-kingdoms');
+const {ROLES}=require('../lib/fighting-profiles');
+const profileOrder=[...ROLES,'wrecker'];
 const collection=unit=>unit.customUnit?custom:{id:unit.assetPack||'untyped',label:unit.assetPackName||'Unassigned'};
 function mount(dialog,options){
  const {el,button,field,units,selected,controls,ipc}=options;dialog.classList.add('world-unit-dialog');
@@ -84,7 +86,7 @@ function unitField(c,parent,units,id,change,switchUnit,profileAction){
   return c.openUnitEditor(unit.baseProfileId||current);
  }).title='Open this unit’s shared profile in Units';
  const fields=c.el('div',undefined,'world-wave-unit-fields world-wave-unit-options');row.appendChild(fields);
- const ordered=members=>members.slice().sort((a,b)=>a.fightingProfile&&b.fightingProfile?['fighter','guardian','vanguard','skirmisher','bruiser','mystic'].indexOf(a.unitType)-['fighter','guardian','vanguard','skirmisher','bruiser','mystic'].indexOf(b.unitType):0);
+ const ordered=members=>members.slice().sort((a,b)=>a.fightingProfile&&b.fightingProfile?profileOrder.indexOf(a.unitType)-profileOrder.indexOf(b.unitType):0);
  const defaultProfile=()=>group.units.find(unit=>unit.defaultProfile&&!unit.archived);
  const profileValue=()=>current===defaultProfile()?.id?'default':String(current);
  const profileChoices=()=>{

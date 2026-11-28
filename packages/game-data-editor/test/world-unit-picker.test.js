@@ -32,6 +32,7 @@ test('the wave row puts the Units default first and applies its exact profile to
   openUnitEditor:id=>opened.push(id)};
  const units=[{id:101685,name:'Abyssal Slime',modelKey:'slime',unitType:'fighter',unitTypeName:'Fighter',fightingProfile:true},
   {id:91157,name:'Abyssal Slime',modelKey:'slime',unitType:'bruiser',unitTypeName:'Bruiser',fightingProfile:true,defaultProfile:true},
+  {id:101845,name:'Abyssal Slime',modelKey:'slime',unitType:'wrecker',unitTypeName:'Wrecker',fightingProfile:true},
   {id:90001,name:'Wolf',modelKey:'wolf'}];
  const s=stage();s.config.WaveCfg[0].SpawnTimeline[0].unitId=101685;
  const before=clone(s),mount=require('../worlds/unit-picker').unitField;
@@ -39,7 +40,7 @@ test('the wave row puts the Units default first and applies its exact profile to
  mount(c,node(),units,101685,apply,()=>{},()=>{});
  assert.deepEqual(buttons.map(button=>button.textContent),['Switch','Profiles…','Unit Editor']);
  assert.equal(fields.Profile.value,'101685');
- assert.deepEqual(fields.Profile.children.map(option=>option.textContent),['Default (Bruiser)','Fighter','Bruiser']);
+ assert.deepEqual(fields.Profile.children.map(option=>option.textContent),['Default (Bruiser)','Fighter','Bruiser','Wrecker']);
  assert.deepEqual(s,before);
  fields.Profile.onchange('default');buttons[2].onclick();
  const expected=clone(before);expected.config.WaveCfg[0].SpawnTimeline[0].unitId=91157;
@@ -71,7 +72,7 @@ test('enemy classes distinguish profiles of one model without changing combat ro
  assert.deepEqual(config,before);assert(!Object.hasOwn(config.GameTools.enemyClasses,'enemy:1:default'));
 });
 
-test('saved units expose exactly six fighting profiles per parent without Campaign or Normal profile labels',()=>{
+test('the Waves roster shows standard profiles and Wreckers with their kingdoms',()=>{
  const root=path.resolve(__dirname,'../../..'),config=JSON.parse(fs.readFileSync(path.join(root,'assets/KinghtFallConfig/GameJsonCfg.json'))),before=clone(config),localization=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/localization/catalog.json'))),characters=JSON.parse(fs.readFileSync(path.join(root,'assets/resources/characters/catalog.json'))),rows=Catalog.rows(config,localization,null,characters),groups=Catalog.groups(rows);
  const profiles=config.GameTools.unitProfiles;
  assert.equal(groups.length,Object.keys(profiles.families).filter(id=>!profiles.aliases[id]).length);
@@ -84,25 +85,46 @@ test('saved units expose exactly six fighting profiles per parent without Campai
   assert.equal(profiles.aliases[id],profiles.families[91090].profiles[role]);
   assert(!rows.some(unit=>unit.id===id));
  }
- for(const group of groups){assert.equal(group.units.length,6);const baseId=Number(group.key.split(':')[1]);assert.equal(Catalog.firstProfile(group.units).id,profiles.families[baseId].defaultProfileId??baseId);assert.equal(new Set(group.units.map(Catalog.profileLabel)).size,6);assert(group.units.every(unit=>unit.profileKind==='Fighting type'));}
+ for(const group of groups){const baseId=Number(group.key.split(':')[1]),family=profiles.families[baseId];assert.equal(group.units.length,Object.keys(family.profiles).length);assert.equal(Catalog.firstProfile(group.units).id,family.defaultProfileId??baseId);assert.equal(new Set(group.units.map(Catalog.profileLabel)).size,group.units.length);assert(group.units.every(unit=>unit.profileKind==='Fighting type'));}
+ const wreckers=rows.filter(unit=>unit.unitType==='wrecker');
+ const wreckerAttacks={
+  slime:['Ram Slime','melee','single','castle'],
+  'sun-tomb':['Green Cactus','melee','single','buildings-first'],
+  plant:['Spiky Plant','ranged','splash','buildings-first'],
+  skeleton:['Grave Goby','ranged','single','castle'],
+  orc:['Orc War Beast','melee','splash','castle'],
+  ice:['Winter Iron','melee','splash','buildings-first'],
+  demon:['Hellgate Behemoth','melee','splash','castle']
+ };
+ assert.deepEqual(wreckers.map(unit=>unit.kingdom).sort(),Kingdoms.CHOICES.map(choice=>choice.value).filter(value=>value!=='unassigned').sort());
+ for(const unit of wreckers){
+  assert.equal(unit.defaultProfile,true);
+  assert.equal(unit.flight,false);
+  const targeting=config.SoldierCfg[unit.id].EnemyTargeting.mode;
+  assert.deepEqual([unit.name,unit.attack.delivery,unit.attack.pattern,targeting],wreckerAttacks[unit.kingdom]);
+  assert(config.LevelCfg.slice(0,14).some(stage=>stage.WaveCfg.some(wave=>wave.SpawnTimeline?.some(row=>row.unitId===unit.id))),unit.name);
+ }
  const namesIn=kingdom=>groups.filter(group=>group.units[0].kingdom===kingdom).map(group=>{
   assert(group.units.every(unit=>unit.kingdom===kingdom&&unit.name===group.units[0].name));
   return group.units[0].name;
  }).sort();
  assert.deepEqual(namesIn('sun-tomb'),[
-  'Black Plague','Blood Beetle','Carrion Bird','Evilmass Knight','Green Cactus','Larva Leech','Plague Doctor','Purple Scorpion',
-  'Venom Spider','Worm Lightning','Worm Poison'
+  'Black Plague','Blood Beetle','Carrion Bird','Evilmass Knight','Green Cactus','Larva Green','Plague Doctor','Purple Scorpion',
+  'Worm Lightning','Worm Poison'
  ]);
  assert.deepEqual(namesIn('plant'),[
-  'Conch Snail','Flower Daisy','Flower Mantis','Fungus Rock','Hornet Bee','Iron Fly','Iron Golem',
-  'Mushroom Walker','Pitcher Plant','Pumpkin Orange','Red Plant','Spiky Plant','Stump Walker','Tree Golem'
+  'Flower Daisy','Flower Mantis','Fungus Rock','Hornet Bee','Iron Fly','Iron Golem',
+  'Mushroom Walker','Pitcher Plant','Pumpkin Orange','Spiky Plant','Stump Walker'
  ]);
  assert(rows.filter(unit=>unit.kingdom==='plant').every(unit=>Catalog.matches(unit,'nature kingdom deep forest')));
- assert.deepEqual(groups.filter(group=>group.units[0].kingdom==='plant'&&group.units[0].enemyClass==='boss').map(group=>group.units[0].name),['Iron Fly']);
+ const natureGroups=groups.filter(group=>Catalog.firstProfile(group.units).kingdom==='plant');
+ const natureBosses=natureGroups.map(group=>Catalog.firstProfile(group.units)).filter(unit=>unit.enemyClass==='boss');
+ assert.deepEqual(natureBosses.map(unit=>unit.name).sort(),['Iron Golem','Stump Walker']);
+ assert(natureGroups.find(group=>group.units[0].name==='Iron Fly').units.every(unit=>unit.enemyClass==='elite'));
  assert(!rows.some(unit=>unit.name==='Thorn Warden'||unit.name==='Evilmass Dagger'||unit.name==='Shrouded Revenant'));
  assert.deepEqual(namesIn('skeleton'),[
-  'Corsair Wraith','Drowned Octopus','Grave Goby','Grizzly Bear','Reaper Death',
-  'Skeleton Soldier','Skeleton Warlord','Wing Demon Vampire'
+  'Corsair Wraith','Drowned Octopus','Grave Goby','Grizzly Bear','Larva Leech','Reaper Death',
+  'Skeleton Soldier','Skeleton Warlord','Venom Spider','Wing Demon Vampire'
  ]);
  assert(rows.some(unit=>unit.name==='Skeleton Rhino'&&unit.kingdom==='unassigned'));
  assert.deepEqual(groups.filter(group=>group.units[0].kingdom==='skeleton'&&group.units[0].enemyClass==='boss').map(group=>group.units[0].name),['Skeleton Warlord']);
@@ -116,10 +138,10 @@ test('saved units expose exactly six fighting profiles per parent without Campai
  assert(orcGroups.find(group=>group.units[0].name==='Orc Sword Butcher').units.every(unit=>unit.enemyClass==='elite'));
  assert(!rows.some(unit=>unit.name==='Orc Siege Chief'||unit.name==='Orc Crimson Guard'));
  assert.deepEqual(namesIn('ice'),[
-  'Ice Beetle','Ice Jellyfish','Ice Octopus','Orc Smasher Warlord','Skeleton Warrior','Snow Bird','Snow Cactus',
-  'Snow Crab','Snow Fairy','Winter Ice','Winter Iron','Winter Snow','Wizard'
+  'Ice Beetle','Ice Jellyfish','Ice Octopus','Orc Smasher Warlord','Skeleton Warrior',
+  'Snow Crab','Snow Fairy','Winter Iron','Winter Snow','Wizard'
  ]);
- assert(rows.some(unit=>unit.name==='Polar Bear'&&unit.kingdom==='unassigned'));
+ for(const name of ['Polar Bear','Snow Bird','Snow Cactus','Winter Ice'])assert(namesIn('unassigned').includes(name),name);
  assert.deepEqual(groups.filter(group=>group.units[0].kingdom==='sun-tomb'&&group.units[0].enemyClass==='boss').map(group=>group.units[0].name),['Plague Doctor']);
  assert.deepEqual(namesIn('demon'),[
   'Black Goat','Crimson Regent','Demon Wolf','Devil Bee','Fire Lizard','Hellgate Behemoth',
@@ -162,6 +184,59 @@ test('saved units expose exactly six fighting profiles per parent without Campai
  assert.deepEqual(config,before);
 });
 
+test('every beta stage spawns its kingdom’s required roles and ordinary melee appears in every wave',()=>{
+ const config=require('../../../assets/KinghtFallConfig/GameJsonCfg.json');
+ const {GameTools:settings,SoldierCfg:units}=config;
+ const Fighting=require('../lib/fighting-profiles'),Classes=require('../lib/enemy-classes');
+ const {recordTraits}=require('../worlds/wave-threat');
+ const StageProfiles=require('../../../assets/_script/EnemyStageProfiles');
+ const rotation=['slime','sun-tomb','plant','skeleton','orc','ice','demon'];
+ const families=settings.unitProfiles.families;
+ const castleProfiles={
+  slime:families[91154].profiles.wrecker,'sun-tomb':91010,plant:families[91110].profiles.vanguard,
+  skeleton:families[91028].profiles.wrecker,orc:families[91183].profiles.wrecker,
+  ice:families[91073].profiles.vanguard,demon:families[91186].profiles.wrecker
+ };
+ function ordinary(unit,delivery){
+  return unit.enemyClass==='normal'&&unit.attack.delivery===delivery&&unit.attack.pattern==='single'&&unit.attack.damage>0&&
+   !unit.skills.length&&!Object.keys(unit.attack.onHit||{}).length&&unit.target==='nearest';
+ }
+ for(const stage of config.LevelCfg.filter(stage=>stage.Level<=14)){
+  const label='Stage '+stage.Level,kingdom=rotation[Math.floor((stage.Level-1)/2)];
+  const runtime=StageProfiles.records(stage,units,settings),roster=new Map();
+  const waves=stage.WaveCfg.map(wave=>new Set(wave.SpawnTimeline.map(row=>row.unitId)));
+  for(const id of new Set(waves.flatMap(wave=>[...wave]))){
+   const unit=runtime[id],baseId=unit.ProfileBaseID||id;
+   assert.equal(Kingdoms.resolve(baseId,units,settings),kingdom,label+' unit '+id);
+   roster.set(id,{
+    id,baseId,health:unit.Health,target:unit.EnemyTargeting?.mode||'nearest',
+    role:unit.FightingType||Fighting.roleOf(settings,baseId),enemyClass:Classes.resolve(settings,baseId),
+    ...recordTraits(unit,id)
+   });
+  }
+  const members=[...roster.values()];
+  const fodder=members.find(unit=>!unit.flight&&ordinary(unit,'melee')&&waves.every(wave=>wave.has(unit.id)));
+  assert(fodder,label+' needs ordinary melee in every wave');
+  assert(members.some(unit=>!unit.flight&&unit.role==='vanguard'&&unit.target==='hero'&&unit.attack.damage>0),label+' needs a ground Vanguard hero targeter');
+  const castle=members.filter(unit=>unit.target==='castle'&&unit.attack.damage>0);
+  assert.deepEqual(castle.map(unit=>unit.baseId),[castleProfiles[kingdom]],label+' castle assignment');
+  assert(members.some(unit=>!unit.flight&&unit.role==='wrecker'&&['buildings-first','castle'].includes(unit.target)&&unit.attack.damage>0),label+' needs a ground Wrecker');
+  assert(members.some(unit=>ordinary(unit,'ranged')),label+' needs an ordinary ranged unit');
+  assert(members.some(unit=>unit.attack.pattern==='splash'&&unit.attack.damage>0),label+' needs a splash attack');
+  assert(members.some(unit=>!unit.flight&&unit.role==='guardian'&&unit.attack.delivery==='melee'&&unit.health>fodder.health),label+' needs a tank');
+  assert(members.some(unit=>unit.flight),label+' needs a flying unit');
+  const elites=new Set(members.filter(unit=>unit.enemyClass==='elite').map(unit=>settings.unitProfiles.entries[unit.baseId]?.baseId||unit.baseId));
+  assert(kingdom==='slime'||elites.size>=2,label+' needs two distinct elites');
+  if(kingdom==='ice'){
+   assert.deepEqual(elites,new Set([91052,91147]),label+' should field Wizard and Winter Iron as the Ice elites');
+   const tank=members.find(unit=>unit.baseId===families[91007].profiles.guardian);
+   assert(tank&&tank.health>fodder.health,label+' should field Ice Beetle as the Guardian tank');
+  }
+  assert([...waves.at(-1)].some(id=>roster.get(id).enemyClass==='boss'),label+' needs a final-wave boss');
+  assert(waves.slice(0,-1).every(wave=>[...wave].every(id=>roster.get(id).enemyClass!=='boss')),label+' has a boss before the final wave');
+ }
+});
+
 test('appearance grouping resolves references and safely stops at cyclic or missing source records',()=>{
  const config={SoldierCfg:{1:{Name:'One',prefab:'one',MonsterSource:'monster1/One'},2:{Name:'Two',prefab:'two',AppearanceSourceUnit:1},3:{Name:'Three',prefab:'three',AppearanceSourceUnit:2},4:{Name:'Cycle A',prefab:'four',AppearanceSourceUnit:5},5:{Name:'Cycle B',prefab:'five',AppearanceSourceUnit:4},6:{Name:'Missing',prefab:'six',AppearanceSourceUnit:99}}},before=clone(config),rows=Catalog.rows(config,{entries:{}}),models=Catalog.groups(rows);
  assert.deepEqual(models.find(group=>group.key==='source:monster1/One').units.map(unit=>unit.id),[1,2,3]);assert.equal(models.length,4);assert.deepEqual(config,before);
@@ -176,7 +251,7 @@ test('the complete saved catalog exposes every spawnable unit and read-only mode
  assert.equal(catalog.units.length,Object.values(config.SoldierCfg).filter(unit=>unit.prefab&&![90011,90012].includes(Number(unit.ID))&&!config.GameTools.unitProfiles.aliases[unit.ID]).length);assert(catalog.units.every(unit=>typeof unit.description==='string'&&unit.unitType&&unit.assetPack));assert.equal(catalog.units.find(unit=>unit.id===91001).assetPack,'monster1');
  for(const name of ['Ironclad Slime','Ram Slime','Quake Slime','Prism Slime King']){
   const profiles=catalog.units.filter(unit=>unit.name===name);
-  assert.equal(profiles.length,6);
+  assert.equal(profiles.length,name==='Ram Slime'?7:6);
   assert(profiles.every(unit=>unit.customUnit&&unit.assetPack==='monster1'));
  }
  const snails=catalog.units.filter(unit=>unit.name==='Blue Snail');

@@ -46,12 +46,13 @@ function typeGuide(ui, id) {
   function add(list, value) { if (byId[value] && list.indexOf(value) < 0) list.push(value); }
   function counter(role) { return rules.counterType(definitions, role); }
   function targets(member) {
+    if (rules.ignoresCounters(member.role)) return [];
     var type = counter(member.role);
     if (type !== undefined) return [type];
-    if (member.cfg.CounterType !== undefined) return byId[member.cfg.CounterType] ? [member.cfg.CounterType] : [];
+    if (member.cfg.CounterType !== undefined) return byId[member.cfg.CounterType] && !rules.ignoresCounters(member.cfg.CounterType) ? [member.cfg.CounterType] : [];
     // An absent type override retains the game's exact-ID legacy matchup.
     var result = [];
-    members.forEach(function (target) { if (target.side !== member.side && member.cfg.Suppressed && target.cfg.ID == member.cfg.Suppressed) add(result, target.role); });
+    members.forEach(function (target) { if (target.side !== member.side && !rules.ignoresCounters(target.role) && member.cfg.Suppressed && target.cfg.ID == member.cfg.Suppressed) add(result, target.role); });
     return result;
   }
   function matchup(source, target) {
@@ -72,7 +73,7 @@ function typeGuide(ui, id) {
       if (model.roleId && counter(type.id) === model.roleId) add(unit.weak, type.id);
     });
     members.forEach(function (member) {
-      if (member.side !== "ally" || counter(member.role) !== undefined) return;
+      if (member.side !== "ally" || rules.ignoresCounters(member.role, model.roleId) || counter(member.role) !== undefined) return;
       var matches = member.cfg.CounterType === undefined ? member.cfg.Suppressed && member.cfg.Suppressed == id : member.cfg.CounterType && member.cfg.CounterType === model.roleId;
       if (matches) add(unit.weak, member.role);
     });

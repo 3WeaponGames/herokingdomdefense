@@ -15,7 +15,7 @@ function bar(panel,row,create){
  if(row.unitType!=='enemy'||!row.record.prefab||[90011,90012].includes(Number(row.unitID)))return;
  const data=state(panel),{group,baseId}=Profiles.family(data,row.unitID,looks(panel)),entries=Profiles.metadata(data).entries||{},fixed=Fighting.familyFor(data.overrides,baseId),wrap=create('div');wrap.className='gt-unit-profiles';panel.$detail.appendChild(wrap);
  const label=create('label'),caption=create('span'),select=create('select');caption.textContent='Profile';label.appendChild(caption);label.appendChild(select);select.setAttribute('aria-label','Unit profile');wrap.appendChild(label);
- const members=fixed?Fighting.ROLES.map(role=>group.units.find(unit=>unit.id===fixed.profiles[role])):group.units;
+ const members=fixed?Fighting.rolesFor(fixed).map(role=>group.units.find(unit=>unit.id===fixed.profiles[role])):group.units;
  for(const unit of members){if(unit.archived&&unit.id!==Number(row.unitID))continue;const option=create('option');option.value=String(unit.id);option.textContent=fixed?Catalog.profileLabel(unit)+(unit.defaultProfile?' · Default':''):unit.id===baseId?'Default':entries[unit.id]&&entries[unit.id].name||Catalog.profileLabel(unit);select.appendChild(option);}select.value=String(row.unitID);
  if(fixed)select.title='Choose the unit’s default fighting profile. Save to use it in new wave groups.';
  select.onchange=()=>{

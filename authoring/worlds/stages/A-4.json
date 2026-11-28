@@ -209,7 +209,7 @@
             "editorManualTiming": true
           },
           {
-            "unitId": 100807,
+            "unitId": 91150,
             "spawnId": 3,
             "count": 3,
             "startSeconds": 5,
@@ -260,7 +260,7 @@
             "editorManualTiming": true
           },
           {
-            "unitId": 100807,
+            "unitId": 91150,
             "spawnId": 2,
             "count": 4,
             "startSeconds": 5.5,
@@ -405,7 +405,7 @@
             "id": "entry-6"
           },
           {
-            "unitId": 91071,
+            "unitId": 91010,
             "spawnId": 5,
             "count": 4,
             "startSeconds": 17,
@@ -475,7 +475,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 91071,
+            "unitId": 91010,
             "spawnId": 9,
             "count": 3,
             "startSeconds": 7,
@@ -492,7 +492,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 100801,
+            "unitId": 101858,
             "spawnId": 8,
             "count": 2,
             "startSeconds": 11,
@@ -562,7 +562,7 @@
         "RefreshSoldierKind": [],
         "SpawnTimeline": [
           {
-            "unitId": 91071,
+            "unitId": 91010,
             "spawnId": 3,
             "count": 4,
             "startSeconds": 0.5,
@@ -621,7 +621,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 100539,
+            "unitId": 91107,
             "spawnId": 9,
             "count": 2,
             "startSeconds": 8,
@@ -718,7 +718,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91071,
+            "unitId": 91010,
             "spawnId": 11,
             "count": 4,
             "startSeconds": 8,
@@ -797,7 +797,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 91071,
+            "unitId": 91010,
             "spawnId": 5,
             "count": 6,
             "startSeconds": 24,
@@ -830,7 +830,7 @@
             "id": "entry-11"
           },
           {
-            "unitId": 100539,
+            "unitId": 91071,
             "spawnId": 3,
             "count": 2,
             "startSeconds": 9,
@@ -884,7 +884,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91071,
+            "unitId": 91010,
             "spawnId": 11,
             "count": 5,
             "startSeconds": 4,
@@ -934,7 +934,7 @@
             "id": "entry-21"
           },
           {
-            "unitId": 100539,
+            "unitId": 91107,
             "spawnId": 4,
             "count": 3,
             "startSeconds": 35,
@@ -997,7 +997,7 @@
             "id": "entry-7"
           },
           {
-            "unitId": 91071,
+            "unitId": 91010,
             "spawnId": 11,
             "count": 4,
             "startSeconds": 4,
@@ -1047,7 +1047,7 @@
             "id": "entry-3"
           },
           {
-            "unitId": 100539,
+            "unitId": 91071,
             "spawnId": 4,
             "count": 3,
             "startSeconds": 38,
@@ -1137,7 +1137,7 @@
             "id": "entry-21"
           },
           {
-            "unitId": 100801,
+            "unitId": 101858,
             "spawnId": 2,
             "count": 3,
             "startSeconds": 8,
@@ -1145,7 +1145,7 @@
             "id": "entry-22"
           },
           {
-            "unitId": 91071,
+            "unitId": 91010,
             "spawnId": 10,
             "count": 3,
             "startSeconds": 4,
@@ -1170,7 +1170,7 @@
             "id": "entry-10"
           },
           {
-            "unitId": 100539,
+            "unitId": 91107,
             "spawnId": 8,
             "count": 2,
             "startSeconds": 37,
@@ -1245,8 +1245,8 @@
     "StageLayoutId": "A-4",
     "EnemyProfiles": {
       "1000012000": {
-        "baseId": 100503,
-        "name": "Bruiser · 230 speed",
+        "baseId": 100502,
+        "name": "Vanguard · 230 speed",
         "stats": {
           "Speed": 230
         }
@@ -7142,7 +7142,7 @@
   "nextBuilding": 29,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "aa5019df6af31d1c73b3bff4ba7b1193795b8891b21632675687e322a6588ec8",
+  "sourceRevision": "74b453da5edfcd275ff43237b43b5c0bce3cc5b3e58e08efacbe76b0d993585f",
   "templates": {
     "Map03": [
       {

@@ -230,7 +230,7 @@
             "id": "legacy-4-0"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 5,
             "count": 2,
             "startSeconds": 5.5,
@@ -272,7 +272,7 @@
             "id": "legacy-4-0"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 6,
             "count": 3,
             "startSeconds": 5,
@@ -341,7 +341,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91124,
+            "unitId": 100701,
             "spawnId": 8,
             "count": 3,
             "startSeconds": 18,
@@ -393,7 +393,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 8,
             "count": 3,
             "startSeconds": 4,
@@ -401,7 +401,7 @@
             "id": "entry-5"
           },
           {
-            "unitId": 91124,
+            "unitId": 100701,
             "spawnId": 10,
             "count": 4,
             "startSeconds": 16,
@@ -481,7 +481,7 @@
             "unitGroupId": "unit-group-1"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 3,
             "count": 4,
             "startSeconds": 6,
@@ -586,7 +586,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 5,
             "count": 3,
             "startSeconds": 7,
@@ -683,7 +683,7 @@
             "id": "entry-5"
           },
           {
-            "unitId": 91124,
+            "unitId": 100701,
             "spawnId": 8,
             "count": 3,
             "startSeconds": 10,
@@ -799,7 +799,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 2,
             "count": 4,
             "startSeconds": 7,
@@ -856,7 +856,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 10,
             "count": 5,
             "startSeconds": 4,
@@ -881,7 +881,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 1,
             "count": 5,
             "startSeconds": 6,
@@ -993,7 +993,7 @@
             "id": "entry-5"
           },
           {
-            "unitId": 91124,
+            "unitId": 100701,
             "spawnId": 8,
             "count": 3,
             "startSeconds": 8,
@@ -1082,7 +1082,7 @@
             "id": "entry-4"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 8,
             "count": 4,
             "startSeconds": 5,
@@ -1205,7 +1205,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 101772,
+            "unitId": 91139,
             "spawnId": 10,
             "count": 5,
             "startSeconds": 6,
@@ -1303,7 +1303,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91124,
+            "unitId": 100701,
             "spawnId": 10,
             "count": 5,
             "startSeconds": 4,
@@ -1448,7 +1448,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 4,
             "count": 6,
             "startSeconds": 14,
@@ -1477,7 +1477,7 @@
             "unitGroupId": "unit-group-0"
           },
           {
-            "unitId": 91124,
+            "unitId": 101856,
             "spawnId": 8,
             "count": 5,
             "startSeconds": 26,
@@ -1596,7 +1596,7 @@
     ],
     "EnemyProfiles": {
       "1000027000": {
-        "baseId": 91181,
+        "baseId": 91133,
         "name": "Vanguard · 299 speed",
         "stats": {
           "Speed": 299
@@ -9376,7 +9376,7 @@
   "nextBuilding": 43,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "45068d9d90444d3432d6ba765f04abbd9d61d46286e0e5f61e6771e8c07c1398",
+  "sourceRevision": "ea8bfedef5def6c7f1a99510f05bf5271749f2c13dc1fb26cb9874c4e16d4bb6",
   "templates": {
     "Map01": [
       {

@@ -13,11 +13,15 @@ function multiplier(value) {
   // intentionally distinct: More 400 = 5x, Less 400 = 1/4x.
   return value.mode === "less" ? 100 / value.percent : 1 + value.percent / 100;
 }
+function ignoresCounters(source, target) {
+  return source === "wrecker" || target === "wrecker";
+}
 function counterType(types, role) {
   var type = types && Object.prototype.hasOwnProperty.call(types, role) && types[role];
   var target = type && type.counterType;
-  return typeof target === "string" && Object.prototype.hasOwnProperty.call(types, target) ? target : undefined;
+  return typeof target === "string" && !ignoresCounters(role, target) && Object.prototype.hasOwnProperty.call(types, target) ? target : undefined;
 }
 exports.valid = valid;
 exports.multiplier = multiplier;
+exports.ignoresCounters = ignoresCounters;
 exports.counterType = counterType;
