@@ -20207,36 +20207,39 @@
               "unitId": 91182,
               "spawnId": 4,
               "count": 3,
-              "startSeconds": 2.5,
-              "intervalSeconds": 4,
+              "startSeconds": 1,
+              "intervalSeconds": 1,
               "id": "entry-5",
               "unitGroupId": "unit-group-1",
               "editorManualTiming": true
             },
             {
               "unitId": 91182,
-              "spawnId": 9,
+              "spawnId": 1,
               "count": 3,
-              "startSeconds": 12.5,
-              "intervalSeconds": 6.5,
+              "startSeconds": 1,
+              "intervalSeconds": 1,
               "id": "entry-6",
-              "unitGroupId": "unit-group-1"
+              "unitGroupId": "unit-group-1",
+              "editorManualTiming": true
             },
             {
               "unitId": 100807,
               "spawnId": 3,
               "count": 4,
-              "startSeconds": 15.5,
+              "startSeconds": 10,
               "intervalSeconds": 3,
-              "id": "entry-7"
+              "id": "entry-7",
+              "editorManualTiming": true
             },
             {
               "unitId": 91010,
               "spawnId": 2,
               "count": 3,
-              "startSeconds": 17.5,
+              "startSeconds": 15,
               "intervalSeconds": 4,
-              "id": "entry-8"
+              "id": "entry-8",
+              "editorManualTiming": true
             }
           ],
           "editorUnitOrder": [
@@ -20304,17 +20307,19 @@
               "unitId": 1000009000,
               "spawnId": 2,
               "count": 2,
-              "startSeconds": 17.5,
+              "startSeconds": 17,
               "intervalSeconds": 3.5,
-              "id": "entry-7"
+              "id": "entry-7",
+              "editorManualTiming": true
             },
             {
               "unitId": 91162,
               "spawnId": 3,
               "count": 3,
-              "startSeconds": 19.5,
+              "startSeconds": 15,
               "intervalSeconds": 3,
-              "id": "entry-8"
+              "id": "entry-8",
+              "editorManualTiming": true
             }
           ],
           "editorUnitOrder": [
@@ -20355,10 +20360,11 @@
               "unitId": 91182,
               "spawnId": 2,
               "count": 6,
-              "startSeconds": 2,
-              "intervalSeconds": 2,
+              "startSeconds": 1,
+              "intervalSeconds": 1,
               "id": "entry-6",
-              "unitGroupId": "unit-group-1"
+              "unitGroupId": "unit-group-1",
+              "editorManualTiming": true
             },
             {
               "unitId": 91182,
