@@ -22813,16 +22813,19 @@
       "visual": {
         "impactRotation": 0,
         "castScale": 0.63,
-        "castScaleX": 1.05,
+        "castScaleX": 2.39,
         "castScaleY": 0.81,
-        "scale": 2.73,
-        "arcDegrees": 46.38,
+        "scale": 1.15,
+        "arcDegrees": 32.01,
         "castOpacity": 1,
-        "arcStartWidth": 116.28,
+        "arcStartWidth": 44.36,
         "buffScale": 0.8,
         "castAreaScale": 0.5,
-        "castSpearScale": 0.35,
-        "castSpearLengthScale": 1.5
+        "castSpearScale": 0.4,
+        "castSpearLengthScale": 1.89,
+        "castOffsetX": -24.92,
+        "castOffsetY": -1.92,
+        "rotation": 0.24
       },
       "audio": {
         "cast": {
