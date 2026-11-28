@@ -38,6 +38,7 @@ var Navigation = require("KinghtFallNavigation");
 function checkpointTasks(task, resetIndex) {
   var reset = resetIndex !== undefined;
   var saved = { index: reset ? resetIndex : task.index, list: task.list.slice(), stage: reset ? 0 : task.stage };
+  if (!reset && Number.isSafeInteger(task.claimedRound)) saved.claimedRound = task.claimedRound;
   if (Array.isArray(task.reward)) {
     saved.reward = task.reward.slice(0, task.list.length).map(function (reward) { return { id: reward.id, num: reward.num }; });
   }
@@ -1675,6 +1676,9 @@ var def_KinghtFallGameCtrl = function (t) {
         // Gold and other permanent rewards remain owned after a retry. Preserve
         // their claimed index so the same paid attempt cannot award them twice.
         checkpoint.taskList = checkpointTasks(task, floor);
+        if (mode === "wave" && committed.index === floor && committed.claimedRound === checkpoint.roundNum) {
+          checkpoint.taskList.claimedRound = committed.claimedRound;
+        }
       }
       return checkpoint;
     }

@@ -142,7 +142,7 @@ test('default Advisor missions draw from feasible early, mid and late tasks on e
   }
 });
 
-test('an already upgraded single mill completes a saved follow-up build mission without buying another', () => {
+test('an already upgraded mill completes the next Advisor task after a wave, including after a reload', () => {
   const disk = harness(), stage = 3, config = clone(authored);
   const h = runtime(disk, config, stage);
   const mill = h.data.levelCfg.HomeLevel2Unlock.find(([kind]) => kind === 5)[1];
@@ -154,11 +154,23 @@ test('an already upgraded single mill completes a saved follow-up build mission 
   assert.equal(h.data.taskInfo.stage, 1);
   const silver = h.data.coin;
   assert.equal(claimTask(h, true), true);
-  assert.equal(h.data.taskInfo.stage, 1);
-  assert.equal(disk.player.gameData.getTaskInfo(stage).stage, 1);
-  assert.equal(claimTask(h, true), true);
-  assert.equal(h.data.coin, silver + 4);
+  assert.equal(h.data.taskInfo.stage, 0);
+  assert.equal(disk.player.gameData.getTaskInfo(stage).claimedRound, h.data.round);
   assert.equal(claimTask(h, true), false);
+
+  const resumed = runtime(harness(disk.persist()), config, stage);
+  buildings(resumed);
+  assert(resumed.g.loadGame());
+  assert.equal(resumed.data.taskInfo.stage, 0);
+  assert(!resumed.data.hasActiveTask());
+  assert(!resumed.data.structureTaskReady(1));
+  assert.equal(claimTask(resumed, true), false);
+  resumed.data.loadMonster(true);
+  assert(resumed.data.hasActiveTask());
+  assert(resumed.data.structureTaskReady(1));
+  resumed.data.taskInfo.stage = 1;
+  assert.equal(claimTask(resumed, true), true);
+  assert.equal(resumed.data.coin, silver + 4);
 });
 
 test('authored Royal Advisor tasks preserve order, repeats and payouts across config edits and free retries', () => {
@@ -189,8 +201,9 @@ test('authored Royal Advisor tasks preserve order, repeats and payouts across co
   const loaded = harness(disk.persist()), replacement = runtime(loaded, config, stage);
   assert.equal(loaded.player.gameData.getResumeIssue(stage, config), null, 'Saved rewards do not require the live legacy pool');
   assert.equal(replacement.g.loadGame(), true);
-  assert.deepEqual(clone(replacement.data.taskInfo), {...task, index: 1});
+  assert.deepEqual(clone(replacement.data.taskInfo), {...task, index: 1, claimedRound: h.data.round});
   assert.equal(replacement.data.coin, before + 7);
+  replacement.data.loadMonster(true);
   replacement.data.taskInfo.stage = 1; replacement.g.saveGame();
   assert.equal(claimTask(replacement), '+26');
   assert.equal(loaded.player.udata.getGoldNum(), 26);
@@ -241,6 +254,9 @@ test('counted Advisor tasks only count the requested combat source and restore s
   assert.equal(claimTask(next),'+4');
   assert.equal(next.data.taskInfo.index,1);
   assert.equal(next.data.taskInfo.progress,0);
+  assert(!kill(next,'hero'), 'A queued combat task waits for the next planning phase');
+  assert.equal(next.data.taskInfo.stage,0);
+  next.data.loadMonster(true);
   assert(kill(next,'hero'));
   assert.equal(next.data.taskInfo.stage,1);
   assert.equal(claimTask(next),'+5');
@@ -549,6 +565,7 @@ for (const mode of ['wave', 'stage']) test(`${mode} restart cannot replay an alr
   assert.equal(replacement.data.taskInfo.index, 1);
   assert.deepEqual(clone(replacement.data.taskInfo.list), originalList);
   assert.equal(replacement.data.taskInfo.stage, 0, 'Only the earned task index is retained, not an unclaimed completion');
+  assert.equal(replacement.data.taskInfo.claimedRound, mode === 'wave' ? retry.roundNum : undefined);
 });
 
 test('unclaimed permanent task completion and claimed battle-only Silver still rewind with the retry baseline', () => {
@@ -610,7 +627,11 @@ test('task reward journal failures block restart readiness until one committed c
 test('all claimed permanent tasks stay exhausted after restart, while an unrelated committed task list cannot skip current tasks', () => {
   const disk = harness(), h = runtime(disk, configWithGoldTasks(), 3), record = disk.player.gameData;
   buildings(h); h.g.saveGame(); h.g.captureWaveStart();
+  let waveStartIndex;
   for (let index = 0; index < h.data.taskInfo.list.length; index++) {
+    if (index > 0) h.data.loadMonster(true);
+    h.g.captureWaveStart();
+    waveStartIndex = h.data.taskInfo.index;
     h.data.taskInfo.stage = 1; h.g.saveGame(); claimTask(h);
   }
   const claimed = h.data.taskInfo.list.length, gold = disk.player.udata.getGoldNum();
@@ -621,7 +642,7 @@ test('all claimed permanent tasks stay exhausted after restart, while an unrelat
   }
   record.setCheckpoint({...h.g.getCheckpoint(), taskList: {index: claimed, list: [99, 98, 97], stage: 0}});
   assert.equal(h.g.getRestartCheckpoint('stage').taskList.index, 0, 'A mismatched committed list cannot retire unrelated current objectives');
-  assert.equal(h.g.getRestartCheckpoint('wave').taskList.index, 0);
+  assert.equal(h.g.getRestartCheckpoint('wave').taskList.index, waveStartIndex);
   assert.equal(disk.player.udata.getGoldNum(), gold);
   record.setNewGame(3);
   const admitted = runtime(harness(disk.persist()), authored, 3);

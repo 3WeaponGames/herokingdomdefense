@@ -299,7 +299,7 @@ test('native scene readiness remains synchronous and does not repaint prepared m
   h.api.repaintScene(error => { assert.ifError(error); complete = true; }); assert(complete); assert.equal(h.paints.length, 3); assert.equal(h.draws.size, 0);
 });
 
-function mainLoadingFixture(native = false, prepared = null) {
+function mainLoadingFixture(native = false, prepared = null, startupModules = {}) {
   const calls = [], recoveries = []; let scene = {};
   const loading = {destroyed: false, destroy() { this.destroyed = true; calls.push('hide'); }};
   function Component() {}
@@ -307,10 +307,11 @@ function mainLoadingFixture(native = false, prepared = null) {
   const modules = {UIMgr: {UIMgr: {getInstance: () => ({getChildByName: () => loading})}},
     PreparedBuildingMenus: prepared ? prepared.api : {repaintScene(done, current) { calls.push('repaint'); recoveries.at(-1).paints.push({done, current}); }},
     ResourceMgr: {ResourceMgr: {getInstance: () => ({loadWithRecovery(_name, operation, complete, _error, current) { const request = {paints: [], retry() { if (!current()) return; operation((error, asset) => { if (!current()) { request.cancelled = true; return; } if (error) request.error = error; else complete(asset); }); }}; recoveries.push(request); request.retry(); }})}}};
+  Object.assign(modules, startupModules);
   const context = {exports: {}, cc, require: name => modules[name] || {}, __extends(C, B) { Object.setPrototypeOf(C, B); C.prototype = Object.create(B.prototype); C.prototype.constructor = C; }, __decorate: (_items, C) => C};
   vm.runInNewContext(fs.readFileSync(path.join(root, 'assets/_script/Main.js'), 'utf8'), context);
   const owner = new context.exports.default(); owner._startupGeneration = 1;
-  return {owner, loading, calls, recoveries, changeScene() { scene = {}; }};
+  return {owner, cc, loading, calls, recoveries, changeScene() { scene = {}; }};
 }
 
 test('Main keeps its same existing Loading node until Web scene paint completes, with retry', () => {
@@ -327,6 +328,41 @@ test('Main native Loading removal stays synchronous without requesting a repaint
   const h = mainLoadingFixture(true); h.owner.hideLoading(); assert.deepEqual(h.calls, ['hide']); assert.equal(h.recoveries.length, 0);
 });
 
+test('Android opens the lobby after the shared Relics icon bundle is registered', () => {
+  const events = [], nativeLoadOptions = { idleTimeoutMs: 120000, retryOnce: true };
+  let pending;
+  const ui = {
+    openUI(id) { events.push(id); },
+    openUIOfCallback(id, _owner, ready) { events.push(id); ready({}); }
+  };
+  const h = mainLoadingFixture(true, null, {
+    Config: { UIID: { UITouch: 'touch', UIReportTop: 'report', UINONE: 'none' } },
+    KinghtFallConfig: { KinghtFallUIID: { UITop: 'top', UIHome: 'home' },
+      KinghtFallBundelName: { IconGood: 'KinghtFallIconGood' }, BattleAssetLoadOptions: nativeLoadOptions },
+    UIMgr: { UIMgr: { getInstance: () => ui } },
+    ResourceMgr: { ResourceMgr: { getInstance: () => ({ loadBundle(name, ready, _error, isCurrent, options) {
+      assert.equal(name, 'KinghtFallIconGood');
+      assert.equal(options, nativeLoadOptions);
+      assert(isCurrent());
+      events.push('icons');
+      pending = ready;
+    } }) } },
+    UIUtils: { UIUtils: { schedule() {} } }, GameTrackDataEvent: { TrackId: {} },
+    PlayerMgr: { PlayerMgr: { getInstance: () => ({ getTrackData: () => ({ getCrunetDay: () => 0, youmengTrack() {} }) }) } }
+  });
+  Object.assign(h.cc, { Camera: {}, game: { on() {} } });
+  Object.assign(h.cc.sys, { os: 'Android', OS_ANDROID: 'Android' });
+  h.owner.scheduleOnce = () => {};
+  h.owner.hideLoading = () => events.push('ready');
+  h.owner.start();
+  assert.deepEqual(events, ['touch', 'top', 'report', 'icons']);
+  pending();
+  assert.deepEqual(events, ['touch', 'top', 'report', 'icons', 'home', 'ready']);
+  h.owner.start();
+  h.owner._startupGeneration++;
+  pending();
+  assert.deepEqual(events.slice(6), ['touch', 'top', 'report', 'icons']);
+});
 
 test('BEFORE_SCENE_LAUNCH retirement cancels Main loading removal even while its Scene pointer is unchanged', () => {
   const prepared = fixture(); prepared.api.prepare(authored, prepared.manager, assert.ifError); prepared.finish();

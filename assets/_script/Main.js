@@ -106,11 +106,21 @@ var def_Main = function (t) {
       t.uiTop = e;
       $z1UIMgr.UIMgr.getInstance().openUIOfCallback($z1Config.UIID.UIReportTop, $z1Config.UIID.UINONE, function () {
         if (!isCurrent()) return;
-        $z1UIMgr.UIMgr.getInstance().openUIOfCallback($z1KinghtFallConfig.KinghtFallUIID.UIHome, $z1Config.UIID.UINONE, function () {
+        function openLobby() {
           if (!isCurrent()) return;
-          $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide1);
-          t.hideLoading();
-        });
+          $z1UIMgr.UIMgr.getInstance().openUIOfCallback($z1KinghtFallConfig.KinghtFallUIID.UIHome, $z1Config.UIID.UINONE, function () {
+            if (!isCurrent()) return;
+            $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId.guide1);
+            t.hideLoading();
+          });
+        }
+        if (cc.sys && cc.sys.isNative && cc.sys.os === cc.sys.OS_ANDROID) {
+          // Register the shared icons before the Relics grid requests them in parallel.
+          require("ResourceMgr").ResourceMgr.getInstance().loadBundle($z1KinghtFallConfig.KinghtFallBundelName.IconGood,
+            openLobby, null, isCurrent, $z1KinghtFallConfig.BattleAssetLoadOptions);
+        } else {
+          openLobby();
+        }
       });
     });
     this.scheduleOnce(function () {

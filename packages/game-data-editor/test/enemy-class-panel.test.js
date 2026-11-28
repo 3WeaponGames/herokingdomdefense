@@ -78,6 +78,7 @@ test('Skills equips several independent abilities and preserves the authored rec
 
 test('Removing and re-adding a built-in skill restores its native cast',async()=>{
  const {f,field,button,add}=fixture(),id=91052;
+ f.panel._snapshot=f.store.change({version:f.store.version,edits:['UnitAttack','EnemySkills'].map(key=>({doc:'A',path:['SoldierCfg',String(id),key],remove:true}))});
  f.render('enemy:'+id);
  assert.equal(field('Settings').value,'original');
  await button('Remove skill').onclick();

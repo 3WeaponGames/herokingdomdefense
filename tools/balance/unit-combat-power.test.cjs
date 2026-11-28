@@ -40,6 +40,31 @@ test('healers score recipient max HP, nearest-target cap and useful healing rath
   assert.equal(calculate(healer(), { healingUtilization: 0 }).cp, 0);
 });
 
+test('support units score their basic attack and equipped skills on separate cooldowns', () => {
+  const wizard = buffer({
+    AttackDamage: 8, AttackInterval: .5,
+    UnitAttack: { delivery: 'ranged', pattern: 'single' },
+    EnemySkills: { haste: { interval: 4, percent: 40, radius: 200, maxTargets: 3, duration: 3 } }
+  });
+  const ranged = calculate(wizard);
+  assert.equal(ranged.directDps, 4);
+  close(ranged.buffDps, 9);
+  close(ranged.cp, Math.sqrt(100 * 13));
+  const faster = calculate({ ...wizard, AttackInterval: 1 });
+  assert.equal(faster.directDps, 8);
+  assert.equal(faster.buffDps, ranged.buffDps);
+
+  const melee = calculate(buffer({
+    AttackDamage: 6, AttackInterval: .5,
+    UnitAttack: { delivery: 'melee', pattern: 'single' },
+    EnemySkills: { haste: false, heal: { interval: 6, percent: 20, radius: 230, maxTargets: 2 } }
+  }));
+  assert.equal(melee.directDps, 3);
+  assert.equal(melee.buffDps, 0);
+  close(melee.healingHps, 40 * .2 * 2 / 6);
+  close(melee.cp, Math.sqrt(100 * (3 + 40 * .2 * 2 / 6)));
+});
+
 test('splash counts secondary recipients separately from the primary hit and respects the target cap', () => {
   const result = calculate(splash());
   assert.equal(result.directDps, 20); assert.equal(result.splashDps, 40); assert.equal(result.effectiveOutput, 60); close(result.cp, Math.sqrt(30000));

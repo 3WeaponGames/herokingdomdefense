@@ -52,7 +52,7 @@ test('reward shortcuts make the next item claimable without collecting or changi
   const playtime = config.onLineRewardCfg[0];
   const task = { list: ['kill-hero'], index: 0, stage: 0, targets: [16], progress: 4 };
   let savedTask = 0, refreshed = 0;
-  const battle = { ctrGame: { gameData: { taskInfo: task }, saveGame() { savedTask++; } }, initView() { refreshed++; } };
+  const battle = { ctrGame: { gameData: { taskInfo: task, hasActiveTask: () => true }, saveGame() { savedTask++; } }, initView() { refreshed++; } };
   f.run('quest');
   assert(f.mission.getQuestViews().some(row => row.task.id === quest.task.id && row.progress.ready));
   f.run('pass');

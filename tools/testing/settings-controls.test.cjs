@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{fixture}=require('./backend-ui-harness.cjs');
-function settings(){
- const h=fixture(),listeners=new Set(),preferenceListeners=new Set(),autoListeners=new Set(),writes=[],languages=Array.from({length:12},(_,i)=>({code:i?'language-'+i:'en',nameKey:'language.name'+i}));let current='en',hidden=false,auto=false;
+function settings(globals){
+ const h=fixture(globals),listeners=new Set(),preferenceListeners=new Set(),autoListeners=new Set(),writes=[],languages=Array.from({length:12},(_,i)=>({code:i?'language-'+i:'en',nameKey:'language.name'+i}));let current='en',hidden=false,auto=false;
  const lang={t:key=>key,getLanguages:()=>languages,getCurrentLanguage:()=>current,bindLabel:(label,key)=>label.string=key,setCurrentLanguage(code){current=code;writes.push(['language',code]);listeners.forEach(l=>l.fn.call(l.owner));},onChange(fn,owner){listeners.add({fn,owner});},offChange(fn,owner){for(const l of listeners)if(l.fn===fn&&l.owner===owner)listeners.delete(l);}};
  class Node extends h.cc.Node{constructor(name){super(name);this.components=new Map();Object.assign(this,{width:0,height:0,x:0,y:0,anchorX:.5,anchorY:.5,scaleX:1,scaleY:1});}addComponent(Type){const c=new Type();c.node=this;this.components.set(Type,c);return c;}getComponent(Type){return this.components.get(Type);}setScale(v){this.scaleX=this.scaleY=v;}setPosition(x,y){if(typeof x==='object')({x,y}=x);this.x=x;this.y=y;}setSiblingIndex(i){const a=this.parent.children;a.splice(a.indexOf(this),1);a.splice(i,0,this);}setAnchorPoint(x,y){this.anchorX=x;this.anchorY=y;}on(type,fn,owner){this.handlers[type]=owner?fn.bind(owner):fn;}}
  Node.EventType={TOUCH_END:'end'};class Label{}Label.HorizontalAlign={LEFT:0,CENTER:1};Label.VerticalAlign={CENTER:1};Label.Overflow={SHRINK:2,RESIZE_HEIGHT:3};class Outline{}class Shadow{}class Button{}Button.Transition={SCALE:1};class Graphics{clear(){}rect(){}roundRect(){}fill(){}stroke(){}moveTo(){}lineTo(){}}class Sprite{}Sprite.SizeMode={CUSTOM:0};Sprite.Type={SLICED:1};class Widget{}class Slider{}
@@ -78,6 +78,28 @@ test('Settings matches the shared concept while Pause keeps details above four d
   const stats=f.owner(width,height);stats._stats=[];layout.pause(stats);assert(stats.node.getChildByName('root').getChildByName('PauseActionsBand'));assert.equal(stats.musicSlider.node.parent.active,false);
  }
  assert.deepEqual(f.writes,[]);
+});
+test('Android Settings displays the installed APK version instead of analytics metadata', () => {
+ const calls = [];
+ const f = settings({ jsb: { reflection: { callStaticMethod(...args) { calls.push(args); return '1.0.9'; } } } });
+ const entries = require('../../assets/resources/localization/catalog.json').entries;
+ f.lang.t = (key, params) => entries[key].en.replace(/\{(\d+)\}/g, (_, index) => params[index]);
+ f.lang.bindLabel = (label, key, params) => { label.string = f.lang.t(key, params); };
+ Object.assign(f.h.modules, {
+  TestMode: { TestMode: {} }, PlatformSetting: {}, PlatformConfig: {}, KinghtFallConfig: {}, SdkMgr: {}, ServerDataMgr: {},
+  PlayerMgr: { PlayerMgr: { getInstance: () => ({ getAbType: () => 0,
+    getTrackData: () => ({ getVersionConf: () => '1.0.6', getVersionName: () => '1.0.6' }) }) } }
+ });
+ f.h.cc.sys = { isNative: true, os: 'Android', OS_ANDROID: 'Android' };
+ const Settings = f.load('KinghtFallUISetting').default;
+ const panel = Object.assign(new Settings(), f.owner());
+ panel.refreshVersion();
+ assert.deepEqual(calls, [['org/cocos2dx/lib/Cocos2dxHelper', 'getVersion', '()Ljava/lang/String;']]);
+ assert.equal(panel.version.string, 'Version 1.0.9');
+ f.h.cc.sys.isNative = false;
+ panel.refreshVersion();
+ assert.equal(calls.length, 1);
+ assert.equal(panel.version.string, 'Version 1.0.6 · 1.0.6 · 0');
 });
 test('developer controls fit narrow Settings and open the right tool with a touch', () => {
  const f = settings(), calls = [];

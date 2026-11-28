@@ -23,8 +23,9 @@ var $z1KinghtFallBuildBase = require("KinghtFallBuildBase");
 var $z1KinghtFallBuildObstacle = require("KinghtFallBuildObstacle");
 var $z1KinghtFallCommerce = require("KinghtFallCommerce");
 var $z1KinghtFallInterface = require("KinghtFallInterface");
-function battleObjective(task) {
-  var id = task && task.list && task.list[task.index];
+function battleObjective(data) {
+  if (!data.hasActiveTask()) return null;
+  var task = data.taskInfo, id = task.list[task.index];
   return typeof id === "string" && Array.isArray(task.targets) ? require("BattleTaskObjectives").definition(id) : null;
 }
 var def_KinghtFallGameCtrlData = function () {
@@ -63,6 +64,7 @@ var def_KinghtFallGameCtrlData = function () {
       task.index = checkpoint.index;
       task.stage = checkpoint.stage;
       task.list = checkpoint.list.slice();
+      if (Number.isSafeInteger(checkpoint.claimedRound) && checkpoint.claimedRound > 0) task.claimedRound = checkpoint.claimedRound;
       if (Array.isArray(checkpoint.reward)) {
         task.reward = checkpoint.reward.map(function (reward) { return reward && { id: reward.id, num: reward.num }; });
         if (checkpoint.authored) task.authored = true;
@@ -102,9 +104,13 @@ var def_KinghtFallGameCtrlData = function () {
     task.reward = legacy.Award.slice(0, task.list.length).map(function (reward) { return { id: reward[0], num: reward[1] }; });
     return task;
   };
+  _ctor.prototype.hasActiveTask = function () {
+    var task = this.taskInfo;
+    return !!task && task.index < task.list.length && task.claimedRound !== this.round;
+  };
   _ctor.prototype.structureTaskReady = function (index) {
     var task = this.taskInfo, id = Number(task.list[index]);
-    return !task.authored && Number.isInteger(id) && require("BattleTaskObjectives").structureReady(id, this.getBulidList());
+    return this.hasActiveTask() && !task.authored && Number.isInteger(id) && require("BattleTaskObjectives").structureReady(id, this.getBulidList());
   };
   _ctor.prototype.hasBattleTaskStructure = function (target) {
     var kinds = $z1KinghtFallEnum.KinghtFallEnumBuildEnum;
@@ -114,7 +120,7 @@ var def_KinghtFallGameCtrlData = function () {
     });
   };
   _ctor.prototype.beginBattleTaskWave = function () {
-    var task = this.taskInfo, objective = battleObjective(task);
+    var task = this.taskInfo, objective = battleObjective(this);
     if (objective && objective.kind === "survive" && task.stage === 0 && task.scoredRound !== this.round) {
       task.waveIntact = this.hasBattleTaskStructure(objective.target);
     }
@@ -129,7 +135,7 @@ var def_KinghtFallGameCtrlData = function () {
     return true;
   };
   _ctor.prototype.recordBattleTask = function (kind, tag) {
-    var owner = this.ctrPar, task = this.taskInfo, objective = battleObjective(task);
+    var owner = this.ctrPar, task = this.taskInfo, objective = battleObjective(this);
     if (!owner || owner.gameData !== this || owner._restartRetired || owner.gameStatus !== $z1KinghtFallModle.KinghtFallGameStage.Fight ||
         this._roundCompleted || !objective || task.stage !== 0 || kind !== objective.kind || tag !== objective.target) return false;
     if (kind === "kill") return this.advanceBattleTask();
@@ -138,7 +144,7 @@ var def_KinghtFallGameCtrlData = function () {
     return true;
   };
   _ctor.prototype.finishBattleTaskWave = function () {
-    var task = this.taskInfo, objective = battleObjective(task);
+    var task = this.taskInfo, objective = battleObjective(this);
     if (!objective || objective.kind !== "survive" || task.stage !== 0 ||
         typeof task.waveIntact !== "boolean" || task.scoredRound === this.round) return false;
     var intact = task.waveIntact && this.hasBattleTaskStructure(objective.target);
@@ -744,7 +750,7 @@ var def_KinghtFallGameCtrlData = function () {
       }
       this.finishBattleTaskWave();
       if (!current()) return;
-      var task = this.taskInfo, readyAdvisor = battleObjective(task) && task.stage === 1;
+      var task = this.taskInfo, readyAdvisor = battleObjective(this) && task.stage === 1;
       if (round === this.levelCfg.WaveCfg.length && (readyAdvisor || retryAdvisor)) {
         // The Advisor closes with combat, so finish this earned claim before
         // settlement retires the paid run's checkpoint.

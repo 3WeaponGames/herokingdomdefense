@@ -764,19 +764,7 @@ var def_KinghtFallUIGame = function (t) {
   _ctor.prototype.initBtnView = function () {
     var guide = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getGuideData();
     this.btnStartFight.active = this.ctrGame.gameData.baseBuild.getLevel() >= 1 && !require("TutorialFlow").openingHouse(this, guide);
-    if (1 == this.ctrGame.gameData.levelCfg.Level && this.ctrGame.gameData.round <= 3) {
-      var t = true;
-      var e = this.ctrGame.gameData.getBulidList();
-      for (var n = 0; n < e.length; n++) {
-        if (-1 != (a = e[n].getSell()) && a <= this.ctrGame.gameData.coin) {
-          t = false;
-          break;
-        }
-      }
-      this.btnStartFight.getChildByName("ndHead").active = t;
-    } else {
-      this.btnStartFight.getChildByName("ndHead").active = false;
-    }
+    this._refreshStartBattleHand();
     this.btnAddCoin.active = !this.isGet && this.ctrGame.gameData.baseBuild.getLevel() >= 1;
     this.btnAddCoin.getChildByName("lay1").getChildByName("labNum").getComponent(cc.Label).string = "" + this.ctrGame.gameData.videoCoin;
     var next = this.ctrGame.gameData.getWaveAt(this.ctrGame.gameData.round + 1);
@@ -791,7 +779,7 @@ var def_KinghtFallUIGame = function (t) {
     var i = this.ctrGame.gameData.getBulidList();
     this.btnAgg.active = false;
     if (this.btnFollow) this.btnFollow.active = false;
-    for (n = 0; n < i.length; n++) {
+    for (var n = 0; n < i.length; n++) {
       var a;
       if ((a = i[n]).buildCfg.enumValue == $z1KinghtFallEnum.KinghtFallEnumBuildEnum.Barracks && a.getLevel() >= 1) {
         this.btnAgg.active = true;
@@ -799,6 +787,17 @@ var def_KinghtFallUIGame = function (t) {
         break;
       }
     }
+  };
+  _ctor.prototype._refreshStartBattleHand = function () {
+    var hand = this.btnStartFight.getChildByName("ndHead");
+    if (!hand) return;
+    var data = this.ctrGame.gameData;
+    var guideTargetsButton = this._tutorialOpen && this._tutorialOpen.target === this.btnStartFight;
+    hand.active = data.levelCfg.Level === 1 && data.round <= 3 && !guideTargetsButton &&
+      !data.getBulidList().some(function (building) {
+        var cost = building.getSell();
+        return cost != -1 && cost <= data.coin;
+      });
   };
   _ctor.prototype._refreshStartBattleCaption = function () {
     if (!this.ctrGame || !this.btnStartFight) return;
@@ -1097,7 +1096,7 @@ var def_KinghtFallUIGame = function (t) {
     this.ndLevelInfo.getChildByName("labOrder").getComponent(cc.Label).string = this._endless
       ? require("LanguageMgr").LanguageMgr.getInstance().t("endless.wave", [data.round])
       : $z1Utils.Utils.StringFormat(this.T($z1KinghtFallTextConfig.KinghtFallTextConfig.HomeBattle02), data.round + "/" + data.levelCfg.WaveCfg.length);
-    var task = this.ctrGame.gameData.taskInfo, current = task.index < task.list.length;
+    var task = data.taskInfo, current = data.hasActiveTask();
     if (current) {
       if (task.stage === 0 && data.structureTaskReady(task.index)) task.stage = 1;
       var id = task.list[task.index];
@@ -1109,7 +1108,7 @@ var def_KinghtFallUIGame = function (t) {
     var collect = this._battleHud ? this._battleHud.collectButton : this.ndTask.getChildByName("labGet");
     collect.active = current && task.stage == 1;
     this.ndTask.getChildByName("labNoFinish").active = current && task.stage == 0;
-    if (this._battleHud) require("BattleHud").updateTasks(this, task);
+    if (this._battleHud) require("BattleHud").updateTasks(this, task, current);
     else this.ndTask.active = current;
   };
   _ctor.prototype.lateUpdate = function (t) {
@@ -1561,9 +1560,15 @@ var def_KinghtFallUIGame = function (t) {
         ui.isPauset = pause || !!ui._legacyGamePause || !!(ui._pauseOwners && ui._pauseOwners.size);
         if (ui.ctrGame.setAudioPaused) ui.ctrGame.setAudioPaused(ui.isPauset);
       }
+      function restoreStartBattleHand() {
+        if (step === 3 && flow.active(ui) && ui.ctrGame.gameStatus === $z1KinghtFallModle.KinghtFallGameStage.Prepare) {
+          ui._refreshStartBattleHand();
+        }
+      }
       cfg.onCancel = function () {
         pauseForGuide(false);
         if (flow.visible(house)) ui.ctrUI.setGuide(house);
+        restoreStartBattleHand();
       };
       switch (step) {
         case 0:
@@ -1592,10 +1597,12 @@ var def_KinghtFallUIGame = function (t) {
           this.btnStartFight.active = true;
           cfg.lightType = 1; cfg.distNode = this.btnStartFight;
           cfg.isWeek = false; cfg.hideMask = false; cfg.showHand = 1;
+          cfg.onClosed = restoreStartBattleHand;
           cfg.callBack = function () { if (flow.active(ui)) ui._pressStartBattle(); };
           break;
       }
       if (flow.present(this, guide, group, step, rows, cfg)) {
+        if (step === 3) this._refreshStartBattleHand();
         pauseForGuide(step === 0 || step === 2);
         var track = ["guide4", "guide5", "guide7"][step];
         if (track) $z1PlayerMgr.PlayerMgr.getInstance().getTrackData().youmengTrack($z1GameTrackDataEvent.TrackId[track]);
@@ -1629,15 +1636,15 @@ var def_KinghtFallUIGame = function (t) {
   };
   _ctor.prototype.getTask = function (silent) {
     var data = this.ctrGame.gameData, info = data.taskInfo;
-    if (info.index < info.list.length && 1 == info.stage) {
+    if (data.hasActiveTask() && 1 == info.stage) {
       var t = info.reward[info.index];
       var multiplier = info.rewardMultiplier === undefined ? this.ctrGame.gameData.levelCfg.InGameCoefficient : info.rewardMultiplier;
       var player = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance();
       var checkpoint = this.ctrGame.getCheckpoint();
       var taskIndex = checkpoint.taskList.index;
       checkpoint.taskList.index++;
-      var nextStage = data.structureTaskReady(checkpoint.taskList.index) ? 1 : 0;
-      checkpoint.taskList.stage = nextStage;
+      checkpoint.taskList.stage = 0;
+      checkpoint.taskList.claimedRound = data.round;
       var counted = Array.isArray(info.targets);
       if (counted) {
         checkpoint.taskList.progress = 0;
@@ -1667,10 +1674,12 @@ var def_KinghtFallUIGame = function (t) {
         var committedTask = record.getTaskInfo(checkpoint.levelNum);
         // A durable journal may still be retrying individual target writes. Its
         // installed checkpoint is authoritative and must not leave this task claimable.
-        if (!granted && !(committedTask && committedTask.index === taskIndex + 1 && committedTask.stage === nextStage)) return false;
+        if (!granted && !(committedTask && committedTask.index === taskIndex + 1 && committedTask.stage === checkpoint.taskList.stage &&
+            committedTask.claimedRound === checkpoint.taskList.claimedRound)) return false;
       }
       info.index = checkpoint.taskList.index;
-      info.stage = nextStage;
+      info.stage = checkpoint.taskList.stage;
+      info.claimedRound = checkpoint.taskList.claimedRound;
       if (counted) {
         info.progress = 0;
         delete info.waveIntact;

@@ -2,7 +2,7 @@
 // Inert Cocos scene and storage boundaries; executes actual UIMgr/ResourceMgr/BaseUI.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.resolve(__dirname,'../..');
-function fixture() {
+function fixture(globals = {}) {
   const requests = [], events = [], scheduled = [], timers = new Map();
   let nextTimer = 0, paused = false, swallow = false, instantiated = 0, touch;
   function Component() {}
@@ -57,7 +57,7 @@ function fixture() {
     if (modules[name]) return modules[name];
     const exports = modules[name] = {};
     const module = { exports };
-    const context = { exports, module, require: load, cc, sp: { Skeleton: function () {} }, console, __spreadArrays: (...arrays) => [].concat(...arrays),
+    const context = { ...globals, exports, module, require: load, cc, sp: { Skeleton: function () {} }, console, __spreadArrays: (...arrays) => [].concat(...arrays),
       __extends(child, parent) { Object.setPrototypeOf(child, parent); child.prototype = Object.create(parent.prototype); child.prototype.constructor = child; },
       __decorate(_decorators, target, key) { return key === undefined ? target : undefined; },
       setTimeout(fn) { const id = ++nextTimer; timers.set(id, fn); return id; }, clearTimeout(id) { timers.delete(id); } };

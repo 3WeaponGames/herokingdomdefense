@@ -108,7 +108,7 @@ function install(ui) {
     collectButton: collectButton, collectControl: collectControl, collectArt: collectArt, collectLabel: collectLabel,
     closeControl: closeControl, closeArt: closeArt, advisorControl: advisorControl,
     questMarker: questMarker, markerControl: markerControl, markerArt: markerArt, markerGlyph: markerGlyph,
-    rewardAnchor: rewardAnchor, rewardHint: rewardHint, hasTasks: false, popupClosed: true
+    rewardAnchor: rewardAnchor, rewardHint: rewardHint, hasTasks: false, popupClosed: true, taskCompletion: null
   };
   function setPopupClosed(closed, control) {
     if (ui._battleHud !== state || !control.node.activeInHierarchy || !control.interactable ||
@@ -153,17 +153,20 @@ function fadeTaskSpeaker(ui, dt) {
   var state = ui._battleHud, speaker = state.king;
   if (!speaker) return;
   var planning = ui.ctrGame.gameStatus === GameStage.Prepare;
-  var opacity = state.speakerOpacity, target = planning ? 255 : 0;
+  if (!planning && state.taskCompletion === "shown") state.taskCompletion = "fading";
+  var showSpeaker = planning && (state.hasTasks || state.taskCompletion === "shown");
+  var opacity = state.speakerOpacity, target = showSpeaker ? 255 : 0;
   if (opacity !== target && dt > 0) {
     var step = dt * 255 / SPEAKER_FADE_SECONDS;
-    opacity = state.speakerOpacity = planning ? Math.min(target, opacity + step) : Math.max(target, opacity - step);
+    opacity = state.speakerOpacity = showSpeaker ? Math.min(target, opacity + step) : Math.max(target, opacity - step);
   }
   var alpha = Math.round(opacity);
   speaker.opacity = alpha;
   if (state.taskName.opacity !== alpha) {
     state.taskName.opacity = state.pendingLabel.opacity = state.collectLabel.opacity = state.rewardAnchor.opacity = state.rewardPreview.opacity = alpha;
   }
-  speaker.active = state.hasTasks && (planning || alpha > 0);
+  if (!alpha && state.taskCompletion === "fading") state.taskCompletion = "finished";
+  speaker.active = showSpeaker || alpha > 0 && (state.hasTasks || state.taskCompletion === "fading");
   var canInteract = state.hasTasks && planning && alpha > 0;
   state.collectControl.interactable = state.closeControl.interactable = state.markerControl.interactable = canInteract;
   state.advisorControl.interactable = canInteract;
@@ -403,15 +406,16 @@ function layoutFooter(ui) {
   positionJoystick(control, rod, root, state, true);
 }
 function sizeTaskBubble(task, state, width) {
-  var name = state.taskName, pending = state.pendingLabel;
+  var name = state.taskName, pending = state.pendingLabel, close = state.closeControl.node;
   var ready = state.collectButton.active, reward = state.rewardPreview;
   var status = ready ? state.collectLabel : pending.active ? pending : null;
   function signature() {
-    return [width, name.getComponent(cc.Label).string, labelMetrics(name), reward.active, state.rewardText.string,
+    return [width, close.active, name.getComponent(cc.Label).string, labelMetrics(name), reward.active, state.rewardText.string,
       status && status.name, status && status.getComponent(cc.Label).string, status && labelMetrics(status)].join("|");
   }
   if (state.taskSignature === signature()) return;
-  var descriptionWidth = Math.max(1, width - 2 * (TASK_CLOSE_SIZE + TASK_CLOSE_INSET));
+  var sideInset = close.active ? TASK_CLOSE_SIZE + TASK_CLOSE_INSET : 16;
+  var descriptionWidth = Math.max(1, width - 2 * sideInset);
   var description = sizeLabel(name, 62, descriptionWidth, true, 72);
   var rewardGap = 8, rewardHeight = 0, statusGap = ready ? 10 : 4, statusHeight = 0;
   if (reward.active) {
@@ -434,7 +438,7 @@ function sizeTaskBubble(task, state, width) {
     (reward.active ? rewardHeight + rewardGap : 0) + (status ? statusHeight + statusGap : 0));
   task.setContentSize(width, height);
   var closeOffset = TASK_CLOSE_INSET + TASK_CLOSE_SIZE / 2;
-  state.closeControl.node.setPosition(width / 2 - closeOffset, height / 2 - closeOffset);
+  close.setPosition(width / 2 - closeOffset, height / 2 - closeOffset);
   name.anchorX = name.anchorY = .5;
   var y = height / 2 - 13;
   name.setPosition(0, y - description.height / 2);
@@ -563,10 +567,23 @@ function layout(ui, dt) {
   fadeTaskSpeaker(ui, dt);
   layoutTaskPrompt(ui, bounds);
 }
-function updateTasks(ui, task) {
-  var state = ui._battleHud;
+function updateTasks(ui, task, current) {
+  var state = ui._battleHud, game = ui.ctrGame;
   if (!state) return;
-  state.hasTasks = task.index < task.list.length;
+  if (current && state.taskCompletion) {
+    state.taskCompletion = null;
+    state.popupClosed = true;
+  } else if (!current && !state.taskCompletion && task.claimedRound === game.gameData.round && game.gameStatus === GameStage.Prepare) {
+    state.taskCompletion = "shown";
+    state.popupClosed = false;
+    component(state.taskName, cc.Label).string = task.index < task.list.length ?
+      "[[loc:battle.task.complete]]" : "[[loc:battle.tasks.complete]]";
+  }
+  state.hasTasks = state.closeControl.node.active = current;
+  var readyIndex = state.hasTasks && task.stage == 1 ? task.index : null;
+  // Open once per ready reward so a manual close survives later HUD refreshes.
+  if (readyIndex !== null && readyIndex !== state.readyTaskIndex) state.popupClosed = false;
+  state.readyTaskIndex = readyIndex;
   var reward = state.hasTasks && task.reward && task.reward[task.index];
   state.rewardPreview.active = !!reward;
   if (reward) {

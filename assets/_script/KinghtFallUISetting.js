@@ -45,8 +45,7 @@ var def_KinghtFallUISetting = function (t) {
   };
   _ctor.prototype.start = function () {
     var n = this;
-    var i = $z1PlayerMgr.PlayerMgr.getInstance();
-    this.version.string = require("LanguageMgr").LanguageMgr.getInstance().t("settings.version", [i.getTrackData().getVersionConf(), i.getTrackData().getVersionName(), i.getAbType()]);
+    this.refreshVersion();
     this.bindEvent();
     this.addEvent($z1Appcfg.BaseEventName.OpenUI, this.raiseBattleChild);
     require("SettingsPanelLayout").settings(this);
@@ -56,6 +55,25 @@ var def_KinghtFallUISetting = function (t) {
     ($z1SdkMgr.SdkMgr.getInstance().getCheckVersion($z1PlatformSetting.SwitchID.ShenHe_ABD) || $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.EDITOR || $z1PlatformSetting.PlatformSetting.currentPlatform == $z1BasePlatform.Platform.WEB_LINK) && this.ndTitle.on(cc.Node.EventType.TOUCH_END, function () {
       n.clickGM();
     }, this);
+  };
+  _ctor.prototype.refreshVersion = function () {
+    var language = require("LanguageMgr").LanguageMgr.getInstance();
+    if (cc.sys && cc.sys.isNative && cc.sys.os === cc.sys.OS_ANDROID) {
+      var version;
+      try {
+        if (typeof jsb !== "undefined" && jsb.reflection) {
+          version = jsb.reflection.callStaticMethod("org/cocos2dx/lib/Cocos2dxHelper", "getVersion", "()Ljava/lang/String;");
+        }
+      } catch (error) {
+        if (cc.warn) cc.warn("Could not read Android package version", error);
+      }
+      if (typeof version === "string" && version.trim()) language.bindLabel(this.version, "settings.buildVersion", [version.trim()]);
+      else this.version.string = "";
+      return;
+    }
+    var player = $z1PlayerMgr.PlayerMgr.getInstance();
+    var track = player.getTrackData();
+    this.version.string = language.t("settings.version", [track.getVersionConf(), track.getVersionName(), player.getAbType()]);
   };
   _ctor.prototype.raiseBattleChild = function (id, node) {
     if (!this._pauseParent || !node || node === this.node || this.isclose) return;

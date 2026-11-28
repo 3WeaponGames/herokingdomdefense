@@ -79,7 +79,10 @@ function fixture(height=1334,position){
  if(position){const marker=new Node(TaskPosition.marker);marker.parent=ndPath;marker.setPosition(position);}
  const camera={offset:{x:0,y:0},getWorldToScreenPoint(p){return{x:p.x-this.offset.x,y:p.y-this.offset.y};}};
  const ctrGame={ndMain,ndPath,camera,mapSize:{width:1300,height:1600},gameStatus:0,
-  gameData:{coin:42,round:4,structureTaskReady:()=>false,levelCfg:{Name:'5. Peaceful Plains',WaveCfg:Array(10),InGameCoefficient:3},taskInfo:{index:0,list:[4,5],stage:0,reward:[{id:2003,num:2},{id:2003,num:2}]}}};
+  gameData:{coin:42,round:4,levelCfg:{Name:'5. Peaceful Plains',WaveCfg:Array(10),InGameCoefficient:3},
+    taskInfo:{index:0,list:[4,5],stage:0,reward:[{id:2003,num:2},{id:2003,num:2}]},
+    structureTaskReady:()=>false,
+    hasActiveTask(){const task=this.taskInfo;return task.index<task.list.length&&task.claimedRound!==this.round;}}};
  const ui={ctrGame,T:translate,ctrUI:{node:parent},ndCoin:nodes[225],btnSuspend:nodes[184],btnBuildInfo:nodes[189],ndLevelInfo:nodes[236],ndTask:nodes[199],btnAddCoin:nodes[165]};
  ui.loadSpriteFrame=(bundle,icon,callback)=>iconLoads.push({bundle,icon,callback});
  const initStart=uiSource.indexOf('function () {',uiSource.indexOf('_ctor.prototype.initView = '));
@@ -121,10 +124,6 @@ test('the Royal Advisor offers the task and its claim action at the authored poi
  assert.equal(nodes[204].color,'white');
  assert.deepEqual(state.collectArt.fillColor,cc.color(39,115,70));
  assert(collect.y+collect.height/2 < reward.y-reward.height/2);
- info.index++;info.stage=0;ui.initView();assert.equal(nodes[200].getComponent(cc.Label).string,'Upgrade 1 Arrow Tower to Level 3 and defend the castle');assert(nodes[208].active);
- info.index++;ui.initView();
- assert(!king.active && !task.active && !state.questMarker.active);
- assert(!nodes[208].active && !collect.active && !reward.active);
 });
 test('the Advisor preview reads the current task reward and rejects a stale icon load',()=>{
  const {ui,nodes,cc,iconLoads}=fixture(),state=ui._battleHud,info=ui.ctrGame.gameData.taskInfo;
@@ -171,7 +170,13 @@ test('the closed quest popup follows the Advisor and marks pending and ready tas
  camera.offset.y=0;hud.layout(ui);
  assert(marker.active && !task.active);
 
- info.index=info.list.length-1;info.stage=1;ui.initView();
+ info.index=info.list.length-1;
+ ui.ctrGame.gameData.structureTaskReady=index=>index===info.list.length-1;
+ ui.initView();
+ assert.equal(info.stage,1);
+ assert(task.active && state.collectButton.activeInHierarchy && state.collectControl.interactable && !marker.active);
+ close.emit('click');
+ ui.initView();
  assert(marker.active && !task.active);
  assert.equal(state.markerGlyph.string,'?');
  ui.ctrGame.gameStatus=GameStage.Transition;
@@ -190,8 +195,7 @@ test('the closed quest popup follows the Advisor and marks pending and ready tas
  assert.equal(info.index,info.list.length-1);
  assert.equal(info.stage,1);
  close.emit('click');
- info.index++;ui.initView();
- assert(!state.king.active && !task.active && !marker.active);
+ assert(marker.active && !task.active);
 });
 test('only Collect claims the ready task during planning',()=>{
  const {ui,cc}=fixture(),collect=ui._battleHud.collectButton;
@@ -253,11 +257,57 @@ test('clicking the Advisor toggles the task and follows the visible model',()=>{
  info.index=info.list.length;ui.initView();
  assert(!state.king.active&&!tap.active&&!task.active&&!state.questMarker.active);
 });
+test('the Advisor offers one task each planning phase and fades for good after the last reward',()=>{
+ const {ui,hud,cc,loadKing}=fixture(),game=ui.ctrGame,state=ui._battleHud,task=ui.ndTask;
+ const info=game.gameData.taskInfo,advisor=state.king,name=state.taskName.getComponent(cc.Label);
+ const claim=()=>{info.index++;info.stage=0;info.claimedRound=game.gameData.round;ui.initView();};
+ loadKing();
+ info.stage=1;ui.initView();
+ assert(task.active && state.collectButton.active);
+
+ claim();
+ assert(advisor.active && task.active);
+ assert.equal(name.string,'Task complete');
+ assert(!state.pendingLabel.active && !state.collectButton.active && !state.rewardPreview.active);
+ assert(!state.closeControl.node.active && !state.questMarker.active && !state.advisorControl.node.active);
+ ui.initView();hud.layout(ui,.4);
+ assert.equal(name.string,'Task complete');
+ assert(task.active && advisor.opacity===255);
+
+ game.gameStatus=GameStage.Transition;hud.layout(ui,.2);
+ assert(advisor.active && task.active);
+ assert.equal(advisor.opacity,128);
+ assert.equal(name.node.opacity,128);
+ assert.equal(state.backdropArt.fillColor.a,77);
+ game.gameStatus=GameStage.Fight;hud.layout(ui,.2);
+ assert(!advisor.active && !task.active);
+ game.gameStatus=GameStage.Prepare;ui.initView();hud.layout(ui,.4);
+ assert(!advisor.active && !task.active && !state.questMarker.active);
+
+ game.gameData.round++;ui.initView();hud.layout(ui,.4);
+ assert(advisor.active && state.questMarker.active && !task.active);
+ assert.equal(state.markerGlyph.string,'!');
+ assert.equal(name.string,'Upgrade 1 Arrow Tower to Level 3 and defend the castle');
+ info.stage=1;ui.initView();
+ assert(task.active && state.collectButton.active);
+ claim();
+ assert(advisor.active && task.active);
+ assert.equal(name.string,'All tasks complete');
+ assert(!state.collectButton.active && !state.closeControl.node.active);
+
+ game.gameStatus=GameStage.Transition;hud.layout(ui,.2);
+ assert.equal(advisor.opacity,128);
+ game.gameStatus=GameStage.Fight;hud.layout(ui,.1);
+ assert.equal(advisor.opacity,64);
+ game.gameStatus=GameStage.Prepare;game.gameData.round++;ui.initView();
+ hud.layout(ui,.1);hud.layout(ui,.4);
+ assert.equal(advisor.opacity,0);
+ assert(!advisor.active && !task.active && !state.questMarker.active);
+});
 test('the Advisor and task bubble fade out at dusk and return together in planning',()=>{
  const {ui,hud}=fixture(),state=ui._battleHud,task=ui.ndTask,advisor=state.king;
  const info=ui.ctrGame.gameData.taskInfo;
  info.stage=1;ui.initView();
- openTask(ui);
  ui.ctrGame.gameStatus=GameStage.Transition;
  hud.layout(ui,.2);
  assert(advisor.active&&task.active);
@@ -286,6 +336,18 @@ test('the Advisor and task bubble fade out at dusk and return together in planni
  assert.equal(state.backdropArt.fillColor.a,153);
  assert(state.collectButton.activeInHierarchy && state.collectControl.interactable);
  assert.equal(info.index,0);assert.equal(info.stage,1);
+});
+test('the Advisor opens a reward earned during combat when planning resumes',()=>{
+ const {ui,hud}=fixture(),game=ui.ctrGame,state=ui._battleHud;
+ game.gameStatus=GameStage.Fight;
+ hud.layout(ui,.4);
+ game.gameData.taskInfo.stage=1;
+ assert(!ui.ndTask.active && !state.questMarker.active);
+ game.gameStatus=GameStage.Prepare;
+ ui.initView();
+ hud.layout(ui,.4);
+ assert(ui.ndTask.active && state.collectButton.activeInHierarchy && state.collectControl.interactable);
+ assert(!state.questMarker.active);
 });
 test('the visible testing banner reserves top-center space without moving the corner buttons',()=>{
  const f=fixture(),pauseY=f.ui.btnSuspend.y;const badge={active:true,height:44,anchorY:.5,convertToWorldSpaceAR:()=>({x:375,y:1287})};f.cc.Canvas={instance:{node:{getChildByName:()=>badge}}};f.settle();assert(f.ui.ndLevelInfo.y+f.ui.ndLevelInfo.height/2<=1287-667-12);assert.equal(f.ui.btnSuspend.y,pauseY);badge.active=false;f.settle();assert(f.ui.ndLevelInfo.y>1287-667-12-f.ui.ndLevelInfo.height/2);

@@ -137,10 +137,10 @@
     ]
   },
   "buildingStats": {
-    "1:1": {"Hp":300,"BuildCost":3,"VedioCount":0,"Data":[14,0.4,300],"Tower":{"attackType":"arrow","shotsPerVolley":1,"projectileSpeed":700,"targeting":"nearest"}},
-    "1:2": {"Hp":480,"BuildCost":5,"VedioCount":0,"Data":[18.2,0.6,325],"Tower":{"attackType":"arrow","shotsPerVolley":1,"projectileSpeed":700,"targeting":"nearest"}},
-    "1:3": {"Hp":770,"BuildCost":10,"VedioCount":0,"Data":[23.66,0.8,350],"Tower":{"attackType":"arrow","shotsPerVolley":2,"projectileSpeed":700,"targeting":"nearest"}},
-    "1:4": {"Hp":1300,"BuildCost":20,"VedioCount":0,"Data":[30.758,1,375],"Tower":{"attackType":"arrow","shotsPerVolley":2,"projectileSpeed":700,"targeting":"nearest"}},
+    "1:1": {"Hp":300,"BuildCost":3,"VedioCount":0,"Data":[14,0.4,400],"Tower":{"attackType":"arrow","shotsPerVolley":1,"projectileSpeed":700,"targeting":"nearest"}},
+    "1:2": {"Hp":480,"BuildCost":5,"VedioCount":0,"Data":[18.2,0.6,425],"Tower":{"attackType":"arrow","shotsPerVolley":1,"projectileSpeed":700,"targeting":"nearest"}},
+    "1:3": {"Hp":770,"BuildCost":10,"VedioCount":0,"Data":[23.66,0.8,450],"Tower":{"attackType":"arrow","shotsPerVolley":2,"projectileSpeed":700,"targeting":"nearest"}},
+    "1:4": {"Hp":1300,"BuildCost":20,"VedioCount":0,"Data":[30.758,1,475],"Tower":{"attackType":"arrow","shotsPerVolley":2,"projectileSpeed":700,"targeting":"nearest"}},
     "2:1": {"Hp":200,"BuildCost":3,"VedioCount":0,"Data":[5,1,300],"Tower":{"attackType":"arrow","shotsPerVolley":1,"projectileSpeed":700,"targeting":"nearest"}},
     "2:2": {"Hp":300,"BuildCost":6,"VedioCount":0,"Data":[12,1.25,325],"Tower":{"attackType":"arrow","shotsPerVolley":2,"projectileSpeed":700,"targeting":"nearest"}},
     "2:3": {"Hp":450,"BuildCost":12,"VedioCount":0,"Data":[19,1.5,350],"Tower":{"attackType":"arrow","shotsPerVolley":3,"projectileSpeed":700,"targeting":"nearest"}},

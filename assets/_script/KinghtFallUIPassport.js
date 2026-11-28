@@ -23,6 +23,7 @@ var def_KinghtFallUIPassport = function (t) {
   function _ctor() {
     var e = null !== t && t.apply(this, arguments) || this;
     e.ndTop = null;
+    e.ndHeroPreview = null;
     e.btnClose = null;
     e.btnClaimAll = null;
     e.ctrList = null;
@@ -31,6 +32,24 @@ var def_KinghtFallUIPassport = function (t) {
     return e;
   }
   cc__extends(_ctor, t);
+  _ctor.prototype.onEnable = function () {
+    if (!this.ndHeroPreview || this._heroPreview) return;
+    var owner = this, user = $z1KinghtFallPlayerMgr.KinghtFallPlayerMgr.getInstance().getUserData();
+    var preview = this._heroPreview = require("HeroStylePreview").create(this.ndHeroPreview, user, function (error) {
+      if (cc.warn) cc.warn("Battle Pass hero preview: " + error.message);
+    });
+    function refresh() {
+      if (owner._heroPreview === preview && !owner.isclose) preview.setStyle(user.getHeroWeapon().id);
+    }
+    refresh();
+    this._cancelHeroPreviewRefresh = require("HeroItemLooks").whenReady(refresh);
+  };
+  _ctor.prototype.onDisable = function () {
+    if (this._cancelHeroPreviewRefresh) this._cancelHeroPreviewRefresh();
+    this._cancelHeroPreviewRefresh = null;
+    if (this._heroPreview) this._heroPreview.destroy();
+    this._heroPreview = null;
+  };
   _ctor.prototype.start = function () {
     this.cfgList = $z1KinghtFallDataMgr.KinghtFallDataMgr.getInstance().getPassCfg();
     this.ctrList.tmpNode.active = false;
@@ -251,6 +270,7 @@ var def_KinghtFallUIPassport = function (t) {
     type: cc.Node,
     tooltip: "通行证等级"
   })], _ctor.prototype, "ndTop", undefined);
+  cc__decorate([ccp_property(cc.Node)], _ctor.prototype, "ndHeroPreview", undefined);
   cc__decorate([ccp_property({
     type: cc.Node,
     tooltip: "关闭"

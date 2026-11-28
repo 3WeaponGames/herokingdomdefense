@@ -180,7 +180,7 @@ function start(player) {
 
 function nextTask(battle) {
   var game = battle && battle.ctrGame, data = game && game.gameData, task = data && data.taskInfo;
-  if (!task || game._restartRetired || task.index >= task.list.length) return "No Advisor task is available.";
+  if (!task || game._restartRetired || !data.hasActiveTask()) return "No Advisor task is available.";
   if (task.stage === 1) return "The current Advisor task is ready to claim.";
   if (task.targets) task.progress = task.targets[task.index];
   task.stage = 1;

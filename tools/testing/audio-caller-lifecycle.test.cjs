@@ -216,7 +216,7 @@ test('tutorial pause steps immediately suspend presentation without scheduling a
  const guide={getGroupId:()=>2,getStepId:()=>step},single=value=>({getInstance:()=>value});
  const tutorial={active:()=>true,config:()=>({}),visible:node=>!!node,present:()=>true,openingHouse:()=>step===2?{}:null};
  const start=method('KinghtFallUIGame','startGuide',{require(name){assert.equal(name,'TutorialFlow');return tutorial;},$z1KinghtFallModle:{KinghtFallGameStage:{Prepare:0}},$z1PlatformSetting:{PlatformSetting:{currentPlatform:'editor'}},$z1BasePlatform:{Platform:{WEB_LINK:'web'}},$z1KinghtFallPlayerMgr:{KinghtFallPlayerMgr:single({getGuideData:()=>guide})},$z1KinghtFallDataMgr:{KinghtFallDataMgr:single({getGuideCfgById:()=>[{},{},{},{}]})},$z1PlayerMgr:{PlayerMgr:single({getTrackData:()=>({youmengTrack(){}})})},$z1GameTrackDataEvent:{TrackId:{}},cc:{Size:function(w,h){this.width=w;this.height=h;}}});
- const ui={ctrGame:game,ctrUI:{setGuide(){}},isPauset:false,ndCoin:{},btnStartFight:{},enemyIconInfo:{},openUICallBack(){}};
+ const ui={ctrGame:game,ctrUI:{setGuide(){}},isPauset:false,ndCoin:{},btnStartFight:{},enemyIconInfo:{},openUICallBack(){},_refreshStartBattleHand(){}};
  named.playEffectFree('hit',actor);const sound=f.audio.getAudioSource('effect1');assert.equal(sound.isPlaying,true);
  start.call(ui);assert.equal(ui.isPauset,true);assert.equal(sound.isPlaying,false,'the tutorial must retire active actor cues before suppressing updates');
  named.playEffectFree('hit',actor);start.call(ui);assert.equal(sound.isPlaying,true,'reopening the same paused step keeps newly requested construction feedback');assert.equal(game._audioPauseEpoch,1);

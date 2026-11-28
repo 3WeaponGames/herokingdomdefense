@@ -122,7 +122,7 @@
       {
         "id": 1,
         "Wave": 1,
-        "HealthCoefficient": 0.5,
+        "HealthCoefficient": 0.6,
         "AttackCoefficient": 0.7,
         "StartSliver": 6,
         "CommerceSliver": 4,
@@ -157,7 +157,7 @@
       {
         "id": 1,
         "Wave": 2,
-        "HealthCoefficient": 0.5,
+        "HealthCoefficient": 0.6,
         "AttackCoefficient": 0.7,
         "StartSliver": 1,
         "CommerceSliver": 4,

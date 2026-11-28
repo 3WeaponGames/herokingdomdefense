@@ -2187,7 +2187,7 @@
           "Data": [
             14,
             0.4,
-            300
+            400
           ],
           "Tower": {
             "attackType": "arrow",
@@ -2286,7 +2286,7 @@
           "Data": [
             18.2,
             0.6,
-            325
+            425
           ],
           "Tower": {
             "attackType": "arrow",
@@ -2504,7 +2504,7 @@
           "Data": [
             23.66,
             0.8,
-            350
+            450
           ],
           "Tower": {
             "attackType": "arrow",
@@ -2691,7 +2691,7 @@
           "Data": [
             30.758,
             1,
-            375
+            475
           ],
           "Tower": {
             "attackType": "arrow",
@@ -17890,7 +17890,7 @@
         {
           "id": 1,
           "Wave": 1,
-          "HealthCoefficient": 0.5,
+          "HealthCoefficient": 0.6,
           "AttackCoefficient": 0.7,
           "StartSliver": 6,
           "CommerceSliver": 4,
@@ -17925,7 +17925,7 @@
         {
           "id": 1,
           "Wave": 2,
-          "HealthCoefficient": 0.5,
+          "HealthCoefficient": 0.6,
           "AttackCoefficient": 0.7,
           "StartSliver": 1,
           "CommerceSliver": 4,
@@ -57217,8 +57217,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/goat-mushroom",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 80,
       "Speed": 85,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -57232,11 +57232,24 @@
       "MonsterSource": "monster1/Goat_Mushroom",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91026.description]]",
         "lore": "[[loc:data.unitguide.91026.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 5,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "91027": {
@@ -57302,8 +57315,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-bouncy",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 55,
       "Speed": 85,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -57317,11 +57330,24 @@
       "MonsterSource": "monster1/Jellyfish_Bouncy",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91029.description]]",
         "lore": "[[loc:data.unitguide.91029.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 5,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "91030": {
@@ -57331,8 +57357,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-ice",
       "AttackType": 3,
       "Health": 84,
-      "AttackInterval": 0.21,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 55,
       "Speed": 89,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -57346,11 +57372,24 @@
       "MonsterSource": "monster1/Jellyfish_Ice",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91030.description]]",
         "lore": "[[loc:data.unitguide.91030.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.761904761904762,
+          "percent": 38,
+          "radius": 205,
+          "maxTargets": 4,
+          "duration": 2.5
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "91031": {
@@ -57501,8 +57540,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-pirate",
       "AttackType": 3,
       "Health": 112,
-      "AttackInterval": 0.21,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 80,
       "Speed": 84,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -57516,11 +57555,24 @@
       "MonsterSource": "monster1/Octopus_Pirate",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91035.description]]",
         "lore": "[[loc:data.unitguide.91035.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.761904761904762,
+          "percent": 45,
+          "radius": 200,
+          "maxTargets": 5,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "91036": {
@@ -57530,8 +57582,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-ringed",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 80,
       "Speed": 85,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -57545,11 +57597,24 @@
       "MonsterSource": "monster1/Octopus_Ringed",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91036.description]]",
         "lore": "[[loc:data.unitguide.91036.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 5,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "91037": {
@@ -57784,8 +57849,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/snake-mushroom",
       "AttackType": 3,
       "Health": 360,
-      "AttackInterval": 0.3,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 80,
       "Speed": 85,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -57799,11 +57864,24 @@
       "MonsterSource": "monster1/Snake_Mushroom",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91045.description]]",
         "lore": "[[loc:data.unitguide.91045.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.3333333333333335,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "91046": {
@@ -58022,8 +58100,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/alien-wizard",
       "AttackType": 3,
       "Health": 184,
-      "AttackInterval": 0.24,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 55,
       "Speed": 86,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -58037,11 +58115,24 @@
       "MonsterSource": "monster2/Alien_Wizard",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 7.5,
+      "AttackRange": 180,
       "Guide": {
         "description": "[[loc:data.unitguide.91052.description]]",
         "lore": "[[loc:data.unitguide.91052.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.166666666666667,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "91053": {
@@ -58278,8 +58369,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bee-honey",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 55,
       "Speed": 85,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -58293,11 +58384,24 @@
       "MonsterSource": "monster2/Bee_Honey",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91061.description]]",
         "lore": "[[loc:data.unitguide.91061.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 5,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "91062": {
@@ -58395,8 +58499,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bud-flower",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 80,
       "Speed": 85,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -58410,11 +58514,24 @@
       "MonsterSource": "monster2/Bud_Flower",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91065.description]]",
         "lore": "[[loc:data.unitguide.91065.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 5,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "91066": {
@@ -58611,8 +58728,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-lamp",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 55,
       "Speed": 85,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -58626,11 +58743,24 @@
       "MonsterSource": "monster2/Fairy_Lamp",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91072.description]]",
         "lore": "[[loc:data.unitguide.91072.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 5,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "91073": {
@@ -58640,8 +58770,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-snow",
       "AttackType": 3,
       "Health": 100,
-      "AttackInterval": 0.22,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 55,
       "Speed": 87,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -58655,11 +58785,24 @@
       "MonsterSource": "monster2/Fairy_Snow",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91073.description]]",
         "lore": "[[loc:data.unitguide.91073.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.545454545454546,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "91074": {
@@ -58725,8 +58868,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fly-glow",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 55,
       "Speed": 85,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -58740,11 +58883,24 @@
       "MonsterSource": "monster2/Fly_Glow",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91076.description]]",
         "lore": "[[loc:data.unitguide.91076.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 5,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "91077": {
@@ -58829,8 +58985,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-baby",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 55,
       "Speed": 85,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -58844,11 +59000,24 @@
       "MonsterSource": "monster2/Ghost_Baby",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91079.description]]",
         "lore": "[[loc:data.unitguide.91079.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 5,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "91080": {
@@ -58858,8 +59027,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-mask",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 55,
       "Speed": 85,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -58873,11 +59042,24 @@
       "MonsterSource": "monster2/Ghost_Mask",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91080.description]]",
         "lore": "[[loc:data.unitguide.91080.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 5,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "91081": {
@@ -59373,8 +59555,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/spider-frozen",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 80,
       "Speed": 85,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -59388,11 +59570,24 @@
       "MonsterSource": "monster2/Spider_Frozen",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91094.description]]",
         "lore": "[[loc:data.unitguide.91094.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 5,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "91095": {
@@ -59499,8 +59694,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-candle",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.2,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 80,
       "Speed": 85,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -59514,11 +59709,24 @@
       "MonsterSource": "monster2/Walker_Candle",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6.25,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91098.description]]",
         "lore": "[[loc:data.unitguide.91098.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 5,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "91099": {
@@ -59528,8 +59736,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-mushroom",
       "AttackType": 3,
       "Health": 188,
-      "AttackInterval": 0.26,
-      "SearchRange": 0,
+      "AttackInterval": 0.5525,
+      "SearchRange": 80,
       "Speed": 84,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -59543,8 +59751,8 @@
       "MonsterSource": "monster2/Walker_Mushroom",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 220,
+      "AttackDamage": 7.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91099.description]]",
         "lore": "[[loc:data.unitguide.91099.lore]]"
@@ -59553,7 +59761,8 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "melee",
+        "pattern": "single"
       },
       "EnemySkills": {
         "haste": false,
@@ -67023,8 +67232,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/goat-mushroom",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 100,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -67037,11 +67246,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91026.description]]",
         "lore": "[[loc:data.unitguide.91026.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100186": {
@@ -67051,8 +67273,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/goat-mushroom",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 90,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -67065,11 +67287,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91026.description]]",
         "lore": "[[loc:data.unitguide.91026.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100187": {
@@ -67079,8 +67314,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/goat-mushroom",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 115,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -67093,11 +67328,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91026.description]]",
         "lore": "[[loc:data.unitguide.91026.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100188": {
@@ -67107,8 +67355,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/goat-mushroom",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 80,
       "Speed": 110,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -67121,11 +67369,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91026.description]]",
         "lore": "[[loc:data.unitguide.91026.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100189": {
@@ -67135,8 +67396,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/goat-mushroom",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 95,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -67149,11 +67410,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91026.description]]",
         "lore": "[[loc:data.unitguide.91026.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100190": {
@@ -67436,8 +67710,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-bouncy",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 100,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -67450,11 +67724,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91029.description]]",
         "lore": "[[loc:data.unitguide.91029.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100201": {
@@ -67464,8 +67751,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-bouncy",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 90,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -67478,11 +67765,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91029.description]]",
         "lore": "[[loc:data.unitguide.91029.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100202": {
@@ -67492,8 +67792,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-bouncy",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 115,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -67506,11 +67806,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91029.description]]",
         "lore": "[[loc:data.unitguide.91029.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100203": {
@@ -67520,8 +67833,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-bouncy",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 55,
       "Speed": 110,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -67534,11 +67847,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91029.description]]",
         "lore": "[[loc:data.unitguide.91029.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100204": {
@@ -67548,8 +67874,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-bouncy",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 95,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -67562,11 +67888,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91029.description]]",
         "lore": "[[loc:data.unitguide.91029.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100205": {
@@ -67576,8 +67915,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-ice",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 100,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -67590,11 +67929,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91030.description]]",
         "lore": "[[loc:data.unitguide.91030.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 38,
+          "radius": 205,
+          "maxTargets": 4,
+          "duration": 2.5
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100206": {
@@ -67604,8 +67956,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-ice",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 90,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -67618,11 +67970,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91030.description]]",
         "lore": "[[loc:data.unitguide.91030.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 38,
+          "radius": 205,
+          "maxTargets": 4,
+          "duration": 2.5
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100207": {
@@ -67632,8 +67997,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-ice",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 115,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -67646,11 +68011,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91030.description]]",
         "lore": "[[loc:data.unitguide.91030.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 38,
+          "radius": 205,
+          "maxTargets": 4,
+          "duration": 2.5
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100208": {
@@ -67660,8 +68038,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-ice",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 55,
       "Speed": 110,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -67674,11 +68052,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91030.description]]",
         "lore": "[[loc:data.unitguide.91030.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 38,
+          "radius": 205,
+          "maxTargets": 4,
+          "duration": 2.5
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100209": {
@@ -67688,8 +68079,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/jellyfish-ice",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 95,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -67702,11 +68093,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91030.description]]",
         "lore": "[[loc:data.unitguide.91030.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 38,
+          "radius": 205,
+          "maxTargets": 4,
+          "duration": 2.5
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100210": {
@@ -68121,8 +68525,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-ice",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 100,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68135,11 +68539,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91034.description]]",
         "lore": "[[loc:data.unitguide.91034.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100226": {
@@ -68149,8 +68566,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-ice",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 90,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68163,11 +68580,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91034.description]]",
         "lore": "[[loc:data.unitguide.91034.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100227": {
@@ -68177,8 +68607,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-ice",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 115,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68191,11 +68621,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91034.description]]",
         "lore": "[[loc:data.unitguide.91034.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100228": {
@@ -68205,8 +68648,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-ice",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 80,
       "Speed": 110,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68219,11 +68662,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91034.description]]",
         "lore": "[[loc:data.unitguide.91034.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100229": {
@@ -68233,8 +68689,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-ice",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 95,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68247,11 +68703,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91034.description]]",
         "lore": "[[loc:data.unitguide.91034.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100230": {
@@ -68261,8 +68730,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-pirate",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 100,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68275,11 +68744,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91035.description]]",
         "lore": "[[loc:data.unitguide.91035.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 45,
+          "radius": 200,
+          "maxTargets": 5,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100231": {
@@ -68289,8 +68771,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-pirate",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 90,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68303,11 +68785,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91035.description]]",
         "lore": "[[loc:data.unitguide.91035.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 45,
+          "radius": 200,
+          "maxTargets": 5,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100232": {
@@ -68317,8 +68812,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-pirate",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 115,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68331,11 +68826,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91035.description]]",
         "lore": "[[loc:data.unitguide.91035.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 45,
+          "radius": 200,
+          "maxTargets": 5,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100233": {
@@ -68345,8 +68853,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-pirate",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 80,
       "Speed": 110,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68359,11 +68867,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91035.description]]",
         "lore": "[[loc:data.unitguide.91035.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 45,
+          "radius": 200,
+          "maxTargets": 5,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100234": {
@@ -68373,8 +68894,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-pirate",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 95,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68387,11 +68908,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91035.description]]",
         "lore": "[[loc:data.unitguide.91035.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 45,
+          "radius": 200,
+          "maxTargets": 5,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100235": {
@@ -68401,8 +68935,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-ringed",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 100,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68415,11 +68949,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91036.description]]",
         "lore": "[[loc:data.unitguide.91036.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100236": {
@@ -68429,8 +68976,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-ringed",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 90,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68443,11 +68990,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91036.description]]",
         "lore": "[[loc:data.unitguide.91036.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100237": {
@@ -68457,8 +69017,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-ringed",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 115,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68471,11 +69031,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91036.description]]",
         "lore": "[[loc:data.unitguide.91036.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100238": {
@@ -68485,8 +69058,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-ringed",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 80,
       "Speed": 110,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68499,11 +69072,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91036.description]]",
         "lore": "[[loc:data.unitguide.91036.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100239": {
@@ -68513,8 +69099,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/octopus-ringed",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 95,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -68527,11 +69113,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91036.description]]",
         "lore": "[[loc:data.unitguide.91036.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100240": {
@@ -69630,8 +70229,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/snake-mushroom",
       "AttackType": 3,
       "Health": 400,
-      "AttackInterval": 0.35294118,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 100,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -69644,11 +70243,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91045.description]]",
         "lore": "[[loc:data.unitguide.91045.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 2.833333305,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100281": {
@@ -69658,8 +70270,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/snake-mushroom",
       "AttackType": 3,
       "Health": 480,
-      "AttackInterval": 0.31764706,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 90,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -69672,11 +70284,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91045.description]]",
         "lore": "[[loc:data.unitguide.91045.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.1481481364883406,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100282": {
@@ -69686,8 +70311,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/snake-mushroom",
       "AttackType": 3,
       "Health": 360,
-      "AttackInterval": 0.35294118,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 115,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -69700,11 +70325,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91045.description]]",
         "lore": "[[loc:data.unitguide.91045.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 2.833333305,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100283": {
@@ -69714,8 +70352,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/snake-mushroom",
       "AttackType": 3,
       "Health": 360,
-      "AttackInterval": 0.3882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 80,
       "Speed": 110,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -69728,11 +70366,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91045.description]]",
         "lore": "[[loc:data.unitguide.91045.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 2.575757536730946,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100284": {
@@ -69742,8 +70393,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster1/snake-mushroom",
       "AttackType": 3,
       "Health": 439.99999999,
-      "AttackInterval": 0.31764706,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 95,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -69756,11 +70407,24 @@
       "CounterType": "",
       "MonsterPack": "monster1",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91045.description]]",
         "lore": "[[loc:data.unitguide.91045.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.1481481364883406,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100285": {
@@ -70777,8 +71441,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/alien-wizard",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 100,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -70791,11 +71455,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 180,
       "Guide": {
         "description": "[[loc:data.unitguide.91052.description]]",
         "lore": "[[loc:data.unitguide.91052.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100316": {
@@ -70805,8 +71482,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/alien-wizard",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 90,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -70819,11 +71496,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5.4,
+      "AttackRange": 180,
       "Guide": {
         "description": "[[loc:data.unitguide.91052.description]]",
         "lore": "[[loc:data.unitguide.91052.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100317": {
@@ -70833,8 +71523,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/alien-wizard",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 115,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -70847,11 +71537,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5.7,
+      "AttackRange": 180,
       "Guide": {
         "description": "[[loc:data.unitguide.91052.description]]",
         "lore": "[[loc:data.unitguide.91052.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100318": {
@@ -70861,8 +71564,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/alien-wizard",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 55,
       "Speed": 110,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -70875,11 +71578,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5.4,
+      "AttackRange": 180,
       "Guide": {
         "description": "[[loc:data.unitguide.91052.description]]",
         "lore": "[[loc:data.unitguide.91052.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100319": {
@@ -70889,8 +71605,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/alien-wizard",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 95,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -70903,11 +71619,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 7.2,
+      "AttackRange": 180,
       "Guide": {
         "description": "[[loc:data.unitguide.91052.description]]",
         "lore": "[[loc:data.unitguide.91052.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100320": {
@@ -72012,8 +72741,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bee-honey",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 100,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -72026,11 +72755,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91061.description]]",
         "lore": "[[loc:data.unitguide.91061.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100361": {
@@ -72040,8 +72782,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bee-honey",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 90,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -72054,11 +72796,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91061.description]]",
         "lore": "[[loc:data.unitguide.91061.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100362": {
@@ -72068,8 +72823,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bee-honey",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 115,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -72082,11 +72837,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91061.description]]",
         "lore": "[[loc:data.unitguide.91061.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100363": {
@@ -72096,8 +72864,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bee-honey",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 55,
       "Speed": 110,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -72110,11 +72878,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91061.description]]",
         "lore": "[[loc:data.unitguide.91061.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100364": {
@@ -72124,8 +72905,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bee-honey",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 95,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -72138,11 +72919,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91061.description]]",
         "lore": "[[loc:data.unitguide.91061.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100365": {
@@ -72562,8 +73356,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bud-flower",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 100,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -72576,11 +73370,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91065.description]]",
         "lore": "[[loc:data.unitguide.91065.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100381": {
@@ -72590,8 +73397,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bud-flower",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 90,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -72604,11 +73411,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91065.description]]",
         "lore": "[[loc:data.unitguide.91065.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100382": {
@@ -72618,8 +73438,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bud-flower",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 115,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -72632,11 +73452,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91065.description]]",
         "lore": "[[loc:data.unitguide.91065.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100383": {
@@ -72646,8 +73479,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bud-flower",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 80,
       "Speed": 110,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -72660,11 +73493,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91065.description]]",
         "lore": "[[loc:data.unitguide.91065.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100384": {
@@ -72674,8 +73520,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/bud-flower",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 95,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -72688,11 +73534,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91065.description]]",
         "lore": "[[loc:data.unitguide.91065.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100385": {
@@ -73416,8 +74275,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-dust",
       "AttackType": 3,
       "Health": 57.61,
-      "AttackInterval": 0.28235294,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 120,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73430,11 +74289,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 196,
+      "AttackDamage": 5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91071.description]]",
         "lore": "[[loc:data.unitguide.91071.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.541666681423611,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100411": {
@@ -73444,8 +74316,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-dust",
       "AttackType": 3,
       "Health": 69.14,
-      "AttackInterval": 0.25411765,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 112,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73458,11 +74330,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 196,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91071.description]]",
         "lore": "[[loc:data.unitguide.91071.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.9351851396390614,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100412": {
@@ -73472,8 +74357,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-dust",
       "AttackType": 3,
       "Health": 51.85,
-      "AttackInterval": 0.28235294,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 120,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73486,11 +74371,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 196,
+      "AttackDamage": 4.75,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91071.description]]",
         "lore": "[[loc:data.unitguide.91071.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.541666681423611,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100413": {
@@ -73500,8 +74398,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-dust",
       "AttackType": 3,
       "Health": 51.85,
-      "AttackInterval": 0.31058824,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 55,
       "Speed": 120,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73514,11 +74412,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 196,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91071.description]]",
         "lore": "[[loc:data.unitguide.91071.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.219696920913683,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100414": {
@@ -73528,8 +74439,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-dust",
       "AttackType": 3,
       "Health": 63.37,
-      "AttackInterval": 0.25411765,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 118,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73542,11 +74453,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 196,
+      "AttackDamage": 6,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91071.description]]",
         "lore": "[[loc:data.unitguide.91071.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.9351851396390614,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100415": {
@@ -73556,8 +74480,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-lamp",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 100,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73570,11 +74494,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91072.description]]",
         "lore": "[[loc:data.unitguide.91072.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100416": {
@@ -73584,8 +74521,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-lamp",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 90,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73598,11 +74535,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91072.description]]",
         "lore": "[[loc:data.unitguide.91072.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100417": {
@@ -73612,8 +74562,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-lamp",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 115,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73626,11 +74576,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91072.description]]",
         "lore": "[[loc:data.unitguide.91072.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100418": {
@@ -73640,8 +74603,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-lamp",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 55,
       "Speed": 110,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73654,11 +74617,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91072.description]]",
         "lore": "[[loc:data.unitguide.91072.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100419": {
@@ -73668,8 +74644,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-lamp",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 95,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73682,11 +74658,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91072.description]]",
         "lore": "[[loc:data.unitguide.91072.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100420": {
@@ -73696,8 +74685,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-snow",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 100,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73710,11 +74699,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91073.description]]",
         "lore": "[[loc:data.unitguide.91073.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100421": {
@@ -73724,8 +74726,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-snow",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 90,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73738,11 +74740,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91073.description]]",
         "lore": "[[loc:data.unitguide.91073.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100422": {
@@ -73787,8 +74802,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-snow",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 55,
       "Speed": 110,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73801,11 +74816,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91073.description]]",
         "lore": "[[loc:data.unitguide.91073.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100424": {
@@ -73815,8 +74843,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fairy-snow",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 95,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -73829,11 +74857,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91073.description]]",
         "lore": "[[loc:data.unitguide.91073.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100425": {
@@ -74113,8 +75154,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fly-glow",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 100,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74127,11 +75168,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91076.description]]",
         "lore": "[[loc:data.unitguide.91076.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100436": {
@@ -74141,8 +75195,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fly-glow",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 90,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74155,11 +75209,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91076.description]]",
         "lore": "[[loc:data.unitguide.91076.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100437": {
@@ -74169,8 +75236,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fly-glow",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 115,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74183,11 +75250,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91076.description]]",
         "lore": "[[loc:data.unitguide.91076.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100438": {
@@ -74197,8 +75277,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fly-glow",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 55,
       "Speed": 110,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74211,11 +75291,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91076.description]]",
         "lore": "[[loc:data.unitguide.91076.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100439": {
@@ -74225,8 +75318,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/fly-glow",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 95,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74239,11 +75332,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91076.description]]",
         "lore": "[[loc:data.unitguide.91076.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100440": {
@@ -74618,8 +75724,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-baby",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 100,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74632,11 +75738,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91079.description]]",
         "lore": "[[loc:data.unitguide.91079.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100451": {
@@ -74646,8 +75765,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-baby",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 90,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74660,11 +75779,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91079.description]]",
         "lore": "[[loc:data.unitguide.91079.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100452": {
@@ -74674,8 +75806,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-baby",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 115,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74688,11 +75820,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91079.description]]",
         "lore": "[[loc:data.unitguide.91079.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100453": {
@@ -74702,8 +75847,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-baby",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 55,
       "Speed": 110,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74716,11 +75861,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91079.description]]",
         "lore": "[[loc:data.unitguide.91079.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100454": {
@@ -74730,8 +75888,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-baby",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 95,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74744,11 +75902,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91079.description]]",
         "lore": "[[loc:data.unitguide.91079.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100455": {
@@ -74758,8 +75929,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-mask",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 100,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74772,11 +75943,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91080.description]]",
         "lore": "[[loc:data.unitguide.91080.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100456": {
@@ -74786,8 +75970,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-mask",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 90,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74800,11 +75984,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91080.description]]",
         "lore": "[[loc:data.unitguide.91080.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100457": {
@@ -74814,8 +76011,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-mask",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 55,
       "Speed": 115,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74828,11 +76025,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91080.description]]",
         "lore": "[[loc:data.unitguide.91080.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100458": {
@@ -74842,8 +76052,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-mask",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 55,
       "Speed": 110,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74856,11 +76066,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91080.description]]",
         "lore": "[[loc:data.unitguide.91080.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100459": {
@@ -74870,8 +76093,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/ghost-mask",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 55,
       "Speed": 95,
       "BuildingCross": 0,
       "DeathAni": 1.5,
@@ -74884,11 +76107,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 160,
       "Guide": {
         "description": "[[loc:data.unitguide.91080.description]]",
         "lore": "[[loc:data.unitguide.91080.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "ranged",
+        "pattern": "single"
       }
     },
     "100460": {
@@ -77234,8 +78470,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/spider-frozen",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 100,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -77248,11 +78484,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91094.description]]",
         "lore": "[[loc:data.unitguide.91094.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100526": {
@@ -77262,8 +78511,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/spider-frozen",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 90,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -77276,11 +78525,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91094.description]]",
         "lore": "[[loc:data.unitguide.91094.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100527": {
@@ -77290,8 +78552,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/spider-frozen",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 115,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -77304,11 +78566,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91094.description]]",
         "lore": "[[loc:data.unitguide.91094.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100528": {
@@ -77318,8 +78593,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/spider-frozen",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 80,
       "Speed": 110,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -77332,11 +78607,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91094.description]]",
         "lore": "[[loc:data.unitguide.91094.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100529": {
@@ -77346,8 +78634,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/spider-frozen",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 95,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -77360,11 +78648,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91094.description]]",
         "lore": "[[loc:data.unitguide.91094.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100530": {
@@ -77854,8 +79155,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-candle",
       "AttackType": 3,
       "Health": 133.33333333,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 100,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -77868,11 +79169,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91098.description]]",
         "lore": "[[loc:data.unitguide.91098.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100546": {
@@ -77882,8 +79196,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-candle",
       "AttackType": 3,
       "Health": 160,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 90,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -77896,11 +79210,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91098.description]]",
         "lore": "[[loc:data.unitguide.91098.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100547": {
@@ -77910,8 +79237,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-candle",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.23529412,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 115,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -77924,11 +79251,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.75,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91098.description]]",
         "lore": "[[loc:data.unitguide.91098.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.249999957500001,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100548": {
@@ -77938,8 +79278,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-candle",
       "AttackType": 3,
       "Health": 120,
-      "AttackInterval": 0.25882353,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 80,
       "Speed": 110,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -77952,11 +79292,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 4.5,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91098.description]]",
         "lore": "[[loc:data.unitguide.91098.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 3.8636363548553714,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100549": {
@@ -77966,8 +79319,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-candle",
       "AttackType": 3,
       "Health": 146.66666666,
-      "AttackInterval": 0.21176471,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 95,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -77980,11 +79333,24 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 200,
+      "AttackDamage": 6,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91098.description]]",
         "lore": "[[loc:data.unitguide.91098.lore]]"
+      },
+      "EnemySkills": {
+        "haste": {
+          "interval": 4.722222130401237,
+          "percent": 120,
+          "radius": 200,
+          "maxTargets": 15,
+          "duration": 3
+        }
+      },
+      "UnitAttack": {
+        "delivery": "melee",
+        "pattern": "single"
       }
     },
     "100550": {
@@ -77994,8 +79360,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-mushroom",
       "AttackType": 3,
       "Health": 226.66666667,
-      "AttackInterval": 0.31764706,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 99,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -78008,8 +79374,8 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 220,
+      "AttackDamage": 6,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91099.description]]",
         "lore": "[[loc:data.unitguide.91099.lore]]"
@@ -78018,7 +79384,8 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "melee",
+        "pattern": "single"
       },
       "EnemySkills": {
         "haste": false,
@@ -78038,8 +79405,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-mushroom",
       "AttackType": 3,
       "Health": 272,
-      "AttackInterval": 0.28588235,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 89,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -78052,8 +79419,8 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 220,
+      "AttackDamage": 5.4,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91099.description]]",
         "lore": "[[loc:data.unitguide.91099.lore]]"
@@ -78062,7 +79429,8 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "melee",
+        "pattern": "single"
       },
       "EnemySkills": {
         "haste": false,
@@ -78082,8 +79450,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-mushroom",
       "AttackType": 3,
       "Health": 204,
-      "AttackInterval": 0.31764706,
-      "SearchRange": 0,
+      "AttackInterval": 0.65,
+      "SearchRange": 80,
       "Speed": 114,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -78096,8 +79464,8 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 220,
+      "AttackDamage": 5.7,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91099.description]]",
         "lore": "[[loc:data.unitguide.91099.lore]]"
@@ -78106,7 +79474,8 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "melee",
+        "pattern": "single"
       },
       "EnemySkills": {
         "haste": false,
@@ -78126,8 +79495,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-mushroom",
       "AttackType": 3,
       "Health": 204,
-      "AttackInterval": 0.34941176,
-      "SearchRange": 0,
+      "AttackInterval": 0.715,
+      "SearchRange": 80,
       "Speed": 109,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -78140,8 +79509,8 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 220,
+      "AttackDamage": 5.4,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91099.description]]",
         "lore": "[[loc:data.unitguide.91099.lore]]"
@@ -78150,7 +79519,8 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "melee",
+        "pattern": "single"
       },
       "EnemySkills": {
         "haste": false,
@@ -78170,8 +79540,8 @@
       "loadIcon": "@icon/icons/monster-roster/monster2/walker-mushroom",
       "AttackType": 3,
       "Health": 249.33333333,
-      "AttackInterval": 0.28588235,
-      "SearchRange": 0,
+      "AttackInterval": 0.585,
+      "SearchRange": 80,
       "Speed": 94,
       "BuildingCross": 1,
       "DeathAni": 1.5,
@@ -78184,8 +79554,8 @@
       "CounterType": "",
       "MonsterPack": "monster2",
       "BehaviorTemplate": 90006,
-      "AttackDamage": 0,
-      "AttackRange": 220,
+      "AttackDamage": 7.2,
+      "AttackRange": 60,
       "Guide": {
         "description": "[[loc:data.unitguide.91099.description]]",
         "lore": "[[loc:data.unitguide.91099.lore]]"
@@ -78194,7 +79564,8 @@
         "mode": "nearest"
       },
       "UnitAttack": {
-        "delivery": "original"
+        "delivery": "melee",
+        "pattern": "single"
       },
       "EnemySkills": {
         "haste": false,
@@ -107070,8 +108441,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -107083,8 +108457,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -107096,8 +108473,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -107109,8 +108489,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -107122,8 +108505,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -107278,8 +108664,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -107291,8 +108680,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -107304,8 +108696,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -107317,8 +108712,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -107330,8 +108728,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -107343,8 +108744,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -107356,8 +108760,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -107369,8 +108776,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -107382,8 +108792,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -107395,8 +108808,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -107643,10 +109059,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
+            "AttackInterval": 0.65,
             "Speed": 100,
-            "AttackDamage": 0,
-            "AttackRange": 200
+            "AttackDamage": 5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true,
@@ -107662,10 +109079,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
+            "AttackInterval": 0.585,
             "Speed": 90,
-            "AttackDamage": 0,
-            "AttackRange": 200
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true,
@@ -107681,10 +109099,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
+            "AttackInterval": 0.65,
             "Speed": 115,
-            "AttackDamage": 0,
-            "AttackRange": 200
+            "AttackDamage": 4.75,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true,
@@ -107700,10 +109119,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
+            "AttackInterval": 0.715,
             "Speed": 110,
-            "AttackDamage": 0,
-            "AttackRange": 200
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true,
@@ -107719,10 +109139,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
+            "AttackInterval": 0.585,
             "Speed": 95,
-            "AttackDamage": 0,
-            "AttackRange": 200
+            "AttackDamage": 6,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true,
@@ -107738,8 +109159,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true,
@@ -107752,8 +109176,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true,
@@ -107766,8 +109193,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true,
@@ -107780,8 +109210,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true,
@@ -107794,8 +109227,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true,
@@ -107808,8 +109244,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -107821,8 +109260,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -107834,8 +109276,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -107847,8 +109292,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -107860,8 +109308,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -108453,8 +109904,11 @@
           "role": "fighter",
           "stats": {
             "Health": 400,
-            "AttackInterval": 0.35294118,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -108466,8 +109920,11 @@
           "role": "guardian",
           "stats": {
             "Health": 480,
-            "AttackInterval": 0.31764706,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -108479,8 +109936,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 360,
-            "AttackInterval": 0.35294118,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -108492,8 +109952,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 360,
-            "AttackInterval": 0.3882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -108505,8 +109968,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 439.99999999,
-            "AttackInterval": 0.31764706,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -109035,8 +110501,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 6,
+            "AttackRange": 180,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -109049,8 +110518,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 5.4,
+            "AttackRange": 180,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -109063,8 +110535,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 5.7,
+            "AttackRange": 180,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -109077,8 +110552,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 5.4,
+            "AttackRange": 180,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -109091,8 +110569,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 7.2,
+            "AttackRange": 180,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -109680,8 +111161,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -109693,8 +111177,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -109706,8 +111193,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -109719,8 +111209,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -109732,8 +111225,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -109960,8 +111456,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -109973,8 +111472,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -109986,8 +111488,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -109999,8 +111504,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -110012,8 +111520,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -110399,10 +111910,11 @@
           "role": "fighter",
           "stats": {
             "Health": 57.61,
-            "AttackInterval": 0.28235294,
+            "AttackInterval": 0.65,
             "Speed": 120,
-            "AttackDamage": 0,
-            "AttackRange": 196
+            "AttackDamage": 5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -110415,10 +111927,11 @@
           "role": "guardian",
           "stats": {
             "Health": 69.14,
-            "AttackInterval": 0.25411765,
+            "AttackInterval": 0.585,
             "Speed": 112,
-            "AttackDamage": 0,
-            "AttackRange": 196
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -110431,10 +111944,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 51.85,
-            "AttackInterval": 0.28235294,
+            "AttackInterval": 0.65,
             "Speed": 120,
-            "AttackDamage": 0,
-            "AttackRange": 196
+            "AttackDamage": 4.75,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -110447,10 +111961,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 51.85,
-            "AttackInterval": 0.31058824,
+            "AttackInterval": 0.715,
             "Speed": 120,
-            "AttackDamage": 0,
-            "AttackRange": 196
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -110463,10 +111978,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 63.37,
-            "AttackInterval": 0.25411765,
+            "AttackInterval": 0.585,
             "Speed": 118,
-            "AttackDamage": 0,
-            "AttackRange": 196
+            "AttackDamage": 6,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -110479,8 +111995,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -110492,8 +112011,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -110505,8 +112027,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -110518,8 +112043,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -110531,8 +112059,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -110544,8 +112075,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -110558,8 +112092,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -110592,8 +112129,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -110606,8 +112146,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true,
@@ -110760,8 +112303,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -110773,8 +112319,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -110786,8 +112335,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -110799,8 +112351,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -110812,8 +112367,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -110995,8 +112553,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -111008,8 +112569,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -111021,8 +112585,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -111034,8 +112601,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -111047,8 +112617,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -111060,8 +112633,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -111073,8 +112649,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -111086,8 +112665,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -111099,8 +112681,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -111112,8 +112697,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 160,
+            "SearchRange": 55
           },
           "visual": {},
           "fightingProfile": true
@@ -112385,8 +113973,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -112398,8 +113989,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -112411,8 +114005,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -112424,8 +114021,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -112437,8 +114037,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -112691,8 +114294,11 @@
           "role": "fighter",
           "stats": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -112704,8 +114310,11 @@
           "role": "guardian",
           "stats": {
             "Health": 160,
-            "AttackInterval": 0.21176471,
-            "Speed": 90
+            "AttackInterval": 0.585,
+            "Speed": 90,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -112717,8 +114326,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.23529412,
-            "Speed": 115
+            "AttackInterval": 0.65,
+            "Speed": 115,
+            "AttackDamage": 4.75,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -112730,8 +114342,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 120,
-            "AttackInterval": 0.25882353,
-            "Speed": 110
+            "AttackInterval": 0.715,
+            "Speed": 110,
+            "AttackDamage": 4.5,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -112743,8 +114358,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 146.66666666,
-            "AttackInterval": 0.21176471,
-            "Speed": 95
+            "AttackInterval": 0.585,
+            "Speed": 95,
+            "AttackDamage": 6,
+            "AttackRange": 60,
+            "SearchRange": 80
           },
           "visual": {},
           "fightingProfile": true
@@ -112756,11 +114374,11 @@
           "role": "fighter",
           "stats": {
             "Health": 226.66666667,
-            "AttackInterval": 0.31764706,
+            "AttackInterval": 0.65,
             "Speed": 99,
-            "AttackDamage": 0,
-            "AttackRange": 220,
-            "SearchRange": 0,
+            "AttackDamage": 6,
+            "AttackRange": 60,
+            "SearchRange": 80,
             "EnemyTargeting": {
               "mode": "nearest"
             },
@@ -112777,11 +114395,11 @@
           "role": "guardian",
           "stats": {
             "Health": 272,
-            "AttackInterval": 0.28588235,
+            "AttackInterval": 0.585,
             "Speed": 89,
-            "AttackDamage": 0,
-            "AttackRange": 220,
-            "SearchRange": 0,
+            "AttackDamage": 5.4,
+            "AttackRange": 60,
+            "SearchRange": 80,
             "EnemyTargeting": {
               "mode": "nearest"
             },
@@ -112798,11 +114416,11 @@
           "role": "vanguard",
           "stats": {
             "Health": 204,
-            "AttackInterval": 0.31764706,
+            "AttackInterval": 0.65,
             "Speed": 114,
-            "AttackDamage": 0,
-            "AttackRange": 220,
-            "SearchRange": 0,
+            "AttackDamage": 5.7,
+            "AttackRange": 60,
+            "SearchRange": 80,
             "EnemyTargeting": {
               "mode": "nearest"
             },
@@ -112819,11 +114437,11 @@
           "role": "skirmisher",
           "stats": {
             "Health": 204,
-            "AttackInterval": 0.34941176,
+            "AttackInterval": 0.715,
             "Speed": 109,
-            "AttackDamage": 0,
-            "AttackRange": 220,
-            "SearchRange": 0,
+            "AttackDamage": 5.4,
+            "AttackRange": 60,
+            "SearchRange": 80,
             "EnemyTargeting": {
               "mode": "nearest"
             },
@@ -112840,11 +114458,11 @@
           "role": "bruiser",
           "stats": {
             "Health": 249.33333333,
-            "AttackInterval": 0.28588235,
+            "AttackInterval": 0.585,
             "Speed": 94,
-            "AttackDamage": 0,
-            "AttackRange": 220,
-            "SearchRange": 0,
+            "AttackDamage": 7.2,
+            "AttackRange": 60,
+            "SearchRange": 80,
             "EnemyTargeting": {
               "mode": "nearest"
             },
@@ -119207,8 +120825,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91026
         },
@@ -119265,8 +120884,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91029
         },
@@ -119283,8 +120903,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91030
         },
@@ -119377,8 +120998,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91035
         },
@@ -119395,8 +121017,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91036
         },
@@ -119566,8 +121189,9 @@
           },
           "baseline": {
             "Health": 400,
-            "AttackInterval": 0.35294118,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91045
         },
@@ -119700,8 +121324,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 6
           },
           "referenceId": 91052,
           "defaultProfileId": 91052
@@ -119872,8 +121497,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91061
         },
@@ -119948,8 +121574,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91065
         },
@@ -120084,8 +121711,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91072
         },
@@ -120102,8 +121730,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91073,
           "defaultProfileId": 100422
@@ -120159,8 +121788,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91076
         },
@@ -120216,8 +121846,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91079
         },
@@ -120234,8 +121865,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91080
         },
@@ -120509,8 +122141,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91094
         },
@@ -120585,8 +122218,9 @@
           },
           "baseline": {
             "Health": 133.33333333,
-            "AttackInterval": 0.23529412,
-            "Speed": 100
+            "AttackInterval": 0.65,
+            "Speed": 100,
+            "AttackDamage": 5
           },
           "referenceId": 91098
         },
@@ -120603,9 +122237,9 @@
           },
           "baseline": {
             "Health": 226.66666667,
-            "AttackInterval": 0.31764706,
+            "AttackInterval": 0.65,
             "Speed": 98.82352941,
-            "AttackDamage": 0
+            "AttackDamage": 6
           },
           "referenceId": 91099,
           "defaultProfileId": 91099

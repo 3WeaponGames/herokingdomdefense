@@ -5255,6 +5255,11 @@
       "zh": "版本 {1} · {0} · {2}",
       "context": "In-game Settings build information"
     },
+    "settings.buildVersion": {
+      "en": "Version {0}",
+      "zh": "版本 {0}",
+      "context": "Installed Android build version in Settings"
+    },
     "settings.languageCycle": {
       "en": "{0}  ›",
       "zh": "{0}  ›",
@@ -6267,6 +6272,16 @@
       "en": "Collect",
       "zh": "领取",
       "context": "Royal Advisor task reward button"
+    },
+    "battle.task.complete": {
+      "en": "Task complete",
+      "zh": "任务已完成",
+      "context": "Royal Advisor message after collecting a task reward"
+    },
+    "battle.tasks.complete": {
+      "en": "All tasks complete",
+      "zh": "所有任务已完成",
+      "context": "Royal Advisor message after the last task reward is collected"
     },
     "battle.task.reward": {
       "en": "Reward:",
@@ -19255,8 +19270,8 @@
         "fontRole": "display",
         "width": 300,
         "height": 72,
-        "fontSize": 40,
-        "lineHeight": 56,
+        "fontSize": 34,
+        "lineHeight": 40,
         "wrap": false,
         "overflow": "NONE",
         "horizontalAlign": 1
@@ -19264,8 +19279,8 @@
       "zh": {
         "width": 300,
         "height": 72,
-        "fontSize": 40,
-        "lineHeight": 56,
+        "fontSize": 42,
+        "lineHeight": 49,
         "wrap": false,
         "overflow": "NONE",
         "horizontalAlign": 1

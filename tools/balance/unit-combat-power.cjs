@@ -6,6 +6,8 @@
 // read-only timing context to compare actual releases at the saved playback.
 // Older callers without source animation metadata retain their nominal score.
 const CombatPower = require('../../assets/_script/CombatPower');
+const AttackRules = require('../../assets/_script/UnitAttackRules');
+const EnemySkills = require('../../assets/_script/EnemySkills');
 const DEFAULTS = CombatPower.DEFAULTS;
 
 const finite = value => typeof value === 'number' && Number.isFinite(value);
@@ -99,12 +101,15 @@ function calculate(unit, assumptions = DEFAULTS, context) {
   if (!unit || typeof unit !== 'object' || Array.isArray(unit)) return unavailable('Unit must be an object.');
   if (!finite(unit.Health) || unit.Health <= 0) return unavailable('Base HP must be a finite number greater than zero.');
   if (!finite(unit.AttackInterval) || unit.AttackInterval <= 0) return unavailable('Base attack rate must be a finite number greater than zero.');
+  unit = AttackRules.runtimeCfg(unit);
   const { kind, parameters: p } = metadata;
-  const problem = parameterProblem(kind, p);
+  const supportController = kind === 'buffer' || kind === 'healer';
+  const supportOnly = supportController && !AttackRules.active(unit);
+  const builtInSupport = supportOnly && EnemySkills.originalEnabled(unit);
+  const problem = !supportController || builtInSupport ? parameterProblem(kind, p) : null;
   if (problem) return unavailable(problem);
-  const support = kind === 'buffer' || kind === 'healer';
-  if (!support && !nonnegative(unit.AttackDamage)) return unavailable('Missing or invalid direct attack damage.');
-  if (unit.side !== 'ally' && Number(unit.AttackType) === 3 && !support) return unavailable('Unsupported support behavior.');
+  if (!supportOnly && !nonnegative(unit.AttackDamage)) return unavailable('Missing or invalid direct attack damage.');
+  if (unit.side !== 'ally' && Number(unit.AttackType) === 3 && !supportOnly) return unavailable('Unsupported support behavior.');
   let attackTiming = null, rate = unit.AttackInterval;
   if (context !== undefined) {
     if (!context || typeof context !== 'object' || Array.isArray(context) || !context.descriptor || typeof context.descriptor !== 'object') return unavailable('Attack timing context must include a descriptor.');
@@ -116,18 +121,16 @@ function calculate(unit, assumptions = DEFAULTS, context) {
   }
   const a = scenario.values;
   const output = {
-    directDps: support ? 0 : unit.AttackDamage * rate,
+    directDps: supportOnly ? 0 : unit.AttackDamage * rate,
     healingHps: 0, buffDps: 0, splashDps: 0, preventedDps: 0,
     effectiveOutput: null, cp: null, ...metadata, reason: null,
     nominalAttackRate: unit.AttackInterval, effectiveAttackRate: rate,
     ...(attackTiming ? { attackTiming } : {})
   };
-  if (kind === 'buffer') {
+  if (builtInSupport) {
     const recipients = p.radius === 0 ? 0 : Math.min(p.cap, a.nearbyAllies);
-    output.buffDps = product([a.referenceDps, p.bonus, p.duration, rate, recipients]);
-  } else if (kind === 'healer') {
-    const recipients = p.radius === 0 ? 0 : Math.min(p.cap, a.nearbyAllies);
-    output.healingHps = product([a.referenceHp, Math.min(1, p.healFraction), rate, recipients, a.healingUtilization]);
+    if (kind === 'buffer') output.buffDps = product([a.referenceDps, p.bonus, p.duration, rate, recipients]);
+    else output.healingHps = product([a.referenceHp, Math.min(1, p.healFraction), rate, recipients, a.healingUtilization]);
   } else if (kind === 'splash') {
     // splashTargets counts secondary targets only; directDps owns the primary.
     output.splashDps = product([p.splashDamage, rate, Math.min(p.cap, a.splashTargets)]);
@@ -135,6 +138,14 @@ function calculate(unit, assumptions = DEFAULTS, context) {
     const reduction = averageReduction(p.reduction, p.duration, p.spellInterval);
     if (reduction === null) return unavailable('Ability duration divided by interval exceeds the finite number range.');
     output.preventedDps = product([a.referenceDps, reduction, Math.min(p.cap, a.nearbyOpponents)]);
+  }
+  if (unit.side !== 'ally' && unit.EnemySkills) {
+    for (const { id, setting } of EnemySkills.begin(unit.EnemySkills)) {
+      const recipients = Math.min(setting.maxTargets, a.nearbyAllies);
+      const castRate = 1 / setting.interval;
+      if (id === 'haste') output.buffDps += product([a.referenceDps, setting.percent / 100, setting.duration, castRate, recipients]);
+      if (id === 'heal') output.healingHps += product([a.referenceHp, setting.percent / 100, castRate, recipients, a.healingUtilization]);
+    }
   }
   const shared = CombatPower.calculate({ health: unit.Health, ...output });
   if (shared.reason) return unavailable(shared.reason);

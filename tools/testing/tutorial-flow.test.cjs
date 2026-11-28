@@ -139,6 +139,29 @@ test('the house tutorial can resume and falls back safely on an edited or spent 
  fallback.game.startGuide();assert.equal(fallback.ready().cfg.distNode,fallback.secondPad);
 });
 
+test('the Start Battle prompt owns the only hand and restores the button reminder on close or cancel', () => {
+ for (const dismiss of ['close', 'cancel']) {
+  const h = fixture(), button = h.game.btnStartFight, hand = h.node('ndHead');
+  button.getChildByName = name => name === 'ndHead' ? hand : null;
+  h.game.ctrGame.gameData.getBulidList = () => [];
+  h.position(2, 3);
+  h.setMainLevel(1);
+  h.setHouseLevel(1);
+  h.game._refreshStartBattleHand();
+  assert.equal(hand.active, true);
+  h.game.startGuide();
+  const request = h.requests.at(-1);
+  assert.equal(request.cfg.distNode, button);
+  assert.equal(request.cfg.showHand, 1);
+  assert.equal(hand.active, false);
+  h.game._refreshStartBattleHand();
+  assert.equal(hand.active, false, 'Refreshing the HUD keeps the reminder hidden');
+  if (dismiss === 'cancel') request.callbacks.onCancel();
+  else { h.ready(request); h.close(request); }
+  assert.equal(hand.active, true);
+ }
+});
+
 test('a canceled house tutorial load releases its pause and still points to the purchase card',()=>{
  const h=fixture();h.position(2,2);h.setMainLevel(1);h.game.startGuide();
  assert.equal(h.game.isPauset,true);

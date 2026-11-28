@@ -164,7 +164,7 @@ function actorFixture(row) {
   return { e, actor, target, received, projectile, effects, skills, seeksBuildings, loadCombatRule };
 }
 
-function checkConfiguredAttack(f, attack) {
+function checkConfiguredAttack(f, attack, startAttack = () => f.actor.doAttackStart()) {
   const { e, actor, target, received, seeksBuildings } = f;
   const combat = f.loadCombatRule('UnitAttackCombat'), shots = [];
   const selected = actor.getFind();
@@ -181,13 +181,44 @@ function checkConfiguredAttack(f, attack) {
     shots.push(shot);
     return shot;
   };
-  actor.doAttackStart();
+  startAttack();
   if (attack.delivery === 'ranged') {
     assert.equal(shots.length, 1, actor.cfg.MonsterSource);
     assert.equal(received.length, 0, 'Configured ranged damage waits for impact');
     combat.advance(shots[0], 1);
   } else assert.equal(shots.length, 0);
   assert.equal(received[0], actor.getAttack(), actor.cfg.MonsterSource);
+}
+
+for (const [id, name, skillId, delivery] of [
+  [91052, 'Wizard', 'haste', 'ranged'],
+  [91099, 'Mushroom Walker', 'heal', 'melee']
+]) {
+  test(`${name} attacks on its skill cooldown and can cast again`, () => {
+    const row = config.SoldierCfg[id];
+    const f = actorFixture(row), { actor, e, received } = f;
+    delete actor.onFindList;
+    delete actor.getAttSpeed;
+    const attack = AttackRules.active(row);
+    assert.equal(attack?.delivery, delivery);
+    e.game.gameData.enemies = [actor, { ...f.target, uuid: 'ally', node: new Node('nearby ally', e.game.ndMain, 2, 0) }];
+    const cast = actor.time.EnemySkills.find(skill => skill.id === skillId);
+    assert(cast);
+    const isSupportEffect = event => skillId === 'heal' ? event === cast.setting.percent / 100 : event?.skill === skillId;
+
+    actor.updateCombatTimers(cast.setting.interval);
+    assert.equal(received.length, 1);
+    assert(isSupportEffect(received.pop()));
+
+    checkConfiguredAttack(f, attack, () => actor.onUpdate(0.1));
+    assert.equal(received.length, 1);
+    assert(cast.elapsed > 0 && cast.elapsed < cast.setting.interval);
+
+    received.length = 0;
+    actor.updateCombatTimers(cast.setting.interval);
+    assert.equal(received.length, 1);
+    assert(isSupportEffect(received[0]));
+  });
 }
 
 test('all added monsters initialize their real melee, ranged, buff or healing controller and perform that behavior', () => {

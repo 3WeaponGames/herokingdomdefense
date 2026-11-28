@@ -17,7 +17,7 @@ function advance(guide, group, step, length) {
 function open(owner, cfg, current, commit) {
   if (!active(owner) || owner._tutorialOpen || !current()) return false;
   if (cfg.distNode && !visible(cfg.distNode)) return false;
-  var token = {}, manager = require("UIMgr").UIMgr.getInstance();
+  var token = { target: cfg.distNode }, manager = require("UIMgr").UIMgr.getInstance();
   if (manager.getUIById && manager.getUIById(require("Config").UIID.UIGuide)) return false;
   owner._tutorialOpen = token;
   cfg.isCurrent = function () { return active(owner) && owner._tutorialOpen === token && current(); };
