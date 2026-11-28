@@ -9,7 +9,7 @@ const kingdoms=[
  {id:'skeleton',label:'Undead Kingdom',biome:'Snow',units:[91004,91028,91035,91081,91091,91092,91096,91123,91135,91145]},
  {id:'orc',label:'Orc Kingdom',biome:'Autumn',units:[91124,91125,91127,91128,91129,91133,91139,91160,91174,91183]},
  {id:'ice',label:'Ice Kingdom',biome:'Ice',units:[91007,91023,91030,91034,91052,91073,91093,91126,91147,91148]},
- {id:'demon',label:'Demon Kingdom',biome:'Fire',units:[91025,91031,91049,91060,91116,91119,91144,91185,91186,91188]}
+ {id:'demon',label:'Demon Kingdom',biome:'Fire',units:[91025,91031,91049,91060,91104,91116,91119,91144,91185,91186,91188]}
 ];
 const unassigned={id:'unassigned',label:'Unassigned'};
 const choices=kingdoms.concat(unassigned);

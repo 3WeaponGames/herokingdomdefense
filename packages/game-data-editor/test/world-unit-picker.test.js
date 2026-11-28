@@ -126,13 +126,16 @@ test('the Waves roster shows standard profiles and Wreckers with their kingdoms'
   'Corsair Wraith','Drowned Octopus','Grave Goby','Grizzly Bear','Larva Leech','Reaper Death',
   'Skeleton Soldier','Skeleton Warlord','Venom Spider','Wing Demon Vampire'
  ]);
- assert(rows.some(unit=>unit.name==='Skeleton Rhino'&&unit.kingdom==='unassigned'));
+ assert(rows.some(unit=>unit.name==='Crimson Vampire Lord'&&unit.kingdom==='unassigned'));
  assert.deepEqual(groups.filter(group=>group.units[0].kingdom==='skeleton'&&group.units[0].enemyClass==='boss').map(group=>group.units[0].name),['Skeleton Warlord']);
  assert.deepEqual(namesIn('orc'),[
   'Orc Shaman','Orc Smasher Berserker','Orc Smasher Red',
   'Orc Sword Butcher','Orc Sword Rookie','Orc Sword Veteran','Orc War Beast','Orc War Toad','Orc Wyvern','Raptor Swamp'
  ]);
- assert(rows.some(unit=>unit.name==='Orc War Raptor'&&unit.kingdom==='unassigned'));
+ for(const name of ['Skeleton Bird','Skeleton Haunt','Skeleton Rhino','Skeleton King','Glacier Yeti','Feral Ghoul',
+  'Crypt Ghoul','Scarbrow Vampire','Orc War Raptor','Hellforge Colossus','Blood Ant']){
+  assert(!rows.some(unit=>unit.name===name),name+' was retired');
+ }
  const orcGroups=groups.filter(group=>group.units[0].kingdom==='orc');
  assert.deepEqual(orcGroups.filter(group=>group.units.every(unit=>unit.enemyClass==='boss')).map(group=>group.units[0].name),['Orc Smasher Red']);
  assert(orcGroups.find(group=>group.units[0].name==='Orc Sword Butcher').units.every(unit=>unit.enemyClass==='elite'));
@@ -144,7 +147,7 @@ test('the Waves roster shows standard profiles and Wreckers with their kingdoms'
  for(const name of ['Polar Bear','Snow Bird','Snow Cactus','Winter Ice'])assert(namesIn('unassigned').includes(name),name);
  assert.deepEqual(groups.filter(group=>group.units[0].kingdom==='sun-tomb'&&group.units[0].enemyClass==='boss').map(group=>group.units[0].name),['Plague Doctor']);
  assert.deepEqual(namesIn('demon'),[
-  'Black Goat','Crimson Regent','Demon Wolf','Devil Bee','Fire Lizard','Hellgate Behemoth',
+  'Black Goat','Carapace Iron','Crimson Regent','Demon Wolf','Devil Bee','Fire Lizard','Hellgate Behemoth',
   'Horn Rabbit Demon','Horse Nightmare','Pyre Executioner','Wing Demon Eye'
  ]);
  const spider=groups.find(group=>group.units[0].name==='Venom Spider');

@@ -2057,58 +2057,6 @@
       }
     },
     {
-      "id": 91165,
-      "source": "monster1/Bird_Skeleton",
-      "name": "Skeleton Bird",
-      "role": "vanguard",
-      "behaviorTemplate": 90001,
-      "aerial": true,
-      "portrait": {
-        "pattern": "\\/(?:Body)$",
-        "cropHeight": 0.8,
-        "cropWidth": 1
-      }
-    },
-    {
-      "id": 91166,
-      "source": "monster1/Animal_SkeletonHaunt",
-      "name": "Skeleton Haunt",
-      "role": "vanguard",
-      "behaviorTemplate": 90001,
-      "aerial": false,
-      "portrait": {
-        "pattern": "\\/(?:Head(?:_\\d+)?)$",
-        "cropHeight": 1,
-        "cropWidth": 1
-      }
-    },
-    {
-      "id": 91167,
-      "source": "monster3/Rhino_Skeleton",
-      "name": "Skeleton Rhino",
-      "role": "guardian",
-      "behaviorTemplate": 90002,
-      "aerial": false,
-      "portrait": {
-        "pattern": "\\/Head$",
-        "cropHeight": 1,
-        "cropWidth": 1
-      }
-    },
-    {
-      "id": 91169,
-      "source": "monster3/Winter_SkeletonKing",
-      "name": "Skeleton King",
-      "role": "mystic",
-      "behaviorTemplate": 90001,
-      "aerial": false,
-      "portrait": {
-        "pattern": "\\/(?:Head(?:_\\d+)?)$",
-        "cropHeight": 1,
-        "cropWidth": 1
-      }
-    },
-    {
       "id": 91171,
       "source": "monster2/Alien_CrimsonVampire",
       "name": "Crimson Vampire Lord",
@@ -2118,19 +2066,6 @@
       "portrait": {
         "pattern": "\\/Body$",
         "cropHeight": 0.78,
-        "cropWidth": 1
-      }
-    },
-    {
-      "id": 91172,
-      "source": "monster3/Winter_GlacierYeti",
-      "name": "Glacier Yeti",
-      "role": "guardian",
-      "behaviorTemplate": 90003,
-      "aerial": false,
-      "portrait": {
-        "pattern": "\\/Body$",
-        "cropHeight": 0.83,
         "cropWidth": 1
       }
     },
@@ -2161,58 +2096,6 @@
       }
     },
     {
-      "id": 91175,
-      "source": "monster1/Wolf_FeralGhoul",
-      "name": "Feral Ghoul",
-      "role": "vanguard",
-      "behaviorTemplate": 90001,
-      "aerial": false,
-      "portrait": {
-        "pattern": "\\/Head$",
-        "cropHeight": 1,
-        "cropWidth": 1
-      }
-    },
-    {
-      "id": 91176,
-      "source": "monster3/OrcSmasher_CryptGhoul",
-      "name": "Crypt Ghoul",
-      "role": "bruiser",
-      "behaviorTemplate": 90002,
-      "aerial": false,
-      "portrait": {
-        "pattern": "\\/Head$",
-        "cropHeight": 1,
-        "cropWidth": 1
-      }
-    },
-    {
-      "id": 91179,
-      "source": "monster3/OrcSword_ScarbrowVampire",
-      "name": "Scarbrow Vampire",
-      "role": "fighter",
-      "behaviorTemplate": 90001,
-      "aerial": false,
-      "portrait": {
-        "pattern": "\\/Head$",
-        "cropHeight": 1,
-        "cropWidth": 1
-      }
-    },
-    {
-      "id": 91181,
-      "source": "monster3/Raptor_OrcWar",
-      "name": "Orc War Raptor",
-      "role": "vanguard",
-      "behaviorTemplate": 90001,
-      "aerial": false,
-      "portrait": {
-        "pattern": "\\/(?:Head|Jaw)$",
-        "cropHeight": 1,
-        "cropWidth": 1
-      }
-    },
-    {
       "id": 91183,
       "source": "monster3/Rhino_OrcWarBeast",
       "name": "Orc War Beast",
@@ -2221,19 +2104,6 @@
       "aerial": false,
       "portrait": {
         "pattern": "\\/Head$",
-        "cropHeight": 1,
-        "cropWidth": 1
-      }
-    },
-    {
-      "id": 91184,
-      "source": "monster3/Winter_HellforgeColossus",
-      "name": "Hellforge Colossus",
-      "role": "mystic",
-      "behaviorTemplate": 90003,
-      "aerial": false,
-      "portrait": {
-        "pattern": "\\/(?:Body|Body_2|Armor)$",
         "cropHeight": 1,
         "cropWidth": 1
       }
@@ -2260,19 +2130,6 @@
       "aerial": false,
       "portrait": {
         "pattern": "\\/(?:Head(?:_\\d+)?)$",
-        "cropHeight": 1,
-        "cropWidth": 1
-      }
-    },
-    {
-      "id": 91187,
-      "source": "monster2/Ant_Blood",
-      "name": "Blood Ant",
-      "role": "fighter",
-      "behaviorTemplate": 90001,
-      "aerial": false,
-      "portrait": {
-        "pattern": "\\/Body$",
         "cropHeight": 1,
         "cropWidth": 1
       }

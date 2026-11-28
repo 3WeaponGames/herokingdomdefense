@@ -5,6 +5,7 @@ const Classes = require('../lib/enemy-classes');
 
 const DEFAULT_WIDTH = 456;
 const MIN_WIDTH = 208;
+const TARGET_BADGES = { hero: 'Target Hero', castle: 'Target Castle' };
 
 function mount({ workspace, sidebar, detail, list, describe, select }) {
   const document = workspace.ownerDocument;
@@ -119,13 +120,18 @@ function mount({ workspace, sidebar, detail, list, describe, select }) {
     image.draggable = false;
     art.append(image, status);
     const label = make('strong', ''), subtitle = make('small', 'gt-unit-card-subtitle');
+    const traits = make('span', 'gt-unit-card-traits');
+    const role = make('span', 'gt-unit-card-trait');
+    const movement = make('span', 'gt-unit-card-trait');
+    const target = make('span', 'gt-unit-card-trait');
     const text = make('span', 'gt-unit-card-text'), badge = make('span', 'gt-unit-card-class');
-    text.append(label, subtitle);
+    traits.append(role, movement, target);
+    text.append(label, traits, subtitle);
     const check = make('span', 'gt-unit-card-check');
     check.textContent = '✓';
     check.setAttribute('aria-hidden', 'true');
     card.append(art, text, badge, check);
-    return { card, image, status, label, subtitle, badge };
+    return { card, image, status, label, subtitle, traits, role, movement, target, badge };
   }
   function render(rows, selected, revision) {
     const refresh = !gallery || version !== revision || dirty;
@@ -147,12 +153,25 @@ function mount({ workspace, sidebar, detail, list, describe, select }) {
       const previous = cards.get(row.key);
       const record = previous || cardFor(row.key);
       cards.set(row.key, record);
-      const { card, image, status, label, subtitle, badge } = record;
+      const { card, image, status, label, subtitle, traits, role, movement, target, badge } = record;
       const active = row.key === selected;
       card.classList.toggle('active', active);
       card.setAttribute('aria-current', String(active));
       label.textContent = row.label;
       subtitle.textContent = row.subtitle;
+      subtitle.hidden = !row.subtitle;
+      traits.hidden = !row.fightingTypeName;
+      role.dataset.role = row.fightingType || '';
+      role.textContent = row.fightingTypeName;
+      movement.dataset.movement = row.flying ? 'flying' : 'ground';
+      movement.textContent = row.flying ? 'Flying' : 'Ground';
+      const priority = row.targeting?.mode === 'priority';
+      const targetGroup = priority ? row.targeting.order[0] : row.targeting?.mode;
+      const targetLabel = TARGET_BADGES[targetGroup];
+      target.hidden = !targetLabel;
+      target.dataset.target = targetLabel ? targetGroup : '';
+      target.textContent = targetLabel || '';
+      target.title = targetLabel ? (targetGroup === 'hero' ? 'Hero' : 'Castle') + (priority ? ' first' : ' only') : '';
       badge.hidden = !row.enemyClass;
       badge.dataset.enemyClass = row.enemyClass || '';
       badge.textContent = row.enemyClass ? Classes.label(row.enemyClass) : '';

@@ -1042,44 +1042,6 @@
       "variantOf": "monster1/Slime_Purple"
     },
     {
-      "id": "monster1/Bird_Skeleton",
-      "name": "Skeleton Bird",
-      "pack": "monster1",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Bird/Bird_Snow.prefab",
-      "skeleton": "assets/resources/unit-library/monster1/Units/SkeletonVariants/Bird_Skeleton.json",
-      "uuid": "9580ba99-ca27-5993-a89f-e6f5039b3147",
-      "resource": "unit-library/monster1/Units/SkeletonVariants/Bird_Skeleton",
-      "animations": [
-        "move",
-        "die",
-        "idle",
-        "hit",
-        "attack"
-      ],
-      "bones": 15,
-      "slots": 7,
-      "variantOf": "monster1/Bird_Snow"
-    },
-    {
-      "id": "monster1/Animal_SkeletonHaunt",
-      "name": "Skeleton Haunt",
-      "pack": "monster1",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Animal/Animal_Fox.prefab",
-      "skeleton": "assets/resources/unit-library/monster1/Units/SkeletonVariants/Animal_SkeletonHaunt.json",
-      "uuid": "0dcb0d83-5306-5143-af17-22ee87168097",
-      "resource": "unit-library/monster1/Units/SkeletonVariants/Animal_SkeletonHaunt",
-      "animations": [
-        "attack",
-        "idle",
-        "move",
-        "die",
-        "hit"
-      ],
-      "bones": 20,
-      "slots": 11,
-      "variantOf": "monster1/Animal_Fox"
-    },
-    {
       "id": "monster1/Bird_OrcWyvern",
       "name": "Orc Wyvern",
       "pack": "monster1",
@@ -1097,25 +1059,6 @@
       "bones": 15,
       "slots": 8,
       "variantOf": "monster1/Bird_Eagle"
-    },
-    {
-      "id": "monster1/Wolf_FeralGhoul",
-      "name": "Feral Ghoul",
-      "pack": "monster1",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Wolf/Wolf_Gray.prefab",
-      "skeleton": "assets/resources/unit-library/monster1/Units/GhoulVariants/Wolf_FeralGhoul.json",
-      "uuid": "5adc8d6b-b6f0-5cec-a7c5-25eac71fda89",
-      "resource": "unit-library/monster1/Units/GhoulVariants/Wolf_FeralGhoul",
-      "animations": [
-        "attack",
-        "die",
-        "hit",
-        "idle",
-        "move"
-      ],
-      "bones": 26,
-      "slots": 11,
-      "variantOf": "monster1/Wolf_Gray"
     },
     {
       "id": "monster1/Buffalo_HellgateBehemoth",

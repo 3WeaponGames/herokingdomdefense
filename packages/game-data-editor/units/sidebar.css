@@ -98,7 +98,36 @@
 }
 .gt-unit-card .gt-unit-card-status[hidden], .gt-unit-card-class[hidden] { display: none; }
 .gt-unit-card-text { width: 100%; min-width: 0; overflow-wrap: anywhere; }
+.gt-unit-card-traits {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3px;
+  margin-top: 4px;
+}
+.gt-unit-card-traits[hidden], .gt-unit-card-trait[hidden], .gt-unit-card .gt-unit-card-subtitle[hidden] { display: none; }
 .gt-unit-card-subtitle { line-height: 1.35; }
+.gt-unit-card-trait {
+  max-width: 100%;
+  padding: 2px 6px;
+  font-size: 10px;
+  line-height: 1.2;
+  border: 1px solid #84919e;
+  border-radius: 9px;
+  background: #303943;
+  color: #dee7ef;
+}
+.gt-unit-card-trait[data-role="fighter"] { color: #cce1ff; border-color: #6089ba; background: #283d59; }
+.gt-unit-card-trait[data-role="guardian"] { color: #bdebb4; border-color: #6d9967; background: #284427; }
+.gt-unit-card-trait[data-role="vanguard"] { color: #ffdab7; border-color: #b58258; background: #553922; }
+.gt-unit-card-trait[data-role="skirmisher"] { color: #e1eea2; border-color: #909d56; background: #41482a; }
+.gt-unit-card-trait[data-role="bruiser"] { color: #ffc2b7; border-color: #b46e61; background: #522f2b; }
+.gt-unit-card-trait[data-role="mystic"] { color: #e4d3ff; border-color: #9a80c1; background: #423358; }
+.gt-unit-card-trait[data-role="wrecker"] { color: #ffe5a0; border-color: #b79a55; background: #50401f; }
+.gt-unit-card-trait[data-movement="flying"] { color: #bcf2fd; border-color: #61a4b5; background: #25434d; }
+.gt-unit-card-trait[data-movement="ground"] { color: #e2ded2; border-color: #8b8a82; background: #3d3b36; }
+.gt-unit-card-trait[data-target="hero"] { color: #ffbfe4; border-color: #aa658f; background: #522f49; }
+.gt-unit-card-trait[data-target="castle"] { color: #b6f3de; border-color: #64a394; background: #244740; }
 .gt-unit-card-class {
   margin-top: auto;
   padding: 2px 6px;

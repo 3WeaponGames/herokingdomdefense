@@ -9373,46 +9373,6 @@
       "zh": "身穿橄榄绿长袍、戴着紫色兜帽的兽人，用顶端系着葫芦的法杖施法。",
       "context": "Enemy guide appearance · Orc Shaman"
     },
-    "data.monster-roster.91165.name": {
-      "en": "Skeleton Bird",
-      "zh": "骷髅鸟",
-      "context": "Skeleton roster · monster1/Bird_Skeleton"
-    },
-    "data.unitguide.91165.description": {
-      "en": "A horned skeletal owl with lavender wings and bright mint-green eyes. It swoops down on rattling wings.",
-      "zh": "一只长着淡紫色骨翼和薄荷绿眼睛的角鸮，振动骨翼俯冲而下。",
-      "context": "Enemy guide appearance · Skeleton Bird"
-    },
-    "data.monster-roster.91166.name": {
-      "en": "Skeleton Haunt",
-      "zh": "骷髅狼灵",
-      "context": "Skeleton roster · monster1/Animal_SkeletonHaunt"
-    },
-    "data.unitguide.91166.description": {
-      "en": "A skeletal wolf with charcoal bones and bright yellow eyes. It attacks with a swift pounce.",
-      "zh": "一只长着炭灰色骨骼和亮黄色眼睛的骷髅狼，擅长迅猛扑击。",
-      "context": "Enemy guide appearance · Skeleton Haunt"
-    },
-    "data.monster-roster.91167.name": {
-      "en": "Skeleton Rhino",
-      "zh": "骷髅犀牛",
-      "context": "Skeleton roster · monster3/Rhino_Skeleton"
-    },
-    "data.unitguide.91167.description": {
-      "en": "An armored bone rhino that charges behind a massive ivory horn.",
-      "zh": "披着甲胄的骷髅犀牛，低下巨大的骨角发起冲锋。",
-      "context": "Enemy guide appearance · Skeleton Rhino"
-    },
-    "data.monster-roster.91169.name": {
-      "en": "Skeleton King",
-      "zh": "骷髅王",
-      "context": "Skeleton roster · monster3/Winter_SkeletonKing"
-    },
-    "data.unitguide.91169.description": {
-      "en": "A skeletal king in a gilded helmet, wielding a broad sword and a heavy shield.",
-      "zh": "头戴镀金头盔、手持阔剑与重盾的骷髅王。",
-      "context": "Enemy guide appearance · Skeleton King"
-    },
     "data.monster-roster.91171.name": {
       "en": "Crimson Vampire Lord",
       "zh": "猩红吸血鬼领主",
@@ -9422,16 +9382,6 @@
       "en": "The lord of the fire coven heals nearby monsters from beneath a scarlet, bat-wing collar.",
       "zh": "火焰集会的领主披着猩红蝠翼高领，为附近的怪物治疗伤势。",
       "context": "Enemy guide · Crimson Vampire Lord"
-    },
-    "data.monster-roster.91172.name": {
-      "en": "Glacier Yeti",
-      "zh": "冰川雪怪",
-      "context": "Minimal ice boss · monster3/Winter_GlacierYeti"
-    },
-    "data.unitguide.91172.description": {
-      "en": "A shaggy ice giant whose glacier fists hurl shards at defenders from a distance.",
-      "zh": "长着雪白厚毛的冰川巨怪，用冰晶护拳远距离投掷碎冰攻击守军。",
-      "context": "Enemy guide · Glacier Yeti"
     },
     "data.monster-roster.91173.name": {
       "en": "Flying Slime",
@@ -9453,46 +9403,6 @@
       "zh": "兽人驯养这头橄榄绿鳞片的双足飞龙，让它从高空俯冲袭击守军。",
       "context": "Enemy guide · Orc Wyvern"
     },
-    "data.monster-roster.91175.name": {
-      "en": "Feral Ghoul",
-      "zh": "狂野食尸鬼",
-      "context": "Minimal ghoul · monster1/Wolf_FeralGhoul"
-    },
-    "data.unitguide.91175.description": {
-      "en": "A low-crawling grave scavenger that rushes forward to bite and claw at defenders.",
-      "zh": "匍匐在墓地里的食尸鬼会猛扑上前，用利齿和爪子攻击守军。",
-      "context": "Enemy guide · Feral Ghoul"
-    },
-    "data.monster-roster.91176.name": {
-      "en": "Crypt Ghoul",
-      "zh": "地穴食尸鬼",
-      "context": "Minimal ghoul · monster3/OrcSmasher_CryptGhoul"
-    },
-    "data.unitguide.91176.description": {
-      "en": "A heavy crypt-dweller that swings a broken tombstone lashed to a wooden haft.",
-      "zh": "身躯沉重的地穴食尸鬼把石碑绑在木柄上，抡起石锤砸向守军。",
-      "context": "Enemy guide · Crypt Ghoul"
-    },
-    "data.monster-roster.91179.name": {
-      "en": "Scarbrow Vampire",
-      "zh": "疤眉吸血鬼",
-      "context": "Minimal elite vampire · monster3/OrcSword_ScarbrowVampire"
-    },
-    "data.unitguide.91179.description": {
-      "en": "A scarred vampire knight who advances with a shield and a heavy serrated blade.",
-      "zh": "一位伤痕累累的吸血鬼骑士，持盾挥舞沉重的锯齿剑向前推进。",
-      "context": "Enemy guide · Scarbrow Vampire"
-    },
-    "data.monster-roster.91181.name": {
-      "en": "Orc War Raptor",
-      "zh": "兽人战斗迅猛龙",
-      "context": "Monster 3 · monster3/Raptor_OrcWar"
-    },
-    "data.unitguide.91181.description": {
-      "en": "An armored raptor that rushes ahead of the orc line and snaps at defenders.",
-      "zh": "披着护甲的迅猛龙，会冲在兽人队伍前方撕咬守军。",
-      "context": "Enemy guide · Orc War Raptor"
-    },
     "data.monster-roster.91183.name": {
       "en": "Orc War Beast",
       "zh": "兽人战兽",
@@ -9502,16 +9412,6 @@
       "en": "A heavily armored rhino that drives its horn into nearby enemies.",
       "zh": "身披重甲的犀牛，用巨角攻击附近的敌人。",
       "context": "Enemy guide · Orc War Beast"
-    },
-    "data.monster-roster.91184.name": {
-      "en": "Hellforge Colossus",
-      "zh": "狱炉巨像",
-      "context": "Demon Kingdom · monster3/Winter_HellforgeColossus"
-    },
-    "data.unitguide.91184.description": {
-      "en": "A plate-armored colossus that hurls a searing fist at defenders.",
-      "zh": "身披锻甲的巨像挥出灼热铁拳，攻击守军。",
-      "context": "Enemy guide · Hellforge Colossus"
     },
     "data.monster-roster.91185.name": {
       "en": "Pyre Executioner",
@@ -9532,16 +9432,6 @@
       "en": "An armored bull that lowers its horns to ram its target.",
       "zh": "披甲的魔牛低头用双角冲撞敌人。",
       "context": "Enemy guide · Hellgate Behemoth"
-    },
-    "data.monster-roster.91187.name": {
-      "en": "Blood Ant",
-      "zh": "血色蚂蚁",
-      "context": "Monster Pack 2 · vampire enemy"
-    },
-    "data.unitguide.91187.description": {
-      "en": "A crimson ant that heals for part of the damage dealt by its bites.",
-      "zh": "深红色的蚂蚁，能通过撕咬恢复相当于部分伤害值的生命。",
-      "context": "Blood Ant enemy guide"
     },
     "data.monster-roster.91188.name": {
       "en": "Crimson Regent",

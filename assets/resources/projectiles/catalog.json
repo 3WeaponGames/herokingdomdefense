@@ -14250,19 +14250,6 @@
       },
       "thumbnailTime": 3.8289823001684042,
       "thumbnailSha256": "57c12206700ff1273b9bae1ae9b6bdb5e8349603a3f8e19048d8df7224bd3c7e"
-    },
-    {
-      "id": "monster:hellforge-fist",
-      "name": "Hellforge molten fist",
-      "category": "Custom monsters",
-      "role": "flight",
-      "kind": "sprite",
-      "bundle": "resources",
-      "resource": "unit-library/monster3/Units/DemonVariants/HellforgeFist",
-      "image": "assets/resources/unit-library/monster3/Units/DemonVariants/HellforgeFist.png",
-      "uuid": "3210ddb6-ec7e-5cdc-a319-e1d116b40fca",
-      "size": 42,
-      "rotation": 0
     }
   ],
   "sets": [
@@ -15185,13 +15172,6 @@
       "name": "Spine Projectile 67",
       "category": "Spine Projectiles",
       "flight": "spine-projectile:fly_67"
-    },
-    {
-      "id": "monster:hellforge-fist",
-      "name": "Hellforge molten fist",
-      "category": "Custom monsters",
-      "flight": "monster:hellforge-fist",
-      "impact": "fantasy:fire-impact"
     }
   ],
   "trails": [
@@ -15459,13 +15439,6 @@
       "impact": "toon:hit-10",
       "trail": false
     },
-    "enemy:91172": {
-      "set": "toon:projectile-14-ice",
-      "flight": "toon:projectile-14-ice",
-      "launch": "toon:flash-14",
-      "impact": "toon:hit-14",
-      "trail": false
-    },
     "enemy:100248": {
       "set": "spine-projectile:fly_31",
       "flight": "spine-projectile:fly_31",
@@ -15547,16 +15520,6 @@
       "launch": "toon:flash-12",
       "impact": "toon:hit-12"
     },
-    "enemy:91165": {
-      "set": "toon:projectile-6-magic-stone",
-      "size": 38,
-      "launchOffsetX": 15,
-      "launchOffsetY": 8,
-      "tint": "#ebdfcc",
-      "flight": "toon:projectile-6-magic-stone",
-      "launch": "toon:flash-6",
-      "impact": "toon:hit-6"
-    },
     "enemy:91135": {
       "set": "toon:projectile-8-twist",
       "size": 44,
@@ -15624,15 +15587,6 @@
       "flight": "toon:projectile-4-red-star",
       "launch": "toon:flash-4",
       "impact": "toon:hit-4"
-    },
-    "enemy:91184": {
-      "set": "monster:hellforge-fist",
-      "size": 42,
-      "launchOffsetX": 0,
-      "launchOffsetY": 0,
-      "flight": "monster:hellforge-fist",
-      "launch": "",
-      "impact": "fantasy:fire-impact"
     },
     "enemy:91051": {
       "set": "toon:projectile-2-energy-orb",

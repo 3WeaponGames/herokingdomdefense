@@ -926,25 +926,6 @@
       "bones": 14,
       "slots": 8,
       "variantOf": "monster2/Alien_Vampire"
-    },
-    {
-      "id": "monster2/Ant_Blood",
-      "name": "Blood Ant",
-      "pack": "monster2",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 2/Prefabs/Ant/Ant_Honey.prefab",
-      "skeleton": "assets/resources/unit-library/monster2/Units/VampireVariants/Ant_Blood.json",
-      "uuid": "9779c23f-2239-517f-a8c2-205bd7272a51",
-      "resource": "unit-library/monster2/Units/VampireVariants/Ant_Blood",
-      "animations": [
-        "die",
-        "attack",
-        "hit",
-        "move",
-        "idle"
-      ],
-      "bones": 22,
-      "slots": 12,
-      "variantOf": "monster2/Ant_Honey"
     }
   ],
   "parts": [

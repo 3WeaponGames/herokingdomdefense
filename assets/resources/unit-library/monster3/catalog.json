@@ -932,63 +932,6 @@
       "variantOf": "monster3/Reaper_Death"
     },
     {
-      "id": "monster3/Rhino_Skeleton",
-      "name": "Skeleton Rhino",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Rhino/Rhino_Armor.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/SkeletonVariants/Rhino_Skeleton.json",
-      "uuid": "8466788b-4f9f-5729-a2a1-06ed451a75ad",
-      "resource": "unit-library/monster3/Units/SkeletonVariants/Rhino_Skeleton",
-      "animations": [
-        "move",
-        "hit",
-        "die",
-        "attack",
-        "idle"
-      ],
-      "bones": 24,
-      "slots": 12,
-      "variantOf": "monster3/Rhino_Armor"
-    },
-    {
-      "id": "monster3/Winter_SkeletonKing",
-      "name": "Skeleton King",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 2/Prefabs/Skeleton/Skeleton_Warlord.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/SkeletonVariants/Winter_SkeletonKing.json",
-      "uuid": "60e11e30-ae69-5dd6-aec3-920c0023cb5b",
-      "resource": "unit-library/monster3/Units/SkeletonVariants/Winter_SkeletonKing",
-      "animations": [
-        "attack",
-        "die",
-        "move",
-        "hit",
-        "idle"
-      ],
-      "bones": 24,
-      "slots": 11,
-      "variantOf": "monster2/Skeleton_Warlord"
-    },
-    {
-      "id": "monster3/Winter_GlacierYeti",
-      "name": "Glacier Yeti",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Winter/Winter_Ice.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/BiomeBosses/Winter_GlacierYeti.json",
-      "uuid": "67d19e5c-901a-5bec-a8dc-6df5033add9d",
-      "resource": "unit-library/monster3/Units/BiomeBosses/Winter_GlacierYeti",
-      "animations": [
-        "idle",
-        "hit",
-        "attack",
-        "move",
-        "die"
-      ],
-      "bones": 24,
-      "slots": 9,
-      "variantOf": "monster3/Winter_Ice"
-    },
-    {
       "id": "monster3/WingDemon_FlyingSlime",
       "name": "Flying Slime",
       "pack": "monster3",
@@ -1008,63 +951,6 @@
       "variantOf": "monster1/Jellyfish_Bouncy"
     },
     {
-      "id": "monster3/OrcSmasher_CryptGhoul",
-      "name": "Crypt Ghoul",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSmasher_Red.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/GhoulVariants/OrcSmasher_CryptGhoul.json",
-      "uuid": "d3f10b30-ca4d-5a4a-a318-85a474599866",
-      "resource": "unit-library/monster3/Units/GhoulVariants/OrcSmasher_CryptGhoul",
-      "animations": [
-        "die",
-        "move",
-        "idle",
-        "hit",
-        "attack"
-      ],
-      "bones": 35,
-      "slots": 15,
-      "variantOf": "monster3/OrcSmasher_Red"
-    },
-    {
-      "id": "monster3/OrcSword_ScarbrowVampire",
-      "name": "Scarbrow Vampire",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSword_Butcher.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/VampireVariants/OrcSword_ScarbrowVampire.json",
-      "uuid": "3fb25216-71d5-5b36-a2d2-3127890762ce",
-      "resource": "unit-library/monster3/Units/VampireVariants/OrcSword_ScarbrowVampire",
-      "animations": [
-        "die",
-        "move",
-        "idle",
-        "hit",
-        "attack"
-      ],
-      "bones": 35,
-      "slots": 13,
-      "variantOf": "monster3/OrcSword_Butcher"
-    },
-    {
-      "id": "monster3/Raptor_OrcWar",
-      "name": "Orc War Raptor",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Raptor/Raptor_Swamp.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/RaptorVariants/Raptor_OrcWar.json",
-      "uuid": "c6bac8de-dcf1-52a4-acfe-34dcf0b4d1af",
-      "resource": "unit-library/monster3/Units/RaptorVariants/Raptor_OrcWar",
-      "animations": [
-        "die",
-        "idle",
-        "attack",
-        "move",
-        "hit"
-      ],
-      "bones": 20,
-      "slots": 9,
-      "variantOf": "monster3/Raptor_Swamp"
-    },
-    {
       "id": "monster3/Rhino_OrcWarBeast",
       "name": "Orc War Beast",
       "pack": "monster3",
@@ -1082,25 +968,6 @@
       "bones": 24,
       "slots": 12,
       "variantOf": "monster3/Rhino_Armor"
-    },
-    {
-      "id": "monster3/Winter_HellforgeColossus",
-      "name": "Hellforge Colossus",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Winter/Winter_Ice.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/DemonVariants/Winter_HellforgeColossus.json",
-      "uuid": "b033bcba-d317-53dc-a7c6-3e37b9f01b8b",
-      "resource": "unit-library/monster3/Units/DemonVariants/Winter_HellforgeColossus",
-      "animations": [
-        "idle",
-        "hit",
-        "attack",
-        "move",
-        "die"
-      ],
-      "bones": 24,
-      "slots": 9,
-      "variantOf": "monster3/Winter_Ice"
     },
     {
       "id": "monster3/OrcSmasher_PyreExecutioner",

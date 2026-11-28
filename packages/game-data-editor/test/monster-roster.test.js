@@ -102,7 +102,7 @@ test('pack and kingdom filters, search and wave choices leave drafts and files u
         assert.deepEqual(shown.map(modelKey).sort(), expectedModels, pack + ' model coverage');
         assert.equal(f.panel.$count.textContent, expectedModels.length + ' models · ' + expected.length + ' profiles', pack + ' count');
         if (pack === 'custom') {
-            for (const name of ['Ironclad Slime', 'Ram Slime', 'Quake Slime', 'Prism Slime King', 'Skeleton King', 'Orc Shaman']) assert(shown.some(row => row.label === name), name);
+            for (const name of ['Ironclad Slime', 'Ram Slime', 'Quake Slime', 'Prism Slime King', 'Crimson Vampire Lord', 'Orc Shaman']) assert(shown.some(row => row.label === name), name);
             assert(!shown.some(row => row.label === 'Blue Snail'));
             const sibling = expected.find(row => expected.some(other => other.key !== row.key && modelKey(other) === modelKey(row)));
             assert(sibling, 'custom units include profiles sharing a model');
@@ -143,6 +143,25 @@ test('pack and kingdom filters, search and wave choices leave drafts and files u
     assert(visibleNames().includes('Carrion Bird')); assert(visibleNames().includes('Black Plague')); assert(visibleNames().includes('Evilmass Knight'));
     f.panel._unitPack = 'monster1'; f.panel.$search.value = 'desert bird'; f.panel._renderList();
     assert.deepEqual(visibleNames(), ['Carrion Bird']);
+    let cards;
+    f.panel._unitSidebar = { render(rows) { cards = rows; } };
+    f.panel._unitPack = 'all'; f.panel._unitKingdom = 'demon'; f.panel.$search.value = ''; f.panel._renderList();
+    for (const [name, fightingType, flying, target, rank] of [
+        ['Carapace Iron', 'Guardian', false, undefined, 'normal'],
+        ['Wing Demon Eye', 'Mystic', true, undefined, 'normal'],
+        ['Horn Rabbit Demon', 'Bruiser', false, undefined, 'elite'],
+        ['Demon Wolf', 'Vanguard', false, 'hero', 'normal'],
+        ['Hellgate Behemoth', 'Wrecker', false, 'castle', 'normal'],
+        ['Black Goat', 'Fighter', false, undefined, 'boss']
+    ]) {
+        const card = cards.find(row => row.label === name);
+        assert(card, name + ' is in the Demon Kingdom');
+        assert.equal(card.subtitle, '', name + ' uses only the badges');
+        assert.equal(card.fightingTypeName, fightingType, name + ' fighting type');
+        assert.equal(card.flying, flying, name + ' movement');
+        assert.equal(card.targeting?.mode, target, name + ' targeting');
+        assert.equal(card.enemyClass, rank, name + ' classification');
+    }
     const choices = f.panel._unitOptions(false);
     for (const row of monsters) {
         const choice = choices.find(option => option.value === Number(row.unitID));

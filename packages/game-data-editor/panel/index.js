@@ -250,8 +250,18 @@ function create(kind){
       const shown=kind==='units'?UnitProfiles.list(this,rows):rows;this.$count.textContent=kind==='units'?shown.length+' models · '+rows.length+' profiles':rows.length+' / '+all.length+' items';
       if(this._unitSidebar){
         const settings=this._data('overrides');
-        this._unitSidebar.render(shown.map(row=>({key:row.key,label:stripRich(row.label),subtitle:row.subtitle,
-          enemyClass:row.unitType==='enemy'?EnemyClasses.resolve(settings,row.unitID):null})),this._selected,this._snapshot.version);
+        const cards=shown.map(row=>{
+          const enemy=row.unitType==='enemy',hero=row.unitType==='hero';
+          const fightingType=(enemy&&row.record.FightingType)||this._unitRoleId(row.unitType,row.unitID);
+          return {
+            key:row.key,label:stripRich(row.label),subtitle:hero?row.subtitle:'',
+            fightingType,fightingTypeName:hero?'':this._text(settings.unitTypes?.[fightingType]?.name)||'Unassigned',
+            flying:hero?null:FlightTargeting.isFlying({cfg:row.record}),
+            targeting:enemy?EnemyTargeting.settings(row.record):null,
+            enemyClass:enemy?EnemyClasses.resolve(settings,row.unitID):null
+          };
+        });
+        this._unitSidebar.render(cards,this._selected,this._snapshot.version);
         return;
       }
       clear(this.$list);
@@ -352,7 +362,11 @@ function create(kind){
       if(key==='CounterType')meta.options=[{value:'',label:'None'},...Object.entries(this._data('overrides').unitTypes||{}).map(([value,type])=>({value,label:type.name}))];
       this._field(container,meta.label,value,v=>this._set(doc,keys,v),meta);
     },
-    _unitRole(side,id){const tools=this._data('overrides'),key=(side||'enemy')+':'+id+':'+UnitRecords.form(side||'enemy',id),role=(tools.unitTypeAssignments||{})[key];return ((tools.unitTypes||{})[role]||{}).name||'';},
+    _unitRoleId(side,id){
+      side=side||'enemy';
+      return this._data('overrides').unitTypeAssignments?.[side+':'+id+':'+UnitRecords.form(side,id)];
+    },
+    _unitRole(side,id){return this._data('overrides').unitTypes?.[this._unitRoleId(side,id)]?.name||'';},
     _unitOptions(forms,side){
       const data=this._data('A'),units=(side==='ally'&&data.AllyCfg)||data.SoldierCfg||{};
       const chooseEnemy=!forms&&side!=='ally',profiles=this._data('overrides').unitProfiles||{};
