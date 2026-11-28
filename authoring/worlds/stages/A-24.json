@@ -862,7 +862,7 @@
           "1#100299,1",
           "2#91119,9",
           "3#91043,2",
-          "4#91170,1",
+          "4#100638,1",
           "5#100301,4",
           "7#100772,1",
           "8#91064,5",
@@ -909,7 +909,7 @@
           {
             "id": "legacy-4-0",
             "spawnId": 4,
-            "unitId": 91170,
+            "unitId": 100638,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -7230,7 +7230,7 @@
   "nextBuilding": 21,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "6cded1d80d6f0a2735d219be8bfee0fc44fde522972f312a016a13cb6edf152a",
+  "sourceRevision": "b180958837588d44196f39827e5756ba5d18ba16ba72f285dafacd59206224ff",
   "templates": {},
   "spawnGroups": [
     {

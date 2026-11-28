@@ -7,62 +7,62 @@ repeat: none
 Reaper_OrcShaman_Hit
   rotate: false
   xy: 2, 2
-  size: 228, 303
-  orig: 228, 303
+  size: 225, 306
+  orig: 225, 306
   offset: 0, 0
   index: -1
 Reaper_OrcShaman_Hit_2
   rotate: false
-  xy: 234, 2
-  size: 228, 303
-  orig: 228, 303
+  xy: 231, 2
+  size: 225, 306
+  orig: 225, 306
   offset: 0, 0
   index: -1
 Reaper_OrcShaman_Weapon
   rotate: false
-  xy: 466, 2
-  size: 154, 255
-  orig: 154, 255
+  xy: 460, 2
+  size: 118, 254
+  orig: 118, 254
   offset: 0, 0
   index: -1
 Reaper_OrcShaman_Eff
   rotate: false
-  xy: 624, 2
+  xy: 582, 2
   size: 162, 197
   orig: 162, 197
   offset: 0, 0
   index: -1
 Reaper_OrcShaman_Attack
   rotate: false
-  xy: 790, 2
-  size: 214, 186
-  orig: 214, 186
-  offset: 0, 0
-  index: -1
-Reaper_OrcShaman_Body
-  rotate: false
-  xy: 1008, 2
-  size: 219, 174
-  orig: 219, 174
-  offset: 0, 0
-  index: -1
-Reaper_OrcShaman_Head
-  rotate: false
-  xy: 1231, 2
-  size: 150, 158
-  orig: 150, 158
+  xy: 748, 2
+  size: 207, 160
+  orig: 207, 160
   offset: 0, 0
   index: -1
 u_9b32c0013c064964fa5a5b1bd341c539
   rotate: false
-  xy: 1385, 2
+  xy: 959, 2
   size: 139, 158
   orig: 139, 158
   offset: 0, 0
   index: -1
+Reaper_OrcShaman_Body
+  rotate: false
+  xy: 1102, 2
+  size: 209, 157
+  orig: 209, 157
+  offset: 0, 0
+  index: -1
+Reaper_OrcShaman_Head
+  rotate: false
+  xy: 1315, 2
+  size: 189, 138
+  orig: 189, 138
+  offset: 0, 0
+  index: -1
 u_9c01a622fc8aecf4b9ad207e021f309c
   rotate: false
-  xy: 1528, 2
+  xy: 1508, 2
   size: 216, 64
   orig: 216, 64
   offset: 0, 0

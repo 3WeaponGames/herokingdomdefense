@@ -84,11 +84,11 @@ test('kingdom browsing exposes units with shared appearances and combines with p
  const f=fixture({units:tagged});t.after(()=>f.close());await f.settle();
  const kingdom=f.byLabel('Character kingdom'),pack=f.byLabel('Character package'),search=f.byLabel('Search character names or kingdoms');
  kingdom.value='sun-tomb';kingdom.onchange();
- assert.deepEqual(rows(f),['Enemy · Normal · Ant · Sun-Tomb Empire','Enemy · Elite · Archer · Sun-Tomb Empire']);
+ assert.deepEqual(rows(f),['Enemy · Normal · Ant · Desert Kingdom','Enemy · Elite · Archer · Desert Kingdom']);
  pack.value='monster1';pack.onchange();
- assert.deepEqual(rows(f),['Enemy · Elite · Archer · Sun-Tomb Empire']);
+ assert.deepEqual(rows(f),['Enemy · Elite · Archer · Desert Kingdom']);
  search.value=' desert archer ';search.oninput();
- assert.deepEqual(rows(f),['Enemy · Elite · Archer · Sun-Tomb Empire']);
+ assert.deepEqual(rows(f),['Enemy · Elite · Archer · Desert Kingdom']);
  await f.client.focusUnit({type:'ally',id:'90001'});await f.settle();
  assert.equal(kingdom.value,'all');assert.equal(search.value,'');
  assert.deepEqual(f.snapshot().data,f.initial);assert.equal(f.calls.changes.length,0);assert.equal(f.calls.saves,0);

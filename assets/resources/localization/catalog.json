@@ -7114,8 +7114,8 @@
       "context": "Creature lore"
     },
     "data.unitguide.91006.description": {
-      "en": "Closes in and strikes one nearby target in melee.",
-      "zh": "接近目标后，以近战攻击单个敌人。",
+      "en": "A hard-shelled desert guardian whose melee strikes slow its targets.",
+      "zh": "硬壳荒漠守卫，以近战攻击减缓目标的速度。",
       "context": "Attack and ability description; numeric stats stay dynamic"
     },
     "data.unitguide.91006.lore": {
@@ -7394,8 +7394,8 @@
       "context": "Creature lore"
     },
     "data.unitguide.91034.description": {
-      "en": "Supports nearby monsters with a temporary attack-speed boost instead of dealing direct damage.",
-      "zh": "为附近的怪物提供临时攻速提升，不直接造成伤害。",
+      "en": "Fires ice bolts and periodically heals nearby monsters.",
+      "zh": "发射冰弹，并定期治疗附近的怪物。",
       "context": "Attack and ability description; numeric stats stay dynamic"
     },
     "data.unitguide.91034.lore": {
@@ -7944,8 +7944,8 @@
       "context": "Creature lore"
     },
     "data.unitguide.91089.description": {
-      "en": "Attacks a single target from range with a projectile.",
-      "zh": "从远处发射投射物，攻击单个目标。",
+      "en": "Chases the hero and strikes at close range with a venomous sting.",
+      "zh": "追击英雄，并用带毒的尾针发动近战攻击。",
       "context": "Attack and ability description; numeric stats stay dynamic"
     },
     "data.unitguide.91089.lore": {
@@ -8979,8 +8979,8 @@
       "context": "Imported monster3 monster · monster3/Raptor_Swamp"
     },
     "data.monster-roster.91134.name": {
-      "en": "Reaper Blood",
-      "zh": "Reaper Blood",
+      "en": "Plague Doctor",
+      "zh": "瘟疫医生",
       "context": "Imported monster3 monster · monster3/Reaper_Blood"
     },
     "data.monster-roster.91135.name": {
@@ -9004,8 +9004,8 @@
       "context": "Imported monster3 monster · monster3/Toad_Giant"
     },
     "data.monster-roster.91139.name": {
-      "en": "Toad Horn",
-      "zh": "Toad Horn",
+      "en": "Orc War Toad",
+      "zh": "兽人战蟾",
       "context": "Imported monster3 monster · monster3/Toad_Horn"
     },
     "data.monster-roster.91140.name": {
@@ -9363,65 +9363,15 @@
       "zh": "一只沉重的蓝灰色史莱姆，长着红色方眼和一对弯曲的骨角。",
       "context": "Enemy guide appearance · Quake Slime"
     },
-    "data.monster-roster.91158.name": {
-      "en": "Orc Siege Chief",
-      "zh": "兽人攻城酋长",
-      "context": "Minimal boss · monster3/OrcSmasher_SiegeChief"
-    },
-    "data.unitguide.91158.description": {
-      "en": "A red-skinned orc in a horned iron helm, wielding a two-handed siege maul.",
-      "zh": "红皮兽人戴着有角的铁盔，挥舞双手攻城重锤。",
-      "context": "Enemy guide appearance · Orc Siege Chief"
-    },
-    "data.monster-roster.91159.name": {
-      "en": "Orc Crimson Guard",
-      "zh": "兽人绯红卫士",
-      "context": "Minimal elite · monster3/OrcSword_CrimsonGuard"
-    },
-    "data.unitguide.91159.description": {
-      "en": "A steel-clad orc with a crimson crest, a broad sword and a heraldic shield.",
-      "zh": "身披钢甲的兽人顶着绯红盔饰，手持宽剑和纹章盾。",
-      "context": "Enemy guide appearance · Orc Crimson Guard"
-    },
     "data.monster-roster.91160.name": {
       "en": "Orc Shaman",
       "zh": "兽人萨满",
       "context": "Minimal normal · monster3/Reaper_OrcShaman"
     },
     "data.unitguide.91160.description": {
-      "en": "A hooded orc with a jade crystal staff, carved charms and a dark violet cloak.",
-      "zh": "戴着兜帽的兽人身披深紫斗篷，手持镶有玉色水晶和雕刻符饰的法杖。",
+      "en": "A purple-hooded orc in an olive robe who channels magic through a gourd-topped staff.",
+      "zh": "身穿橄榄绿长袍、戴着紫色兜帽的兽人，用顶端系着葫芦的法杖施法。",
       "context": "Enemy guide appearance · Orc Shaman"
-    },
-    "data.monster-roster.91162.name": {
-      "en": "Brass Scarab",
-      "zh": "黄铜圣甲虫",
-      "context": "Sun-Tomb Empire · monster1/Beetle_BrassScarab"
-    },
-    "data.unitguide.91162.description": {
-      "en": "Gold plates protect its shell as it curls into a rolling charge.",
-      "zh": "金色甲壳保护着它，让它能蜷缩成球滚动冲撞。",
-      "context": "Enemy guide appearance · Brass Scarab"
-    },
-    "data.monster-roster.91163.name": {
-      "en": "Relic Cantor",
-      "zh": "圣物吟唱者",
-      "context": "Sun-Tomb Empire · monster3/Reaper_RelicCantor"
-    },
-    "data.unitguide.91163.description": {
-      "en": "An ivory-masked keeper of the tombs who swings a gilded censer.",
-      "zh": "戴着象牙色面具的陵墓守卫，挥舞着一只镀金香炉。",
-      "context": "Enemy guide appearance · Relic Cantor"
-    },
-    "data.monster-roster.91164.name": {
-      "en": "Sun-Tomb Regent",
-      "zh": "日陵摄政王",
-      "context": "Sun-Tomb Empire · monster3/Reaper_SunTombRegent"
-    },
-    "data.unitguide.91164.description": {
-      "en": "A jackal-headed ruler in gilded armor who wields a sun-disk poleaxe.",
-      "zh": "身披金甲的胡狼首统治者，挥舞日轮战斧。",
-      "context": "Enemy guide appearance · Sun-Tomb Regent"
     },
     "data.monster-roster.91165.name": {
       "en": "Skeleton Bird",
@@ -9462,16 +9412,6 @@
       "en": "A skeletal king in a gilded helmet, wielding a broad sword and a heavy shield.",
       "zh": "头戴镀金头盔、手持阔剑与重盾的骷髅王。",
       "context": "Enemy guide appearance · Skeleton King"
-    },
-    "data.monster-roster.91170.name": {
-      "en": "Cinderhorn Demon",
-      "zh": "烬角恶魔",
-      "context": "Minimal lava boss · monster3/Evilmass_Cinderhorn"
-    },
-    "data.unitguide.91170.description": {
-      "en": "Black volcanic armor protects this horned demon as it hammers defenders with ember-hot fists.",
-      "zh": "坚硬的火山岩甲保护着烬角恶魔，它用炽热的双拳猛击守军。",
-      "context": "Enemy guide · Cinderhorn Demon"
     },
     "data.monster-roster.91171.name": {
       "en": "Crimson Vampire Lord",
@@ -9553,16 +9493,6 @@
       "zh": "披着护甲的迅猛龙，会冲在兽人队伍前方撕咬守军。",
       "context": "Enemy guide · Orc War Raptor"
     },
-    "data.monster-roster.91182.name": {
-      "en": "Shrouded Revenant",
-      "zh": "蒙纱亡魂",
-      "context": "Sun-Tomb Empire · Shrouded Revenant"
-    },
-    "data.unitguide.91182.description": {
-      "en": "A linen-wrapped tomb guardian armed with a crescent shield and a heavy axe.",
-      "zh": "缠着裹尸布的陵墓守卫，手持新月盾和沉重的战斧。",
-      "context": "Enemy guide appearance · Shrouded Revenant"
-    },
     "data.monster-roster.91183.name": {
       "en": "Orc War Beast",
       "zh": "兽人战兽",
@@ -9622,6 +9552,76 @@
       "en": "The Black Goat’s true form. Its sweeping blows burn nearby foes, and its presence weakens opposing forces.",
       "zh": "黑山羊的真身。横扫会灼烧附近的敌人，它的威势会削弱敌方部队。",
       "context": "Crimson Regent enemy guide"
+    },
+    "data.unitguide.91116.bruiser.description": {
+      "en": "Sweeps through nearby defenders, steals life on hit, and grants Haste to nearby monsters.",
+      "zh": "横扫附近的守军，命中时吸取生命，并为附近的怪物施加急速。",
+      "context": "Enemy guide · Horn Rabbit Demon Bruiser"
+    },
+    "data.unitguide.91126.description": {
+      "en": "Sweeps through defenders with an icy axe, slowing enemies on hit and weakening nearby attacks.",
+      "zh": "挥舞冰斧横扫守军，命中时减速敌人，并削弱附近敌人的攻击。",
+      "context": "Enemy guide · Orc Smasher Warlord"
+    },
+    "data.unitguide.91127.description": {
+      "en": "An armored sword fighter that prioritizes defending troops and grants Haste to nearby monsters.",
+      "zh": "身披重甲的剑士优先攻击守军，并为附近的怪物施加急速。",
+      "context": "Enemy guide · Orc Sword Butcher"
+    },
+    "data.unitguide.91134.description": {
+      "en": "A masked reaper who sweeps through defenders with a scarlet scythe, spreading poison and rallying nearby monsters.",
+      "zh": "戴面具的死神挥舞猩红镰刀横扫守军，施加剧毒并鼓舞附近的怪物。",
+      "context": "Enemy attack and ability description"
+    },
+    "data.unitguide.100788.description": {
+      "en": "Throws ice bolts that slow the target.",
+      "zh": "投掷冰弹并减缓目标的速度。",
+      "context": "Enemy attack and ability description"
+    },
+    "data.unitguide.100391.description": {
+      "en": "Hunts the hero and chills nearby defenders.",
+      "zh": "追猎英雄并减缓附近守军的移动速度。",
+      "context": "Enemy attack and ability description"
+    },
+    "data.unitguide.100093.description": {
+      "en": "Targets buildings with hard-hitting melee attacks.",
+      "zh": "以有力的近战攻击优先破坏建筑。",
+      "context": "Enemy attack and ability description"
+    },
+    "data.unitguide.100132.description": {
+      "en": "Flies over obstacles and fires a burst of ice that slows nearby targets.",
+      "zh": "飞越障碍物并发射冰弹，减缓爆炸范围内目标的速度。",
+      "context": "Enemy attack and ability description"
+    },
+    "data.unitguide.91125.description": {
+      "en": "Sweeps through defenders with a heavy axe, slows enemies on hit, and speeds up nearby monsters.",
+      "zh": "挥动重斧横扫守军，命中时减速敌人，并提高附近怪物的移动速度。",
+      "context": "Enemy attack and ability description"
+    },
+    "data.unitguide.91096.guardian.description": {
+      "en": "Bites nearby defenders and poisons them on hit.",
+      "zh": "撕咬附近守军，命中时施加剧毒。",
+      "context": "Venom Spider · Melee profiles"
+    },
+    "data.unitguide.91096.vanguard.description": {
+      "en": "Bites nearby defenders and poisons them on hit.",
+      "zh": "撕咬附近守军，命中时施加剧毒。",
+      "context": "Venom Spider · Melee profiles"
+    },
+    "data.unitguide.91096.bruiser.description": {
+      "en": "Bites nearby defenders and poisons them on hit.",
+      "zh": "撕咬附近守军，命中时施加剧毒。",
+      "context": "Venom Spider · Melee profiles"
+    },
+    "data.unitguide.91096.mystic.description": {
+      "en": "Fires venom through several targets and weakens nearby defenders.",
+      "zh": "发射可穿透多个目标的毒液，并削弱附近的守军。",
+      "context": "Venom Spider · Elite Mystic"
+    },
+    "data.unitguide.91031.fireball.description": {
+      "en": "Launches fireballs that burn targets on hit.",
+      "zh": "发射火球，命中时灼烧目标。",
+      "context": "Fire Lizard · Skirmisher"
     }
   },
   "images": {

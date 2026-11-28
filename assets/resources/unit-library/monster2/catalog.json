@@ -29,9 +29,9 @@
       "name": "Alien Wizard",
       "pack": "monster2",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 2/Prefabs/Alien/Alien_Wizard.prefab",
-      "skeleton": "assets/resources/unit-library/monster2/Units/Alien_Wizard.json",
-      "uuid": "d454d051-699f-5a6d-9e86-1061d9e26518",
-      "resource": "unit-library/monster2/Units/Alien_Wizard",
+      "skeleton": "assets/resources/unit-library/monster2/Units/CleanStyles/Alien_Wizard.json",
+      "uuid": "c7c903dd-ece1-4b30-9553-7868d4e39a5c",
+      "resource": "unit-library/monster2/Units/CleanStyles/Alien_Wizard",
       "animations": [
         "hit",
         "idle",
@@ -40,7 +40,8 @@
         "move"
       ],
       "bones": 14,
-      "slots": 9
+      "slots": 9,
+      "variantOf": "assets/resources/unit-library/monster2/Units/Alien_Wizard.json"
     },
     {
       "id": "monster2/Ant_Honey",
@@ -767,9 +768,9 @@
       "name": "Skeleton Warrior",
       "pack": "monster2",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 2/Prefabs/Skeleton/Skeleton_Warrior.prefab",
-      "skeleton": "assets/resources/unit-library/monster2/Units/Skeleton_Warrior.json",
-      "uuid": "6a33cc3b-eaf2-5cc3-8f4f-343e5c46eb9a",
-      "resource": "unit-library/monster2/Units/Skeleton_Warrior",
+      "skeleton": "assets/resources/unit-library/monster2/Units/CleanStyles/Skeleton_Warrior.json",
+      "uuid": "61d27c64-91cf-4c1e-9769-b6a79f28327b",
+      "resource": "unit-library/monster2/Units/CleanStyles/Skeleton_Warrior",
       "animations": [
         "attack",
         "die",
@@ -778,7 +779,8 @@
         "idle"
       ],
       "bones": 24,
-      "slots": 11
+      "slots": 11,
+      "variantOf": "assets/resources/unit-library/monster2/Units/Skeleton_Warrior.json"
     },
     {
       "id": "monster2/Spider_Frozen",
@@ -924,25 +926,6 @@
       "bones": 14,
       "slots": 8,
       "variantOf": "monster2/Alien_Vampire"
-    },
-    {
-      "id": "monster2/Skeleton_ShroudedRevenant",
-      "name": "Shrouded Revenant",
-      "pack": "monster2",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 2/Prefabs/Skeleton/Skeleton_Warrior.prefab",
-      "skeleton": "assets/resources/unit-library/monster2/Units/SunTombVariants/Skeleton_ShroudedRevenant.json",
-      "uuid": "a5dd04c0-9648-547f-a15f-463fbdee4361",
-      "resource": "unit-library/monster2/Units/SunTombVariants/Skeleton_ShroudedRevenant",
-      "animations": [
-        "attack",
-        "die",
-        "move",
-        "hit",
-        "idle"
-      ],
-      "bones": 24,
-      "slots": 11,
-      "variantOf": "monster2/Skeleton_Warrior"
     },
     {
       "id": "monster2/Ant_Blood",

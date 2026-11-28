@@ -102,7 +102,7 @@ test('class, fighting type, pack and kingdom filters preserve selections, model 
   assert.deepEqual(filter('Kingdom').choices.map(choice=>choice.value),['all','slime','sun-tomb']);
   search.value='desert';search.oninput();filter('Kingdom').change('sun-tomb');
   assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[5]);
-  assert.equal(visible()[0].querySelector('.world-unit-kingdom').textContent,'Sun-Tomb Empire');
+  assert.equal(visible()[0].querySelector('.world-unit-kingdom').textContent,'Desert Kingdom');
   filter('Asset pack').change('monster1');assert.equal(visible().length,0);
   filter('Asset pack').change('monster2');assert.deepEqual(visible().map(entry=>card(entry).dataset.unitId),[5]);
   assert.deepEqual([...selected],[1,2]);

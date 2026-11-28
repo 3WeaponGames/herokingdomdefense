@@ -188,7 +188,7 @@
         "RefreshSoldierKind": [
           "1#100460,5",
           "2#100512,3",
-          "13#100350,5"
+          "13#100780,5"
         ],
         "WaveReward": [
           [
@@ -220,7 +220,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 100350,
+            "unitId": 100780,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -239,7 +239,7 @@
           "2#100197,4",
           "13#100460,5",
           "14#101737,3",
-          "7#100350,5"
+          "7#100780,5"
         ],
         "WaveReward": [
           [
@@ -271,7 +271,7 @@
           {
             "id": "legacy-7-0",
             "spawnId": 7,
-            "unitId": 100350,
+            "unitId": 100780,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -307,7 +307,7 @@
           "13#100197,3",
           "14#100460,7",
           "15#100197,4",
-          "7#100350,5",
+          "7#100780,5",
           "8#91167,3"
         ],
         "WaveReward": [
@@ -340,7 +340,7 @@
           {
             "id": "legacy-7-0",
             "spawnId": 7,
-            "unitId": 100350,
+            "unitId": 100780,
             "count": 5,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -390,7 +390,7 @@
           "1#100523,1",
           "2#100460,7",
           "3#91035,3",
-          "13#100354,1"
+          "13#100784,1"
         ],
         "WaveReward": [
           [
@@ -430,7 +430,7 @@
           {
             "id": "legacy-13-0",
             "spawnId": 13,
-            "unitId": 100354,
+            "unitId": 100784,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -864,7 +864,7 @@
           "3#100512,2",
           "4#91092,1",
           "5#91167,4",
-          "7#100352,1",
+          "7#100782,1",
           "8#100512,5",
           "13#100523,1",
           "6#91035,3",
@@ -933,7 +933,7 @@
           {
             "id": "legacy-7-0",
             "spawnId": 7,
-            "unitId": 100352,
+            "unitId": 100782,
             "count": 1,
             "startSeconds": 0.5,
             "intervalSeconds": 0.5
@@ -6503,7 +6503,7 @@
   "nextBuilding": 21,
   "nextSpawn": 16,
   "nextSpecial": 7,
-  "sourceRevision": "775dfe0ca5d714558b64bc50045f18b7a92af48f4705f84e84e9617d13daed96",
+  "sourceRevision": "ad1b8d0ae6972964dd07eeeb891facfc35584329749c7490acc669606b41aaa0",
   "templates": {},
   "spawnGroups": [
     {

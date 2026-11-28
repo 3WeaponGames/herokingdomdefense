@@ -1042,25 +1042,6 @@
       "variantOf": "monster1/Slime_Purple"
     },
     {
-      "id": "monster1/Beetle_BrassScarab",
-      "name": "Brass Scarab",
-      "pack": "monster1",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 1/Prefabs/Beetle/Beetle_Iron.prefab",
-      "skeleton": "assets/resources/unit-library/monster1/Units/SunTombVariants/Beetle_BrassScarab.json",
-      "uuid": "d45a928c-e960-5fbb-aaa1-c6de012b07ff",
-      "resource": "unit-library/monster1/Units/SunTombVariants/Beetle_BrassScarab",
-      "animations": [
-        "move",
-        "idle",
-        "hit",
-        "die",
-        "attack"
-      ],
-      "bones": 12,
-      "slots": 6,
-      "variantOf": "monster1/Beetle_Iron"
-    },
-    {
       "id": "monster1/Bird_Skeleton",
       "name": "Skeleton Bird",
       "pack": "monster1",

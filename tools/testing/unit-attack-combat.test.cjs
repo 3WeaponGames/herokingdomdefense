@@ -125,7 +125,7 @@ test('unit attack overrides resolve supported combinations without editing base 
   assert.deepEqual(Rules.issues({ delivery: 'ranged', pattern: 'volley', shotsPerVolley: 1.5 }).map(issue => issue.field), ['shotsPerVolley']);
 });
 
-test('a hero-seeking melee attack hits a blocking wall before an out-of-range hero', () => {
+test('Purple Scorpion stings the hero after clearing a blocking wall', () => {
   const f = fixture(), player = f.target('hero', 340, 0), wall = f.target('wall', 35, 0);
   installIntersection(f.e.cc);
   f.game.ctrPlay = player;
@@ -136,12 +136,11 @@ test('a hero-seeking melee attack hits a blocking wall before an out-of-range he
   collider.points = [{ x: -8, y: -90 }, { x: 8, y: -90 }, { x: 8, y: 90 }, { x: -8, y: 90 }];
   wall.getWposPhyCol2 = () => [{ tagNode: wall.node, points: collider.points.map(point => wall.node.convertToWorldSpaceAR(point)) }];
   f.d.getBulidList = f.d.getAttackableBuildList = () => [wall];
-  const saved = {
-    ID: 90002, AttackType: 1, AttackRange: 44, SearchRange: 220, BuildingCross: 1,
-    EnemyTargeting: { mode: 'hero' },
-    UnitAttack: { delivery: 'melee', pattern: 'single', onHit: { bleed: { percent: .08, duration: 3 } } }
-  };
-  const owner = f.attacker('KinghtFallEnemyBase', saved.UnitAttack, player);
+  const config = require('../../assets/KinghtFallConfig/GameJsonCfg.json');
+  const stage = config.LevelCfg.find(stage => stage.Level === 3);
+  const StageProfiles = require('../../assets/_script/EnemyStageProfiles');
+  const saved = StageProfiles.records(stage, config.SoldierCfg, config.GameTools)[1000009000];
+  const owner = f.attacker('KinghtFallEnemyItem03', saved.UnitAttack, player);
   owner.cfg = Rules.runtimeCfg(saved);
   delete owner.getFind;
 
@@ -150,6 +149,9 @@ test('a hero-seeking melee attack hits a blocking wall before an out-of-range he
   player.node.x = 20;
   f.e.stubs.UnitAttackCombat.releaseEnemy.call(owner);
   assert.deepEqual(f.amounts(), [['wall', 100], ['hero', 100]]);
+  f.e.stubs.UnitAttackCombat.tickEffects(f.game, 1);
+  assert.deepEqual(f.amounts(), [['wall', 100], ['hero', 100], ['hero', 8]]);
+  assert.deepEqual(f.prepared, []);
 });
 
 test('configured enemy missiles and splash use the released attacker movement to check wall protection', () => {
@@ -193,8 +195,8 @@ test('configured enemy missiles and splash use the released attacker movement to
   assert.deepEqual(f.hits.slice(start).map(hit => hit.name).sort(), ['tower', 'troop']);
 });
 
-test('the Sun-Tomb Regent steals life on a real hit without requesting the retired healing sound', () => {
-  const f = fixture(), saved = require('../../assets/KinghtFallConfig/GameJsonCfg.json').SoldierCfg[91164];
+test('the Plague Doctor steals life on a real hit without requesting the retired healing sound', () => {
+  const f = fixture(), saved = require('../../assets/KinghtFallConfig/GameJsonCfg.json').SoldierCfg[91134];
   const defender = f.target('defender', 30, 0), cues = [];
   f.game.ctrPlay = defender;
   f.e.cc.resources = {};

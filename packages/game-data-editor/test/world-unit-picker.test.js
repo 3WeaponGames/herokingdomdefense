@@ -90,38 +90,58 @@ test('saved units expose exactly six fighting profiles per parent without Campai
   return group.units[0].name;
  }).sort();
  assert.deepEqual(namesIn('sun-tomb'),[
-  'Black Plague','Brass Scarab','Carrion Bird','Larva Leech','Purple Scorpion','Relic Cantor',
-  'Shrouded Revenant','Sun-Tomb Regent','Worm Lightning','Worm Poison'
+  'Black Plague','Blood Beetle','Carrion Bird','Evilmass Knight','Green Cactus','Larva Leech','Plague Doctor','Purple Scorpion',
+  'Venom Spider','Worm Lightning','Worm Poison'
  ]);
  assert.deepEqual(namesIn('plant'),[
-  'Carapace Green','Conch Snail','Flower Mantis','Flower Tulip','Fungus Rock','Iron Fly','Iron Golem',
-  'Mushroom Walker','Pitcher Plant','Red Plant','Spiky Plant','Stone Scorpion','Stump Walker','Tree Golem'
+  'Conch Snail','Flower Daisy','Flower Mantis','Fungus Rock','Hornet Bee','Iron Fly','Iron Golem',
+  'Mushroom Walker','Pitcher Plant','Pumpkin Orange','Red Plant','Spiky Plant','Stump Walker','Tree Golem'
  ]);
  assert(rows.filter(unit=>unit.kingdom==='plant').every(unit=>Catalog.matches(unit,'nature kingdom deep forest')));
  assert.deepEqual(groups.filter(group=>group.units[0].kingdom==='plant'&&group.units[0].enemyClass==='boss').map(group=>group.units[0].name),['Iron Fly']);
- assert(!rows.some(unit=>unit.name==='Thorn Warden'||unit.name==='Evilmass Dagger'));
+ assert(!rows.some(unit=>unit.name==='Thorn Warden'||unit.name==='Evilmass Dagger'||unit.name==='Shrouded Revenant'));
  assert.deepEqual(namesIn('skeleton'),[
-  'Corsair Wraith','Drowned Octopus','Grave Goby','Pumpkin Steel','Reaper Death','Skeleton Rhino',
-  'Skeleton Soldier','Skeleton Warlord','Skeleton Warrior','Skull Bat'
+  'Corsair Wraith','Drowned Octopus','Grave Goby','Grizzly Bear','Reaper Death',
+  'Skeleton Soldier','Skeleton Warlord','Wing Demon Vampire'
  ]);
+ assert(rows.some(unit=>unit.name==='Skeleton Rhino'&&unit.kingdom==='unassigned'));
  assert.deepEqual(groups.filter(group=>group.units[0].kingdom==='skeleton'&&group.units[0].enemyClass==='boss').map(group=>group.units[0].name),['Skeleton Warlord']);
  assert.deepEqual(namesIn('orc'),[
-  'Orc Crimson Guard','Orc Shaman','Orc Siege Chief','Orc Smasher Berserker','Orc Smasher Red',
-  'Orc Smasher Warlord','Orc Sword Butcher','Orc Sword Rookie','Orc Sword Veteran','Orc War Beast','Orc War Raptor','Orc Wyvern'
+  'Orc Shaman','Orc Smasher Berserker','Orc Smasher Red',
+  'Orc Sword Butcher','Orc Sword Rookie','Orc Sword Veteran','Orc War Beast','Orc War Toad','Orc Wyvern','Raptor Swamp'
  ]);
- assert.deepEqual(namesIn('vampire'),[
-  'Blood Ant','Blood Beetle','Crimson Vampire Lord','Crypt Ghoul','Feral Ghoul','Reaper Blood',
-  'Scarbrow Vampire','Vampire','Wing Demon Vampire'
+ assert(rows.some(unit=>unit.name==='Orc War Raptor'&&unit.kingdom==='unassigned'));
+ const orcGroups=groups.filter(group=>group.units[0].kingdom==='orc');
+ assert.deepEqual(orcGroups.filter(group=>group.units.every(unit=>unit.enemyClass==='boss')).map(group=>group.units[0].name),['Orc Smasher Red']);
+ assert(orcGroups.find(group=>group.units[0].name==='Orc Sword Butcher').units.every(unit=>unit.enemyClass==='elite'));
+ assert(!rows.some(unit=>unit.name==='Orc Siege Chief'||unit.name==='Orc Crimson Guard'));
+ assert.deepEqual(namesIn('ice'),[
+  'Ice Beetle','Ice Jellyfish','Ice Octopus','Orc Smasher Warlord','Skeleton Warrior','Snow Bird','Snow Cactus',
+  'Snow Crab','Snow Fairy','Winter Ice','Winter Iron','Winter Snow','Wizard'
  ]);
+ assert(rows.some(unit=>unit.name==='Polar Bear'&&unit.kingdom==='unassigned'));
+ assert.deepEqual(groups.filter(group=>group.units[0].kingdom==='sun-tomb'&&group.units[0].enemyClass==='boss').map(group=>group.units[0].name),['Plague Doctor']);
  assert.deepEqual(namesIn('demon'),[
-  'Black Goat','Cinderhorn Demon','Crimson Regent','Demon Wolf','Devil Bee','Hellgate Behemoth',
-  'Horn Rabbit Demon','Pyre Executioner','Raptor Swamp','Toad Giant','Venom Spider','Wing Demon Eye'
+  'Black Goat','Crimson Regent','Demon Wolf','Devil Bee','Fire Lizard','Hellgate Behemoth',
+  'Horn Rabbit Demon','Horse Nightmare','Pyre Executioner','Wing Demon Eye'
  ]);
+ const spider=groups.find(group=>group.units[0].name==='Venom Spider');
+ assert.equal(Catalog.firstProfile(spider.units).enemyClass,'elite');
+ assert.equal(Catalog.firstProfile(spider.units).unitType,'mystic');
+ assert(!rows.some(unit=>unit.name==='Relic Cantor'));
+ const nightmare=groups.find(group=>group.units[0].name==='Horse Nightmare');
+ assert.equal(Catalog.firstProfile(nightmare.units).unitType,'vanguard');
  assert(!rows.some(unit=>unit.name==='Skeleton Bat'||unit.name==='Fire Raptor'));
+ const rabbit=groups.find(group=>group.units[0].name==='Horn Rabbit Demon');
+ assert(rabbit.units.every(unit=>unit.enemyClass==='elite'));
+ assert.equal(Catalog.firstProfile(rabbit.units).unitType,'bruiser');
+ assert(!rows.some(unit=>unit.name==='Cinderhorn Demon'));
  const kingdomLabels=new Map(Kingdoms.options(rows).map(({value,label})=>[value,label]));
  assert.equal(kingdomLabels.get('skeleton'),'Undead Kingdom · Snow');
  assert.equal(kingdomLabels.get('demon'),'Demon Kingdom · Fire');
- assert.equal(kingdomLabels.get('vampire'),'Vampire Kingdom · Ice');
+ assert.equal(kingdomLabels.get('ice'),'Ice Kingdom · Ice');
+ assert.deepEqual(groups.filter(group=>group.units[0].kingdom==='ice'&&group.units[0].enemyClass==='boss').map(group=>group.units[0].name),['Orc Smasher Warlord']);
+ assert(!Kingdoms.CHOICES.some(choice=>choice.value==='vampire'));
  const slimes=groups.map(group=>group.units[0].name).filter(name=>/\bslime\b/i.test(name)).sort();
  assert(slimes.includes('Flying Slime'));assert.deepEqual(namesIn('slime'),slimes);
  for(const [id,name,pack] of [[91010,'Carrion Bird','monster1'],[91071,'Black Plague','monster2']]){

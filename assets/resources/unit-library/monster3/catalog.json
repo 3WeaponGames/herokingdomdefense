@@ -608,7 +608,7 @@
     },
     {
       "id": "monster3/Reaper_Blood",
-      "name": "Reaper Blood",
+      "name": "Plague Doctor",
       "pack": "monster3",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Reaper/Reaper_Blood.prefab",
       "skeleton": "assets/resources/unit-library/monster3/Units/Reaper_Blood.json",
@@ -698,7 +698,7 @@
     },
     {
       "id": "monster3/Toad_Horn",
-      "name": "Toad Horn",
+      "name": "Orc War Toad",
       "pack": "monster3",
       "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Toad/Toad_Horn.prefab",
       "skeleton": "assets/resources/unit-library/monster3/Units/Toad_Horn.json",
@@ -913,44 +913,6 @@
       "slots": 7
     },
     {
-      "id": "monster3/OrcSmasher_SiegeChief",
-      "name": "Orc Siege Chief",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSmasher_Warlord.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/OrcVariants/OrcSmasher_SiegeChief.json",
-      "uuid": "5b2ea1dd-efa2-5347-a91c-51ff584ed1dd",
-      "resource": "unit-library/monster3/Units/OrcVariants/OrcSmasher_SiegeChief",
-      "animations": [
-        "die",
-        "move",
-        "idle",
-        "hit",
-        "attack"
-      ],
-      "bones": 35,
-      "slots": 15,
-      "variantOf": "monster3/OrcSmasher_Warlord"
-    },
-    {
-      "id": "monster3/OrcSword_CrimsonGuard",
-      "name": "Orc Crimson Guard",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSword_Veteran.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/OrcVariants/OrcSword_CrimsonGuard.json",
-      "uuid": "74e3f4bb-94fe-595f-a833-79cf013d899d",
-      "resource": "unit-library/monster3/Units/OrcVariants/OrcSword_CrimsonGuard",
-      "animations": [
-        "die",
-        "move",
-        "idle",
-        "hit",
-        "attack"
-      ],
-      "bones": 35,
-      "slots": 13,
-      "variantOf": "monster3/OrcSword_Veteran"
-    },
-    {
       "id": "monster3/Reaper_OrcShaman",
       "name": "Orc Shaman",
       "pack": "monster3",
@@ -968,44 +930,6 @@
       "bones": 17,
       "slots": 9,
       "variantOf": "monster3/Reaper_Death"
-    },
-    {
-      "id": "monster3/Reaper_RelicCantor",
-      "name": "Relic Cantor",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Reaper/Reaper_Death.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/SunTombVariants/Reaper_RelicCantor.json",
-      "uuid": "ea31adcc-6a8f-545a-ad7d-030e0ae8a3ea",
-      "resource": "unit-library/monster3/Units/SunTombVariants/Reaper_RelicCantor",
-      "animations": [
-        "idle",
-        "move",
-        "die",
-        "attack",
-        "hit"
-      ],
-      "bones": 17,
-      "slots": 9,
-      "variantOf": "monster3/Reaper_Death"
-    },
-    {
-      "id": "monster3/Reaper_SunTombRegent",
-      "name": "Sun-Tomb Regent",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Orc/OrcSmasher_Warlord.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/SunTombVariants/Reaper_SunTombRegent.json",
-      "uuid": "a02b5c02-31c9-583c-a5a0-66d9eb794a99",
-      "resource": "unit-library/monster3/Units/SunTombVariants/Reaper_SunTombRegent",
-      "animations": [
-        "die",
-        "move",
-        "idle",
-        "hit",
-        "attack"
-      ],
-      "bones": 35,
-      "slots": 15,
-      "variantOf": "monster3/OrcSmasher_Warlord"
     },
     {
       "id": "monster3/Rhino_Skeleton",
@@ -1044,25 +968,6 @@
       "bones": 24,
       "slots": 11,
       "variantOf": "monster2/Skeleton_Warlord"
-    },
-    {
-      "id": "monster3/Evilmass_Cinderhorn",
-      "name": "Cinderhorn Demon",
-      "pack": "monster3",
-      "source": "Assets/Layer Lab/2D Minimal-EnemyMonster/EnemyMonster 3/Prefabs/Evilmass/Evilmass_Knight.prefab",
-      "skeleton": "assets/resources/unit-library/monster3/Units/BiomeBosses/Evilmass_Cinderhorn.json",
-      "uuid": "7bc0672c-f45e-5c4f-a75b-a227ffec3e35",
-      "resource": "unit-library/monster3/Units/BiomeBosses/Evilmass_Cinderhorn",
-      "animations": [
-        "attack",
-        "move",
-        "idle",
-        "die",
-        "hit"
-      ],
-      "bones": 21,
-      "slots": 10,
-      "variantOf": "monster3/Evilmass_Knight"
     },
     {
       "id": "monster3/Winter_GlacierYeti",

@@ -233,10 +233,10 @@
         },
         "Reaper_bone/Body_bone/Body": {
           "u_53da885a56806c043b3e4289fb50d530": {
-            "width": 219.0,
-            "height": 174.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 209,
+            "height": 157,
+            "x": 0.5,
+            "y": -2.5,
             "scaleX": 1,
             "scaleY": 1,
             "path": "Reaper_OrcShaman_Body"
@@ -244,10 +244,10 @@
         },
         "Reaper_bone/Body_bone/Attack": {
           "u_7d560e845c07ce8479980747c5996ace": {
-            "width": 214.0,
-            "height": 186.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 207,
+            "height": 160,
+            "x": 5.5,
+            "y": 3,
             "scaleX": 1,
             "scaleY": 1,
             "path": "Reaper_OrcShaman_Attack"
@@ -255,9 +255,9 @@
         },
         "Reaper_bone/Weapon_bone/Weapon_bone2/Weapon": {
           "u_c8042df80638cff4c8b70792c0b51e86": {
-            "width": 154.0,
-            "height": 255.0,
-            "x": 0.0,
+            "width": 118,
+            "height": 254,
+            "x": 8,
             "y": 0.0,
             "scaleX": 1,
             "scaleY": 1,
@@ -266,10 +266,10 @@
         },
         "Reaper_bone/Head_bone/Head": {
           "u_3e51efc4d6ed449449a0baba6985a4bb": {
-            "width": 150.0,
-            "height": 158.0,
-            "x": 0.0,
-            "y": 0.0,
+            "width": 189,
+            "height": 138,
+            "x": 20.5,
+            "y": -4,
             "scaleX": 1,
             "scaleY": 1,
             "path": "Reaper_OrcShaman_Head"
@@ -277,10 +277,10 @@
         },
         "Reaper_bone/Hit": {
           "u_cca734e294f658943b6f53b52e2d50cf": {
-            "width": 228,
-            "height": 303,
-            "x": 27,
-            "y": 11.5,
+            "width": 225,
+            "height": 306,
+            "x": 25.5,
+            "y": 13,
             "scaleX": 1,
             "scaleY": 1,
             "path": "Reaper_OrcShaman_Hit"
@@ -288,10 +288,10 @@
         },
         "Reaper_bone/Hit_2": {
           "u_07882059a2d99c5458a96f9f0c29587e": {
-            "width": 228,
-            "height": 303,
-            "x": 27,
-            "y": 11.5,
+            "width": 225,
+            "height": 306,
+            "x": 25.5,
+            "y": 13,
             "scaleX": 1,
             "scaleY": 1,
             "path": "Reaper_OrcShaman_Hit_2"

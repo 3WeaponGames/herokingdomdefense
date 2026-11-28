@@ -15459,17 +15459,6 @@
       "impact": "toon:hit-10",
       "trail": false
     },
-    "enemy:101719": {
-      "set": "spine-projectile:fly_46",
-      "flight": "spine-projectile:fly_46",
-      "launch": "",
-      "impact": "",
-      "trail": "trail:90947910-ade2-4c43-9fcb-a3c1d415642b",
-      "trailColor": "#67ff3d",
-      "scale": 1.9,
-      "launchOffsetX": 24,
-      "launchOffsetY": 11
-    },
     "enemy:91172": {
       "set": "toon:projectile-14-ice",
       "flight": "toon:projectile-14-ice",
@@ -15598,15 +15587,6 @@
       "launch": "fantasy:arcane-impact",
       "impact": "fantasy:arcane-impact"
     },
-    "enemy:91134": {
-      "set": "toon:projectile-15-red",
-      "size": 39,
-      "launchOffsetX": 22,
-      "launchOffsetY": 15,
-      "flight": "toon:projectile-15-red",
-      "launch": "toon:flash-15",
-      "impact": "toon:hit-15"
-    },
     "enemy:91145": {
       "set": "toon:projectile-2-energy-orb",
       "size": 43,
@@ -15663,6 +15643,70 @@
       "flight": "toon:projectile-2-energy-orb",
       "launch": "toon:flash-2",
       "impact": "toon:hit-2"
+    },
+    "enemy:91110": {
+      "set": "toon:projectile-12-forest",
+      "size": 45,
+      "launchOffsetX": 0,
+      "launchOffsetY": 0,
+      "flight": "toon:projectile-12-forest",
+      "launch": "toon:flash-12",
+      "impact": "toon:hit-12"
+    },
+    "enemy:91108": {
+      "set": "toon:projectile-12-forest",
+      "size": 45,
+      "launchOffsetX": 0,
+      "launchOffsetY": 0,
+      "flight": "toon:projectile-12-forest",
+      "launch": "toon:flash-12",
+      "impact": "toon:hit-12"
+    },
+    "enemy:100788": {
+      "set": "toon:projectile-14-ice",
+      "flight": "toon:projectile-14-ice",
+      "launch": "toon:flash-14",
+      "impact": "toon:hit-14",
+      "trail": false,
+      "size": 38,
+      "launchOffsetY": 11
+    },
+    "enemy:100132": {
+      "set": "toon:projectile-14-ice",
+      "flight": "toon:projectile-14-ice",
+      "launch": "toon:flash-14",
+      "impact": "toon:hit-14",
+      "trail": false,
+      "size": 42,
+      "launchOffsetY": 3
+    },
+    "enemy:91034": {
+      "set": "toon:projectile-14-ice",
+      "flight": "toon:projectile-14-ice",
+      "launch": "toon:flash-14",
+      "impact": "toon:hit-14",
+      "trail": false,
+      "size": 34,
+      "launchOffsetY": 12
+    },
+    "enemy:100539": {
+      "set": "spine-projectile:fly_46",
+      "flight": "spine-projectile:fly_46",
+      "launch": "",
+      "impact": "",
+      "trail": "trail:90947910-ade2-4c43-9fcb-a3c1d415642b",
+      "trailColor": "#67ff3d",
+      "scale": 1,
+      "launchOffsetX": 0,
+      "launchOffsetY": 0,
+      "size": 40
+    },
+    "enemy:91031": {
+      "set": "original:fireball",
+      "flight": "original:fireball",
+      "launch": "",
+      "impact": "original:fireball-impact",
+      "size": 40
     }
   },
   "heroArrowTiers": [
